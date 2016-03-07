@@ -37,3 +37,17 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.0'
 
 }
+
+task installAUT(type: Exec) {
+    def adb = android.getAdbExe().toString()
+    File configFile = file('../res/selendroid-test-app-debug.apk')
+    commandLine "$adb", 'install', '-r', "$configFile"
+}
+
+afterEvaluate {
+    tasks.each { task ->
+        if (task.name.startsWith('assembleDebugAndroidTest')) {
+            task.dependsOn installAUT
+        }
+    }
+}
