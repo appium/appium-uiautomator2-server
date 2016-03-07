@@ -19,6 +19,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        androidTest.setRoot('src/androidTest/test')
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -38,13 +43,17 @@ dependencies {
 
 }
 
-task installAUT(type: Exec) {
+task installAUT(type: Exec, dependsOn: 'installDebug') {
+    group = 'test'
+    description = 'Install app under test'
     def adb = android.getAdbExe().toString()
-    File configFile = file('../res/selendroid-test-app-debug.apk')
-    commandLine "$adb", 'install', '-r', "$configFile"
+    def apk = file('../res/selendroid-test-app-debug.apk')
+    commandLine "$adb install -rg $apk".split(' ')
 }
 
 afterEvaluate {
+    // When launching individual tests from Android Studio, it seems that only the assemble tasks
+    // get called directly, not the install* versions
     tasks.each { task ->
         if (task.name.startsWith('assembleDebugAndroidTest')) {
             task.dependsOn installAUT
