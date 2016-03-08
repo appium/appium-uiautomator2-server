@@ -40,10 +40,11 @@ dependencies {
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     androidTestCompile 'com.android.support.test:testing-support-lib:0.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.0'
+    androidTestCompile 'com.squareup.okhttp:okhttp:2.5.0'
 
 }
 
-task installAUT(type: Exec, dependsOn: 'installDebug') {
+task installAUT(type: Exec, dependsOn: ['installDebug', 'installDebugAndroidTest']) {
     group = 'test'
     description = 'Install app under test'
     def adb = android.getAdbExe().toString()
@@ -52,10 +53,11 @@ task installAUT(type: Exec, dependsOn: 'installDebug') {
 }
 
 afterEvaluate {
+    // https://gist.github.com/danielgomezrico/9371a79a7222a156ddad
     // When launching individual tests from Android Studio, it seems that only the assemble tasks
     // get called directly, not the install* versions
     tasks.each { task ->
-        if (task.name.startsWith('assembleDebugAndroidTest')) {
+        if (task.name.startsWith('connectedCheck')) {
             task.dependsOn installAUT
         }
     }
