@@ -1,5 +1,22 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.github.JakeWharton:sdk-manager-plugin:0ce4cdf08009d79223850a59959d9d6e774d0f77'
+    }
+}
+
 apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.application'
+
+// optionally including an emulator
+sdkManager {
+    emulatorVersion 'android-23'
+    emulatorArchitecture 'x86' // optional, defaults to arm
+}
 
 android {
     compileSdkVersion 23
@@ -71,10 +88,8 @@ task installAUT(type: Exec) {
 
 afterEvaluate {
     tasks.each { task ->
-        if (task.name.startsWith('connectedE2eTestDebugAndroidTest')) {
+        if (task.name != null && task.name.startsWith('connectedE2eTestDebugAndroidTest')) {
             task.dependsOn installAUT
         }
     }
 }
-
-
