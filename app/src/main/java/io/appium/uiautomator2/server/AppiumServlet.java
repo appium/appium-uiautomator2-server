@@ -32,6 +32,7 @@ import io.appium.uiautomator2.handler.PressKeyCode;
 import io.appium.uiautomator2.handler.RotateScreen;
 import io.appium.uiautomator2.handler.ScrollTo;
 import io.appium.uiautomator2.handler.SendKeysToElement;
+import io.appium.uiautomator2.handler.Source;
 import io.appium.uiautomator2.handler.Status;
 import io.appium.uiautomator2.handler.Swipe;
 import io.appium.uiautomator2.handler.TouchLongClick;
@@ -97,6 +98,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetSize("/wd/hub/session/:sessionId/element/:id/size"));
         register(getHandler, new GetName("/wd/hub/session/:sessionId/element/:id/name"));
         register(getHandler, new Location("/wd/hub/session/:sessionId/element/:id/location"));
+        register(getHandler, new Source("/wd/hub/session/:sessionId/source"));
     }
 
     protected void register(Map<String, BaseRequestHandler> registerOn, BaseRequestHandler handler) {

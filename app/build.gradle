@@ -88,10 +88,8 @@ task installAUT(type: Exec) {
 
 afterEvaluate {
     tasks.each { task ->
-        if (task.name.startsWith('connectedE2eTestDebugAndroidTest')) {
+        if (task.name != null && task.name.startsWith('connectedE2eTestDebugAndroidTest')) {
             task.dependsOn installAUT
         }
     }
 }
-
-
