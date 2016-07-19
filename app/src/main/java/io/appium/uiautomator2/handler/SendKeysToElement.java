@@ -82,9 +82,9 @@ public class SendKeysToElement extends SafeRequestHandler {
     }
 
     private boolean isTextFieldCleared(AndroidElement element) throws UiObjectNotFoundException {
-        if(element.getText() == null){
+        if (element.getText() == null) {
             return true;
-        } else if(element.getText().isEmpty()) {
+        } else if (element.getText().isEmpty()) {
             return true;
         } else {
             return false;

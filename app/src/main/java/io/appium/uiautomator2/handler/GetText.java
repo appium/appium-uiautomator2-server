@@ -22,13 +22,17 @@ public class GetText extends SafeRequestHandler {
         String id = getElementId(request);
         String text;
         AndroidElement element = KnownElements.getElementFromCache(id);
-        try {
-            text = element.getText();
-            Logger.info("Get Text :" + text);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Element not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, e);
+        if (element != null) {
+            try {
+                text = element.getText();
+                Logger.info("Get Text :" + text);
+            } catch (UiObjectNotFoundException e) {
+                Logger.error("Element not found: ", e);
+                return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, e);
+            }
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, text);
+        } else {
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, "Element Not found");
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, text);
     }
 }
