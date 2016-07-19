@@ -46,6 +46,7 @@ public class Source extends SafeRequestHandler {
             Logger.error("Unable to handle the request:" + e);
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Something went terribly wrong while converting xml document to string:" + e);
         } catch (final TransformerException e) {
+            Logger.error("Unable to handle the request:" + e);
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Could not parse xml hierarchy to string: " + e);
         } catch (UiAutomator2Exception e) {
             Logger.error("Exception while performing LongPressKeyCode action: ", e);

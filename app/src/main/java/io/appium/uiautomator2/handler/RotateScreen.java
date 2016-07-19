@@ -43,9 +43,7 @@ public class RotateScreen extends SafeRequestHandler {
      * Set the desired rotation
      *
      * @param orientation The rotation desired (LANDSCAPE or PORTRAIT)
-     *
      * @return {@link AppiumResponse}
-     *
      * @throws RemoteException
      * @throws InterruptedException
      */

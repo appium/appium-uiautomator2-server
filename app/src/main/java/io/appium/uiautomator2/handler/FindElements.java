@@ -187,7 +187,6 @@ public class FindElements extends SafeRequestHandler {
      *
      * @param sel
      * @param key
-     *
      * @return
      */
     private List<Object> fetchElements(UiSelector sel, String key) throws UiObjectNotFoundException {

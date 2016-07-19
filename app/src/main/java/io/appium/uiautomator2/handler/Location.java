@@ -22,21 +22,26 @@ public class Location extends SafeRequestHandler {
     @Override
     public AppiumResponse safeHandle(IHttpRequest request) {
         final JSONObject response = new JSONObject();
-        try {
-            String id = getElementId(request);
-            AndroidElement element = KnownElements.getElementFromCache(id);
-            final Rect bounds = element.getBounds();
-            response.put("x", bounds.left);
-            response.put("y", bounds.top);
-            Logger.info("Element found at location " + "(" + bounds.left + "," + bounds.top + ")");
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Element Location not found", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, e);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            Logger.error(WDStatus.JSON_DECODER_ERROR, e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
+        String id = getElementId(request);
+        AndroidElement element = KnownElements.getElementFromCache(id);
+        if (element != null) {
+            try {
+                final Rect bounds = element.getBounds();
+                response.put("x", bounds.left);
+                response.put("y", bounds.top);
+                Logger.info("Element found at location " + "(" + bounds.left + "," + bounds.top + ")");
+            } catch (UiObjectNotFoundException e) {
+                Logger.error("Element Location not found", e);
+                return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, e);
+            } catch (JSONException e) {
+                Logger.error("Exception while reading JSON: " + WDStatus.JSON_DECODER_ERROR, e);
+                return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
+            }
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, response);
+        } else {
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, "Element Not found");
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, response);
     }
 }
+
+

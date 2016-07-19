@@ -28,8 +28,12 @@ public class Click extends SafeRequestHandler {
             JSONObject payload = getPayload(request);
             String id = payload.getString("elementId");
             AndroidElement element = KnownElements.getElementFromCache(id);
-            element.click();
-            getUiDevice().waitForIdle();
+            if (element != null) {
+                element.click();
+                getUiDevice().waitForIdle();
+            } else {
+                return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, "Element Not found");
+            }
         } catch (UiObjectNotFoundException e) {
             Logger.error("Element not found: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, e);

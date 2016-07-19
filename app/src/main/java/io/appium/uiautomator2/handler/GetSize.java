@@ -45,18 +45,22 @@ public class GetSize extends SafeRequestHandler {
         String id = getElementId(request);
         final JSONObject res = new JSONObject();
         AndroidElement element = KnownElements.getElementFromCache(id);
-        try {
-            final Rect rect = element.getBounds();
-            res.put("width", rect.width());
-            res.put("height", rect.height());
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Element not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, e);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            Logger.error(WDStatus.JSON_DECODER_ERROR, e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
+        if (element != null) {
+            try {
+                final Rect rect = element.getBounds();
+                res.put("width", rect.width());
+                res.put("height", rect.height());
+            } catch (UiObjectNotFoundException e) {
+                Logger.error("Element not found: ", e);
+                return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, e);
+            } catch (JSONException e) {
+                Logger.error("Exception while reading JSON: ", e);
+                Logger.error(WDStatus.JSON_DECODER_ERROR, e);
+                return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
+            }
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, res);
+        } else {
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, "Element Not found");
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, res);
     }
 }

@@ -44,13 +44,18 @@ public class GetName extends SafeRequestHandler {
         final JSONObject res = new JSONObject();
         AndroidElement element = KnownElements.getElementFromCache(id);
         String elementName;
-        try {
-            elementName = element.getContentDesc();
-            Logger.info("Element Name ", elementName);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Element not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, e);
+        if (element != null) {
+            try {
+                elementName = element.getContentDesc();
+                Logger.info("Element Name ", elementName);
+            } catch (UiObjectNotFoundException e) {
+                Logger.error("Element not found: ", e);
+                return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, e);
+            }
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, elementName);
+        } else {
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT, "Element Not found");
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, elementName);
+
     }
 }
