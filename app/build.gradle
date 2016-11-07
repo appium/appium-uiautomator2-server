@@ -30,7 +30,7 @@ android {
         /**
          * versionName should be updated and inline with version in package.json for every npm release.
          */
-        versionName "0.0.4"
+        versionName "0.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
