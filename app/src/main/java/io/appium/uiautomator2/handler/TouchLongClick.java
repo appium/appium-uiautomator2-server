@@ -22,7 +22,7 @@ public class TouchLongClick extends SafeRequestHandler {
     @Override
     public AppiumResponse safeHandle(IHttpRequest request) {
         try {
-            JSONObject payload = getPayload(request);
+            JSONObject payload = getPayload(request).getJSONObject("params");
             String id = payload.getString("elementId");
             AndroidElement element = KnownElements.getElementFromCache(id);
             if (element == null) {

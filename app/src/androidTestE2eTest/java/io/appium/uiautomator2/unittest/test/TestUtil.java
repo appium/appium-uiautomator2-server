@@ -455,14 +455,15 @@ public class TestUtil {
      */
     public static String longClick(String element) throws JSONException {
         String elementId;
+        JSONObject longClickJSON = new JSONObject();
         JSONObject jsonObject = new JSONObject();
         try {
             elementId = new JSONObject(element).getJSONObject("value").getString("ELEMENT");
-            jsonObject.put("elementId", elementId);
+            longClickJSON.put("params", jsonObject.put("elementId", elementId));
         } catch (JSONException e) {
             throw new RuntimeException("Element not found", e);
         }
-        return post(baseUrl + "/touch/longclick", jsonObject.toString());
+        return post(baseUrl + "/touch/longclick", longClickJSON.toString());
     }
 
     /**
