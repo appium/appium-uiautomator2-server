@@ -15,6 +15,7 @@ import io.appium.uiautomator2.utils.Logger;
 import static android.os.SystemClock.elapsedRealtime;
 import static io.appium.uiautomator2.unittest.test.TestHelper.get;
 import static io.appium.uiautomator2.unittest.test.TestHelper.post;
+import static io.appium.uiautomator2.unittest.test.TestHelper.delete;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 
 public class TestUtil {
@@ -553,12 +554,28 @@ public class TestUtil {
         }
     }
 
+    public static void waitForMilliSeconds(int TIME_MS) {
+        try {
+            Thread.sleep(TIME_MS);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     public static String drag(String dragBody) throws JSONException {
         return post(baseUrl + "/touch/drag", dragBody);
     }
 
     public static String source() {
         return  get(baseUrl + "/source");
+    }
+
+    public static String createSession() throws JSONException {
+        return post("/wd/hub/session", new JSONObject().put("desiredCapabilities", new JSONObject()).toString());
+    }
+
+    public static String deleteSession(){
+        return delete(baseUrl, new JSONObject().toString());
     }
 
 }

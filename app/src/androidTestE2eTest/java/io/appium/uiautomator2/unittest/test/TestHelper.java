@@ -74,6 +74,12 @@ public abstract class TestHelper {
         return execute(request);
     }
 
+    public static String delete(final String path, String body) {
+        Request request = new Request.Builder().url(path).delete(RequestBody.create(JSON, body)).build();
+        Logger.info("DELETE: " + body);
+        return execute(request);
+    }
+
     public static Response post(final String path, String body, Response response) {
         Request request = new Request.Builder().url(baseUrl + path).post(RequestBody.create(JSON, body)).build();
         Logger.info("POST: " + body);

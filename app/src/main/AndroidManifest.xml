@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.appium.uiautomator2.test">
+          package="io.appium.uiautomator2.test">
 
     <application android:allowBackup="true">
 

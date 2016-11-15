@@ -32,6 +32,8 @@ import io.appium.uiautomator2.utils.Logger;
 import static io.appium.uiautomator2.unittest.test.TestHelper.getJsonObjectCountInJsonArray;
 import static io.appium.uiautomator2.unittest.test.TestUtil.appStrings;
 import static io.appium.uiautomator2.unittest.test.TestUtil.click;
+import static io.appium.uiautomator2.unittest.test.TestUtil.createSession;
+import static io.appium.uiautomator2.unittest.test.TestUtil.deleteSession;
 import static io.appium.uiautomator2.unittest.test.TestUtil.drag;
 import static io.appium.uiautomator2.unittest.test.TestUtil.findElement;
 import static io.appium.uiautomator2.unittest.test.TestUtil.findElements;
@@ -62,6 +64,7 @@ import static io.appium.uiautomator2.unittest.test.TestUtil.touchMove;
 import static io.appium.uiautomator2.unittest.test.TestUtil.touchUp;
 import static io.appium.uiautomator2.unittest.test.TestUtil.waitForElement;
 import static io.appium.uiautomator2.unittest.test.TestUtil.waitForElementInvisible;
+import static io.appium.uiautomator2.unittest.test.TestUtil.waitForMilliSeconds;
 import static io.appium.uiautomator2.unittest.test.TestUtil.waitForSeconds;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static org.junit.Assert.assertEquals;
@@ -91,7 +94,7 @@ public class HandlersTest {
      * @throws InterruptedException
      */
     @BeforeClass
-    public static void beforeStartServer() throws InterruptedException, IOException, SessionRemovedException {
+    public static void beforeStartServer() throws InterruptedException, IOException, SessionRemovedException, JSONException {
         if (serverInstrumentation == null) {
             assertNotNull(getUiDevice());
             ctx = InstrumentationRegistry.getInstrumentation().getContext();
@@ -99,6 +102,7 @@ public class HandlersTest {
             Logger.info("[AppiumUiAutomator2Server]", " Starting Server ");
             serverInstrumentation.startServer();
             TestHelper.waitForNetty();
+            createSession();
             Configurator.getInstance().setWaitForSelectorTimeout(50000);
             Configurator.getInstance().setWaitForIdleTimeout(50000);
         }
@@ -107,6 +111,7 @@ public class HandlersTest {
 
     @AfterClass
     public static void stopSever() throws InterruptedException {
+        deleteSession();
         if (serverInstrumentation != null) {
             serverInstrumentation.stopServer();
         }
@@ -803,4 +808,44 @@ public class HandlersTest {
         assertEquals(getText(elements.get(3).toString()), "Accessibility Service");
     }
 
+    @Test
+    public void ToastVerificationTest() throws JSONException {
+        getUiDevice().waitForIdle();
+        scrollTo("Views"); // Due to 'Views' option not visible on small screen
+        waitForElement(By.accessibilityId("Views"), 10 * SECOND);
+        click(findElement(By.accessibilityId("Views")));
+        scrollTo("Popup Menu");
+        waitForElement(By.accessibilityId("Popup Menu"), 10 * SECOND);
+        click(findElement(By.accessibilityId("Popup Menu")));
+        waitForElement(By.accessibilityId("Make a Popup!"), 10 * SECOND);
+        click(findElement(By.accessibilityId("Make a Popup!")));
+        waitForElement(By.xpath(".//*[@text='Search']"), 10 * SECOND);
+        click(findElement(By.xpath(".//*[@text='Search']")));
+        waitForMilliSeconds(500);
+        response = findElement(By.xpath("//*[@text='Clicked popup menu item Search']"));
+        Logger.info("[AppiumUiAutomator2Server]", " findElement By.xpath: " + response);
+        assertTrue(By.xpath("//*[@text='Clicked popup menu item Search']") + "not found", isElementPresent(response));
+
+        click(findElement(By.accessibilityId("Make a Popup!")));
+        waitForElement(By.xpath(".//*[@text='Add']"), 10 * SECOND);
+        click(findElement(By.xpath(".//*[@text='Add']")));
+        waitForMilliSeconds(500);
+        response = findElement(By.xpath("//*[@text='Clicked popup menu item Add']"));
+        Logger.info("[AppiumUiAutomator2Server]", " findElement By.xpath: " + response);
+        assertTrue(By.xpath("//*[@text='Clicked popup menu item Search Add']") + "not found", isElementPresent(response));
+
+        click(findElement(By.accessibilityId("Make a Popup!")));
+        waitForElement(By.xpath(".//*[@text='Edit']"), 10 * SECOND);
+        click(findElement(By.xpath(".//*[@text='Edit']")));
+        waitForMilliSeconds(500);
+        response = findElement(By.xpath("//*[@text='Clicked popup menu item Edit']"));
+        Logger.info("[AppiumUiAutomator2Server]", " findElement By.xpath: " + response);
+        assertTrue(By.xpath("//*[@text='Clicked popup menu item Edit']") + "not found", isElementPresent(response));
+
+        click(findElement(By.xpath(".//*[@text='Share']")));
+        waitForMilliSeconds(1000);
+        response = findElement(By.xpath("//*[@text='Clicked popup menu item Share']"));
+        Logger.info("[AppiumUiAutomator2Server]", " findElement By.xpath: " + response);
+        assertTrue(By.xpath("//*[@text='Clicked popup menu item Share']") + "not found", isElementPresent(response));
+    }
 }

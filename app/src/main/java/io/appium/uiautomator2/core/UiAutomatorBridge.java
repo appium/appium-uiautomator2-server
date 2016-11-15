@@ -15,6 +15,7 @@
  */
 package io.appium.uiautomator2.core;
 
+import android.app.UiAutomation;
 import android.support.test.uiautomator.UiDevice;
 import android.view.Display;
 import android.view.InputEvent;
@@ -34,6 +35,7 @@ public class UiAutomatorBridge {
     private static final String FIELD_UI_AUTOMATOR_BRIDGE = "mUiAutomationBridge";
     private static final String FIELD_QUERY_CONTROLLER = "mQueryController";
     private static final String FIELD_INTERACTION_CONTROLLER = "mInteractionController";
+    private static final String FIELD_UI_AUTOMATOR = "mUiAutomation";
 
     private static final String METHOD_GET_DEFAULT_DISPLAY = "getDefaultDisplay";
     private static final String METHOD_INJECT_INPUT_EVENT = "injectInputEvent";
@@ -44,9 +46,8 @@ public class UiAutomatorBridge {
 
     public UiAutomatorBridge() {
         try {
-            final UiDevice device = Device.getUiDevice();
 
-            this.uiAutomatorBridge = getField(UiDevice.class, FIELD_UI_AUTOMATOR_BRIDGE, device);
+            this.uiAutomatorBridge = getField(UiDevice.class, FIELD_UI_AUTOMATOR_BRIDGE, Device.getUiDevice());
         } catch (Error error) {
             Logger.error("ERROR", error);
             throw error;
@@ -66,6 +67,10 @@ public class UiAutomatorBridge {
 
     public QueryController getQueryController() throws UiAutomator2Exception {
         return new QueryController(getField(CLASS_UI_AUTOMATOR_BRIDGE, FIELD_QUERY_CONTROLLER, uiAutomatorBridge));
+    }
+
+    public UiAutomation getUiAutomation() {
+        return (UiAutomation)getField(CLASS_UI_AUTOMATOR_BRIDGE, FIELD_UI_AUTOMATOR, uiAutomatorBridge);
     }
 
     public Display getDefaultDisplay() throws UiAutomator2Exception {

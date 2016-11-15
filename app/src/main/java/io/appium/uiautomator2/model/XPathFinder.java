@@ -198,12 +198,13 @@ public class XPathFinder implements Finder {
   }
 
   public static void refreshUiElementTree() {
-    rootElement =UiAutomationElement.newRootElement(getRootAccessibilityNode());
+    rootElement = UiAutomationElement.newRootElement(getRootAccessibilityNode(), NotificationListener.getToastMSGs());
   }
 
   public static void refreshUiElementTree(AccessibilityNodeInfo nodeInfo) {
-    rootElement =UiAutomationElement.newRootElement(nodeInfo);
+    rootElement =UiAutomationElement.newRootElement(nodeInfo, null /*Toast Messages*/);
   }
+
 
   public static AccessibilityNodeInfo getRootAccessibilityNode() throws UiAutomator2Exception {
     final long timeoutMillis = 10000;

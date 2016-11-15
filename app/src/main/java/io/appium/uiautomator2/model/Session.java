@@ -20,6 +20,7 @@ public class Session {
         this.commandConfiguration = new ConcurrentHashMap<>();
         JSONObject configJsonObject = new JSONObject();
         this.commandConfiguration.put(SEND_KEYS_TO_ELEMENT, configJsonObject);
+        NotificationListener.getInstance().start();
     }
 
     public String getSessionId() {

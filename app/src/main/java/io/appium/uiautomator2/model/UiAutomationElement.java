@@ -19,8 +19,7 @@ package io.appium.uiautomator2.model;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
-
-import org.apache.commons.lang.ArrayUtils;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +29,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import io.appium.uiautomator2.utils.Attribute;
+import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Preconditions;
 
 
@@ -90,13 +90,13 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     this.children = mutableChildren == null ? null : Collections.unmodifiableList(mutableChildren);
   }
 
-  protected UiAutomationElement(String className,
+  protected UiAutomationElement(String hierarchyClassName,
                                 AccessibilityNodeInfo childNode, int index){
     this.parent = null;
     Map<Attribute, Object> attribs = new EnumMap<Attribute, Object>(Attribute.class);
 
     put(attribs, Attribute.INDEX, index);
-    put(attribs, Attribute.CLASS, charSequenceToString(className));
+    put(attribs, Attribute.CLASS, charSequenceToString(hierarchyClassName));
     put(attribs, Attribute.CHECKABLE, false);
     put(attribs, Attribute.CHECKED, false);
     put(attribs, Attribute.CLICKABLE, false);
@@ -113,13 +113,22 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     this.visibleBounds = null;
     List<UiAutomationElement> mutableChildren =new ArrayList<UiAutomationElement>();
     mutableChildren.add(new UiAutomationElement(childNode, this /* parent UiAutomationElement*/, 0/* index */));
-    this.children = Collections.unmodifiableList(mutableChildren);
+    this.children = mutableChildren;
   }
 
   private void put(Map<Attribute, Object> attribs, Attribute key, Object value) {
     if (value != null) {
       attribs.put(key, value);
     }
+  }
+
+  private void addToastMsgToRoot(CharSequence tokenMSG){
+    AccessibilityNodeInfo node = AccessibilityNodeInfo.obtain();
+    node.setText(tokenMSG);
+    node.setClassName(Toast.class.getName());
+    node.setPackageName("com.android.settings");
+
+    this.children.add( new UiAutomationElement(node /* AccessibilityNodeInfo */, this /* parent UiAutomationElement*/, 0 /*index*/));
   }
 
   private List<UiAutomationElement> buildChildren(AccessibilityNodeInfo node) {
@@ -139,12 +148,19 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     return children;
   }
 
-  public static UiAutomationElement newRootElement(AccessibilityNodeInfo rawElement) {
+  public static UiAutomationElement newRootElement(AccessibilityNodeInfo rawElement, List<CharSequence> toastMSGs) {
     clearData();
     /**
      * Injecting root element as hierarchy and adding rawElement as a child.
      */
-    return new UiAutomationElement("hierarchy" /*root element*/, rawElement /* child nodInfo */, 0 /* index */);
+    UiAutomationElement rootElement = new UiAutomationElement("hierarchy" /*root element*/, rawElement /* child nodInfo */, 0 /* index */);
+    if( toastMSGs!= null) {
+      for(CharSequence toastMSG : toastMSGs) {
+        Logger.debug("Adding toastMSG to root:" + toastMSG);
+        rootElement.addToastMsgToRoot(toastMSG);
+      }
+    }
+    return rootElement;
   }
 
   private static void clearData() {
