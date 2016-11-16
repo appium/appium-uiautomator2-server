@@ -43,7 +43,6 @@ public class CustomUiDevice {
     private final Class ByMatcher;
     private final Instrumentation mInstrumentation;
     private final Object API_LEVEL_ACTUAL;
-    private final UiDevice device;
 
     /**
      * UiDevice in android open source project will Support multi-window searches for API level 21,
@@ -53,10 +52,9 @@ public class CustomUiDevice {
      */
     public CustomUiDevice() {
         try {
-            device = Device.getUiDevice();
 
-            this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, device);
-            this.API_LEVEL_ACTUAL = getField(UiDevice.class, FIELD_API_LEVEL_ACTUAL, device);
+            this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
+            this.API_LEVEL_ACTUAL = getField(UiDevice.class, FIELD_API_LEVEL_ACTUAL, Device.getUiDevice());
             METHOD_FIND_MATCH = method("android.support.test.uiautomator.ByMatcher", "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
             METHOD_FIND_MATCHS = method("android.support.test.uiautomator.ByMatcher", "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
 
@@ -84,9 +82,9 @@ public class CustomUiDevice {
     public Object findObject(Object selector) throws ClassNotFoundException, ElementNotFoundException, InvalidSelectorException, UiAutomator2Exception {
 
         AccessibilityNodeInfo node ;
-        device.waitForIdle();
+        getUiDevice().waitForIdle();
         if (selector instanceof BySelector) {
-            node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcher, device, selector, getWindowRoots());
+            node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcher, Device.getUiDevice(), selector, getWindowRoots());
         } else if (selector instanceof NodeInfoList) {
             node = ((NodeInfoList) selector).getNodeList().size()>0 ? ((NodeInfoList) selector).getNodeList().get(0) : null;
             selector = By.clazz(node.getClassName().toString());
@@ -109,7 +107,7 @@ public class CustomUiDevice {
             Class uiObject2 = Class.forName("android.support.test.uiautomator" + ".UiObject2");
             Constructor cons = uiObject2.getDeclaredConstructors()[0];
             cons.setAccessible(true);
-            Object[] constructorParams = {device, selector, node};
+            Object[] constructorParams = {getUiDevice(), selector, node};
 
             final long timeoutMillis = 1000;
             long end = SystemClock.uptimeMillis() + timeoutMillis;
@@ -151,7 +149,7 @@ public class CustomUiDevice {
         ArrayList<AccessibilityNodeInfo> list = new ArrayList<AccessibilityNodeInfo>();
         if (selector instanceof BySelector) {
             ReflectionUtils.getClass("android.support.test.uiautomator.ByMatcher");
-            Object nodes = invoke(METHOD_FIND_MATCHS, ByMatcher, device, selector, getWindowRoots());
+            Object nodes = invoke(METHOD_FIND_MATCHS, ByMatcher, getUiDevice(), selector, getWindowRoots());
             list = (ArrayList) nodes;
         } else if (selector instanceof NodeInfoList) {
             list = ((NodeInfoList) selector).getNodeList();
@@ -165,7 +163,7 @@ public class CustomUiDevice {
                 Constructor cons = uiObject2.getDeclaredConstructors()[0];
                 cons.setAccessible(true);
                 selector = By.clazz(node.getClassName().toString());
-                Object[] constructorParams = {device, selector, node};
+                Object[] constructorParams = {getUiDevice(), selector, node};
                 ret.add((UiObject2) cons.newInstance(constructorParams));
             } catch (InvocationTargetException e) {
                 final String msg = String.format("error while creating  UiObject2 object:");
@@ -189,7 +187,7 @@ public class CustomUiDevice {
      * Returns a list containing the root {@link AccessibilityNodeInfo}s for each active window
      */
     AccessibilityNodeInfo[] getWindowRoots() throws UiAutomator2Exception {
-        device.waitForIdle();
+        getUiDevice().waitForIdle();
         ArrayList<AccessibilityNodeInfo> ret = new ArrayList<>();
         /**
          * TODO: MULTI_WINDOW is disabled, UIAutomatorViewer captures active window properties and
@@ -224,7 +222,7 @@ public class CustomUiDevice {
                         Thread.sleep(1000);
                     } catch (InterruptedException ignored) {
                     }
-                    device.waitForIdle();
+                    getUiDevice().waitForIdle();
                     Logger.debug(" ERROR: null root node returned by UiTestAutomationBridge, retrying: " + retryCount);
                     node = mInstrumentation.getUiAutomation().getRootInActiveWindow();
                     retryCount++;

@@ -16,13 +16,9 @@ import io.appium.uiautomator2.model.UiObject2Element;
 import io.appium.uiautomator2.model.UiObjectElement;
 
 public abstract class Device {
-    private static UiDevice uiDevice;
 
     public static final UiDevice getUiDevice() {
-        if (uiDevice == null) {
-            uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        }
-        return uiDevice;
+        return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
 
     public static AndroidElement getAndroidElement(String id, Object element, By by) throws UiAutomator2Exception {
@@ -36,7 +32,7 @@ public abstract class Device {
     }
 
     public static void wake() throws RemoteException {
-        uiDevice.wakeUp();
+        getUiDevice().wakeUp();
     }
 
     public static void scrollTo(String scrollToString) throws UiObjectNotFoundException {
@@ -47,6 +43,6 @@ public abstract class Device {
     }
 
     public static boolean back() {
-        return uiDevice.pressBack();
+        return getUiDevice().pressBack();
     }
 }

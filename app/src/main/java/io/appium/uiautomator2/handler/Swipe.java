@@ -1,6 +1,5 @@
 package io.appium.uiautomator2.handler;
 
-import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 
 import org.json.JSONException;
@@ -13,10 +12,11 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.server.WDStatus;
-import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
+
+import static io.appium.uiautomator2.utils.Device.getUiDevice;
 
 public class Swipe extends SafeRequestHandler {
 
@@ -33,7 +33,6 @@ public class Swipe extends SafeRequestHandler {
             JSONObject payload = getPayload(request);
             Logger.info("JSON Payload : ", payload.toString());
             swipeArgs = new SwipeArguments(request);
-            UiDevice device = Device.getUiDevice();
 
             if (payload.has("elementId")) {
                 absStartPos = swipeArgs.element.getAbsolutePosition(swipeArgs.start);
@@ -48,7 +47,7 @@ public class Swipe extends SafeRequestHandler {
                         + absEndPos.toString() + " with steps: " + swipeArgs.steps.toString());
             }
 
-            isSwipePerformed = device.swipe(absStartPos.x.intValue(),
+            isSwipePerformed = getUiDevice().swipe(absStartPos.x.intValue(),
                     absStartPos.y.intValue(), absEndPos.x.intValue(),
                     absEndPos.y.intValue(), swipeArgs.steps);
             if (!isSwipePerformed) {

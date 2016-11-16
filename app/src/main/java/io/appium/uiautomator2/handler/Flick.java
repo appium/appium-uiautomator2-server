@@ -1,6 +1,5 @@
 package io.appium.uiautomator2.handler;
 
-import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 
 import org.json.JSONException;
@@ -86,13 +85,12 @@ public class Flick extends SafeRequestHandler {
 
     private Point calculateEndPoint(final Point start, final Integer xSpeed,
                                     final Integer ySpeed) {
-        final UiDevice d = UiDevice.getInstance();
         final Point end = new Point();
         final double speedRatio = (double) xSpeed / ySpeed;
         double xOff;
         double yOff;
 
-        final double value = Math.min(d.getDisplayHeight(), d.getDisplayWidth());
+        final double value = Math.min(getUiDevice().getDisplayHeight(), getUiDevice().getDisplayWidth());
 
         if (speedRatio < 1) {
             yOff = value / 4;

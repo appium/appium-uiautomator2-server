@@ -1,6 +1,5 @@
 package io.appium.uiautomator2.handler;
 
-import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 
 import org.json.JSONException;
@@ -13,10 +12,11 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.server.WDStatus;
-import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
+
+import static io.appium.uiautomator2.utils.Device.getUiDevice;
 
 public class Drag extends SafeRequestHandler {
     public Drag(String mappedUri) {
@@ -44,7 +44,6 @@ public class Drag extends SafeRequestHandler {
     private AppiumResponse drag(final DragArguments dragArgs, final IHttpRequest request) {
         Point absStartPos;
         Point absEndPos;
-        final UiDevice device = Device.getUiDevice();
 
         try {
             absStartPos = PositionHelper.getDeviceAbsPos(dragArgs.start);
@@ -59,7 +58,7 @@ public class Drag extends SafeRequestHandler {
 
         Logger.debug("Dragging from " + absStartPos.toString() + " to "
                 + absEndPos.toString() + " with steps: " + dragArgs.steps.toString());
-        final boolean res = device.drag(absStartPos.x.intValue(),
+        final boolean res = getUiDevice().drag(absStartPos.x.intValue(),
                 absStartPos.y.intValue(), absEndPos.x.intValue(),
                 absEndPos.y.intValue(), dragArgs.steps);
         if (!res) {
