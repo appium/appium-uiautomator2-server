@@ -782,10 +782,10 @@ public class HandlersTest {
     @Test
     public void findElementWithIndex() throws JSONException {
         waitForElement(By.xpath("//*[@text='API Demos']"), 5 * SECOND);
-		 element = findElement(By.xpath("//android.widget.FrameLayout[@index='0']//android.view.ViewGroup[@index='0']//android.widget.FrameLayout[@index='0']//android.view.ViewGroup[@index='0']//android.widget.TextView[@index='0']"));
-		 Logger.debug("[AppiumUiAutomator2Server]", " findElement By.xpath: " + element);
-		 String elementTxt = getText(element);
-		 assertEquals("API Demos", elementTxt);
+	element = findElement(By.xpath("//android.widget.FrameLayout[@index='0']//android.view.ViewGroup[@index='0']//android.widget.FrameLayout[@index='0']//android.view.ViewGroup[@index='0']//android.widget.TextView[@index='0']"));
+	Logger.debug("[AppiumUiAutomator2Server]", " findElement By.xpath: " + element);
+	String elementTxt = getText(element);
+	assertEquals("API Demos", elementTxt);
     }
     
     @Test
