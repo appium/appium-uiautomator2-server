@@ -32,8 +32,8 @@ public class Flick extends SafeRequestHandler {
         Double steps;
         try {
             JSONObject payload = getPayload(request);
-            if (payload.has("elementId")) {
-                String id = payload.getString("elementId");
+            if (payload.has("element")) {
+                String id = payload.getString("element");
                 AndroidElement element = KnownElements.getElementFromCache(id);
                 if (element == null) {
                     return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);

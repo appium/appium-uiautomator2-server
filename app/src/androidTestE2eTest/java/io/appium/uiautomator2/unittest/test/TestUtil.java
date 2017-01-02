@@ -292,7 +292,7 @@ public class TestUtil {
     public static String flickOnElement(String element) throws JSONException {
         String elementId = new JSONObject(element).getJSONObject("value").getString("ELEMENT");
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("elementId", elementId);
+        jsonObject.put("element", elementId);
         jsonObject.put("xoffset", 1);
         jsonObject.put("yoffset", 1);
         jsonObject.put("speed", 1000);
