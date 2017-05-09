@@ -1,6 +1,6 @@
 
 [![Build Status](https://team-appium.ci.cloudbees.com/view/All/job/appium-uiautomator2-server-e2e/badge/icon)](https://team-appium.ci.cloudbees.com/view/All/job/appium-uiautomator2-server-e2e/)
-### appium-uiautmator2-server
+### appium-uiautomator2-server
 
 A netty server that runs on the device listening for commands and executes using UiAutomator V2.
 
