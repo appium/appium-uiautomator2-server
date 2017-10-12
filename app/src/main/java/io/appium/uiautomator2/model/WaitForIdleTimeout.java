@@ -13,7 +13,7 @@ public class WaitForIdleTimeout {
       Configurator.getInstance().setWaitForIdleTimeout(timeout);
       Logger.debug("Set waitForIdleTimeout to: " + timeout);
     } catch (Exception e) {
-      Logger.error("error setting waitForIdleTimeout " + e.getMessage());
+      Logger.error("Error setting waitForIdleTimeout " + e.getMessage());
     }
   }
 }
