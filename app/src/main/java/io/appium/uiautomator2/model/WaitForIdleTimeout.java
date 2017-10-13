@@ -6,7 +6,7 @@ import io.appium.uiautomator2.utils.Logger;
 
 public class WaitForIdleTimeout {
 
-  public static final String SETTING_NAME = "setWaitForIdleTimeout";
+  public static final String SETTING_NAME = "waitForIdleTimeout";
 
   public static void updateSetting(int timeout) {
     try {
