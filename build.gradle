@@ -17,6 +17,9 @@ buildscript {
 }
 
 allprojects {
+    def packagejson = new JsonSlurper().parseText(new File("./package.json").text)
+    project.ext.set("versionName", packagejson["version"])
+    project.ext.set("versionCode", packagejson["versionCode"].toInteger())
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
 
         /**
@@ -27,7 +30,6 @@ allprojects {
          * of 'buildDir' which is current repo.
          * refer: https://code.google.com/p/android/issues/detail?id=187430
          */
-        def packagejson = new JsonSlurper().parseText(new File("./package.json").text)
         if (packagejson.windowsBuildDir) {
             buildDir = packagejson.windowsBuildDir + "/${rootProject.name}/${project.name}/build"
         }
