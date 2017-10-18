@@ -19,12 +19,9 @@ android {
         applicationId "io.appium.uiautomator2"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 1
+        versionCode project.versionCode
+        versionName project.versionName
         archivesBaseName = "appium-uiautomator2"
-        /**
-         * versionName should be updated and inline with version in package.json for every npm release.
-         */
-        versionName "0.1.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -98,5 +95,3 @@ def appendVersionNameVersionCode(variant, defaultConfig) {
         output.packageApplication.outputFile = new File(file.parent, fileName)
     }
 }
-
-
