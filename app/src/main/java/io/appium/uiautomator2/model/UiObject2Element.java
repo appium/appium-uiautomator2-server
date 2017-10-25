@@ -56,8 +56,11 @@ public class UiObject2Element implements AndroidElement {
          * not formed with valid AccessibilityNodeInfo, Instead we are using custom created AccessibilityNodeInfo of
          * TOAST Element to retrieve the Text.
          */
-        if(isToastElement(nodeInfo)) {
-           return nodeInfo.getText().toString();
+        if (isToastElement(nodeInfo)) {
+            return nodeInfo.getText().toString();
+        }
+        if (nodeInfo.getRangeInfo() != null) {
+            return Float.toString(nodeInfo.getRangeInfo().getCurrent());
         }
         // on null returning empty string
         return element.getText() != null ? element.getText() : "";
