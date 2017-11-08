@@ -1,6 +1,7 @@
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
+import android.os.Build;
 import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.Configurator;
 import android.support.test.uiautomator.UiObject;
@@ -112,15 +113,27 @@ public class UiObjectElement implements AndroidElement {
     }
 
     public void setText(final String text, boolean unicodeKeyboard) throws UiObjectNotFoundException {
-        if (unicodeKeyboard && UnicodeEncoder.needsEncoding(text)) {
-            Logger.debug("Sending Unicode text to element: " + text);
-            String encodedText = UnicodeEncoder.encode(text);
-            Logger.debug("Encoded text: " + encodedText);
-            element.setText(encodedText);
-        } else {
-            Logger.debug("Sending plain text to element: " + text);
-            element.setText(text);
+        String textToSend = text;
+        /**
+         * Below Android 7.0 (API level 24) calling setText() throws
+         * `IndexOutOfBoundsException: setSpan (x ... x) ends beyond length y`
+         * if text length is greater than getMaxTextLength()
+         */
+        if (Build.VERSION.SDK_INT < 24) {
+            AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+            int maxTextLength = nodeInfo.getMaxTextLength();
+            if (textToSend.length() > maxTextLength) {
+                Logger.debug("Element has limited text length. Text will be truncated to " + maxTextLength + " chars.");
+                textToSend = textToSend.substring(0, maxTextLength);
+            }
         }
+        if (unicodeKeyboard && UnicodeEncoder.needsEncoding(textToSend)) {
+            Logger.debug("Sending Unicode text to element: " + textToSend);
+            textToSend = UnicodeEncoder.encode(textToSend);
+            Logger.debug("Encoded text: " + textToSend);
+        }
+        Logger.debug("Sending text to element: " + textToSend);
+        element.setText(textToSend);
     }
 
     public By getBy() {
