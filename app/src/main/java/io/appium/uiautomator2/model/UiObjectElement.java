@@ -122,7 +122,7 @@ public class UiObjectElement implements AndroidElement {
         if (Build.VERSION.SDK_INT < 24) {
             AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
             int maxTextLength = nodeInfo.getMaxTextLength();
-            if (textToSend.length() > maxTextLength) {
+            if (maxTextLength > 0 && textToSend.length() > maxTextLength) {
                 Logger.debug("Element has limited text length. Text will be truncated to " + maxTextLength + " chars.");
                 textToSend = textToSend.substring(0, maxTextLength);
             }
