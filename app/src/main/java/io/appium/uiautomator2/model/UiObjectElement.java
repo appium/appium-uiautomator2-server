@@ -128,7 +128,7 @@ public class UiObjectElement implements AndroidElement {
     }
 
     public void clear() throws UiObjectNotFoundException {
-        element.clearTextField();
+        element.setText("");
     }
 
     public String getId() {
