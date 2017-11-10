@@ -60,8 +60,10 @@ public class UiObject2Element implements AndroidElement {
         if (isToastElement(nodeInfo)) {
             return nodeInfo.getText().toString();
         }
-        nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+
         if (nodeInfo.getRangeInfo() != null) {
+            /* Refresh accessibility node info to get actual state of element */
+            nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
             return Float.toString(nodeInfo.getRangeInfo().getCurrent());
         }
         // on null returning empty string
