@@ -137,19 +137,23 @@ public class UiObject2Element implements AndroidElement {
          */
         if (nodeInfo.getRangeInfo() != null && Build.VERSION.SDK_INT >= 24) {
             Logger.debug("Element has range info.");
-            Float value;
-            try {
-                value = Float.valueOf(text);
-                Logger.debug("Trying to perform ACTION_SET_PROGRESS accessibility action with value " + value);
-                Bundle args = new Bundle();
-                args.putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, value);
-                if (nodeInfo.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args)) {
-                    Logger.debug("ACTION_SET_PROGRESS performed successfully.");
-                    return;
+            if (nodeInfo.getActionList().contains(AccessibilityAction.ACTION_SET_PROGRESS)) {
+                Float value;
+                try {
+                    value = Float.valueOf(text);
+                    Logger.debug("Trying to perform ACTION_SET_PROGRESS accessibility action with value " + value);
+                    Bundle args = new Bundle();
+                    args.putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, value);
+                    if (nodeInfo.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args)) {
+                        Logger.debug("ACTION_SET_PROGRESS performed successfully.");
+                        return;
+                    }
+                    Logger.debug("Unable to perform ACTION_SET_PROGRESS action.  Falling back to element.setText()");
+                } catch (NumberFormatException e) {
+                    Logger.debug("Can not convert \"" + text + "\" to float. Falling back to element.setText()");
                 }
-                Logger.debug("Unable to perform ACTION_SET_PROGRESS action.  Falling back to element.setText()");
-            } catch (NumberFormatException e) {
-                Logger.debug("Can not convert \"" + text + "\" to float. Falling back to element.setText()");
+            } else {
+                Logger.debug("Element does not support ACTION_SET_PROGRESS action. Falling back to element.setText()");
             }
         }
 
