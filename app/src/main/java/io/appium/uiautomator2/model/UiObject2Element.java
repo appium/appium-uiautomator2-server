@@ -1,15 +1,12 @@
 package io.appium.uiautomator2.model;
 
-import android.os.Bundle;
 import android.graphics.Rect;
-import android.os.Build;
 import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import android.widget.Toast;
 
 import java.util.List;
@@ -21,6 +18,7 @@ import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
@@ -130,56 +128,7 @@ public class UiObject2Element implements AndroidElement {
     }
 
     public void setText(final String text, boolean unicodeKeyboard) throws UiObjectNotFoundException {
-        String textToSend = text;
-        AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-
-        /**
-         * Execute ACTION_SET_PROGRESS action (introduced in API level 24)
-         * if element has range info and text can be converted to float.
-         * Falling back to element.setText() if something goes wrong.
-         */
-        if (nodeInfo.getRangeInfo() != null && Build.VERSION.SDK_INT >= 24) {
-            Logger.debug("Element has range info.");
-            if (nodeInfo.getActionList().contains(AccessibilityAction.ACTION_SET_PROGRESS)) {
-                Float value;
-                try {
-                    value = Float.valueOf(text);
-                    Logger.debug("Trying to perform ACTION_SET_PROGRESS accessibility action with value " + value);
-                    Bundle args = new Bundle();
-                    args.putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, value);
-                    if (nodeInfo.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args)) {
-                        Logger.debug("ACTION_SET_PROGRESS performed successfully.");
-                        return;
-                    }
-                    Logger.debug("Unable to perform ACTION_SET_PROGRESS action.  Falling back to element.setText()");
-                } catch (NumberFormatException e) {
-                    Logger.debug("Can not convert \"" + text + "\" to float. Falling back to element.setText()");
-                }
-            } else {
-                Logger.debug("Element does not support ACTION_SET_PROGRESS action. Falling back to element.setText()");
-            }
-        }
-
-        /**
-         * Below Android 7.0 (API level 24) calling setText() throws
-         * `IndexOutOfBoundsException: setSpan (x ... x) ends beyond length y`
-         * if text length is greater than getMaxTextLength()
-         */
-        if (Build.VERSION.SDK_INT < 24) {
-            int maxTextLength = nodeInfo.getMaxTextLength();
-            if (maxTextLength > 0 && textToSend.length() > maxTextLength) {
-                Logger.debug("Element has limited text length. Text will be truncated to " + maxTextLength + " chars.");
-                textToSend = textToSend.substring(0, maxTextLength);
-            }
-        }
-
-        if (unicodeKeyboard && UnicodeEncoder.needsEncoding(textToSend)) {
-            Logger.debug("Sending Unicode text to element: " + textToSend);
-            textToSend = UnicodeEncoder.encode(textToSend);
-            Logger.debug("Encoded text: " + textToSend);
-        }
-        Logger.debug("Sending text to element: " + textToSend);
-        element.setText(textToSend);
+        ElementHelpers.setText(element, text, unicodeKeyboard);
     }
 
     public By getBy() {

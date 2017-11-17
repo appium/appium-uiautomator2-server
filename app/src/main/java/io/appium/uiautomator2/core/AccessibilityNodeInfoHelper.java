@@ -15,17 +15,22 @@
  */
 package io.appium.uiautomator2.core;
 
+import android.os.Bundle;
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
+
+import io.appium.uiautomator2.utils.Logger;
 
 /**
  * This class contains static helper methods to work with {@link AccessibilityNodeInfo}
  */
-class AccessibilityNodeInfoHelper {
+public class AccessibilityNodeInfoHelper {
+
     /**
      * Returns the node's bounds clipped to the size of the display
      *
-     * @param width  pixel width of the display
+     * @param width pixel width of the display
      * @param height pixel height of the display
      * @return null if node is null, else a Rect containing visible bounds
      */
@@ -43,5 +48,44 @@ class AccessibilityNodeInfoHelper {
         displayRect.bottom = height;
         nodeRect.intersect(displayRect);
         return nodeRect;
+    }
+
+    /**
+     * Perform accessibility action ACTION_SET_PROGRESS on the node
+     *
+     * @param value desired progress value
+     * @return true if action performed successfully
+     */
+    public static boolean setProgressValue(final AccessibilityNodeInfo node, final float value) {
+        if (node.getActionList().contains(AccessibilityAction.ACTION_SET_PROGRESS)) {
+            String logMessage = "Trying to perform ACTION_SET_PROGRESS accessibility action with value %f";
+            Logger.debug(String.format(logMessage, value));
+            Bundle args = new Bundle();
+            args.putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, value);
+            if (node.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args)) {
+                Logger.debug("ACTION_SET_PROGRESS performed successfully.");
+                return true;
+            }
+        } else {
+            Logger.debug("Element does not support ACTION_SET_PROGRESS action.");
+        }
+        return false;
+    }
+
+    /**
+     * Truncate text to max text length of the node
+     *
+     * @param text text to truncate
+     * @return truncated text
+     */
+    public static String truncateTextToMaxLength(final AccessibilityNodeInfo node, final String text) {
+        String result = text;
+        int maxTextLength = node.getMaxTextLength();
+        if (maxTextLength > 0 && result.length() > maxTextLength) {
+            Logger.debug(String.format("Element has limited text length. Text will be truncated to %d chars.",
+                    maxTextLength));
+            result = result.substring(0, maxTextLength);
+        }
+        return result;
     }
 }
