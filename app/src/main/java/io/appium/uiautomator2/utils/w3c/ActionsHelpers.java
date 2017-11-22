@@ -161,22 +161,23 @@ public class ActionsHelpers {
         final PointerCoords result = new PointerCoords();
         Rect bounds;
         try {
-            // TODO: is there a special method to calculate element hitpoint coordinates?
             bounds = KnownElements.getElementFromCache(elementId).getBounds();
         } catch (NullPointerException | UiObjectNotFoundException e) {
             throw new ActionsParseException(String.format(
                     "An unknown element id '%s' is set for action item '%s' of action '%s'",
                     elementId, actionItem, actionId));
         }
+        // https://w3c.github.io/webdriver/webdriver-spec.html#pointer-actions
+        // > Let x element and y element be the result of calculating the in-view center point of element.
+        result.x = bounds.left + bounds.width() / 2;
+        result.y = bounds.top + bounds.height() / 2;
         if (actionItem.has(ACTION_ITEM_X_KEY)) {
-            result.x = (float) (bounds.left + actionItem.getDouble(ACTION_ITEM_X_KEY));
-        } else {
-            result.x = bounds.centerX();
+            result.x += (float) actionItem.getDouble(ACTION_ITEM_X_KEY);
+            // TODO: Shall we throw an exception if result.x is outside of bounds rect?
         }
         if (actionItem.has(ACTION_ITEM_Y_KEY)) {
-            result.y = (float) (bounds.top + actionItem.getDouble(ACTION_ITEM_Y_KEY));
-        } else {
-            result.y = bounds.centerY();
+            result.y += (float) actionItem.getDouble(ACTION_ITEM_Y_KEY);
+            // TODO: Shall we throw an exception if result.y is outside of bounds rect?
         }
         return result;
     }
