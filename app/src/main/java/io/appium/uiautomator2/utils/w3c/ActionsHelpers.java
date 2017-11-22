@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.KnownElements;
 
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_BUTTON_KEY;
@@ -161,10 +162,16 @@ public class ActionsHelpers {
         final PointerCoords result = new PointerCoords();
         Rect bounds;
         try {
-            bounds = KnownElements.getElementFromCache(elementId).getBounds();
+            final AndroidElement element = KnownElements.getElementFromCache(elementId);
+            bounds = element.getBounds();
+            if (bounds.width() == 0 || bounds.height() == 0) {
+                throw new ActionsParseException(String.format(
+                        "The element with id '%s' has zero width/height in the action item '%s' of action '%s'",
+                        elementId, actionItem, actionId));
+            }
         } catch (NullPointerException | UiObjectNotFoundException e) {
             throw new ActionsParseException(String.format(
-                    "An unknown element id '%s' is set for action item '%s' of action '%s'",
+                    "An unknown element id '%s' is set for the action item '%s' of action '%s'",
                     elementId, actionItem, actionId));
         }
         // https://w3c.github.io/webdriver/webdriver-spec.html#pointer-actions
