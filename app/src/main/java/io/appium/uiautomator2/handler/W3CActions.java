@@ -84,10 +84,8 @@ public class W3CActions extends SafeRequestHandler {
      * {@link KeyEvent#META_CTRL_LEFT_ON}. Meta key codes are also applied to pointer
      * events, which are happening at the same moment.
      * <p>
-     * Button codes for <b>mouse</b> and <b>pen</b> input tools can be found in
-     * {@link MotionEvent} documentation.
      *
-     * @param request JSON request formatted according to W3C action endpoint compilation rules.
+     * @param request JSON request formatted according to W3C actions endpoint compilation rules.
      * @return The standard {@link AppiumResponse} instance with return value or error code inside.
      */
     @Override
