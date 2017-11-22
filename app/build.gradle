@@ -1,20 +1,22 @@
 buildscript {
     repositories {
         jcenter()
+        google()
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.1'
+        classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.github.JakeWharton:sdk-manager-plugin:0ce4cdf08009d79223850a59959d9d6e774d0f77'
+        classpath 'de.mobilej.unmock:UnMockPlugin:0.6.4'
     }
 }
 
-apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.application'
+apply plugin: 'de.mobilej.unmock'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '23.0.1'
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "io.appium.uiautomator2"
         minSdkVersion 19
@@ -35,10 +37,12 @@ android {
             debuggable true
         }
         applicationVariants.all { variant ->
-            appendVersionNameVersionCode(variant, defaultConfig)
+            variant.outputs.all {
+                outputFileName = outputFileName.replace("debug.apk", "v${defaultConfig.versionName}.apk")
+            }
         }
     }
-
+    flavorDimensions "default"
     lintOptions {
         abortOnError false
     }
@@ -50,10 +54,20 @@ android {
             applicationId 'io.appium.uiautomator2.server'
         }
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
     packagingOptions {
         exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
         exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
     }
+}
+
+unMock {
+    keepStartingWith "com.android.internal.util."
+    keepStartingWith "android.util."
+    keepStartingWith "android.view."
+    keepStartingWith "android.internal."
 }
 
 dependencies {
@@ -64,6 +78,8 @@ dependencies {
     compile 'com.android.support.test:runner:0.5'
     compile 'com.android.support:support-annotations:23.1.1'
     compile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    unmock 'org.robolectric:android-all:7.1.0_r7-robolectric-0'
+    testCompile "org.json:json:20160810"
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support:support-annotations:23.1.1'
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
@@ -90,13 +106,3 @@ afterEvaluate {
         }
     }
 }
-
-def appendVersionNameVersionCode(variant, defaultConfig) {
-    variant.outputs.each { output ->
-        def file = output.packageApplication.outputFile
-        def fileName = file.name.replace("debug.apk", "v${defaultConfig.versionName}.apk")
-        output.packageApplication.outputFile = new File(file.parent, fileName)
-    }
-}
-
-
