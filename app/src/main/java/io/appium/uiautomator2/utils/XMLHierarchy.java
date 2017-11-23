@@ -26,6 +26,7 @@ import org.xml.sax.InputSource;
 
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -40,7 +41,9 @@ import io.appium.uiautomator2.model.XPathFinder;
 
 
 public abstract class XMLHierarchy {
-
+    // XML 1.0 Legal Characters (http://stackoverflow.com/a/4237934/347155)
+    // #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+    private static Pattern XML10Pattern = Pattern.compile("[^" + "\u0009\r\n" + "\u0020-\uD7FF" + "\uE000-\uFFFD" + "\ud800\udc00-\udbff\udfff" + "]");
 
     private static XPathExpression compileXpath(String xpathExpression) throws InvalidSelectorException {
         XPath xpath = XPathFactory.newInstance().newXPath();
@@ -135,6 +138,13 @@ public abstract class XMLHierarchy {
 
     private static String cleanTagName(String name) {
         name = name.replaceAll("[$@#&]", ".");
-        return name.replaceAll("\\s", "");
+        return safeCharSeqToString(name.replaceAll("\\s", ""));
+    }
+
+    public static String safeCharSeqToString(CharSequence cs) {
+        if (cs == null) {
+            return "";
+        }
+        return XML10Pattern.matcher(String.valueOf(cs)).replaceAll("?");
     }
 }
