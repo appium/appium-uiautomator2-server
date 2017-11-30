@@ -131,6 +131,10 @@ public abstract class XMLHierarchy {
         attrNode.setNodeValue(instance.toString());
         attributes.setNamedItem(attrNode);
 
+        if (androidClass == null || androidClass.length() == 0) {
+            androidClass = "android.view.View";
+        }
+
         doc.renameNode(node, node.getNamespaceURI(), androidClass);
 
         instances.put(androidClass, instance + 1);
