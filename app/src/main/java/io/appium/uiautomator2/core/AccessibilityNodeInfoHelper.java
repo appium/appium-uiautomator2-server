@@ -30,7 +30,7 @@ public class AccessibilityNodeInfoHelper {
     /**
      * Returns the node's bounds clipped to the size of the display
      *
-     * @param width pixel width of the display
+     * @param width  pixel width of the display
      * @param height pixel height of the display
      * @return null if node is null, else a Rect containing visible bounds
      */
@@ -57,19 +57,15 @@ public class AccessibilityNodeInfoHelper {
      * @return true if action performed successfully
      */
     public static boolean setProgressValue(final AccessibilityNodeInfo node, final float value) {
-        if (node.getActionList().contains(AccessibilityAction.ACTION_SET_PROGRESS)) {
-            String logMessage = "Trying to perform ACTION_SET_PROGRESS accessibility action with value %f";
-            Logger.debug(String.format(logMessage, value));
-            Bundle args = new Bundle();
-            args.putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, value);
-            if (node.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args)) {
-                Logger.debug("ACTION_SET_PROGRESS performed successfully.");
-                return true;
-            }
-        } else {
-            Logger.debug("Element does not support ACTION_SET_PROGRESS action.");
+        if (!node.getActionList().contains(AccessibilityAction.ACTION_SET_PROGRESS)) {
+            Logger.debug("The element does not support ACTION_SET_PROGRESS action.");
+            return false;
         }
-        return false;
+        Logger.debug(String.format(
+                "Trying to perform ACTION_SET_PROGRESS accessibility action with value %s", value));
+        final Bundle args = new Bundle();
+        args.putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, value);
+        return node.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args);
     }
 
     /**
@@ -79,13 +75,13 @@ public class AccessibilityNodeInfoHelper {
      * @return truncated text
      */
     public static String truncateTextToMaxLength(final AccessibilityNodeInfo node, final String text) {
-        String result = text;
-        int maxTextLength = node.getMaxTextLength();
-        if (maxTextLength > 0 && result.length() > maxTextLength) {
-            Logger.debug(String.format("Element has limited text length. Text will be truncated to %d chars.",
+        final int maxTextLength = node.getMaxTextLength();
+        if (maxTextLength > 0 && text.length() > maxTextLength) {
+            Logger.debug(String.format(
+                    "The element has limited text length. Its text will be truncated to %s chars.",
                     maxTextLength));
-            result = result.substring(0, maxTextLength);
+            return text.substring(0, maxTextLength);
         }
-        return result;
+        return text;
     }
 }

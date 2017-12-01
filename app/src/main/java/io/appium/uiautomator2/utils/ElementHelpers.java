@@ -99,7 +99,7 @@ public abstract class ElementHelpers {
         String textToSend = text;
         AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
 
-        /**
+        /*
          * Execute ACTION_SET_PROGRESS action (introduced in API level 24)
          * if element has range info and text can be converted to float.
          * Falling back to element.setText() if something goes wrong.
@@ -116,7 +116,7 @@ public abstract class ElementHelpers {
             Logger.debug("Unable to perform ACTION_SET_PROGRESS action.  Falling back to element.setText()");
         }
 
-        /**
+        /*
          * Below Android 7.0 (API level 24) calling setText() throws
          * `IndexOutOfBoundsException: setSpan (x ... x) ends beyond length y`
          * if text length is greater than getMaxTextLength()
