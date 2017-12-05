@@ -35,3 +35,8 @@ you can also invoke the test using below command
 `adb shell am instrument -w io.appium.uiautomator2.e2etest.test/android.support.test.runner.AndroidJUnitRunner`
 
 Note: AUT apk should be installed before executing above command.
+
+
+### Other Sections:
+* [WIKI](https://github.com/appium/appium-uiautomator2-server/wiki)
+* [Version Release](https://github.com/appium/appium-uiautomator2-server/blob/master/doc/release.md)

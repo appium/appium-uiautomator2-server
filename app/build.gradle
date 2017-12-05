@@ -13,18 +13,18 @@ apply plugin: 'android-sdk-manager'
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion '23.0.1'
     defaultConfig {
         applicationId "io.appium.uiautomator2"
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
         archivesBaseName = "appium-uiautomator2"
         /**
          * versionName should be updated and inline with version in package.json for every npm release.
          */
-        versionName "0.1.8"
+        versionName "0.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

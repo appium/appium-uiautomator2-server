@@ -5,6 +5,8 @@ import android.support.test.uiautomator.UiObjectNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -49,13 +51,14 @@ public class SendKeysToElement extends SafeRequestHandler {
                 } catch (InvalidSelectorException e) {
                     Logger.error("Invalid selector: ", e);
                     return new AppiumResponse(getSessionId(request), WDStatus.INVALID_SELECTOR, e);
-                }  catch ( UiAutomator2Exception | ClassNotFoundException e) {
+                } catch (UiAutomator2Exception | ClassNotFoundException e) {
                     Logger.debug("Error in finding focused element: " + e);
-                    return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Unable to find a focused element." + e.getStackTrace());
+                    return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
+                            "Unable to find a focused element." + Arrays.toString(e.getStackTrace()));
                 }
             }
-            boolean replace = Boolean.parseBoolean(payload.getString("replace").toString());
-            String text = payload.getString("text").toString();
+            boolean replace = Boolean.parseBoolean(payload.getString("replace"));
+            String text = payload.getString("text");
 
             boolean pressEnter = false;
             if (text.endsWith("\\n")) {
@@ -64,14 +67,14 @@ public class SendKeysToElement extends SafeRequestHandler {
                 Logger.debug("Will press enter after setting text");
             }
 
-            boolean unicodeKeyboard = false;
-            if (payload.has("unicodeKeyboard")) {
-                unicodeKeyboard = Boolean.parseBoolean(payload.getString("unicodeKeyboard").toString());
-            }
+            boolean unicodeKeyboard = payload.has("unicodeKeyboard") &&
+                    Boolean.parseBoolean(payload.getString("unicodeKeyboard"));
 
             String currText = element.getText();
-            new Clear("/wd/hub/session/:sessionId/element/:id/clear").handle(request);
-            if (!isTextFieldCleared(element)) {
+            if (!isTextFieldClear(element)) {
+                new Clear("/wd/hub/session/:sessionId/element/:id/clear").handle(request);
+            }
+            if (!isTextFieldClear(element)) {
                 // clear could have failed, or we could have a hint in the field
                 // we'll assume it is the latter
                 Logger.debug("Text not cleared. Assuming remainder is hint text.");
@@ -82,15 +85,11 @@ public class SendKeysToElement extends SafeRequestHandler {
             }
             element.setText(text, unicodeKeyboard);
 
-            boolean isActionPerformed;
             String actionMsg = "";
             if (pressEnter) {
-                isActionPerformed = getUiDevice().pressEnter();
-                if (isActionPerformed) {
-                    actionMsg = "Sent keys to the device";
-                } else {
-                    actionMsg = "Unable to send keys to the device";
-                }
+                actionMsg = getUiDevice().pressEnter() ?
+                        "Sent keys to the device" :
+                        "Unable to send keys to the device";
             }
             return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, actionMsg);
         } catch (final UiObjectNotFoundException e) {
@@ -102,14 +101,8 @@ public class SendKeysToElement extends SafeRequestHandler {
         }
     }
 
-    private boolean isTextFieldCleared(AndroidElement element) throws UiObjectNotFoundException {
-        if (element.getText() == null) {
-            return true;
-        } else if (element.getText().isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+    private static boolean isTextFieldClear(AndroidElement element) throws UiObjectNotFoundException {
+        return element.getText() == null || element.getText().isEmpty();
     }
 }
 

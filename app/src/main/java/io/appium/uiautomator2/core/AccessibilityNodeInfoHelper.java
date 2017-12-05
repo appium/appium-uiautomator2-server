@@ -15,13 +15,18 @@
  */
 package io.appium.uiautomator2.core;
 
+import android.os.Bundle;
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
+
+import io.appium.uiautomator2.utils.Logger;
 
 /**
  * This class contains static helper methods to work with {@link AccessibilityNodeInfo}
  */
-class AccessibilityNodeInfoHelper {
+public class AccessibilityNodeInfoHelper {
+
     /**
      * Returns the node's bounds clipped to the size of the display
      *
@@ -43,5 +48,40 @@ class AccessibilityNodeInfoHelper {
         displayRect.bottom = height;
         nodeRect.intersect(displayRect);
         return nodeRect;
+    }
+
+    /**
+     * Perform accessibility action ACTION_SET_PROGRESS on the node
+     *
+     * @param value desired progress value
+     * @return true if action performed successfully
+     */
+    public static boolean setProgressValue(final AccessibilityNodeInfo node, final float value) {
+        if (!node.getActionList().contains(AccessibilityAction.ACTION_SET_PROGRESS)) {
+            Logger.debug("The element does not support ACTION_SET_PROGRESS action.");
+            return false;
+        }
+        Logger.debug(String.format(
+                "Trying to perform ACTION_SET_PROGRESS accessibility action with value %s", value));
+        final Bundle args = new Bundle();
+        args.putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, value);
+        return node.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args);
+    }
+
+    /**
+     * Truncate text to max text length of the node
+     *
+     * @param text text to truncate
+     * @return truncated text
+     */
+    public static String truncateTextToMaxLength(final AccessibilityNodeInfo node, final String text) {
+        final int maxTextLength = node.getMaxTextLength();
+        if (maxTextLength > 0 && text.length() > maxTextLength) {
+            Logger.debug(String.format(
+                    "The element has limited text length. Its text will be truncated to %s chars.",
+                    maxTextLength));
+            return text.substring(0, maxTextLength);
+        }
+        return text;
     }
 }

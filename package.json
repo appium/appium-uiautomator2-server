@@ -1,6 +1,6 @@
 {
   "name": "appium-uiautomator2-server",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "description": "A netty server with uiautomator2 handlers",
   "main": "index.js",
   "windowsBuildDir":"c:/tmp",
@@ -19,4 +19,4 @@
     "url": "https://github.com/appium/appium-uiautomator2-server/issues"
   },
   "homepage": "https://github.com/appium/appium-uiautomator2-server"
-  }
+}

@@ -25,11 +25,12 @@ import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.utils.API;
 import io.appium.uiautomator2.utils.Logger;
+
+import static io.appium.uiautomator2.utils.XMLHierarchy.safeCharSeqToString;
 
 
 /**
@@ -41,9 +42,6 @@ import io.appium.uiautomator2.utils.Logger;
  */
 public class AccessibilityNodeInfoDumper {
     private static final String[] NAF_EXCLUDED_CLASSES = new String[]{android.widget.GridView.class.getName(), android.widget.GridLayout.class.getName(), android.widget.ListView.class.getName(), android.widget.TableLayout.class.getName()};
-    // XML 1.0 Legal Characters (http://stackoverflow.com/a/4237934/347155)
-    // #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-    private static Pattern XML10Pattern = Pattern.compile("[^" + "\u0009\r\n" + "\u0020-\uD7FF" + "\uE000-\uFFFD" + "\ud800\udc00-\udbff\udfff" + "]");
 
     /**
      * Using {@link AccessibilityNodeInfo} this method will walk the layout hierarchy and return
@@ -98,7 +96,13 @@ public class AccessibilityNodeInfoDumper {
         if (!nafExcludedClass(node) && !nafCheck(node))
             serializer.attribute("", "NAF", Boolean.toString(true));
         serializer.attribute("", "index", Integer.toString(index));
-        serializer.attribute("", "text", safeCharSeqToString(node.getText()));
+        final String text;
+        if (node.getRangeInfo() == null) {
+            text = safeCharSeqToString(node.getText());
+        } else {
+            text = Float.toString(node.getRangeInfo().getCurrent());
+        }
+        serializer.attribute("", "text", text);
         serializer.attribute("", "class", safeCharSeqToString(node.getClassName()));
         serializer.attribute("", "package", safeCharSeqToString(node.getPackageName()));
         serializer.attribute("", "content-desc", safeCharSeqToString(node.getContentDescription()));
@@ -191,19 +195,5 @@ public class AccessibilityNodeInfoDumper {
             if (childNafCheck(childNode)) return true;
         }
         return false;
-    }
-
-    private static String safeCharSeqToString(CharSequence cs) {
-        if (cs == null) return "";
-        else {
-            return stripInvalidXMLChars(cs);
-        }
-    }
-
-    // Original Google code here broke UTF characters
-    private static String stripInvalidXMLChars(CharSequence charSequence) {
-        final StringBuilder sb = new StringBuilder(charSequence.length());
-        sb.append(charSequence);
-        return XML10Pattern.matcher(sb.toString()).replaceAll("?");
     }
 }

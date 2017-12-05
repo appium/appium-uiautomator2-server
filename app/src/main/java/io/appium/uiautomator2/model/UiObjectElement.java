@@ -20,6 +20,7 @@ import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.API;
 import io.appium.uiautomator2.utils.Device;
+import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
@@ -112,15 +113,7 @@ public class UiObjectElement implements AndroidElement {
     }
 
     public void setText(final String text, boolean unicodeKeyboard) throws UiObjectNotFoundException {
-        if (unicodeKeyboard && UnicodeEncoder.needsEncoding(text)) {
-            Logger.debug("Sending Unicode text to element: " + text);
-            String encodedText = UnicodeEncoder.encode(text);
-            Logger.debug("Encoded text: " + encodedText);
-            element.setText(encodedText);
-        } else {
-            Logger.debug("Sending plain text to element: " + text);
-            element.setText(text);
-        }
+        ElementHelpers.setText(element, text, unicodeKeyboard);
     }
 
     public By getBy() {
@@ -128,7 +121,7 @@ public class UiObjectElement implements AndroidElement {
     }
 
     public void clear() throws UiObjectNotFoundException {
-        element.clearTextField();
+        element.setText("");
     }
 
     public String getId() {
