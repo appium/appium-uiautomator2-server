@@ -21,6 +21,7 @@ import io.appium.uiautomator2.handler.FindElements;
 import io.appium.uiautomator2.handler.Flick;
 import io.appium.uiautomator2.handler.GetDeviceSize;
 import io.appium.uiautomator2.handler.GetElementAttribute;
+import io.appium.uiautomator2.handler.GetElementScreenshot;
 import io.appium.uiautomator2.handler.GetName;
 import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.handler.GetRotation;
@@ -118,6 +119,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetRect("/wd/hub/session/:sessionId/element/:id/rect"));
         register(getHandler, new GetSize("/wd/hub/session/:sessionId/element/:id/size"));
         register(getHandler, new GetName("/wd/hub/session/:sessionId/element/:id/name"));
+        register(getHandler, new GetElementScreenshot("/wd/hub/session/:sessionId/element/:id/screenshot"));
         register(getHandler, new Location("/wd/hub/session/:sessionId/element/:id/location"));
         register(getHandler, new GetDeviceSize("/wd/hub/session/:sessionId/window/:windowHandle/size"));
         register(getHandler, new Source("/wd/hub/session/:sessionId/source"));
