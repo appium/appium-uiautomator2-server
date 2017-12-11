@@ -67,7 +67,7 @@ public class GetElementScreenshot extends SafeRequestHandler {
         } catch (UiObjectNotFoundException e) {
             Logger.error("Element not found: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
         }
     }
