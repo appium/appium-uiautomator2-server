@@ -62,7 +62,7 @@ public class W3CActions extends SafeRequestHandler {
     /**
      * Android handler for <a href="https://github.com/jlipps/simple-wd-spec#perform-actions">W3C actions endpoint</a>
      * <p>
-     * All inout source types are supported as well as multi-touch gestures.
+     * All input source types are supported as well as multi-touch gestures.
      * <p>
      * The following additional item options are supported for <b>pointer</b> source:
      * <ul>
