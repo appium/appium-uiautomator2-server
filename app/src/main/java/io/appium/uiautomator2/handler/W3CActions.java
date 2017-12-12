@@ -212,38 +212,29 @@ public class W3CActions extends SafeRequestHandler {
                         case MotionEvent.ACTION_DOWN: {
                             ++upDownBalance;
                             motionEventsBalanceByInputSource.put(inputSource, upDownBalance);
-                            if (upDownBalance == 1) {
-                                result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
-                                        SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN,
-                                        1, nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys),
-                                        motionEventParams.button, 1, 1, 0, 0, inputSource, 0)
-                                );
-                            } else {
-                                result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
-                                        SystemClock.uptimeMillis(), getPointerAction(MotionEvent.ACTION_POINTER_DOWN, upDownBalance - 1),
-                                        upDownBalance, nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys),
-                                        motionEventParams.button, 1, 1, 0, 0, inputSource, 0)
-                                );
-                            }
+                            final int action = upDownBalance == 1 ? MotionEvent.ACTION_DOWN :
+                                    getPointerAction(MotionEvent.ACTION_POINTER_DOWN, upDownBalance - 1);
+                            result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
+                                    SystemClock.uptimeMillis(), action,
+                                    action == MotionEvent.ACTION_DOWN ? 1 : upDownBalance, nonHoveringProps, nonHoveringCoords,
+                                    metaKeysToState(depressedMetaKeys), motionEventParams.button,
+                                    1, 1, 0, 0, inputSource, 0));
                         }
                         break;
                         case MotionEvent.ACTION_UP: {
-                            if (upDownBalance > 0) {
-                                --upDownBalance;
+                            if (upDownBalance <= 0) {
+                                // ignore unbalanced pointer up actions
+                                break;
                             }
                             motionEventsBalanceByInputSource.put(inputSource, upDownBalance);
-                            if (upDownBalance == 0) {
-                                result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
-                                        SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 1,
-                                        nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys), motionEventParams.button,
-                                        1, 1, 0, 0, inputSource, 0)
-                                );
-                            } else {
-                                result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
-                                        SystemClock.uptimeMillis(), getPointerAction(MotionEvent.ACTION_POINTER_UP, upDownBalance - 1),
-                                        upDownBalance, nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys),
-                                        motionEventParams.button, 1, 1, 0, 0, inputSource, 0)
-                                );
+                            final int action = upDownBalance <= 1 ? MotionEvent.ACTION_UP :
+                                    getPointerAction(MotionEvent.ACTION_POINTER_UP, upDownBalance - 1);
+                            result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
+                                    SystemClock.uptimeMillis(), action, action == MotionEvent.ACTION_UP ? 1 : upDownBalance,
+                                    nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys), motionEventParams.button,
+                                    1, 1, 0, 0, inputSource, 0));
+                            if (upDownBalance > 0) {
+                                --upDownBalance;
                             }
                         }
                         break;
