@@ -42,7 +42,7 @@ public class GetElementScreenshot extends SafeRequestHandler {
                 Logger.error("Element is not visible");
                 return new AppiumResponse(getSessionId(request), WDStatus.ELEMENT_NOT_VISIBLE);
             }
-            final Context context = InstrumentationRegistry.getInstrumentation().getContext();
+            final Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
             final File outputFile = File.createTempFile("screenshot", ".png",
                     context.getCacheDir());
             try {
