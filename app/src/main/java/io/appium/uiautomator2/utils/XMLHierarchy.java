@@ -139,12 +139,15 @@ public abstract class XMLHierarchy {
 
     private static String cleanTagName(String name) {
         if (StringUtils.isBlank(name)) {
-            name = "android.view.View";
+            return "android.view.View";
         }
-        
-        name = name.replaceAll("[$@#&]", ".");
 
-        return safeCharSeqToString(name.replaceAll("\\s", ""));
+        final String fixedName = name
+                .replaceAll("[$@#&]", ".")
+                // https://github.com/appium/appium/issues/9934
+                .replaceAll("ˊ", "?")
+                .replaceAll("\\s", "");
+        return safeCharSeqToString(fixedName);
     }
 
     public static String safeCharSeqToString(CharSequence cs) {
