@@ -145,7 +145,7 @@ public abstract class XMLHierarchy {
         final String fixedName = name
                 .replaceAll("[$@#&]", ".")
                 // https://github.com/appium/appium/issues/9934
-                .replaceAll("ˊ", "?")
+                .replaceAll("[ˊ'\"]", "?")
                 .replaceAll("\\s", "");
         return safeCharSeqToString(fixedName);
     }
