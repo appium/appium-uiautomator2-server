@@ -153,7 +153,7 @@ public abstract class XMLHierarchy {
                 .replace("?", "")
                 .replaceAll("\\.+", ".")
                 .replaceAll("(^\\.|\\.$)", "");
-        return StringUtils.isBlank(name) ? DEFAULT_VIEW_NAME : fixedName;
+        return StringUtils.isBlank(fixedName) ? DEFAULT_VIEW_NAME : fixedName;
     }
 
     public static String safeCharSeqToString(CharSequence cs) {
