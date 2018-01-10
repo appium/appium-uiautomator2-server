@@ -1,34 +1,21 @@
 **Publishing:**
 
-Appium UIAutomator2 server and driver modules published as
-[appium-uiautomator2-server](https://www.npmjs.com/package/appium-uiautomator2-server)
-and [appium-uiautomator2-driver](https://www.npmjs.com/package/appium-uiautomator2-driver).
-
-
-[appium-uiautomator2-driver](https://github.com/appium/appium-uiautomator2-driver/blob/master/lib/installer.js#L6)
-depends on release version for downloading and installing of `appium-uiautomator2-server`
-apks, gradle [versionName](https://github.com/appium/appium-uiautomator2-server/blob/master/app/build.gradle#L33)
-should always be inline with npm [`version`](https://github.com/appium/appium-uiautomator2-server/blob/master/package.json#L3).
-
-**Server Release:**
-
-* appium-uiautomator2-server-v**x.x.x**.apk and appium-uiautomator2-server-debug-androidTest.apk needs to be attached for every release and **x.x.x**<apk version> should always be inline with npm release version.
-
-* `gradle clean assembleServerDebug assembleServerDebugAndroidTest` will generate
-  * `appium-uiautomator2-server-vx.x.x.apk` in `app/build/outputs/apk/server/debug`
-  * `appium-uiautomator2-server-debug-androidTest.apk` in `app/build/outputs/apk/androidTest/server/debug`
-* Upload APK files to [release](https://github.com/appium/appium-uiautomator2-server/releases)
-
-**Update Server apk version and SHAs in UiAutomator2 driver:**
-
-Once after you do the server release, you also need to specify the server apks
-SHA-512 hash and version in [UiAutomator2-Driver](https://github.com/appium/appium-uiautomator2-driver/blob/master/lib/installer.js#L10)
-Example:
-``` java
-const SERVER_DOWNLOAD_SHA512 = "server_apk_hash";
-
-const SERVER_TEST_DOWNLOAD_SHA512 = "androidTest_apk_hash"
+Publishing is a matter of running the [npm version command](https://docs.npmjs.com/cli/version):
+```shell
+npm version major|minor|patch
 ```
+which will
 
-Note:
-* You can use online file hash calculators like [md5file.com](https://md5file.com/calculator) to find SHA-512
+1. Update the appropriate npm version and tag in git.
+1. Update the `app/build.gradle` file with the npm package version.
+1. Build the server and test app.
+1. Put everything into the expected place.
+
+Followed by pushing the commit and running the [npm publish command](https://docs.npmjs.com/cli/publish):
+```shell
+git push --tags origin master
+npm publish
+```
+which will
+1. Push result to GitHub
+1. Publish to npm

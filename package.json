@@ -3,8 +3,8 @@
   "version": "0.4.1",
   "description": "A netty server with uiautomator2 handlers",
   "main": "index.js",
-  "windowsBuildDir":"c:/tmp",
-   "repository": {
+  "windowsBuildDir": "c:/tmp",
+  "repository": {
     "type": "git",
     "url": "https://github.com/appium/appium-uiautomator2-server"
   },
@@ -18,5 +18,17 @@
   "bugs": {
     "url": "https://github.com/appium/appium-uiautomator2-server/issues"
   },
-  "homepage": "https://github.com/appium/appium-uiautomator2-server"
+  "homepage": "https://github.com/appium/appium-uiautomator2-server",
+  "scripts": {
+    "bump-gradle-version": "node update-gradle-version.js --package-version=${npm_package_version} && git add app/build.gradle",
+    "build": "gradle clean assembleServerDebug assembleServerDebugAndroidTest",
+    "move-server": "cp app/build/outputs/apk/server/debug/appium-uiautomator2-server-v${npm_package_version}.apk ./apks",
+    "move-test": "cp app/build/outputs/apk/androidTest/server/debug/appium-uiautomator2-server-debug-androidTest.apk ./apks",
+    "move-apks": "rm -rf apks && mkdir -p apks && npm run move-server && npm run move-test",
+    "version": "npm run bump-gradle-version && npm run build && npm run move-apks"
+  },
+  "devDependencies": {
+    "replace-in-file": "^3.1.0",
+    "yargs": "^10.1.1"
+  }
 }

@@ -1,2 +1,5 @@
-!app/build/outputs/apk
-!local.properties
+app
+build
+doc
+gradle
+local.properties
