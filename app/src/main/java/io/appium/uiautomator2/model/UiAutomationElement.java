@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Preconditions;

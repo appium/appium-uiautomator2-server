@@ -3,10 +3,12 @@ package io.appium.uiautomator2.model;
 import android.app.UiAutomation;
 import android.view.accessibility.AccessibilityEvent;
 
+import java.lang.InterruptedException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.appium.uiautomator2.core.UiAutomatorBridge;
+import io.appium.uiautomator2.utils.Logger;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -29,11 +31,23 @@ public final class NotificationListener {
      * Listens for Notification Messages
      */
     public void start(){
+        Logger.debug("Starting toast notification listener.");
+        if (listener.isAlive()) {
+            Logger.debug("Toast notification listener is already started.");
+        }
         listener.start();
     }
 
     public void stop(){
+        Logger.debug("Stopping toast notification listener.");
+        if (!listener.isAlive()) {
+            Logger.debug("Toast notification listener is already stopped.");
+        }
         stopLooping = true;
+        try {
+            listener.join();
+        } catch (InterruptedException ignore) {
+        }
     }
 
     public static  List<CharSequence> getToastMSGs() {

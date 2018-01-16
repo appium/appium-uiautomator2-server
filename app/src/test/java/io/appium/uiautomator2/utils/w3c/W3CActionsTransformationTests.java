@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.test;
+package io.appium.uiautomator2.utils.w3c;
 
 import android.util.LongSparseArray;
 import android.view.KeyEvent;
@@ -29,7 +29,6 @@ import java.util.List;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.InputEventParams;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.KeyInputEventParams;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.MotionInputEventParams;
-import io.appium.uiautomator2.utils.w3c.ActionsParseException;
 
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.actionsToInputEventsMapping;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.preprocessActions;

@@ -50,5 +50,13 @@ public class AppiumResponse {
         Logger.info("AppiumResponse: ", o.toString());
         return o.toString();
     }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public Object getValue() {
+        return value;
+    }
 }
 
