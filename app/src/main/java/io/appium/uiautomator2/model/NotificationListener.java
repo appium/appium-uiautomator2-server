@@ -15,10 +15,11 @@ import static java.lang.System.currentTimeMillis;
 
 public final class NotificationListener {
     private static List<CharSequence> toastMessages = new ArrayList<CharSequence>();
-    private final Listener listener = new Listener();
-    private boolean stopLooping = false;
+    private Listener listener;
+    private boolean stopLooping;
     private final static NotificationListener INSTANCE = new NotificationListener();
     private final int TOAST_CLEAR_TIMEOUT = 3500;
+    private final int WAIT_FOR_EVENT_TIMEOUT = 500;
 
     private NotificationListener(){
     }
@@ -32,20 +33,24 @@ public final class NotificationListener {
      */
     public void start(){
         Logger.debug("Starting toast notification listener.");
-        if (listener.isAlive()) {
+        if (listener != null && listener.isAlive()) {
             Logger.debug("Toast notification listener is already started.");
+            return;
         }
+        stopLooping = false;
+        listener = new Listener();
         listener.start();
     }
 
     public void stop(){
         Logger.debug("Stopping toast notification listener.");
-        if (!listener.isAlive()) {
+        if (listener == null || !listener.isAlive()) {
             Logger.debug("Toast notification listener is already stopped.");
+            return;
         }
         stopLooping = true;
         try {
-            listener.join();
+            listener.join(WAIT_FOR_EVENT_TIMEOUT);
         } catch (InterruptedException ignore) {
         }
     }
@@ -58,29 +63,30 @@ public final class NotificationListener {
 
         private long previousTime = currentTimeMillis();
 
+        //return true if the AccessibilityEvent type is NOTIFICATION type
+        private final UiAutomation.AccessibilityEventFilter eventFilter = new UiAutomation.AccessibilityEventFilter() {
+            @Override
+            public boolean accept(AccessibilityEvent event) {
+                return event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
+            }
+        };
+
+        private final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                // Not performing any event.
+            }
+        };
+
         public void run() {
             while (true) {
                 AccessibilityEvent accessibilityEvent = null;
                 toastMessages = init();
 
-                //return true if the AccessibilityEvent type is NOTIFICATION type
-                UiAutomation.AccessibilityEventFilter eventFilter = new UiAutomation.AccessibilityEventFilter() {
-                    @Override
-                    public boolean accept(AccessibilityEvent event) {
-                        return event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
-                    }
-                };
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        // Not performing any event.
-                    }
-                };
-
                 try {
                     //wait for AccessibilityEvent filter
                     accessibilityEvent = UiAutomatorBridge.getInstance().getUiAutomation()
-                            .executeAndWaitForEvent(runnable /*executable event*/, eventFilter /* event to filter*/, 500 /*time out in ms*/);
+                            .executeAndWaitForEvent(runnable /*executable event*/, eventFilter /* event to filter*/, WAIT_FOR_EVENT_TIMEOUT /*time out in ms*/);
                 } catch (Exception ignore) {}
 
                 if (accessibilityEvent != null) {
@@ -100,10 +106,5 @@ public final class NotificationListener {
             return toastMessages;
         }
     }
-
-
-
-
-
 
 }

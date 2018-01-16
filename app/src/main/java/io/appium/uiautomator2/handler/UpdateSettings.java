@@ -1,5 +1,7 @@
 package io.appium.uiautomator2.handler;
 
+import android.support.annotation.Nullable;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,10 +40,12 @@ public class UpdateSettings extends SafeRequestHandler {
             Map<String, Object> settings = getPayload(request, "settings");
             Logger.debug("Update settings: " + settings.toString());
             for (Entry<String, Object> entry : settings.entrySet()) {
-                ISetting setting = getSetting(entry.getKey());
+                String settingName = entry.getKey();
+                Object settingValue = entry.getValue();
+                ISetting setting = getSetting(settingName);
                 if (setting != null) {
-                    setting.updateSetting(entry.getValue());
-                    Session.capabilities.put(entry.getKey(), entry.getValue());
+                    setting.updateSetting(settingValue);
+                    Session.capabilities.put(settingName, settingValue);
                 } else {
                     Logger.error(String.format("Setting '%s' is not supported.", entry.getKey()));
                 }
@@ -54,7 +58,7 @@ public class UpdateSettings extends SafeRequestHandler {
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
     }
 
-    public ISetting getSetting(String settingName) throws IllegalAccessException, InstantiationException {
+    public @Nullable ISetting getSetting(String settingName) throws IllegalAccessException, InstantiationException {
         return SETTINGS.containsKey(settingName) ? SETTINGS.get(settingName).newInstance() : null;
     }
 }
