@@ -39,7 +39,7 @@ public class WaitForIdleTimeoutTests {
     private WaitForIdleTimeout waitForIdeTimeout;
 
     @Mock
-    private Configurator configurator = mock(Configurator.class);
+    private Configurator configurator;
 
     @Before
     public void setup() {

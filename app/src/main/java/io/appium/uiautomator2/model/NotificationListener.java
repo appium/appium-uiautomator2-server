@@ -16,7 +16,6 @@ import static java.lang.System.currentTimeMillis;
 public final class NotificationListener {
     private static List<CharSequence> toastMessages = new ArrayList<CharSequence>();
     private Listener listener;
-    private boolean stopLooping;
     private final static NotificationListener INSTANCE = new NotificationListener();
     private final int TOAST_CLEAR_TIMEOUT = 3500;
     private final int WAIT_FOR_EVENT_TIMEOUT = 500;
@@ -37,7 +36,6 @@ public final class NotificationListener {
             Logger.debug("Toast notification listener is already started.");
             return;
         }
-        stopLooping = false;
         listener = new Listener();
         listener.start();
     }
@@ -48,7 +46,7 @@ public final class NotificationListener {
             Logger.debug("Toast notification listener is already stopped.");
             return;
         }
-        stopLooping = true;
+        listener.stopLooping();
         try {
             listener.join(WAIT_FOR_EVENT_TIMEOUT);
         } catch (InterruptedException ignore) {
@@ -61,6 +59,7 @@ public final class NotificationListener {
 
     private class Listener extends Thread{
 
+        private boolean stopLooping = false;
         private long previousTime = currentTimeMillis();
 
         //return true if the AccessibilityEvent type is NOTIFICATION type
@@ -104,6 +103,10 @@ public final class NotificationListener {
                 return new ArrayList<CharSequence>();
             }
             return toastMessages;
+        }
+
+        public void stopLooping() {
+            stopLooping = true;
         }
     }
 
