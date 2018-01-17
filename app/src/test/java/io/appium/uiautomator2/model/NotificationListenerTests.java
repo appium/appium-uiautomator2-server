@@ -101,7 +101,7 @@ public class NotificationListenerTests {
     }
 
     @Test
-    public void shouldDoNothingOnStopIfListenerIsStartedAndStopped() throws InterruptedException {
+    public void shouldDoNothingOnStopIfListenerIsAlreadyStopped() throws InterruptedException {
         notificationListener.start();
         notificationListener.stop();
         Thread listener = spy(getListener());
@@ -110,9 +110,8 @@ public class NotificationListenerTests {
     }
 
     @Test
-    public void shouldDoNothingOnStartIfListenerIsAlreadyStopped() {
+    public void shouldDoNothingOnStartIfListenerIsAlreadyStarted() {
         notificationListener.start();
-        notificationListener.stop();
         Thread listener = spy(getListener());
         notificationListener.start();
         verify(listener, never()).start();
