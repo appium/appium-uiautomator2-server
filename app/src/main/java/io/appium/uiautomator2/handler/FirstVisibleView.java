@@ -46,27 +46,26 @@ public class FirstVisibleView extends SafeRequestHandler {
             KnownElements ke = new KnownElements();
             Object firstObject = null;
             if (element.getUiObject() instanceof UiObject) {
-                Logger.debug("Container for first visible is a uiobject");
-                UiObject childObject = ((UiObject) element.getUiObject()).getChild(new UiSelector().index(0));
-                for (int i = 0; i < childObject.getChildCount(); i++) {
-                    UiObject object = childObject.getChild(new UiSelector().index(i));
+                UiObject uiObject = (UiObject) element.getUiObject();
+                Logger.debug("Container for first visible is a uiobject; looping through children");
+                for (int i = 0; i < uiObject.getChildCount(); i++) {
+                    UiObject object = uiObject.getChild(new UiSelector().index(i));
                     if (object.exists()) {
                         firstObject = object;
                         break;
                     }
                 }
             } else {
-                Logger.debug("Container for first visible is a uiobject2");
-                List<UiObject2> childObjects = ((UiObject2) element.getUiObject()).getChildren();
+                UiObject2 uiObject = (UiObject2) element.getUiObject();
+                Logger.debug("Container for first visible is a uiobject2; looping through children");
+                List<UiObject2> childObjects = uiObject.getChildren();
                 if (childObjects.isEmpty()) {
                     throw new UiObjectNotFoundException("Could not get children for container object");
                 }
-                UiObject2 childObject = childObjects.get(0);
-                for (int i = 0; i < childObject.getChildCount(); i++) {
-                    UiObject2 object2 = childObject.getChildren().get(i);
+                for (UiObject2 childObject : childObjects) {
                     try {
-                        if (AccessibilityNodeInfoGetter.fromUiObject(object2) != null) {
-                            firstObject = object2;
+                        if (AccessibilityNodeInfoGetter.fromUiObject(childObject) != null) {
+                            firstObject = childObject;
                             break;
                         }
                     } catch (UiAutomator2Exception ignored) {
