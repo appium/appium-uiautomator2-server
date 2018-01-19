@@ -53,7 +53,7 @@ public class GetElementScreenshot extends SafeRequestHandler {
                         screenshot.getWidth(), screenshot.getHeight());
                 final Rect intersectionRect = new Rect();
                 if (!intersectionRect.setIntersect(elementRect, screenRect)) {
-                    Logger.error("Element is not visible inside screen rect");
+                    Logger.error("Element is not visible inside the screen rect");
                     return new AppiumResponse(getSessionId(request), WDStatus.ELEMENT_NOT_VISIBLE);
                 }
 
@@ -62,8 +62,11 @@ public class GetElementScreenshot extends SafeRequestHandler {
                         intersectionRect.width(), intersectionRect.height());
                 try {
                     final ByteArrayOutputStream elementPngScreenshot = new ByteArrayOutputStream();
-                    elementScreenshot.compress(Bitmap.CompressFormat.PNG,
-                            SCREENSHOT_COMPRESSION_QUALITY, elementPngScreenshot);
+                    if (!elementScreenshot.compress(Bitmap.CompressFormat.PNG,
+                            SCREENSHOT_COMPRESSION_QUALITY, elementPngScreenshot)) {
+                        return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
+                                "Element screenshot cannot be compressed to PNG format");
+                    }
                     return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
                             Base64.encodeToString(elementPngScreenshot.toByteArray(), Base64.DEFAULT));
                 } finally {
