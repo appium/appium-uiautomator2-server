@@ -16,8 +16,6 @@ import io.appium.uiautomator2.utils.Logger;
 
 
 public class CaptureScreenshot extends SafeRequestHandler {
-    static final int SCREENSHOT_COMPRESSION_QUALITY = 80;
-
     private static final UiAutomation uia = CustomUiDevice.getInstance()
             .getInstrumentation()
             .getUiAutomation();
@@ -30,8 +28,7 @@ public class CaptureScreenshot extends SafeRequestHandler {
         }
         try {
             final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            if (!screenshot.compress(Bitmap.CompressFormat.PNG, SCREENSHOT_COMPRESSION_QUALITY,
-                    stream)) {
+            if (!screenshot.compress(Bitmap.CompressFormat.PNG, 100, stream)) {
                 return null;
             }
             return Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT);

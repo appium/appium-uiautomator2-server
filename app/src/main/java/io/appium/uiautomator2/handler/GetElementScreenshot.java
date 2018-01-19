@@ -17,10 +17,7 @@ import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
-import static io.appium.uiautomator2.handler.CaptureScreenshot.SCREENSHOT_COMPRESSION_QUALITY;
-
 public class GetElementScreenshot extends SafeRequestHandler {
-
     private static final UiAutomation uia = CustomUiDevice.getInstance()
             .getInstrumentation()
             .getUiAutomation();
@@ -62,8 +59,8 @@ public class GetElementScreenshot extends SafeRequestHandler {
                         intersectionRect.width(), intersectionRect.height());
                 try {
                     final ByteArrayOutputStream elementPngScreenshot = new ByteArrayOutputStream();
-                    if (!elementScreenshot.compress(Bitmap.CompressFormat.PNG,
-                            SCREENSHOT_COMPRESSION_QUALITY, elementPngScreenshot)) {
+                    if (!elementScreenshot.compress(Bitmap.CompressFormat.PNG, 100,
+                            elementPngScreenshot)) {
                         return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
                                 "Element screenshot cannot be compressed to PNG format");
                     }
