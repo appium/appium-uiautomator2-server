@@ -12,7 +12,6 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.server.WDStatus;
-import io.appium.uiautomator2.utils.API;
 import io.appium.uiautomator2.utils.Logger;
 
 public class MultiPointerGesture extends SafeRequestHandler {
@@ -27,17 +26,11 @@ public class MultiPointerGesture extends SafeRequestHandler {
         try {
             pcs = parsePointerCoords(request);
 
-            if (API.API_18) {
-                Boolean rt = UiAutomatorBridge.getInstance().getInteractionController().performMultiPointerGesture(pcs);
-                if (rt) {
-                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "OK");
-                } else {
-                    return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Unable to perform multi pointer gesture");
-                }
+            Boolean rt = UiAutomatorBridge.getInstance().getInteractionController().performMultiPointerGesture(pcs);
+            if (rt) {
+                return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "OK");
             } else {
-                Logger.error("Device does not support API < 18!");
-                return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
-                        "Cannot perform multi pointer gesture on device below API level 18");
+                return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Unable to perform multi pointer gesture");
             }
         } catch (JSONException e) {
             Logger.error("Exception while reading JSON: ", e);
