@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import io.appium.uiautomator2.common.exceptions.UnsupportedSettingException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -43,12 +44,8 @@ public class UpdateSettings extends SafeRequestHandler {
                 String settingName = entry.getKey();
                 Object settingValue = entry.getValue();
                 ISetting setting = getSetting(settingName);
-                if (setting != null) {
-                    setting.updateSetting(settingValue);
-                    Session.capabilities.put(settingName, settingValue);
-                } else {
-                    Logger.error(String.format("Setting '%s' is not supported.", entry.getKey()));
-                }
+                setting.updateSetting(settingValue);
+                Session.capabilities.put(settingName, settingValue);
             }
         } catch (Exception e) {
             Logger.error("error settings " + e.getMessage());
@@ -58,7 +55,10 @@ public class UpdateSettings extends SafeRequestHandler {
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
     }
 
-    public @Nullable ISetting getSetting(String settingName) throws IllegalAccessException, InstantiationException {
-        return SETTINGS.containsKey(settingName) ? SETTINGS.get(settingName).newInstance() : null;
+    public ISetting getSetting(String settingName) throws UnsupportedSettingException, IllegalAccessException, InstantiationException {
+        if (!SETTINGS.containsKey(settingName)) {
+            throw new UnsupportedSettingException(settingName);
+        }
+        return SETTINGS.get(settingName).newInstance();
     }
 }

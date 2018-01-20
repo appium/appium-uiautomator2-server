@@ -18,7 +18,9 @@ package io.appium.uiautomator2.handler;
 
 import org.json.JSONException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -28,6 +30,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.HashMap;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.common.exceptions.UnsupportedSettingException;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.Session;
@@ -97,9 +100,9 @@ public class UpdateSettingsTests {
         verifySettingIsAvailable(WaitForIdleTimeout.SETTING_NAME, WaitForIdleTimeout.class);
     }
 
-    @Test
-    public void shouldReturnNullIfSettingIsNotSupported() throws InstantiationException, IllegalAccessException {
-        assertNull(updateSettings.getSetting("unsupported_setting"));
+    @Test(expected=UnsupportedSettingException.class)
+    public void shouldThrowExceptionIfSettingIsNotSupported() throws InstantiationException, IllegalAccessException {
+        updateSettings.getSetting("unsupported_setting");
     }
 
     @Test
@@ -107,15 +110,6 @@ public class UpdateSettingsTests {
         AppiumResponse response = updateSettings.safeHandle(req);
         verify(mySetting).updateSetting(SETTING_VALUE);
         assertEquals(Session.capabilities.get(SETTING_NAME), SETTING_VALUE);
-        assertEquals(WDStatus.SUCCESS.code(), response.getStatus());
-        assertEquals(true, response.getValue());
-    }
-
-    @Test
-    public void shouldSkipUnsupportedSetting() throws InstantiationException, IllegalAccessException {
-        doReturn(null).when(updateSettings).getSetting(anyString());
-        AppiumResponse response = updateSettings.safeHandle(req);
-        assertNull(Session.capabilities.get(SETTING_NAME));
         assertEquals(WDStatus.SUCCESS.code(), response.getStatus());
         assertEquals(true, response.getValue());
     }
