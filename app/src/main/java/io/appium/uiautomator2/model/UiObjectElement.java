@@ -272,12 +272,14 @@ public class UiObjectElement implements AndroidElement {
             throws UiObjectNotFoundException, InvalidCoordinatesException {
         if (destObj instanceof UiObject) {
             return element.dragTo((UiObject) destObj, steps);
-        } else if (destObj instanceof UiObject2) {
+        }
+
+        if (destObj instanceof UiObject2) {
             android.graphics.Point coords = ((UiObject2) destObj).getVisibleCenter();
             return dragTo(coords.x, coords.y, steps);
-        } else {
-            Logger.error("Destination should be either UiObject or UiObject2");
-            return false;
         }
+
+        Logger.error("Destination should be either UiObject or UiObject2");
+        return false;
     }
 }
