@@ -2,9 +2,12 @@ package io.appium.uiautomator2.unittest.test;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.Configurator;
+import android.util.Base64;
 
 import com.jayway.jsonpath.JsonPath;
 import com.squareup.okhttp.Response;
@@ -24,6 +27,7 @@ import java.io.IOException;
 
 import io.appium.uiautomator2.common.exceptions.SessionRemovedException;
 import io.appium.uiautomator2.model.By;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.server.ServerConfig;
 import io.appium.uiautomator2.server.ServerInstrumentation;
 import io.appium.uiautomator2.server.WDStatus;
@@ -54,6 +58,7 @@ import static io.appium.uiautomator2.unittest.test.TestUtil.isElementPresent;
 import static io.appium.uiautomator2.unittest.test.TestUtil.longClick;
 import static io.appium.uiautomator2.unittest.test.TestUtil.multiPointerGesture;
 import static io.appium.uiautomator2.unittest.test.TestUtil.rotateScreen;
+import static io.appium.uiautomator2.unittest.test.TestUtil.screenshot;
 import static io.appium.uiautomator2.unittest.test.TestUtil.scrollTo;
 import static io.appium.uiautomator2.unittest.test.TestUtil.sendKeys;
 import static io.appium.uiautomator2.unittest.test.TestUtil.setRotation;
@@ -173,7 +178,7 @@ public class HandlersTest {
         JSONObject srcLocation = new JSONObject(new JSONObject(srcLocationRes).get("value").toString());
         int startX = srcLocation.getInt("x");
         int startY = srcLocation.getInt("y");
-        ;
+
         JSONObject destLocation = new JSONObject(new JSONObject(destLocationRes).get("value").toString());
         int endX = destLocation.getInt("x");
         int endY = destLocation.getInt("y");
@@ -876,5 +881,43 @@ public class HandlersTest {
         toastMSG = getText(element);
         assertEquals("Clicked popup menu item Share", toastMSG);
 
+    }
+
+    @Test
+    public void screenshotTest() throws JSONException {
+        Device.waitForIdle();
+        element = findElement(By.accessibilityId("Accessibility"));
+        click(element);
+        waitForElement(By.xpath("//*[@text='Accessibility Node Provider']"), 5 * SECOND);
+
+        response = screenshot();
+        String value = new JSONObject(response).get("value").toString();
+        byte[] bytes = Base64.decode(value, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        assertNotNull(bitmap);
+        Bitmap uiautoBitmap = CustomUiDevice.getInstance().getInstrumentation()
+                .getUiAutomation().takeScreenshot();
+        assertTrue(bitmap.sameAs(uiautoBitmap));
+    }
+
+    @Test
+    public void elementScreenshotTest() throws JSONException {
+        Device.waitForIdle();
+        element = findElement(By.accessibilityId("Accessibility"));
+        click(element);
+        waitForElement(By.xpath("//*[@text='Accessibility Node Provider']"), 5 * SECOND);
+
+        String element = findElement(By.id("android:id/text1"));
+        response = getSize(element);
+        int height = JsonPath.compile("$.value.height").read(response);
+        int width = JsonPath.compile("$.value.width").read(response);
+
+        response = screenshot(element);
+        String value = new JSONObject(response).get("value").toString();
+        byte[] bytes = Base64.decode(value, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        assertNotNull(bitmap);
+        assertEquals(bitmap.getWidth(), width);
+        assertEquals(bitmap.getHeight(), height);
     }
 }

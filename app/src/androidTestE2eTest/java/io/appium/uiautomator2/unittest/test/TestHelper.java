@@ -76,7 +76,7 @@ public abstract class TestHelper {
     }
 
     public static String delete(final String path, String body) {
-        Request request = new Request.Builder().url(path).delete(RequestBody.create(JSON, body)).build();
+        Request request = new Request.Builder().url(baseUrl + path).delete(RequestBody.create(JSON, body)).build();
         Logger.info("DELETE: " + body);
         return execute(request);
     }
