@@ -18,13 +18,11 @@ import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
-import io.appium.uiautomator2.utils.API;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
-import io.appium.uiautomator2.utils.UnicodeEncoder;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
@@ -238,11 +236,6 @@ public class UiObjectElement implements AndroidElement {
     public String getResourceId() throws UiObjectNotFoundException {
         String resourceId = "";
 
-        if (!API.API_18) {
-            Logger.error("Device does not support API >= 18!");
-            return resourceId;
-        }
-
         try {
       /*
        * Unfortunately UiObject does not implement a getResourceId method.
@@ -270,32 +263,23 @@ public class UiObjectElement implements AndroidElement {
 
     public boolean dragTo(final int destX, final int destY, final int steps)
             throws UiObjectNotFoundException, InvalidCoordinatesException {
-        if (API.API_18) {
-            Point coords = new Point(destX, destY);
-            coords = PositionHelper.getDeviceAbsPos(coords);
-            return element.dragTo(coords.x.intValue(), coords.y.intValue(), steps);
-        } else {
-            Logger.error("Device does not support API >= 18!");
-            return false;
-        }
+        Point coords = new Point(destX, destY);
+        coords = PositionHelper.getDeviceAbsPos(coords);
+        return element.dragTo(coords.x.intValue(), coords.y.intValue(), steps);
     }
 
     public boolean dragTo(final Object destObj, final int steps)
             throws UiObjectNotFoundException, InvalidCoordinatesException {
-        if (API.API_18) {
-            if (destObj instanceof UiObject) {
-                return element.dragTo((UiObject) destObj, steps);
-            } else if (destObj instanceof UiObject2) {
-                android.graphics.Point coords = ((UiObject2) destObj).getVisibleCenter();
-                return dragTo(coords.x, coords.y, steps);
-            } else {
-                Logger.error("Destination should be either UiObject or UiObject2");
-                return false;
-            }
-        } else {
-            Logger.error("Device does not support API >= 18!");
-            return false;
+        if (destObj instanceof UiObject) {
+            return element.dragTo((UiObject) destObj, steps);
         }
 
+        if (destObj instanceof UiObject2) {
+            android.graphics.Point coords = ((UiObject2) destObj).getVisibleCenter();
+            return dragTo(coords.x, coords.y, steps);
+        }
+
+        Logger.error("Destination should be either UiObject or UiObject2");
+        return false;
     }
 }

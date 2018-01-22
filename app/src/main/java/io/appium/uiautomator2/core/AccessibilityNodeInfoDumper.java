@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
-import io.appium.uiautomator2.utils.API;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.XMLHierarchy.safeCharSeqToString;
@@ -62,16 +61,14 @@ public class AccessibilityNodeInfoDumper {
             if (root != null) {
                 int width = -1;
                 int height = -1;
-                if (API.API_18) {
-                    // getDefaultDisplay method available since API level 18
-                    Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
-                    Point size = new Point();
-                    display.getSize(size);
-                    width = size.x;
-                    height = size.y;
 
-                    serializer.attribute("", "rotation", Integer.toString(display.getRotation()));
-                }
+                Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                width = size.x;
+                height = size.y;
+
+                serializer.attribute("", "rotation", Integer.toString(display.getRotation()));
 
                 dumpNodeRec(root, serializer, 0, width, height);
             }
@@ -116,12 +113,8 @@ public class AccessibilityNodeInfoDumper {
         serializer.attribute("", "long-clickable", Boolean.toString(node.isLongClickable()));
         serializer.attribute("", "password", Boolean.toString(node.isPassword()));
         serializer.attribute("", "selected", Boolean.toString(node.isSelected()));
-
-        if (API.API_18) {
-            serializer.attribute("", "bounds", AccessibilityNodeInfoHelper.getVisibleBoundsInScreen(node, width, height).toShortString());
-
-            serializer.attribute("", "resource-id", safeCharSeqToString(node.getViewIdResourceName()));
-        }
+        serializer.attribute("", "bounds", AccessibilityNodeInfoHelper.getVisibleBoundsInScreen(node, width, height).toShortString());
+        serializer.attribute("", "resource-id", safeCharSeqToString(node.getViewIdResourceName()));
 
         int count = node.getChildCount();
         for (int i = 0; i < count; i++) {

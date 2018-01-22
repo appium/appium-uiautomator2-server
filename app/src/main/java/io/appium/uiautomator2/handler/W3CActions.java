@@ -41,7 +41,6 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.server.WDStatus;
-import io.appium.uiautomator2.utils.API;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.InputEventParams;
@@ -95,17 +94,12 @@ public class W3CActions extends SafeRequestHandler {
                     (JSONArray) getPayload(request).get("actions")
             );
 
-            if (API.API_18) {
-                if (executeActions(actions)) {
-                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "OK");
-                }
-                return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
-                        "Unable to perform W3C actions. Check the logcat output " +
-                                "for possible error reports and make sure your input actions chain is valid.");
+            if (executeActions(actions)) {
+                return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "OK");
             }
-            Logger.error("Device does not support API < 18!");
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
-                    "Cannot perform W3C actions on device below API level 18");
+                    "Unable to perform W3C actions. Check the logcat output " +
+                            "for possible error reports and make sure your input actions chain is valid.");
         } catch (JSONException | ActionsParseException e) {
             Logger.error("Exception while reading JSON: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);

@@ -1,28 +1,26 @@
 package io.appium.uiautomator2.handler;
 
-import android.content.Context;
+import android.app.UiAutomation;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.server.WDStatus;
-import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
 
 public class GetElementScreenshot extends SafeRequestHandler {
+    private static final UiAutomation uia = CustomUiDevice.getInstance()
+            .getInstrumentation()
+            .getUiAutomation();
 
     public GetElementScreenshot(String mappedUri) {
         super(mappedUri);
@@ -42,27 +40,37 @@ public class GetElementScreenshot extends SafeRequestHandler {
                 Logger.error("Element is not visible");
                 return new AppiumResponse(getSessionId(request), WDStatus.ELEMENT_NOT_VISIBLE);
             }
-            final Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-            final File outputFile = File.createTempFile("screenshot", ".png",
-                    context.getCacheDir());
+            final Bitmap screenshot = uia.takeScreenshot();
+            if (screenshot == null) {
+                return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
+                        "Failed to capture a screenshot. Does the current view have 'secure' flag set?");
+            }
             try {
-                if (!Device.getUiDevice().takeScreenshot(outputFile)) {
-                    return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
-                            "Cannot capture a screenshot");
+                final Rect screenRect = new Rect(0, 0,
+                        screenshot.getWidth(), screenshot.getHeight());
+                final Rect intersectionRect = new Rect();
+                if (!intersectionRect.setIntersect(elementRect, screenRect)) {
+                    Logger.error("Element is not visible inside the screen rect");
+                    return new AppiumResponse(getSessionId(request), WDStatus.ELEMENT_NOT_VISIBLE);
                 }
-                Logger.info("ScreenShot captured at location: " + outputFile.getAbsolutePath());
-                Bitmap elementBmpScreenshot;
-                try (FileInputStream fis = new FileInputStream(outputFile)) {
-                    elementBmpScreenshot = Bitmap.createBitmap(BitmapFactory.decodeStream(fis),
-                            elementRect.left, elementRect.top, elementRect.width(), elementRect.height());
+
+                final Bitmap elementScreenshot = Bitmap.createBitmap(screenshot,
+                        intersectionRect.left, intersectionRect.top,
+                        intersectionRect.width(), intersectionRect.height());
+                try {
+                    final ByteArrayOutputStream elementPngScreenshot = new ByteArrayOutputStream();
+                    if (!elementScreenshot.compress(Bitmap.CompressFormat.PNG, 100,
+                            elementPngScreenshot)) {
+                        return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
+                                "Element screenshot cannot be compressed to PNG format");
+                    }
+                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
+                            Base64.encodeToString(elementPngScreenshot.toByteArray(), Base64.DEFAULT));
+                } finally {
+                    elementScreenshot.recycle();
                 }
-                final ByteArrayOutputStream elementPngScreenshot = new ByteArrayOutputStream();
-                elementBmpScreenshot.compress(Bitmap.CompressFormat.PNG, 100, elementPngScreenshot);
-                return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
-                        Base64.encodeToString(elementPngScreenshot.toByteArray(), Base64.DEFAULT));
             } finally {
-                //noinspection ResultOfMethodCallIgnored
-                outputFile.delete();
+                screenshot.recycle();
             }
         } catch (UiObjectNotFoundException e) {
             Logger.error("Element not found: ", e);
