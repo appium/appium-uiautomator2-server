@@ -45,8 +45,7 @@ public class ScreenshotHelper {
      * @return Base64-encoded screenshot string.
      */
     public static String takeScreenshot(@Nullable final Rect cropArea) throws
-            TakeScreenshotException, CompressScreenshotException, ElementNotVisibleException,
-            CropScreenshotException {
+            TakeScreenshotException, CompressScreenshotException, CropScreenshotException {
         Bitmap screenshot = takeDeviceScreenshot();
         try {
             if (cropArea != null) {
@@ -54,7 +53,7 @@ public class ScreenshotHelper {
                 screenshot.recycle();
                 screenshot = elementScreenshot;
             }
-            return encode(compress(screenshot));
+            return Base64.encodeToString(compress(screenshot), Base64.DEFAULT);
         } finally {
             screenshot.recycle();
         }
@@ -81,10 +80,6 @@ public class ScreenshotHelper {
             throw new CompressScreenshotException(PNG);
         }
         return stream.toByteArray();
-    }
-
-    private static String encode(final byte[] bytes) {
-        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
     private static Bitmap crop(final Bitmap bitmap, final Rect cropArea) throws

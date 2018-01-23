@@ -582,8 +582,7 @@ public class TestUtil {
     /**
      * Get device screenshot
      *
-     * @param
-     * @return
+     * @return Base64-encoded screenshot string
      */
     public static String screenshot() {
         String result = get(baseUrl + "/screenshot");
@@ -594,8 +593,8 @@ public class TestUtil {
     /**
      * Get element screenshot
      *
-     * @param
-     * @return
+     * @param element
+     * @return Base64-encoded element screenshot string
      */
     public static String screenshot(String element) throws JSONException {
         String elementId = new JSONObject(element).getJSONObject("value").getString("ELEMENT");
@@ -604,4 +603,3 @@ public class TestUtil {
         return result;
     }
 }
-
