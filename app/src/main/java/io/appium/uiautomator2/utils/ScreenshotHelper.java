@@ -30,16 +30,23 @@ import io.appium.uiautomator2.common.exceptions.ElementNotVisibleException;
 import io.appium.uiautomator2.common.exceptions.TakeScreenshotException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
+import static android.graphics.Bitmap.CompressFormat.PNG;
+
 public class ScreenshotHelper {
+
+    private static final UiAutomation uia = CustomUiDevice.getInstance().getInstrumentation()
+            .getUiAutomation();
 
     /**
      * Grab device screenshot and crop it to specifyed area if cropArea is not null.
      * Compress it to PGN format and convert to Base64 byte-string.
      *
-     * @param cropArea  Area to crop.
-     * @return  Base64-encoded screenshot string.
+     * @param cropArea Area to crop.
+     * @return Base64-encoded screenshot string.
      */
-    public static String takeScreenshot(@Nullable final Rect cropArea) throws TakeScreenshotException, CompressScreenshotException, ElementNotVisibleException, CropScreenshotException {
+    public static String takeScreenshot(@Nullable final Rect cropArea) throws
+            TakeScreenshotException, CompressScreenshotException, ElementNotVisibleException,
+            CropScreenshotException {
         Bitmap screenshot = takeDeviceScreenshot();
         try {
             if (cropArea != null) {
@@ -53,13 +60,12 @@ public class ScreenshotHelper {
         }
     }
 
-    public static String takeScreenshot() throws CropScreenshotException, CompressScreenshotException, TakeScreenshotException {
+    public static String takeScreenshot() throws CropScreenshotException,
+            CompressScreenshotException, TakeScreenshotException {
         return takeScreenshot(null);
     }
 
     private static Bitmap takeDeviceScreenshot() throws TakeScreenshotException {
-        final UiAutomation uia = CustomUiDevice.getInstance().getInstrumentation()
-                .getUiAutomation();
         final Bitmap screenshot = uia.takeScreenshot();
 
         if (screenshot == null) {
@@ -69,19 +75,20 @@ public class ScreenshotHelper {
         return screenshot;
     }
 
-    private static ByteArrayOutputStream compress(final Bitmap bitmap) throws CompressScreenshotException {
+    private static byte[] compress(final Bitmap bitmap) throws CompressScreenshotException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        if (!bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)) {
-            throw new CompressScreenshotException();
+        if (!bitmap.compress(PNG, 100, stream)) {
+            throw new CompressScreenshotException(PNG);
         }
-        return stream;
+        return stream.toByteArray();
     }
 
-    private static String encode(final ByteArrayOutputStream stream) {
-        return Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT);
+    private static String encode(final byte[] bytes) {
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
-    private static Bitmap crop(final Bitmap bitmap, final Rect cropArea) throws CropScreenshotException {
+    private static Bitmap crop(final Bitmap bitmap, final Rect cropArea) throws
+            CropScreenshotException {
         final Rect bitmapRect = new Rect(0, 0,
                 bitmap.getWidth(), bitmap.getHeight());
         final Rect intersectionRect = new Rect();

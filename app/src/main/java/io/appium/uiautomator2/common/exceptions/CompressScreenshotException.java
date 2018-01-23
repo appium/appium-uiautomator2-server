@@ -16,8 +16,12 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
+import android.graphics.Bitmap;
+
 public class CompressScreenshotException extends Exception {
-    public CompressScreenshotException() {
-        super("Screenshot cannot be compressed to PNG format");
+    private static final String message = "Screenshot cannot be compressed to %s format";
+
+    public CompressScreenshotException(Bitmap.CompressFormat format) {
+        super(String.format(message, format));
     }
 }
