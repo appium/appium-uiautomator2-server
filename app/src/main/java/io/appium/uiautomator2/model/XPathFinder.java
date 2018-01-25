@@ -24,6 +24,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.lang.IllegalStateException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -235,8 +236,17 @@ public class XPathFinder implements Finder {
 
     long end = SystemClock.uptimeMillis() + timeoutMillis;
     while (true) {
-      AccessibilityNodeInfo root = UiAutomatorBridge.getInstance().getQueryController().getAccessibilityRootNode();
-
+      AccessibilityNodeInfo root = null;
+      try {
+          root = UiAutomatorBridge.getInstance().getQueryController().getAccessibilityRootNode();
+      } catch (IllegalStateException ignore) {
+          /**
+           * Sometimes getAccessibilityRootNode() throws
+           * "java.lang.IllegalStateException: Cannot perform this action on a sealed instance."
+           * Ignore it and try to re-get root node.
+           */
+           Logger.debug("IllegalStateException was catched while invoking getAccessibilityRootNode() - ignore it");
+      }
       if (root != null) {
         return root;
       }
