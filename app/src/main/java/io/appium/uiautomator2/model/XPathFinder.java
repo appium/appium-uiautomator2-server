@@ -235,7 +235,7 @@ public class XPathFinder implements Finder {
     Device.waitForIdle();
 
     long end = SystemClock.uptimeMillis() + timeoutMillis;
-    while (true) {
+    while (end > SystemClock.uptimeMillis()) {
       AccessibilityNodeInfo root = null;
       try {
           root = UiAutomatorBridge.getInstance().getQueryController().getAccessibilityRootNode();
@@ -250,14 +250,10 @@ public class XPathFinder implements Finder {
       if (root != null) {
         return root;
       }
-      long remainingMillis = end - SystemClock.uptimeMillis();
-      if (remainingMillis < 0) {
-        throw new UiAutomator2Exception(
-                String.format("Timed out after %d milliseconds waiting for root AccessibilityNodeInfo",
-                        timeoutMillis));
-      }
-      SystemClock.sleep(Math.min(250, remainingMillis));
+      SystemClock.sleep(250);
     }
+    final String message = "Timed out after %d milliseconds waiting for root AccessibilityNodeInfo";
+    throw new UiAutomator2Exception(String.format(message, timeoutMillis));
   }
 
   /**
