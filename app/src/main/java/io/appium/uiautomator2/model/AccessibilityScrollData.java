@@ -1,7 +1,7 @@
 package io.appium.uiautomator2.model;
 
-import android.view.accessibility.AccessibilityEvent;
 
+import android.view.accessibility.AccessibilityEvent;
 import java.util.HashMap;
 
 public class AccessibilityScrollData {
@@ -23,7 +23,6 @@ public class AccessibilityScrollData {
         this.toIndex = event.getToIndex();
         this.itemCount = event.getItemCount();
     }
-
 
     public HashMap<String, Integer> getAsMap () {
         HashMap<String, Integer> map = new HashMap<>();
