@@ -1,6 +1,5 @@
 package io.appium.uiautomator2.model;
 
-
 import android.view.accessibility.AccessibilityEvent;
 import java.util.HashMap;
 
