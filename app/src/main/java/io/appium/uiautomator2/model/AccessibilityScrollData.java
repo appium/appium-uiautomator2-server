@@ -36,4 +36,33 @@ public class AccessibilityScrollData {
 
         return map;
     }
+
+    public int getScrollX() {
+        return scrollX;
+    }
+
+    public int getMaxScrollX() {
+        return maxScrollX;
+    }
+
+    public int getScrollY() {
+        return scrollY;
+    }
+
+    public int getMaxScrollY() {
+        return maxScrollY;
+    }
+
+    public int getFromIndex() {
+        return fromIndex;
+    }
+
+    public int getToIndex() {
+        return toIndex;
+    }
+
+    public int getItemCount() {
+        return itemCount;
+    }
+
 }

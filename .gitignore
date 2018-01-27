@@ -8,4 +8,4 @@
 /node_modules
 *.log
 apks/
-package-lock.json
+package-lock.json*

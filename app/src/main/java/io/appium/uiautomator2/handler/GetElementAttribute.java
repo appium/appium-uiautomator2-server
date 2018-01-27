@@ -6,32 +6,43 @@ import android.support.test.uiautomator.StaleObjectException;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InvalidClassException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 
-import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
+import io.appium.uiautomator2.core.EventRegister;
+import io.appium.uiautomator2.core.ReturningRunnable;
+import io.appium.uiautomator2.core.UiObjectChildGenerator;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.AccessibilityScrollData;
 import io.appium.uiautomator2.model.AndroidElement;
+import io.appium.uiautomator2.model.AppiumUiAutomatorDriver;
 import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.model.UiObject2Element;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
-import io.appium.uiautomator2.utils.ReflectionUtils;
+
+import static io.appium.uiautomator2.utils.Device.getUiDevice;
 
 public class GetElementAttribute extends SafeRequestHandler {
+
+    // these constants are magic numbers experimentally determined to minimize flakiness in generating
+    // last scroll data used in getting the 'contentSize' attribute.
+    // TODO see whether anchoring these to time and screen size is more reliable across devices
+    private static int MINI_SWIPE_STEPS = 10;
+    private static int MINI_SWIPE_PIXELS = 600;
 
     public GetElementAttribute(String mappedUri) {
         super(mappedUri);
@@ -79,14 +90,168 @@ public class GetElementAttribute extends SafeRequestHandler {
         } catch (UiAutomator2Exception e) {
             Logger.error(MessageFormat.format("Unable to retrieve attribute {0}", attributeName), e);
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (ReflectiveOperationException | InvalidSelectorException e) {
+        } catch (ReflectiveOperationException e) {
             Logger.error("Can not access to method or field: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
         }
 
     }
 
+    private static int getScrollableOffset(AndroidElement uiScrollable) {
+        // get the bounds of the scrollable view
+        Rect bounds = getElementBoundsInScreen(uiScrollable);
+
+        // now scroll a bit back and forth in the view to populate the lastScrollData we need
+        int x1 = bounds.centerX();
+        int y1 = bounds.centerY() + MINI_SWIPE_PIXELS;
+        int x2 = x1;
+        int y2 = y1 - (MINI_SWIPE_PIXELS * 2);
+        int tries = 0;
+        AccessibilityScrollData lastScrollData = null;
+
+        // generating scrolldata is flakey and doesn't always work, so try a number of times
+        while (tries < 10 && lastScrollData == null) {
+            tries += 1;
+            Logger.debug("Doing a mini swipe-and-back in the scrollable view to generate scroll data (try " + tries + ")");
+            swipe(x1, y1, x2, y2);
+            swipe(x2, y2, x1, y1);
+            lastScrollData = AppiumUiAutomatorDriver.getInstance().getSession().getLastScrollData();
+        }
+
+        if (lastScrollData == null) {
+            throw new UiAutomator2Exception("Could not retrieve accessibility scroll data; unable to determine scrollable offset");
+        }
+
+        // if we're in some views, like ScrollViews, we get x/y values directly, and we can simply return
+        if (lastScrollData.getMaxScrollY() != -1) {
+            return lastScrollData.getMaxScrollY();
+        }
+
+        // in other views, like List or Grid, we get item counts and indexes, and we have to turn
+        // that into pixels by doing some math
+        if (lastScrollData.getItemCount() == -1) {
+            throw new UiAutomator2Exception("Did not get either scrollY or itemCount from accessibility scroll data");
+        }
+
+        return getScrollableOffsetByItemCount(uiScrollable, lastScrollData.getItemCount());
+    }
+
+    private static int getScrollableOffsetByItemCount (AndroidElement uiScrollable, int itemCount) {
+        Logger.debug("Figuring out scrollableOffset via item count");
+        Object scrollObject = uiScrollable.getUiObject();
+
+        // here we loop through the children and get their bounds until the height differs, then
+        // regardless of whether we have a list or a grid, we'll know the height of an item/row
+        try {
+            int lastExaminedYInitVal = -999999; // something that could never be a 'top'
+            int itemsPerRow = 0;
+            int rowHeight = 0;
+            int lastExaminedItemY = lastExaminedYInitVal;
+            int numRowsExamined = 0;
+            int numRowsToExamine = 3; // examine a few rows since the top ones often have bad offsets
+            Object lastExaminedItem = null;
+
+            UiObjectChildGenerator gen = new UiObjectChildGenerator(scrollObject);
+            for (Object item : gen) {
+                Rect bounds = getElementBoundsInScreen(item);
+
+                if (item == null) {
+                    throw new UiObjectNotFoundException("Could not get child of scrollview");
+                }
+
+                itemsPerRow += 1;
+                lastExaminedItem = item;
+
+                if (lastExaminedItemY != lastExaminedYInitVal && bounds.top > lastExaminedItemY) {
+                    numRowsExamined += 1;
+                    rowHeight = bounds.top - lastExaminedItemY;
+                    if (numRowsExamined >= numRowsToExamine) {
+                        break;
+                    }
+                }
+
+                lastExaminedItemY = bounds.top;
+            }
+
+            if (lastExaminedItem == null) {
+                throw new UiObjectNotFoundException("Could not find any children of the scrollview to get offset from");
+            }
+
+            int numRows = (int) Math.floor(itemCount / itemsPerRow);
+            if (itemCount % itemsPerRow > 0) {
+                // we might have an additional part-row
+                numRows += 1;
+            }
+            int totalHeight = numRows * rowHeight;
+            Logger.debug("Determined there were " + numRows + " rows of height " +
+                    rowHeight + ", for a total scrollableOffset of " + totalHeight);
+            return totalHeight;
+        } catch (UiObjectNotFoundException ignore) {
+        } catch (InvalidClassException e) {
+            Logger.error("Programming error, tried to build a UiObjectChildGenerator with wrong type");
+        }
+
+        // there were no child items we could find, so just return the height of the parent
+        Rect bounds = getElementBoundsInScreen(uiScrollable);
+        return bounds.height();
+    }
+
+    private static boolean swipe(final int startX, final int startY, final int endX, final int endY) {
+        Logger.debug(String.format("Swiping from [%d, %d] to [%d, %d]", startX, startY, endX, endY));
+        return EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
+            @Override
+            public void run() {
+                setResult(getUiDevice().swipe(startX, startY, endX, endY, MINI_SWIPE_STEPS));
+            }
+        });
+    }
+
+    private static Rect getElementBoundsInScreen(AndroidElement element) {
+        return getElementBoundsInScreen(element.getUiObject());
+    }
+
+    private static Rect getElementBoundsInScreen(Object uiObject) {
+        Logger.debug("Getting bounds in screen for an AndroidElement");
+        AccessibilityNodeInfo nodeInfo = null;
+
+        try {
+            nodeInfo = AccessibilityNodeInfoGetter.fromUiObjectDefaultTimeout(uiObject);
+        } catch (UiAutomator2Exception ignored) {}
+
+        if (nodeInfo == null) {
+            throw new UiAutomator2Exception("Could not find accessibility node info for the view");
+        }
+
+        Rect rect = new Rect();
+        nodeInfo.getBoundsInScreen(rect);
+        Logger.debug("Bounds were: " + rect);
+        return rect;
+    }
+
+    private static int getTouchPadding(AndroidElement element) throws UiObjectNotFoundException, ReflectiveOperationException {
+        UiObject2 uiObject2;
+        if (element instanceof UiObject2Element) {
+            uiObject2 = Device.getUiDevice().findObject(By.clazz(((UiObject2) element.getUiObject()).getClassName()));
+        } else {
+            uiObject2 = Device.getUiDevice().findObject(By.clazz(((UiObject) element.getUiObject()).getClassName()));
+        }
+        Field gestureField = uiObject2.getClass().getDeclaredField("mGestures");
+        gestureField.setAccessible(true);
+        Object gestureObject = gestureField.get(uiObject2);
+
+        Field viewConfigField = gestureObject.getClass().getDeclaredField("mViewConfig");
+        viewConfigField.setAccessible(true);
+        Object viewConfigObject = viewConfigField.get(gestureObject);
+
+        Method getScaledPagingTouchSlopMethod = viewConfigObject.getClass().getDeclaredMethod("getScaledPagingTouchSlop");
+        getScaledPagingTouchSlopMethod.setAccessible(true);
+        int touchPadding = (int) getScaledPagingTouchSlopMethod.invoke(viewConfigObject);
+
+        return touchPadding / 2;
+    }
+
     private static class ContentSize {
+
         int width;
         int height;
         int top;
@@ -116,54 +281,5 @@ public class GetElementAttribute extends SafeRequestHandler {
             }
             return jsonObject.toString();
         }
-    }
-
-    private static int getScrollableOffset(AndroidElement uiScrollable) throws UiObjectNotFoundException, ClassNotFoundException, InvalidSelectorException {
-        AccessibilityNodeInfo nodeInfo = null;
-        int offset = 0;
-        Object actualObject = uiScrollable.getUiObject();
-        if (actualObject instanceof UiObject) {
-            UiObject object = (UiObject) uiScrollable.getChild(new UiSelector().index(0));
-            Method findAccessibilityNodeInfoMethod = ReflectionUtils.method(UiObject.class, "findAccessibilityNodeInfo", long.class);
-            long waitForSelectorTimeout = (long) ReflectionUtils.getField(UiObject.class, "WAIT_FOR_SELECTOR_TIMEOUT", object);
-
-            nodeInfo = (AccessibilityNodeInfo) ReflectionUtils.invoke(findAccessibilityNodeInfoMethod, object, waitForSelectorTimeout);
-        } else {
-            UiObject2 childObject = ((UiObject2) actualObject).getChildren().get(0);
-            try {
-                nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(childObject);
-            } catch (UiAutomator2Exception ignored) {
-            }
-        }
-
-        if (nodeInfo != null) {
-            Rect rect = new Rect();
-            nodeInfo.getBoundsInParent(rect);
-            offset = rect.height();
-        }
-
-        return offset;
-    }
-
-    private static int getTouchPadding(AndroidElement element) throws UiObjectNotFoundException, ReflectiveOperationException {
-        UiObject2 uiObject2;
-        if (element instanceof UiObject2Element) {
-            uiObject2 = Device.getUiDevice().findObject(By.clazz(((UiObject2) element.getUiObject()).getClassName()));
-        } else {
-            uiObject2 = Device.getUiDevice().findObject(By.clazz(((UiObject) element.getUiObject()).getClassName()));
-        }
-        Field gestureField = uiObject2.getClass().getDeclaredField("mGestures");
-        gestureField.setAccessible(true);
-        Object gestureObject = gestureField.get(uiObject2);
-
-        Field viewConfigField = gestureObject.getClass().getDeclaredField("mViewConfig");
-        viewConfigField.setAccessible(true);
-        Object viewConfigObject = viewConfigField.get(gestureObject);
-
-        Method getScaledPagingTouchSlopMethod = viewConfigObject.getClass().getDeclaredMethod("getScaledPagingTouchSlop");
-        getScaledPagingTouchSlopMethod.setAccessible(true);
-        int touchPadding = (int) getScaledPagingTouchSlopMethod.invoke(viewConfigObject);
-
-        return touchPadding / 2;
     }
 }
