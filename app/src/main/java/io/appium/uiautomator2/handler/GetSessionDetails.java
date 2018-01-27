@@ -22,7 +22,7 @@ public class GetSessionDetails extends SafeRequestHandler {
         super(mappedUri);
         session = AppiumUiAutomatorDriver.getInstance().getSession();
     }
-    
+
     @Override
     public AppiumResponse safeHandle(IHttpRequest request) {
         try {
