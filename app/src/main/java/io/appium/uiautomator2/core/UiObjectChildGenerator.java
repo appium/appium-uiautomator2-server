@@ -66,7 +66,7 @@ public class UiObjectChildGenerator implements Iterable<Object> {
             } else {
                 child = uiObject2Children.get(curChild);
             }
-            curChild++;
+            ++curChild;
             return child;
         }
 

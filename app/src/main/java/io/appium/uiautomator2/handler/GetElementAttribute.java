@@ -43,7 +43,7 @@ public class GetElementAttribute extends SafeRequestHandler {
     // last scroll data used in getting the 'contentSize' attribute.
     // TODO see whether anchoring these to time and screen size is more reliable across devices
     private static int MINI_SWIPE_STEPS = 10;
-    private static int MINI_SWIPE_PIXELS = 600;
+    private static int MINI_SWIPE_PIXELS = 200;
 
     public GetElementAttribute(String mappedUri) {
         super(mappedUri);
@@ -115,26 +115,22 @@ public class GetElementAttribute extends SafeRequestHandler {
         if (y2 < 0) {
             y2 = 0;
         }
-        int tries = 0;
 
         Session session = AppiumUiAutomatorDriver.getInstance().getSession();
         AccessibilityScrollData lastScrollData = null;
-
-        // generating scrolldata is flakey and doesn't always work, so try a number of times
-        while (tries < 10 && lastScrollData == null) {
-            tries += 1;
-            Logger.debug("Doing a mini swipe-and-back in the scrollable view to generate scroll data (try " + tries + ")");
-            swipe(x1, y1, x2, y2);
+        Logger.debug("Doing a mini swipe-and-back in the scrollable view to generate scroll data");
+        swipe(x1, y1, x2, y2);
+        lastScrollData = session.getLastScrollData();
+        if (lastScrollData == null) {
+            // if we didn't get scroll data from the down swipe, try to get it from the up swipe
+            swipe(x2, y2, x1, y1);
             lastScrollData = session.getLastScrollData();
-            if (lastScrollData == null) {
-                // if we didn't get scroll data from the down swipe, try to get it from the up swipe
-                swipe(x2, y2, x1, y1);
-                lastScrollData = session.getLastScrollData();
-            } else {
-                // otherwise just do a reset swipe without worrying about scroll data
-                getUiDevice().swipe(x2, y2, x1, y1, MINI_SWIPE_STEPS);
-            }
+        } else {
+            // otherwise just do a reset swipe without worrying about scroll data, to avoid it
+            // failing because of flakiness
+            getUiDevice().swipe(x2, y2, x1, y1, MINI_SWIPE_STEPS);
         }
+
 
         if (lastScrollData == null) {
             throw new UiAutomator2Exception("Could not retrieve accessibility scroll data; unable to determine scrollable offset");
@@ -155,8 +151,9 @@ public class GetElementAttribute extends SafeRequestHandler {
     }
 
     private static int getScrollableOffsetByItemCount (AndroidElement uiScrollable, int itemCount) {
-        Logger.debug("Figuring out scrollableOffset via item count");
+        Logger.debug("Figuring out scrollableOffset via item count of " + itemCount);
         Object scrollObject = uiScrollable.getUiObject();
+        Rect scrollBounds = getElementBoundsInScreen(uiScrollable);
 
         // here we loop through the children and get their bounds until the height differs, then
         // regardless of whether we have a list or a grid, we'll know the height of an item/row
@@ -174,43 +171,47 @@ public class GetElementAttribute extends SafeRequestHandler {
                     throw new UiObjectNotFoundException("Could not get child of scrollview");
                 }
 
-                Rect bounds = getElementBoundsInScreen(item);
+                Rect itemBounds = getElementBoundsInScreen(item);
 
-                itemsPerRow++;
+                ++itemsPerRow;
                 lastExaminedItem = item;
 
-                if (lastExaminedItemY != Integer.MIN_VALUE && bounds.top > lastExaminedItemY) {
-                    numRowsExamined += 1;
-                    rowHeight = bounds.top - lastExaminedItemY;
+                if (lastExaminedItemY != Integer.MIN_VALUE && itemBounds.top > lastExaminedItemY) {
+                    ++numRowsExamined;
+                    rowHeight = itemBounds.top - lastExaminedItemY;
                     if (numRowsExamined >= numRowsToExamine) {
                         break;
                     }
+                    // reset itemsPerRow as we examine another row; don't want it to overaccumulate
+                    itemsPerRow = 0;
                 }
 
-                lastExaminedItemY = bounds.top;
+                lastExaminedItemY = itemBounds.top;
             }
 
             if (lastExaminedItem == null) {
                 throw new UiObjectNotFoundException("Could not find any children of the scrollview to get offset from");
             }
+            Logger.debug("Determined there were " + itemsPerRow + " items per row");
 
             int numRows = (int) Math.floor(itemCount / itemsPerRow);
             if (itemCount % itemsPerRow > 0) {
                 // we might have an additional part-row
-                numRows += 1;
+                ++numRows;
             }
             int totalHeight = numRows * rowHeight;
+            int scrollableOffset = totalHeight - scrollBounds.height();
             Logger.debug("Determined there were " + numRows + " rows of height " +
-                    rowHeight + ", for a total scrollableOffset of " + totalHeight);
-            return totalHeight;
+                    rowHeight + ", for a total height of " + totalHeight + " and scroll offset " +
+                    "of " + scrollableOffset);
+            return scrollableOffset;
         } catch (UiObjectNotFoundException ignore) {
         } catch (InvalidClassException e) {
             Logger.error("Programming error, tried to build a UiObjectChildGenerator with wrong type");
         }
 
-        // there were no child items we could find, so just return the height of the parent
-        Rect bounds = getElementBoundsInScreen(uiScrollable);
-        return bounds.height();
+        // there were no child items we could find, so assume no offset
+        return 0;
     }
 
     private static boolean swipe(final int startX, final int startY, final int endX, final int endY) {

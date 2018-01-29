@@ -20,6 +20,8 @@ public final class NotificationListener {
     private final int TOAST_CLEAR_TIMEOUT = 3500;
     private final int WAIT_FOR_EVENT_TIMEOUT = 500;
 
+    public boolean isListening = false;
+
     private NotificationListener(){
     }
 
@@ -38,6 +40,7 @@ public final class NotificationListener {
         }
         listener = new Listener();
         listener.start();
+        isListening = true;
     }
 
     public void stop(){
@@ -51,6 +54,7 @@ public final class NotificationListener {
             listener.join(WAIT_FOR_EVENT_TIMEOUT);
         } catch (InterruptedException ignore) {
         }
+        isListening = false;
     }
 
     public static  List<CharSequence> getToastMSGs() {
