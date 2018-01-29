@@ -29,6 +29,7 @@ import io.appium.uiautomator2.model.AccessibilityScrollData;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUiAutomatorDriver;
 import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.UiObject2Element;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Device;
@@ -106,7 +107,17 @@ public class GetElementAttribute extends SafeRequestHandler {
         int y1 = bounds.centerY() + MINI_SWIPE_PIXELS;
         int x2 = x1;
         int y2 = y1 - (MINI_SWIPE_PIXELS * 2);
+
+        // ensure that our xs and ys are within the bounds of the element
+        if (y1 > bounds.width()) {
+            y1 = bounds.width();
+        }
+        if (y2 < 0) {
+            y2 = 0;
+        }
         int tries = 0;
+
+        Session session = AppiumUiAutomatorDriver.getInstance().getSession();
         AccessibilityScrollData lastScrollData = null;
 
         // generating scrolldata is flakey and doesn't always work, so try a number of times
@@ -114,8 +125,15 @@ public class GetElementAttribute extends SafeRequestHandler {
             tries += 1;
             Logger.debug("Doing a mini swipe-and-back in the scrollable view to generate scroll data (try " + tries + ")");
             swipe(x1, y1, x2, y2);
-            swipe(x2, y2, x1, y1);
-            lastScrollData = AppiumUiAutomatorDriver.getInstance().getSession().getLastScrollData();
+            lastScrollData = session.getLastScrollData();
+            if (lastScrollData == null) {
+                // if we didn't get scroll data from the down swipe, try to get it from the up swipe
+                swipe(x2, y2, x1, y1);
+                lastScrollData = session.getLastScrollData();
+            } else {
+                // otherwise just do a reset swipe without worrying about scroll data
+                getUiDevice().swipe(x2, y2, x1, y1, MINI_SWIPE_STEPS);
+            }
         }
 
         if (lastScrollData == null) {
@@ -143,26 +161,25 @@ public class GetElementAttribute extends SafeRequestHandler {
         // here we loop through the children and get their bounds until the height differs, then
         // regardless of whether we have a list or a grid, we'll know the height of an item/row
         try {
-            int lastExaminedYInitVal = -999999; // something that could never be a 'top'
             int itemsPerRow = 0;
             int rowHeight = 0;
-            int lastExaminedItemY = lastExaminedYInitVal;
+            int lastExaminedItemY = Integer.MIN_VALUE; // initialize to something impossibly negative
             int numRowsExamined = 0;
             int numRowsToExamine = 3; // examine a few rows since the top ones often have bad offsets
             Object lastExaminedItem = null;
 
             UiObjectChildGenerator gen = new UiObjectChildGenerator(scrollObject);
             for (Object item : gen) {
-                Rect bounds = getElementBoundsInScreen(item);
-
                 if (item == null) {
                     throw new UiObjectNotFoundException("Could not get child of scrollview");
                 }
 
-                itemsPerRow += 1;
+                Rect bounds = getElementBoundsInScreen(item);
+
+                itemsPerRow++;
                 lastExaminedItem = item;
 
-                if (lastExaminedItemY != lastExaminedYInitVal && bounds.top > lastExaminedItemY) {
+                if (lastExaminedItemY != Integer.MIN_VALUE && bounds.top > lastExaminedItemY) {
                     numRowsExamined += 1;
                     rowHeight = bounds.top - lastExaminedItemY;
                     if (numRowsExamined >= numRowsToExamine) {

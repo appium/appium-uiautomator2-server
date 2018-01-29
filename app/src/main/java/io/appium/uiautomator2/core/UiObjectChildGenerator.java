@@ -1,6 +1,7 @@
 package io.appium.uiautomator2.core;
 
 
+import android.support.annotation.Nullable;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
@@ -48,7 +49,8 @@ public class UiObjectChildGenerator implements Iterable<Object> {
             curChild = 0;
         }
 
-       @Override
+        @Override
+        @Nullable
         public Object next() {
             if (curChild == -1) {
                 init();
@@ -64,11 +66,11 @@ public class UiObjectChildGenerator implements Iterable<Object> {
             } else {
                 child = uiObject2Children.get(curChild);
             }
-            curChild += 1;
+            curChild++;
             return child;
-       }
+        }
 
-       @Override
+        @Override
         public boolean hasNext() {
            if (curChild == -1) {
                init();

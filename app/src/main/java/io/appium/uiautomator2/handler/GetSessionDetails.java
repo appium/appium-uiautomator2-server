@@ -18,11 +18,11 @@ public class GetSessionDetails extends SafeRequestHandler {
 
     public GetSessionDetails(String mappedUri) {
         super(mappedUri);
-        session = AppiumUiAutomatorDriver.getInstance().getSession();
     }
 
     @Override
     public AppiumResponse safeHandle(IHttpRequest request) {
+        session = AppiumUiAutomatorDriver.getInstance().getSession();
         try {
             JSONObject result = new JSONObject();
             AccessibilityScrollData scrollData = session.getLastScrollData();
