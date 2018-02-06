@@ -95,7 +95,7 @@ task installAUT(type: Exec) {
     group = 'test'
     description = 'Install app under test'
     def adb = android.getAdbExe().toString()
-    def apk = file('../app/src/androidTestE2eTest/java/io/appium/uiautomator2/unittest/resource/ApiDemos-debug.apk')
+    def apk = file('../node_modules/android-apidemos/bin/ApiDemos-debug.apk')
     commandLine "$adb install -rg $apk".split(' ')
     standardOutput = new ByteArrayOutputStream()
     ext.output = {

@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "replace-in-file": "^3.1.0",
-    "yargs": "^10.1.1"
+    "yargs": "^10.1.1",
+    "android-apidemos": "^2.1.2"
   }
 }
