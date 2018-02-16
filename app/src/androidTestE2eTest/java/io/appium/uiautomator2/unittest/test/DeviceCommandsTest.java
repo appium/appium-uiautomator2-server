@@ -333,14 +333,6 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    public void findElementWithIndex() {
-        Response response = findElement(By.xpath("//*[@resource-id='android:id/list']" +
-                "/android.widget.TextView[@index='3']"));
-        response = getText(response.getElementId());
-        assertEquals("App", response.getValue());
-    }
-
-    @Test
     public void findElementsWithAttribute() throws JSONException {
         Response response = findElement(By.accessibilityId("Accessibility"));
         clickAndWaitForStaleness(response.getElementId());
