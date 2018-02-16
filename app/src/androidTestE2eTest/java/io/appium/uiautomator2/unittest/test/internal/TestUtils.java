@@ -32,6 +32,7 @@ import io.appium.uiautomator2.unittest.test.Config;
 import io.appium.uiautomator2.utils.Device;
 
 import static android.os.SystemClock.elapsedRealtime;
+import static android.os.SystemClock.sleep;
 import static io.appium.uiautomator2.unittest.test.Config.APP_LAUNCH_TIMEOUT;
 import static io.appium.uiautomator2.unittest.test.Config.DEFAULT_POLLING_INTERVAL;
 import static io.appium.uiautomator2.unittest.test.Config.IMPLICIT_TIMEOUT;
@@ -48,17 +49,11 @@ public class TestUtils {
     private static final String PM_GRANT_COMMAND = "pm grant %s %s";
 
     public static void waitForSeconds(int seconds) {
-        try {
-            Thread.sleep(seconds * 1000);
-        } catch (InterruptedException ignore) {
-        }
+        sleep(seconds * 1000);
     }
 
     public static void waitForMillis(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ignore) {
-        }
+        sleep(millis);
     }
 
     private static void waitForAppToLaunch(String appPackage) throws JSONException {

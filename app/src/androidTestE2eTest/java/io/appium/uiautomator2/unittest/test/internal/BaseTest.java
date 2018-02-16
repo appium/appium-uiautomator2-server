@@ -65,30 +65,32 @@ public abstract class BaseTest {
     @BeforeClass
     public static void beforeStartServer() throws InterruptedException,
             JSONException, IOException {
-        if (serverInstrumentation == null) {
-            assertNotNull(getUiDevice());
-            ctx = InstrumentationRegistry.getInstrumentation().getContext();
-            serverInstrumentation = ServerInstrumentation.getInstance(ctx, ServerConfig
-                    .getServerPort());
-            Logger.info("Starting Server");
-            serverInstrumentation.startServer();
-            Client.waitForNettyStatus(NettyStatus.ONLINE);
-            createSession();
-            Configurator.getInstance().setWaitForSelectorTimeout(0);
-            Configurator.getInstance().setWaitForIdleTimeout(50000);
-            TestUtils.grantPermission(getTargetContext(), READ_EXTERNAL_STORAGE);
-            TestUtils.grantPermission(getTargetContext(), WRITE_EXTERNAL_STORAGE);
+        if (serverInstrumentation != null) {
+            return;
         }
+        assertNotNull(getUiDevice());
+        ctx = InstrumentationRegistry.getInstrumentation().getContext();
+        serverInstrumentation = ServerInstrumentation.getInstance(ctx, ServerConfig
+                .getServerPort());
+        Logger.info("Starting Server");
+        serverInstrumentation.startServer();
+        Client.waitForNettyStatus(NettyStatus.ONLINE);
+        createSession();
+        Configurator.getInstance().setWaitForSelectorTimeout(0);
+        Configurator.getInstance().setWaitForIdleTimeout(50000);
+        TestUtils.grantPermission(getTargetContext(), READ_EXTERNAL_STORAGE);
+        TestUtils.grantPermission(getTargetContext(), WRITE_EXTERNAL_STORAGE);
     }
 
     @AfterClass
     public static void stopSever() throws InterruptedException, ConnectTimeoutException {
         deleteSession();
-        if (serverInstrumentation != null) {
-            serverInstrumentation.stopServer();
-            Client.waitForNettyStatus(NettyStatus.OFFLINE);
-            serverInstrumentation = null;
+        if (serverInstrumentation == null) {
+            return;
         }
+        serverInstrumentation.stopServer();
+        Client.waitForNettyStatus(NettyStatus.OFFLINE);
+        serverInstrumentation = null;
     }
 
     @Before

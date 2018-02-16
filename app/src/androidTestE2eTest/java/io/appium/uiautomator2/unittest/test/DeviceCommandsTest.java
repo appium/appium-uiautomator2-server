@@ -72,7 +72,7 @@ public class DeviceCommandsTest extends BaseTest {
 
         by = By.xpath("//hierarchy//*[@text='API Demos']");
         response = findElement(by);
-        assertTrue(by + "should be found", response.isSuccessful());
+        assertTrue(by + " should be found", response.isSuccessful());
 
         by = By.xpath("//hierarchy");
         response = findElement(by);
@@ -406,7 +406,6 @@ public class DeviceCommandsTest extends BaseTest {
         response = getText(response.getElementId());
         assertEquals("Clicked popup menu item Share", response.getValue());
     }
-
 
     /**
      * Performs Scroll to specified element
