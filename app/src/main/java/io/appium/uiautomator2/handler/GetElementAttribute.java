@@ -6,6 +6,7 @@ import android.support.test.uiautomator.StaleObjectException;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
+import android.support.test.uiautomator.UiScrollable;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import org.json.JSONException;
@@ -44,6 +45,9 @@ public class GetElementAttribute extends SafeRequestHandler {
     // TODO see whether anchoring these to time and screen size is more reliable across devices
     private static int MINI_SWIPE_STEPS = 10;
     private static int MINI_SWIPE_PIXELS = 200;
+
+    // https://android.googlesource.com/platform/frameworks/testing/+/master/uiautomator/library/core-src/com/android/uiautomator/core/UiScrollable.java#635
+    private static double SWIPE_DEAD_ZONE_PCT = 0.1;
 
     public GetElementAttribute(String mappedUri) {
         super(mappedUri);
@@ -107,13 +111,14 @@ public class GetElementAttribute extends SafeRequestHandler {
         int y1 = bounds.centerY() + MINI_SWIPE_PIXELS;
         int x2 = x1;
         int y2 = y1 - (MINI_SWIPE_PIXELS * 2);
+        int yMargin = (int) Math.floor(bounds.height() * SWIPE_DEAD_ZONE_PCT);
 
         // ensure that our xs and ys are within the bounds of the element
-        if (y1 > bounds.width()) {
-            y1 = bounds.width();
+        if (y1 > bounds.height()) {
+            y1 = bounds.height() - yMargin;
         }
         if (y2 < 0) {
-            y2 = 0;
+            y2 = yMargin;
         }
 
         Session session = AppiumUiAutomatorDriver.getInstance().getSession();
