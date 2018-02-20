@@ -17,6 +17,7 @@ import io.appium.uiautomator2.utils.Logger;
 public abstract class EventRegister {
 
     public static int EVENT_COOLDOWN_MS = 750;
+    private static String EVENT_COOLDOWN_CAP = "scrollEventTimeout";
 
     public static Boolean runAndRegisterScrollEvents (ReturningRunnable<Boolean> runnable, long timeout) {
         // turn off listening to notifications since it interferes with us listening for the scroll
@@ -69,7 +70,19 @@ public abstract class EventRegister {
     }
 
     public static Boolean runAndRegisterScrollEvents (ReturningRunnable<Boolean> runnable) {
-        return runAndRegisterScrollEvents(runnable, EVENT_COOLDOWN_MS);
+        int timeout;
+        if (Session.capabilities.containsKey(EVENT_COOLDOWN_CAP)) {
+            try {
+                timeout = (int) Session.capabilities.get(EVENT_COOLDOWN_CAP);
+            } catch (Exception e) {
+                Logger.debug("Could not set scrollEventTimeout from caps: ", e);
+                timeout = EVENT_COOLDOWN_MS;
+            }
+        } else {
+            timeout = EVENT_COOLDOWN_MS;
+        }
+
+        return runAndRegisterScrollEvents(runnable, timeout);
     }
 
     // https://android.googlesource.com/platform/frameworks/testing/+/master/uiautomator/library/core-src/com/android/uiautomator/core/InteractionController.java#96
