@@ -1,5 +1,20 @@
-package io.appium.uiautomator2.server;
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package io.appium.uiautomator2.server;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +35,7 @@ import io.appium.uiautomator2.handler.FindElement;
 import io.appium.uiautomator2.handler.FindElements;
 import io.appium.uiautomator2.handler.FirstVisibleView;
 import io.appium.uiautomator2.handler.Flick;
+import io.appium.uiautomator2.handler.GetClipboard;
 import io.appium.uiautomator2.handler.GetDevicePixelRatio;
 import io.appium.uiautomator2.handler.GetDeviceSize;
 import io.appium.uiautomator2.handler.GetElementAttribute;
@@ -44,6 +60,7 @@ import io.appium.uiautomator2.handler.RotateScreen;
 import io.appium.uiautomator2.handler.ScrollTo;
 import io.appium.uiautomator2.handler.ScrollToElement;
 import io.appium.uiautomator2.handler.SendKeysToElement;
+import io.appium.uiautomator2.handler.SetClipboard;
 import io.appium.uiautomator2.handler.Source;
 import io.appium.uiautomator2.handler.Status;
 import io.appium.uiautomator2.handler.Swipe;
@@ -116,6 +133,8 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new UpdateSettings("/wd/hub/session/:sessionId/appium/settings"));
         register(postHandler, new NetworkConnection("/wd/hub/session/:sessionId/network_connection"));
         register(postHandler, new ScrollToElement("/wd/hub/session/:sessionId/appium/element/:id/scroll_to/:elementId"));
+        register(postHandler, new GetClipboard("/wd/hub/session/:sessionId/appium/clipboard/get"));
+        register(postHandler, new SetClipboard("/wd/hub/session/:sessionId/appium/clipboard/set"));
     }
 
     private void registerGetHandler() {
@@ -136,6 +155,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetSystemBars("/wd/hub/session/:sessionId/appium/device/system_bars"));
         register(getHandler, new GetDevicePixelRatio("/wd/hub/session/:sessionId/appium/device/pixel_ratio"));
         register(getHandler, new FirstVisibleView("/wd/hub/session/:sessionId/appium/element/:id/first_visible"));
+
     }
 
     protected void register(Map<String, BaseRequestHandler> registerOn, BaseRequestHandler handler) {
