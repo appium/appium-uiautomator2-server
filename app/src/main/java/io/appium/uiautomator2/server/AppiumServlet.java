@@ -133,8 +133,8 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new UpdateSettings("/wd/hub/session/:sessionId/appium/settings"));
         register(postHandler, new NetworkConnection("/wd/hub/session/:sessionId/network_connection"));
         register(postHandler, new ScrollToElement("/wd/hub/session/:sessionId/appium/element/:id/scroll_to/:elementId"));
-        register(postHandler, new GetClipboard("/wd/hub/session/:sessionId/appium/clipboard/get"));
-        register(postHandler, new SetClipboard("/wd/hub/session/:sessionId/appium/clipboard/set"));
+        register(postHandler, new GetClipboard("/wd/hub/session/:sessionId/appium/device/get_clipboard"));
+        register(postHandler, new SetClipboard("/wd/hub/session/:sessionId/appium/device/set_clipboard"));
     }
 
     private void registerGetHandler() {
@@ -155,7 +155,6 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetSystemBars("/wd/hub/session/:sessionId/appium/device/system_bars"));
         register(getHandler, new GetDevicePixelRatio("/wd/hub/session/:sessionId/appium/device/pixel_ratio"));
         register(getHandler, new FirstVisibleView("/wd/hub/session/:sessionId/appium/element/:id/first_visible"));
-
     }
 
     protected void register(Map<String, BaseRequestHandler> registerOn, BaseRequestHandler handler) {
