@@ -69,7 +69,7 @@ public class SetClipboard extends SafeRequestHandler {
                     throw new IllegalArgumentException();
             }
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
                     String.format("Only '%s' content types are supported. '%s' is given instead",
                             ClipDataType.supportedDataTypes(),
                             contentType));
