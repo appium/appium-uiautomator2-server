@@ -108,7 +108,7 @@ public class UpdateSettingsTests {
     }
 
     @Test
-    public void shouldBeAbleToReturShouldUseCompactResponsesSetting() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnShouldUseCompactResponsesSetting() throws InstantiationException, IllegalAccessException {
         verifySettingIsAvailable(ShouldUseCompactResponses.SETTING_NAME, ShouldUseCompactResponses.class);
     }
 

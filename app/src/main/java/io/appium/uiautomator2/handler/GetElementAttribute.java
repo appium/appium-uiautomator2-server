@@ -16,6 +16,7 @@ import java.io.InvalidClassException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -85,9 +86,7 @@ public class GetElementAttribute extends SafeRequestHandler {
     }
 
     public static String getElementAttributeValue(AndroidElement element, String attributeName) throws NoAttributeFoundException, UiObjectNotFoundException, ReflectiveOperationException {
-        if ("name".equals(attributeName) || "contentDescription".equals(attributeName)
-                || "text".equals(attributeName) || "className".equals(attributeName)
-                || "resourceId".equals(attributeName)) {
+        if (Arrays.asList("name", "contentDescription", "text", "className", "resourceId").contains(attributeName)) {
             return element.getStringAttribute(attributeName);
         } else if ("contentSize".equals(attributeName)) {
             Rect boundsRect = element.getBounds();

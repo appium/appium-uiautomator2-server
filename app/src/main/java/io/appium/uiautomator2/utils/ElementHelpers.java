@@ -38,11 +38,13 @@ import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.Session;
 
+import static io.appium.uiautomator2.handler.GetElementAttribute.getElementAttributeValue;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public abstract class ElementHelpers {
 
     private static Method findAccessibilityNodeInfo;
+    private static final String ATTRIBUTE_PREFIX = "attribute/";
 
     private static AccessibilityNodeInfo elementToNode(Object element) {
         AccessibilityNodeInfo result = null;
@@ -90,28 +92,29 @@ public abstract class ElementHelpers {
     public static JSONObject toJSON(AndroidElement el) throws JSONException, UiObjectNotFoundException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ELEMENT", el.getId());
-        if (!Session.shouldUseCompactResponses()) {
-            for (String field : Session.getElementResponseFields()) {
-                try {
-                    if (field.equals("name")) {
-                        putNullable(jsonObject, field, el.getContentDesc());
-                    } else if (field.equals("text")) {
-                        putNullable(jsonObject, field, el.getText());
-                    } else if (field.equals("rect")) {
-                        putNullable(jsonObject, field, GetRect.getElementRectJSON(el));
-                    } else if (field.equals("enabled")) {
-                        putNullable(jsonObject, field, GetElementAttribute.getElementAttributeValue(el, field));
-                    } else if (field.equals("displayed")) {
-                        putNullable(jsonObject, field, GetElementAttribute.getElementAttributeValue(el, field));
-                    } else if (field.equals("selected")) {
-                        putNullable(jsonObject, field, GetElementAttribute.getElementAttributeValue(el, field));
-                    } else if (field.startsWith("attribute/")) {
-                        String attributeName = field.substring(10);
-                        putNullable(jsonObject, field, GetElementAttribute.getElementAttributeValue(el, attributeName));
-                    }
-                } catch (ReflectiveOperationException | NoAttributeFoundException e) {
-                    // ignore field
+        if (Session.shouldUseCompactResponses()) {
+            return jsonObject;
+        }
+        for (String field : Session.getElementResponseFields()) {
+            try {
+                if (field.equals("name")) {
+                    putNullable(jsonObject, field, el.getContentDesc());
+                } else if (field.equals("text")) {
+                    putNullable(jsonObject, field, el.getText());
+                } else if (field.equals("rect")) {
+                    putNullable(jsonObject, field, GetRect.getElementRectJSON(el));
+                } else if (field.equals("enabled")) {
+                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                } else if (field.equals("displayed")) {
+                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                } else if (field.equals("selected")) {
+                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                } else if (field.startsWith(ATTRIBUTE_PREFIX)) {
+                    String attributeName = field.substring(ATTRIBUTE_PREFIX.length());
+                    putNullable(jsonObject, field, getElementAttributeValue(el, attributeName));
                 }
+            } catch (ReflectiveOperationException | NoAttributeFoundException e) {
+                // ignore field
             }
         }
         return jsonObject;
