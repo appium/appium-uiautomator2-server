@@ -54,12 +54,8 @@ public class GetClipboard extends SafeRequestHandler {
                         .getString("contentType")
                         .toUpperCase());
             }
-            switch (contentType) {
-                case PLAINTEXT:
-                    return getClipboardTextResponse(request);
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
+                    toBase64String(getClipboardResponse(contentType)));
         } catch (IllegalArgumentException e) {
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
                     String.format("Only '%s' content types are supported. '%s' is given instead",
@@ -71,28 +67,33 @@ public class GetClipboard extends SafeRequestHandler {
     }
 
     // Clip feature should run with main thread
-    private AppiumResponse getClipboardTextResponse(final IHttpRequest request) {
-        AppiumGetClipRunnerble runnable = new AppiumGetClipRunnerble(request);
+    private String getClipboardResponse(ClipDataType contentType) {
+        AppiumGetClipboardRunnable runnable = new AppiumGetClipboardRunnable(contentType);
         mInstrumentation.runOnMainSync(runnable);
-        return runnable.getResponse();
+        return runnable.getContent();
     }
 
-    private class AppiumGetClipRunnerble implements Runnable {
-        private IHttpRequest request;
-        private AppiumResponse response;
+    private class AppiumGetClipboardRunnable implements Runnable {
+        private ClipDataType contentType;
+        private String content;
 
-        AppiumGetClipRunnerble(IHttpRequest request) {
-            this.request = request;
+        AppiumGetClipboardRunnable(ClipDataType contentType) {
+            this.contentType = contentType;
         }
 
         @Override
         public void run() {
-            response = new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
-                    toBase64String(new ClipboardHelper(mInstrumentation.getTargetContext()).getTextData()));
+            switch (contentType) {
+                case PLAINTEXT:
+                    content = new ClipboardHelper(mInstrumentation.getTargetContext()).getTextData();
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
         }
 
-        public AppiumResponse getResponse() {
-            return response;
+        public String getContent() {
+            return content;
         }
     }
 }
