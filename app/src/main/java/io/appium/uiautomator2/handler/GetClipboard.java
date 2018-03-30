@@ -55,7 +55,7 @@ public class GetClipboard extends SafeRequestHandler {
                         .toUpperCase());
             }
             return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
-                    toBase64String(getClipboardResponse(contentType)));
+                    getClipboardResponse(contentType));
         } catch (IllegalArgumentException e) {
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
                     String.format("Only '%s' content types are supported. '%s' is given instead",
@@ -85,7 +85,7 @@ public class GetClipboard extends SafeRequestHandler {
         public void run() {
             switch (contentType) {
                 case PLAINTEXT:
-                    content = new ClipboardHelper(mInstrumentation.getTargetContext()).getTextData();
+                    content = toBase64String(new ClipboardHelper(mInstrumentation.getTargetContext()).getTextData());
                     break;
                 default:
                     throw new IllegalArgumentException();
