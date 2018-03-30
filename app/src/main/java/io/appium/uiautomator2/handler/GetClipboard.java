@@ -56,9 +56,7 @@ public class GetClipboard extends SafeRequestHandler {
             }
             switch (contentType) {
                 case PLAINTEXT:
-                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
-                            toBase64String(new ClipboardHelper(mInstrumentation.getTargetContext())
-                                    .getTextData()));
+                    return getClipboardTextResponse(request);
                 default:
                     throw new IllegalArgumentException();
             }
@@ -69,6 +67,32 @@ public class GetClipboard extends SafeRequestHandler {
                             contentType));
         } catch (Exception e) {
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+        }
+    }
+
+    // Clip feature should run with main thread
+    private AppiumResponse getClipboardTextResponse(final IHttpRequest request) {
+        AppiumGetClipRunnerble runnable = new AppiumGetClipRunnerble(request);
+        mInstrumentation.runOnMainSync(runnable);
+        return runnable.getResponse();
+    }
+
+    private class AppiumGetClipRunnerble implements Runnable {
+        private IHttpRequest request;
+        private AppiumResponse response;
+
+        AppiumGetClipRunnerble(IHttpRequest request) {
+            this.request = request;
+        }
+
+        @Override
+        public void run() {
+            response = new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
+                    toBase64String(new ClipboardHelper(mInstrumentation.getTargetContext()).getTextData()));
+        }
+
+        public AppiumResponse getResponse() {
+            return response;
         }
     }
 }

@@ -62,8 +62,7 @@ public class SetClipboard extends SafeRequestHandler {
             }
             switch (contentType) {
                 case PLAINTEXT:
-                    new ClipboardHelper(mInstrumentation.getTargetContext())
-                            .setTextData(label, content);
+                    mInstrumentation.runOnMainSync(new AppiumSetClipboardTextRunnable(label, content));
                     break;
                 default:
                     throw new IllegalArgumentException();
@@ -79,4 +78,20 @@ public class SetClipboard extends SafeRequestHandler {
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS);
     }
 
+    // Clip feature should run with main thread
+    private class AppiumSetClipboardTextRunnable implements Runnable {
+        private String label;
+        private String content;
+
+        AppiumSetClipboardTextRunnable(String label, String content) {
+            this.label = label;
+            this.content = content;
+        }
+
+        @Override
+        public void run() {
+            new ClipboardHelper(mInstrumentation.getTargetContext())
+                    .setTextData(label, content);
+        }
+    }
 }
