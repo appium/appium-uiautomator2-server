@@ -13,9 +13,11 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
+import io.appium.uiautomator2.model.settings.ElementResponseFields;
 import io.appium.uiautomator2.model.settings.EnableNotificationListener;
 import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
 import io.appium.uiautomator2.model.settings.ISetting;
+import io.appium.uiautomator2.model.settings.ShouldUseCompactResponses;
 import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
@@ -28,6 +30,8 @@ public class UpdateSettings extends SafeRequestHandler {
             put(CompressedLayoutHierarchy.SETTING_NAME, CompressedLayoutHierarchy.class);
             put(WaitForIdleTimeout.SETTING_NAME, WaitForIdleTimeout.class);
             put(EnableNotificationListener.SETTING_NAME, EnableNotificationListener.class);
+            put(ElementResponseFields.SETTING_NAME, ElementResponseFields.class);
+            put(ShouldUseCompactResponses.SETTING_NAME, ShouldUseCompactResponses.class);
         }
     };
 

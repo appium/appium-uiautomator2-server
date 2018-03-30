@@ -89,8 +89,7 @@ public class FindElements extends SafeRequestHandler {
                 String id = UUID.randomUUID().toString();
                 AndroidElement androidElement = getAndroidElement(id, element, by);
                 ke.add(androidElement);
-                JSONObject jsonElement = new JSONObject();
-                jsonElement.put("ELEMENT", id);
+                JSONObject jsonElement = ElementHelpers.toJSON(androidElement);
                 result.put(jsonElement);
             }
             return new AppiumResponse(getSessionId(request), result);

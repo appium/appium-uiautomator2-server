@@ -37,7 +37,9 @@ import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.settings.AbstractSetting;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
+import io.appium.uiautomator2.model.settings.ElementResponseFields;
 import io.appium.uiautomator2.model.settings.EnableNotificationListener;
+import io.appium.uiautomator2.model.settings.ShouldUseCompactResponses;
 import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 import io.appium.uiautomator2.server.WDStatus;
 
@@ -98,6 +100,16 @@ public class UpdateSettingsTests {
     @Test
     public void shouldBeAbleToReturnWaitForIdleTimeoutSetting() throws InstantiationException, IllegalAccessException {
         verifySettingIsAvailable(WaitForIdleTimeout.SETTING_NAME, WaitForIdleTimeout.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnElementResponseFieldsSetting() throws InstantiationException, IllegalAccessException {
+        verifySettingIsAvailable(ElementResponseFields.SETTING_NAME, ElementResponseFields.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturShouldUseCompactResponsesSetting() throws InstantiationException, IllegalAccessException {
+        verifySettingIsAvailable(ShouldUseCompactResponses.SETTING_NAME, ShouldUseCompactResponses.class);
     }
 
     @Test(expected=UnsupportedSettingException.class)

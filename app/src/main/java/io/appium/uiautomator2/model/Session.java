@@ -1,5 +1,6 @@
 package io.appium.uiautomator2.model;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -9,6 +10,8 @@ import java.util.concurrent.ConcurrentMap;
 
 public class Session {
     public static final String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
+    public static final String CAP_SHOULD_USE_COMPACT_RESPONSES = "shouldUseCompactResponses";
+    public static final String CAP_ELEMENT_RESPONSE_FIELDS = "elementResponseFields";
     private String sessionId;
     private ConcurrentMap<String, JSONObject> commandConfiguration;
     private KnownElements knownElements;
@@ -26,6 +29,21 @@ public class Session {
 
     public String getSessionId() {
         return sessionId;
+    }
+
+    public static boolean shouldUseCompactResponses() {
+        boolean shouldUseCompactResponses = true;
+        if (Session.capabilities.containsKey(CAP_SHOULD_USE_COMPACT_RESPONSES)) {
+            shouldUseCompactResponses = BooleanUtils.toBoolean(Session.capabilities.get(CAP_SHOULD_USE_COMPACT_RESPONSES).toString());
+        }
+        return shouldUseCompactResponses;
+    }
+
+    public static String[] getElementResponseFields() {
+        if (Session.capabilities.containsKey(CAP_ELEMENT_RESPONSE_FIELDS)) {
+            return Session.capabilities.get(CAP_ELEMENT_RESPONSE_FIELDS).toString().split(",");
+        }
+        return new String[] { "name", "text" };
     }
 
     public void setCommandConfiguration(String command, JSONObject config) {
