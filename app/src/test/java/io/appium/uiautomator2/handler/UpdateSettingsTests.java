@@ -18,9 +18,7 @@ package io.appium.uiautomator2.handler;
 
 import org.json.JSONException;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -35,18 +33,20 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.settings.AbstractSetting;
+import io.appium.uiautomator2.model.settings.ActionAcknowledgmentTimeout;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
 import io.appium.uiautomator2.model.settings.EnableNotificationListener;
+import io.appium.uiautomator2.model.settings.KeyInjectionDelay;
+import io.appium.uiautomator2.model.settings.ScrollAcknowledgmentTimeout;
 import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
+import io.appium.uiautomator2.model.settings.WaitForSelectorTimeout;
 import io.appium.uiautomator2.server.WDStatus;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -98,6 +98,26 @@ public class UpdateSettingsTests {
     @Test
     public void shouldBeAbleToReturnWaitForIdleTimeoutSetting() throws InstantiationException, IllegalAccessException {
         verifySettingIsAvailable(WaitForIdleTimeout.SETTING_NAME, WaitForIdleTimeout.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnWaitForSelectorTimeoutSetting() throws InstantiationException, IllegalAccessException {
+        verifySettingIsAvailable(WaitForSelectorTimeout.SETTING_NAME, WaitForSelectorTimeout.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnActionAcknowledgmentTimeout() throws InstantiationException, IllegalAccessException {
+        verifySettingIsAvailable(ActionAcknowledgmentTimeout.SETTING_NAME, ActionAcknowledgmentTimeout.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnKeyInjectionDelay() throws InstantiationException, IllegalAccessException {
+        verifySettingIsAvailable(KeyInjectionDelay.SETTING_NAME, KeyInjectionDelay.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnScrollAcknowledgmentTimeout() throws InstantiationException, IllegalAccessException {
+        verifySettingIsAvailable(ScrollAcknowledgmentTimeout.SETTING_NAME, ScrollAcknowledgmentTimeout.class);
     }
 
     @Test(expected=UnsupportedSettingException.class)
