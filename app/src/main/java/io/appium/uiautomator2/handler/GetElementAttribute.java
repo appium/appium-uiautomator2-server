@@ -16,6 +16,7 @@ import java.io.InvalidClassException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -63,26 +64,8 @@ public class GetElementAttribute extends SafeRequestHandler {
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
         }
         try {
-            if ("name".equals(attributeName) || "contentDescription".equals(attributeName)
-                    || "text".equals(attributeName) || "className".equals(attributeName)
-                    || "resourceId".equals(attributeName)) {
-                String attribute = element.getStringAttribute(attributeName);
-                return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, attribute);
-            } else if ("contentSize".equals(attributeName)) {
-                Rect boundsRect = element.getBounds();
-                ContentSize contentSize = new ContentSize(boundsRect);
-                contentSize.touchPadding = getTouchPadding(element);
-                contentSize.scrollableOffset = getScrollableOffset(element);
-
-                return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, contentSize.toString());
-            } else {
-                Boolean boolAttribute = element.getBoolAttribute(attributeName);
-                // The result should be of type string according to
-                // https://w3c.github.io/webdriver/webdriver-spec.html#get-element-attribute
-                return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
-                        boolAttribute.toString());
-            }
-
+            String attribute = getElementAttributeValue(element, attributeName);
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, attribute);
         } catch (UiObjectNotFoundException e) {
             Logger.error(MessageFormat.format("Element not found while trying to get attribute '{0}'", attributeName), e);
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR);
@@ -100,6 +83,23 @@ public class GetElementAttribute extends SafeRequestHandler {
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
         }
 
+    }
+
+    public static String getElementAttributeValue(AndroidElement element, String attributeName) throws NoAttributeFoundException, UiObjectNotFoundException, ReflectiveOperationException {
+        if (Arrays.asList("name", "contentDescription", "text", "className", "resourceId").contains(attributeName)) {
+            return element.getStringAttribute(attributeName);
+        } else if ("contentSize".equals(attributeName)) {
+            Rect boundsRect = element.getBounds();
+            ContentSize contentSize = new ContentSize(boundsRect);
+            contentSize.touchPadding = getTouchPadding(element);
+            contentSize.scrollableOffset = getScrollableOffset(element);
+            return contentSize.toString();
+        } else {
+            Boolean boolAttribute = element.getBoolAttribute(attributeName);
+            // The result should be of type string according to
+            // https://w3c.github.io/webdriver/webdriver-spec.html#get-element-attribute
+            return boolAttribute.toString();
+        }
     }
 
     private static int getScrollableOffset(AndroidElement uiScrollable) {

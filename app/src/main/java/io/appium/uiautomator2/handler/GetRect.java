@@ -43,17 +43,13 @@ public class GetRect extends SafeRequestHandler {
     public AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Get Rect of element command");
         String id = getElementId(request);
-        final JSONObject result = new JSONObject();
+        final JSONObject result;
         AndroidElement element = KnownElements.getElementFromCache(id);
         if (element == null) {
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
         }
         try {
-            final Rect rect = element.getBounds();
-            result.put("x", rect.left);
-            result.put("y", rect.top);
-            result.put("width", rect.width());
-            result.put("height", rect.height());
+            result = getElementRectJSON(element);
         } catch (UiObjectNotFoundException e) {
             Logger.error("Element not found: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
@@ -65,4 +61,13 @@ public class GetRect extends SafeRequestHandler {
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
 
+    public static JSONObject getElementRectJSON(AndroidElement element) throws UiObjectNotFoundException, JSONException {
+        final JSONObject result = new JSONObject();
+        final Rect rect = element.getBounds();
+        result.put("x", rect.left);
+        result.put("y", rect.top);
+        result.put("width", rect.width());
+        result.put("height", rect.height());
+        return result;
+    }
 }

@@ -36,9 +36,11 @@ import io.appium.uiautomator2.model.settings.AbstractSetting;
 import io.appium.uiautomator2.model.settings.ActionAcknowledgmentTimeout;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
+import io.appium.uiautomator2.model.settings.ElementResponseFields;
 import io.appium.uiautomator2.model.settings.EnableNotificationListener;
 import io.appium.uiautomator2.model.settings.KeyInjectionDelay;
 import io.appium.uiautomator2.model.settings.ScrollAcknowledgmentTimeout;
+import io.appium.uiautomator2.model.settings.ShouldUseCompactResponses;
 import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 import io.appium.uiautomator2.model.settings.WaitForSelectorTimeout;
 import io.appium.uiautomator2.server.WDStatus;
@@ -118,6 +120,16 @@ public class UpdateSettingsTests {
     @Test
     public void shouldBeAbleToReturnScrollAcknowledgmentTimeout() throws InstantiationException, IllegalAccessException {
         verifySettingIsAvailable(ScrollAcknowledgmentTimeout.SETTING_NAME, ScrollAcknowledgmentTimeout.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnElementResponseFieldsSetting() throws InstantiationException, IllegalAccessException {
+        verifySettingIsAvailable(ElementResponseFields.SETTING_NAME, ElementResponseFields.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnShouldUseCompactResponsesSetting() throws InstantiationException, IllegalAccessException {
+        verifySettingIsAvailable(ShouldUseCompactResponses.SETTING_NAME, ShouldUseCompactResponses.class);
     }
 
     @Test(expected=UnsupportedSettingException.class)

@@ -29,17 +29,22 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelper;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.handler.GetElementAttribute;
+import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.model.AndroidElement;
-import io.appium.uiautomator2.utils.UnicodeEncoder;
+import io.appium.uiautomator2.model.Session;
 
+import static io.appium.uiautomator2.handler.GetElementAttribute.getElementAttributeValue;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public abstract class ElementHelpers {
 
     private static Method findAccessibilityNodeInfo;
+    private static final String ATTRIBUTE_PREFIX = "attribute/";
 
     private static AccessibilityNodeInfo elementToNode(Object element) {
         AccessibilityNodeInfo result = null;
@@ -84,8 +89,42 @@ public abstract class ElementHelpers {
      *
      * For example, appium returns elements like [{"ELEMENT":1}, {"ELEMENT":2}]
      */
-    public static JSONObject toJSON(AndroidElement el) throws JSONException {
-        return new JSONObject().put("ELEMENT", el.getId());
+    public static JSONObject toJSON(AndroidElement el) throws JSONException, UiObjectNotFoundException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("ELEMENT", el.getId());
+        if (Session.shouldUseCompactResponses()) {
+            return jsonObject;
+        }
+        for (String field : Session.getElementResponseFields()) {
+            try {
+                if (field.equals("name")) {
+                    putNullable(jsonObject, field, el.getContentDesc());
+                } else if (field.equals("text")) {
+                    putNullable(jsonObject, field, el.getText());
+                } else if (field.equals("rect")) {
+                    putNullable(jsonObject, field, GetRect.getElementRectJSON(el));
+                } else if (field.equals("enabled")) {
+                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                } else if (field.equals("displayed")) {
+                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                } else if (field.equals("selected")) {
+                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                } else if (field.startsWith(ATTRIBUTE_PREFIX)) {
+                    String attributeName = field.substring(ATTRIBUTE_PREFIX.length());
+                    putNullable(jsonObject, field, getElementAttributeValue(el, attributeName));
+                }
+            } catch (ReflectiveOperationException | NoAttributeFoundException e) {
+                // ignore field
+            }
+        }
+        return jsonObject;
+    }
+
+    private static void putNullable(JSONObject jsonObject, String fieldName, Object value) throws JSONException {
+        if (value == null) {
+            value = JSONObject.NULL;
+        }
+        jsonObject.put(fieldName, value);
     }
 
     /**
