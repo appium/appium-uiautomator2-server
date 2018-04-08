@@ -25,7 +25,7 @@ import io.appium.uiautomator2.utils.Logger;
 
 public class UpdateSettings extends SafeRequestHandler {
 
-    private static final Map<String, Class<? extends ISetting>> SETTINGS = new HashMap<String, Class<? extends ISetting>>() {
+    public static final Map<String, Class<? extends ISetting>> SETTINGS = new HashMap<String, Class<? extends ISetting>>() {
         {
             put(AllowInvisibleElements.SETTING_NAME, AllowInvisibleElements.class);
             put(CompressedLayoutHierarchy.SETTING_NAME, CompressedLayoutHierarchy.class);

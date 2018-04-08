@@ -20,7 +20,7 @@ import io.appium.uiautomator2.utils.Logger;
 
 public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
 
-    public static final String SETTING_NAME = "shouldUseCompactResponses";
+    public static final String SETTING_NAME = Settings.shouldUseCompactResponses.toString();
 
     public ShouldUseCompactResponses() {
         super(Boolean.class);

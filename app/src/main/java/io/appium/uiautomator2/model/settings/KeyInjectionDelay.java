@@ -20,7 +20,7 @@ import android.support.test.uiautomator.Configurator;
 
 public class KeyInjectionDelay extends AbstractSetting<Integer> {
 
-    public static final String SETTING_NAME = "keyInjectionDelay";
+    public static final String SETTING_NAME = Settings.keyInjectionDelay.toString();
 
     public KeyInjectionDelay() {
         super(Integer.class);
