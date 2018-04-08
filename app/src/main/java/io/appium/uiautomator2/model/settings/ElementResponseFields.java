@@ -20,7 +20,7 @@ import io.appium.uiautomator2.utils.Logger;
 
 public class ElementResponseFields extends AbstractSetting<String> {
 
-    public static final String SETTING_NAME = "elementResponseFields";
+    public static final String SETTING_NAME = Settings.elementResponseFields.toString();
 
     public ElementResponseFields() {
         super(String.class);

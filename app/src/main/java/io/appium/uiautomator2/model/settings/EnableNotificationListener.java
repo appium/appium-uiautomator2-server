@@ -20,7 +20,7 @@ import io.appium.uiautomator2.model.NotificationListener;
 
 public class EnableNotificationListener extends AbstractSetting<Boolean> {
 
-    public static final String SETTING_NAME = "enableNotificationListener";
+    public static final String SETTING_NAME = Settings.enableNotificationListener.toString();
 
     public EnableNotificationListener() {
         super(Boolean.class);
