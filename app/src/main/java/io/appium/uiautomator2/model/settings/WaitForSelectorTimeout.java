@@ -20,7 +20,7 @@ import android.support.test.uiautomator.Configurator;
 
 public class WaitForSelectorTimeout extends AbstractSetting<Integer> {
 
-    public static final String SETTING_NAME = "waitForSelectorTimeout";
+    public static final String SETTING_NAME = Settings.waitForSelectorTimeout.toString();
 
     public WaitForSelectorTimeout() {
         super(Integer.class);

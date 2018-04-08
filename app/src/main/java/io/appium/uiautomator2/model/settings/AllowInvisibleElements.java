@@ -20,7 +20,7 @@ import io.appium.uiautomator2.utils.Logger;
 
 public class AllowInvisibleElements extends AbstractSetting<Boolean> {
 
-    public static final String SETTING_NAME = "allowInvisibleElements";
+    public static final String SETTING_NAME = Settings.allowInvisibleElements.toString();
 
     public AllowInvisibleElements() {
         super(Boolean.class);

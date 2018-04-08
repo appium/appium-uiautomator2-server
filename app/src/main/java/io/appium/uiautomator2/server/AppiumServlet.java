@@ -45,6 +45,7 @@ import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.handler.GetRotation;
 import io.appium.uiautomator2.handler.GetScreenOrientation;
 import io.appium.uiautomator2.handler.GetSessionDetails;
+import io.appium.uiautomator2.handler.GetSettings;
 import io.appium.uiautomator2.handler.GetSize;
 import io.appium.uiautomator2.handler.GetSystemBars;
 import io.appium.uiautomator2.handler.GetText;
@@ -75,6 +76,7 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.http.IHttpResponse;
 import io.appium.uiautomator2.http.IHttpServlet;
+import io.appium.uiautomator2.utils.Logger;
 
 public class AppiumServlet implements IHttpServlet {
 
@@ -138,6 +140,8 @@ public class AppiumServlet implements IHttpServlet {
     }
 
     private void registerGetHandler() {
+        Logger.debug("-----handler in registerGetHandler------ ");
+
         register(getHandler, new Status("/wd/hub/status"));
         register(getHandler, new GetSessionDetails("/wd/hub/session/:sessionId"));
         register(getHandler, new CaptureScreenshot("/wd/hub/session/:sessionId/screenshot"));
@@ -153,6 +157,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetDeviceSize("/wd/hub/session/:sessionId/window/:windowHandle/size"));
         register(getHandler, new Source("/wd/hub/session/:sessionId/source"));
         register(getHandler, new GetSystemBars("/wd/hub/session/:sessionId/appium/device/system_bars"));
+        register(getHandler, new GetSettings("/wd/hub/session/:sessionId/appium/settings"));
         register(getHandler, new GetDevicePixelRatio("/wd/hub/session/:sessionId/appium/device/pixel_ratio"));
         register(getHandler, new FirstVisibleView("/wd/hub/session/:sessionId/appium/element/:id/first_visible"));
     }
@@ -224,6 +229,10 @@ public class AppiumServlet implements IHttpServlet {
             handler = findMatcher(request, postHandler);
         } else if ("DELETE".equals(request.method())) {
             handler = findMatcher(request, deleteHandler);
+        }
+
+        if (handler != null) {
+            Logger.debug("-----handler ------ " + handler.getMappedUri());
         }
 
         handleRequest(request, response, handler);

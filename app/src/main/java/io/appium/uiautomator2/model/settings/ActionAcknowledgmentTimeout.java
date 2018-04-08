@@ -20,7 +20,7 @@ import android.support.test.uiautomator.Configurator;
 
 public class ActionAcknowledgmentTimeout extends AbstractSetting<Integer> {
 
-    public static final String SETTING_NAME = "actionAcknowledgmentTimeout";
+    public static final String SETTING_NAME = Settings.actionAcknowledgmentTimeout.toString();
 
     public ActionAcknowledgmentTimeout() {
         super(Integer.class);
