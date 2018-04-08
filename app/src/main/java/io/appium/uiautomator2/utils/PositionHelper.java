@@ -36,9 +36,7 @@ public abstract class PositionHelper {
     private static double translateCoordinate(double pointCoord, double length, double offset) {
         double translatedCoord;
 
-        if (pointCoord == 0) {
-            translatedCoord = length * 0.5;
-        } else if (Math.abs(pointCoord) > 0 && Math.abs(pointCoord) < 1) {
+        if (Math.abs(pointCoord) > 0 && Math.abs(pointCoord) < 1) {
             translatedCoord = length * pointCoord;
         } else {
             translatedCoord = pointCoord;

@@ -1,6 +1,6 @@
 {
   "name": "appium-uiautomator2-server",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A netty server with uiautomator2 handlers",
   "main": "index.js",
   "windowsBuildDir": "c:/tmp",
