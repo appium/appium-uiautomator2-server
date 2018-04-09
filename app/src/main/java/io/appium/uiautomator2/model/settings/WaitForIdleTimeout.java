@@ -26,6 +26,10 @@ public class WaitForIdleTimeout extends AbstractSetting<Integer> {
         super(Integer.class);
     }
 
+    static public long getTime() {
+        return Configurator.getInstance().getWaitForIdleTimeout();
+    }
+
     @Override
     public String getSettingName() {
         return SETTING_NAME;

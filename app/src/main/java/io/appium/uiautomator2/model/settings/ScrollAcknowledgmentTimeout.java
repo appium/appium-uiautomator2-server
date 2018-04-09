@@ -26,6 +26,10 @@ public class ScrollAcknowledgmentTimeout extends AbstractSetting<Integer> {
         super(Integer.class);
     }
 
+    static public long getTime() {
+        return Configurator.getInstance().getScrollAcknowledgmentTimeout();
+    }
+
     @Override
     public String getSettingName() {
         return SETTING_NAME;

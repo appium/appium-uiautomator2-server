@@ -26,6 +26,10 @@ public class WaitForSelectorTimeout extends AbstractSetting<Integer> {
         super(Integer.class);
     }
 
+    static public long getTime() {
+        return Configurator.getInstance().getWaitForSelectorTimeout();
+    }
+
     @Override
     public String getSettingName() {
         return SETTING_NAME;

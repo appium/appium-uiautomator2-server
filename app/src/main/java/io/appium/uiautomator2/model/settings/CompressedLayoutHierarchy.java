@@ -29,7 +29,7 @@ public class CompressedLayoutHierarchy extends AbstractSetting<Boolean> {
         super(Boolean.class);
     }
 
-    public static boolean getCompressedLayoutHierarchySetting() {
+    public static boolean isEnabled() {
         return compressedLayoutHierarchy;
     }
 

@@ -10,13 +10,19 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.Session;
+import io.appium.uiautomator2.model.settings.ActionAcknowledgmentTimeout;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
+import io.appium.uiautomator2.model.settings.ElementResponseFields;
+import io.appium.uiautomator2.model.settings.EnableNotificationListener;
+import io.appium.uiautomator2.model.settings.KeyInjectionDelay;
+import io.appium.uiautomator2.model.settings.ScrollAcknowledgmentTimeout;
 import io.appium.uiautomator2.model.settings.Settings;
+import io.appium.uiautomator2.model.settings.ShouldUseCompactResponses;
+import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
+import io.appium.uiautomator2.model.settings.WaitForSelectorTimeout;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
-
-import static io.appium.uiautomator2.model.Session.CAP_ELEMENT_RESPONSE_FIELDS;
 
 /**
  * This method return settings
@@ -34,46 +40,42 @@ public class GetSettings extends SafeRequestHandler {
 
         for (Settings value : Settings.values()) {
             try {
-                settingsJson(result, value);
+                result.put(value.toString(), settingValue(value));
             } catch (JSONException e) {
-                e.printStackTrace();
+                Logger.error("Exception while reading JSON: ", e);
+                return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
+            } catch (IllegalArgumentException e) {
+                Logger.error("Error while getting setting: " + value.toString() + " : " + e);
             }
         }
 
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
 
-    private JSONObject settingsJson(JSONObject result, Settings setting) throws JSONException {
-        result.put(setting.toString(), settingValue(setting));
-        return result;
-    }
-
     private Object settingValue(Settings setting) {
         switch (setting) {
             case keyInjectionDelay:
-                return Configurator.getInstance().getKeyInjectionDelay();
+                return KeyInjectionDelay.getTime();
             case waitForIdleTimeout:
-                return Configurator.getInstance().getWaitForIdleTimeout();
+                return WaitForIdleTimeout.getTime();
             case waitForSelectorTimeout:
-                return Configurator.getInstance().getWaitForSelectorTimeout();
+                return WaitForSelectorTimeout.getTime();
             case actionAcknowledgmentTimeout:
-                return Configurator.getInstance().getActionAcknowledgmentTimeout();
+                return ActionAcknowledgmentTimeout.getTime();
             case scrollAcknowledgmentTimeout:
-                return Configurator.getInstance().getScrollAcknowledgmentTimeout();
+                return ScrollAcknowledgmentTimeout.getTime();
             case enableNotificationListener:
-                return NotificationListener.getInstance().isListening;
+                return EnableNotificationListener.isEnabled();
             case shouldUseCompactResponses:
-                return Session.shouldUseCompactResponses();
+                return ShouldUseCompactResponses.isEnabled();
             case ignoreUnimportantViews:
-                return CompressedLayoutHierarchy.getCompressedLayoutHierarchySetting();
+                return CompressedLayoutHierarchy.isEnabled();
             case allowInvisibleElements:
-                Object allowInvisibleElements = Session.capabilities.get(AllowInvisibleElements.SETTING_NAME);
-                return allowInvisibleElements != null && (boolean) allowInvisibleElements;
+                return AllowInvisibleElements.isEnabled();
             case elementResponseFields:
-                return Session.capabilities.containsKey(CAP_ELEMENT_RESPONSE_FIELDS);
+                return ElementResponseFields.isEnabled();
             default:
-                // TODO: raise InvalidArgumentException
-                return "no settings";
+                throw new IllegalArgumentException();
         }
     }
 }

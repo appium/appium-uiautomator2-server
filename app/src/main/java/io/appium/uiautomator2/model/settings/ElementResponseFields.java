@@ -16,7 +16,10 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Logger;
+
+import static io.appium.uiautomator2.model.Session.CAP_ELEMENT_RESPONSE_FIELDS;
 
 public class ElementResponseFields extends AbstractSetting<String> {
 
@@ -24,6 +27,10 @@ public class ElementResponseFields extends AbstractSetting<String> {
 
     public ElementResponseFields() {
         super(String.class);
+    }
+
+    static public boolean isEnabled() {
+        return Session.capabilities.containsKey(CAP_ELEMENT_RESPONSE_FIELDS);
     }
 
     @Override

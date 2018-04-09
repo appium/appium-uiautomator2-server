@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Logger;
 
 public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
@@ -24,6 +25,11 @@ public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
 
     public ShouldUseCompactResponses() {
         super(Boolean.class);
+    }
+
+
+    static public boolean isEnabled() {
+        return  Session.shouldUseCompactResponses();
     }
 
     @Override

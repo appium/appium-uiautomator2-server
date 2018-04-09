@@ -26,6 +26,10 @@ public class KeyInjectionDelay extends AbstractSetting<Integer> {
         super(Integer.class);
     }
 
+    static public long getTime() {
+        return Configurator.getInstance().getKeyInjectionDelay();
+    }
+
     @Override
     public String getSettingName() {
         return SETTING_NAME;

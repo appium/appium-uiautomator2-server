@@ -26,6 +26,10 @@ public class EnableNotificationListener extends AbstractSetting<Boolean> {
         super(Boolean.class);
     }
 
+    static public boolean isEnabled () {
+        return NotificationListener.getInstance().isListening;
+    }
+
     @Override
     public String getSettingName() {
         return SETTING_NAME;

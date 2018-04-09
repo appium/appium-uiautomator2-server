@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Logger;
 
 public class AllowInvisibleElements extends AbstractSetting<Boolean> {
@@ -24,6 +25,11 @@ public class AllowInvisibleElements extends AbstractSetting<Boolean> {
 
     public AllowInvisibleElements() {
         super(Boolean.class);
+    }
+
+    static public boolean isEnabled() {
+        Object allowInvisibleElements = Session.capabilities.get(AllowInvisibleElements.SETTING_NAME);
+        return allowInvisibleElements != null && (boolean) allowInvisibleElements;
     }
 
     @Override
