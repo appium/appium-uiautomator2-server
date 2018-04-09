@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentMap;
 public class Session {
     public static final String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
     public static final String CAP_SHOULD_USE_COMPACT_RESPONSES = "shouldUseCompactResponses";
-    public static final String CAP_ELEMENT_RESPONSE_FIELDS = "elementResponseFields";
+    public static final String CAP_ELEMENT_RESPONSE_ATTRIBUTES = "elementResponseAttributes";
     private String sessionId;
     private ConcurrentMap<String, JSONObject> commandConfiguration;
     private KnownElements knownElements;
@@ -39,9 +39,9 @@ public class Session {
         return shouldUseCompactResponses;
     }
 
-    public static String[] getElementResponseFields() {
-        if (Session.capabilities.containsKey(CAP_ELEMENT_RESPONSE_FIELDS)) {
-            return Session.capabilities.get(CAP_ELEMENT_RESPONSE_FIELDS).toString().split(",");
+    public static String[] getElementResponseAttributes() {
+        if (Session.capabilities.containsKey(CAP_ELEMENT_RESPONSE_ATTRIBUTES)) {
+            return Session.capabilities.get(CAP_ELEMENT_RESPONSE_ATTRIBUTES).toString().split(",");
         }
         return new String[] { "name", "text" };
     }

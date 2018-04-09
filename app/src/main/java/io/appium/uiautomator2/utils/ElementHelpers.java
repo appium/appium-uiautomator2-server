@@ -95,7 +95,7 @@ public abstract class ElementHelpers {
         if (Session.shouldUseCompactResponses()) {
             return jsonObject;
         }
-        for (String field : Session.getElementResponseFields()) {
+        for (String field : Session.getElementResponseAttributes()) {
             try {
                 if (field.equals("name")) {
                     putNullable(jsonObject, field, el.getContentDesc());

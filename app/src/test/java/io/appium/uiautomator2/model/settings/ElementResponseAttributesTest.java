@@ -20,22 +20,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ElementResponseFieldsTest {
+public class ElementResponseAttributesTest {
 
-    private ElementResponseFields elementResponseFields;
+    private ElementResponseAttributes elementResponseAttributes;
 
     @Before
     public void setup() {
-        elementResponseFields = new ElementResponseFields();
+        elementResponseAttributes = new ElementResponseAttributes();
     }
 
     @Test
     public void shouldBeString() {
-        Assert.assertEquals(String.class, elementResponseFields.getValueType());
+        Assert.assertEquals(String.class, elementResponseAttributes.getValueType());
     }
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("elementResponseFields", elementResponseFields.getSettingName());
+        Assert.assertEquals("elementResponseAttributes", elementResponseAttributes.getSettingName());
     }
 }
