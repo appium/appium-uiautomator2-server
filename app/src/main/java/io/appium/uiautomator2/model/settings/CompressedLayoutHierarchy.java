@@ -23,12 +23,19 @@ public class CompressedLayoutHierarchy extends AbstractSetting<Boolean> {
 
     public static final String SETTING_NAME = Settings.ignoreUnimportantViews.toString();
 
+    public static boolean compressedLayoutHierarchy = false;
+
     public CompressedLayoutHierarchy() {
         super(Boolean.class);
     }
 
+    public static boolean getCompressedLayoutHierarchySetting() {
+        return compressedLayoutHierarchy;
+    }
+
     @Override
     protected void apply(Boolean compressLayout) {
+        compressedLayoutHierarchy = compressLayout;
         Device.getUiDevice().setCompressedLayoutHeirarchy(compressLayout);
     }
 
@@ -36,5 +43,4 @@ public class CompressedLayoutHierarchy extends AbstractSetting<Boolean> {
     public String getSettingName() {
         return SETTING_NAME;
     }
-
 }
