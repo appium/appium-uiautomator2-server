@@ -1,5 +1,6 @@
 package io.appium.uiautomator2.handler;
 
+import android.support.annotation.VisibleForTesting;
 import android.support.test.uiautomator.Configurator;
 
 import org.json.JSONException;
@@ -36,20 +37,27 @@ public class GetSettings extends SafeRequestHandler {
     @Override
     public AppiumResponse safeHandle(IHttpRequest request) {
         Logger.debug("Get settings:");
+
+        try {
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, getPayload());
+        } catch (JSONException e) {
+            Logger.error("Exception while reading JSON: ", e);
+            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
+        }
+    }
+
+    @VisibleForTesting
+    public JSONObject getPayload() throws JSONException {
         final JSONObject result = new JSONObject();
 
         for (Settings value : Settings.values()) {
             try {
                 result.put(value.toString(), settingValue(value));
-            } catch (JSONException e) {
-                Logger.error("Exception while reading JSON: ", e);
-                return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
             } catch (IllegalArgumentException e) {
-                Logger.error("Error while getting setting: " + value.toString() + " : " + e);
+                Logger.error("No Setting: " + value.toString() + " : " + e);
             }
         }
-
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
+        return result;
     }
 
     private Object settingValue(Settings setting) {
