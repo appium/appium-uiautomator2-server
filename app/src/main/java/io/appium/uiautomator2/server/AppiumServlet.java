@@ -140,8 +140,6 @@ public class AppiumServlet implements IHttpServlet {
     }
 
     private void registerGetHandler() {
-        Logger.debug("-----handler in registerGetHandler------ ");
-
         register(getHandler, new Status("/wd/hub/status"));
         register(getHandler, new GetSessionDetails("/wd/hub/session/:sessionId"));
         register(getHandler, new CaptureScreenshot("/wd/hub/session/:sessionId/screenshot"));

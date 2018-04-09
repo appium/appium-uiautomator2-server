@@ -74,6 +74,7 @@ public class GetSettings extends SafeRequestHandler {
             case scrollAcknowledgmentTimeout:
                 return Long.toString(Configurator.getInstance().getScrollAcknowledgmentTimeout());
             default:
+                // TODO: raise InvalidArgumentException
                 return "no settings";
         }
     }
