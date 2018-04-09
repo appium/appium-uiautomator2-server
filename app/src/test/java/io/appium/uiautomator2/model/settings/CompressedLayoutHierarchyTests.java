@@ -26,13 +26,11 @@ import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import io.appium.uiautomator2.utils.Device;
 
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,11 +65,13 @@ public class CompressedLayoutHierarchyTests {
     public void shouldBeAbleToEnableCompressedLayout() {
         compressedLayoutHierarchy.updateSetting(true);
         verify(uiDevice).setCompressedLayoutHeirarchy(true);
+        Assert.assertEquals(true, CompressedLayoutHierarchy.isEnabled());
     }
 
     @Test
     public void shouldBeAbleToDisableCompressedLayout() {
         compressedLayoutHierarchy.updateSetting(false);
         verify(uiDevice).setCompressedLayoutHeirarchy(false);
+        Assert.assertEquals(false, CompressedLayoutHierarchy.isEnabled());
     }
 }

@@ -28,7 +28,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +46,7 @@ public class WaitForIdleTimeoutTests {
         PowerMockito.mockStatic(Configurator.class);
         when(Configurator.getInstance()).thenReturn(configurator);
         when(configurator.setWaitForIdleTimeout(anyLong())).thenReturn(configurator);
+        when(configurator.getWaitForIdleTimeout()).thenReturn((long) 123);
     }
 
     @Test
@@ -63,5 +63,6 @@ public class WaitForIdleTimeoutTests {
     public void shouldBeAbleToSetIdleTimeout() {
         waitForIdeTimeout.updateSetting(123);
         verify(configurator).setWaitForIdleTimeout(123);
+        Assert.assertEquals(123, WaitForIdleTimeout.getTime());
     }
 }

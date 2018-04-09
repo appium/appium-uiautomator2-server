@@ -46,6 +46,8 @@ public class WaitForSelectorTimeoutTests {
         PowerMockito.mockStatic(Configurator.class);
         when(Configurator.getInstance()).thenReturn(configurator);
         when(configurator.setWaitForSelectorTimeout(anyLong())).thenReturn(configurator);
+        when(configurator.getWaitForSelectorTimeout()).thenReturn((long) 123);
+
     }
 
     @Test
@@ -62,5 +64,6 @@ public class WaitForSelectorTimeoutTests {
     public void shouldBeAbleToSetIdleTimeout() {
         waitForSelectorTimeout.updateSetting(123);
         verify(configurator).setWaitForSelectorTimeout(123);
+        Assert.assertEquals(123, WaitForSelectorTimeout.getTime());
     }
 }

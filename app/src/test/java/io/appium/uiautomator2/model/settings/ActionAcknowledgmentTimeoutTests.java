@@ -62,5 +62,6 @@ public class ActionAcknowledgmentTimeoutTests {
     public void shouldBeAbleToSetIdleTimeout() {
         actionAcknowledgmentTimeout.updateSetting(123);
         verify(configurator).setActionAcknowledgmentTimeout(123);
+        Assert.assertEquals(0, ActionAcknowledgmentTimeout.getTime());
     }
 }

@@ -46,6 +46,7 @@ public class KeyInjectionDelayTests {
         PowerMockito.mockStatic(Configurator.class);
         when(Configurator.getInstance()).thenReturn(configurator);
         when(configurator.setKeyInjectionDelay(anyLong())).thenReturn(configurator);
+        when(configurator.getKeyInjectionDelay()).thenReturn((long) 123);
     }
 
     @Test
@@ -62,5 +63,6 @@ public class KeyInjectionDelayTests {
     public void shouldBeAbleToSetIdleTimeout() {
         keyInjectionDelay.updateSetting(123);
         verify(configurator).setKeyInjectionDelay(123);
+        Assert.assertEquals(123, KeyInjectionDelay.getTime());
     }
 }

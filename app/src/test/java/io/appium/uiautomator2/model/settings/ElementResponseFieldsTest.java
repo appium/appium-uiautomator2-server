@@ -20,6 +20,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.appium.uiautomator2.model.Session;
+
+import static io.appium.uiautomator2.model.Session.CAP_ELEMENT_RESPONSE_FIELDS;
+
 public class ElementResponseFieldsTest {
 
     private ElementResponseFields elementResponseFields;
@@ -37,5 +41,19 @@ public class ElementResponseFieldsTest {
     @Test
     public void shouldReturnValidSettingName() {
         Assert.assertEquals("elementResponseFields", elementResponseFields.getSettingName());
+    }
+
+    @Test
+    public void shouldBeAbleToDisableElementResponseFields() {
+        Session.capabilities.remove(CAP_ELEMENT_RESPONSE_FIELDS);
+
+        Assert.assertEquals(false, ElementResponseFields.isEnabled());
+    }
+
+    @Test
+    public void shouldBeAbleToEnableElementResponseFields() {
+        Session.capabilities.put(CAP_ELEMENT_RESPONSE_FIELDS, "a,b");
+
+        Assert.assertEquals(true, ElementResponseFields.isEnabled());
     }
 }

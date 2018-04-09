@@ -20,6 +20,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.appium.uiautomator2.model.Session;
+
+import static io.appium.uiautomator2.model.Session.CAP_SHOULD_USE_COMPACT_RESPONSES;
+
 public class ShouldUseCompactResponsesTest {
 
     private ShouldUseCompactResponses shouldUseCompactResponses;
@@ -37,5 +41,19 @@ public class ShouldUseCompactResponsesTest {
     @Test
     public void shouldReturnValidSettingName() {
         Assert.assertEquals("shouldUseCompactResponses", shouldUseCompactResponses.getSettingName());
+    }
+
+    @Test
+    public void shouldBeAbleToEnableShouldUseCompactResponses() {
+        Session.capabilities.put(CAP_SHOULD_USE_COMPACT_RESPONSES, "true");
+
+        Assert.assertEquals(true, ShouldUseCompactResponses.isEnabled());
+    }
+
+    @Test
+    public void shouldBeAbleToDisableShouldUseCompactResponses() {
+        Session.capabilities.put(CAP_SHOULD_USE_COMPACT_RESPONSES, "false");
+
+        Assert.assertEquals(false, ShouldUseCompactResponses.isEnabled());
     }
 }

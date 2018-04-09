@@ -46,6 +46,7 @@ public class ScrollAcknowledgmentTimeoutTests {
         PowerMockito.mockStatic(Configurator.class);
         when(Configurator.getInstance()).thenReturn(configurator);
         when(configurator.setScrollAcknowledgmentTimeout(anyLong())).thenReturn(configurator);
+        when(configurator.getScrollAcknowledgmentTimeout()).thenReturn((long) 123);
     }
 
     @Test
@@ -62,5 +63,6 @@ public class ScrollAcknowledgmentTimeoutTests {
     public void shouldBeAbleToSetIdleTimeout() {
         scrollAcknowledgmentTimeout.updateSetting(123);
         verify(configurator).setScrollAcknowledgmentTimeout(123);
+        Assert.assertEquals(123, ScrollAcknowledgmentTimeout.getTime());
     }
 }

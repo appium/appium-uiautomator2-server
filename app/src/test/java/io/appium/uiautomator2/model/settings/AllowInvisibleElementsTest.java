@@ -20,6 +20,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.appium.uiautomator2.model.Session;
+
 public class AllowInvisibleElementsTest {
 
     private AllowInvisibleElements allowInvisibleElements;
@@ -37,5 +39,19 @@ public class AllowInvisibleElementsTest {
     @Test
     public void shouldReturnValidSettingName() {
         Assert.assertEquals("allowInvisibleElements", allowInvisibleElements.getSettingName());
+    }
+
+    @Test
+    public void shouldBeAbleToDisableAllowInvisibleElements() {
+        Session.capabilities.put(AllowInvisibleElements.SETTING_NAME, false);
+
+        Assert.assertEquals(false, AllowInvisibleElements.isEnabled());
+    }
+
+    @Test
+    public void shouldBeAbleToEnableAllowInvisibleElements() {
+        Session.capabilities.put(AllowInvisibleElements.SETTING_NAME, true);
+
+        Assert.assertEquals(true, AllowInvisibleElements.isEnabled());
     }
 }
