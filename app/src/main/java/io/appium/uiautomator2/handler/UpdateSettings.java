@@ -11,7 +11,7 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.settings.ActionAcknowledgmentTimeout;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
-import io.appium.uiautomator2.model.settings.ElementResponseFields;
+import io.appium.uiautomator2.model.settings.ElementResponseAttributes;
 import io.appium.uiautomator2.model.settings.EnableNotificationListener;
 import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
 import io.appium.uiautomator2.model.settings.ISetting;
@@ -35,7 +35,7 @@ public class UpdateSettings extends SafeRequestHandler {
             put(KeyInjectionDelay.SETTING_NAME, KeyInjectionDelay.class);
             put(ActionAcknowledgmentTimeout.SETTING_NAME, ActionAcknowledgmentTimeout.class);
             put(ScrollAcknowledgmentTimeout.SETTING_NAME, ScrollAcknowledgmentTimeout.class);
-            put(ElementResponseFields.SETTING_NAME, ElementResponseFields.class);
+            put(ElementResponseAttributes.SETTING_NAME, ElementResponseAttributes.class);
             put(ShouldUseCompactResponses.SETTING_NAME, ShouldUseCompactResponses.class);
         }
     };

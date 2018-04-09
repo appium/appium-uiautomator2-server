@@ -22,38 +22,38 @@ import org.junit.Test;
 
 import io.appium.uiautomator2.model.Session;
 
-import static io.appium.uiautomator2.model.Session.CAP_ELEMENT_RESPONSE_FIELDS;
+import static io.appium.uiautomator2.model.Session.CAP_ELEMENT_RESPONSE_ATTRIBUTES;
 
-public class ElementResponseFieldsTest {
+public class ElementResponseAttributesTest {
 
-    private ElementResponseFields elementResponseFields;
+    private ElementResponseAttributes elementResponseAttributes;
 
     @Before
     public void setup() {
-        elementResponseFields = new ElementResponseFields();
+        elementResponseAttributes = new ElementResponseAttributes();
     }
 
     @Test
     public void shouldBeString() {
-        Assert.assertEquals(String.class, elementResponseFields.getValueType());
+        Assert.assertEquals(String.class, elementResponseAttributes.getValueType());
     }
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("elementResponseFields", elementResponseFields.getSettingName());
+        Assert.assertEquals("elementResponseAttributes", elementResponseAttributes.getSettingName());
     }
 
     @Test
-    public void shouldBeAbleToDisableElementResponseFields() {
-        Session.capabilities.remove(CAP_ELEMENT_RESPONSE_FIELDS);
+    public void shouldBeAbleToDisableElementResponseAttributes() {
+        Session.capabilities.remove(CAP_ELEMENT_RESPONSE_ATTRIBUTES);
 
-        Assert.assertEquals(false, ElementResponseFields.isEnabled());
+        Assert.assertEquals(false, ElementResponseAttributes.isEnabled());
     }
 
     @Test
-    public void shouldBeAbleToEnableElementResponseFields() {
-        Session.capabilities.put(CAP_ELEMENT_RESPONSE_FIELDS, "a,b");
+    public void shouldBeAbleToEnableElementResponseAttributes() {
+        Session.capabilities.put(CAP_ELEMENT_RESPONSE_ATTRIBUTES, "a,b");
 
-        Assert.assertEquals(true, ElementResponseFields.isEnabled());
+        Assert.assertEquals(true, ElementResponseAttributes.isEnabled());
     }
 }

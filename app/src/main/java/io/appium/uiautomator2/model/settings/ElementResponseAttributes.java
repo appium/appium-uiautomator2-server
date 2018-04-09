@@ -19,18 +19,18 @@ package io.appium.uiautomator2.model.settings;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Logger;
 
-import static io.appium.uiautomator2.model.Session.CAP_ELEMENT_RESPONSE_FIELDS;
+import static io.appium.uiautomator2.model.Session.CAP_ELEMENT_RESPONSE_ATTRIBUTES;
 
-public class ElementResponseFields extends AbstractSetting<String> {
+public class ElementResponseAttributes extends AbstractSetting<String> {
 
-    public static final String SETTING_NAME = Settings.elementResponseFields.toString();
+    public static final String SETTING_NAME = Settings.elementResponseAttributes.toString();
 
-    public ElementResponseFields() {
+    public ElementResponseAttributes() {
         super(String.class);
     }
 
     static public boolean isEnabled() {
-        return Session.capabilities.containsKey(CAP_ELEMENT_RESPONSE_FIELDS);
+        return Session.capabilities.containsKey(CAP_ELEMENT_RESPONSE_ATTRIBUTES);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ElementResponseFields extends AbstractSetting<String> {
     }
 
     @Override
-    protected void apply(String elementResponseFields) {
+    protected void apply(String elementResponseAttributes) {
         Logger.debug("Dummy setting. Maintained in Session.capabilities.");
     }
 

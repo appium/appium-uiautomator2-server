@@ -36,7 +36,7 @@ import io.appium.uiautomator2.model.settings.AbstractSetting;
 import io.appium.uiautomator2.model.settings.ActionAcknowledgmentTimeout;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
-import io.appium.uiautomator2.model.settings.ElementResponseFields;
+import io.appium.uiautomator2.model.settings.ElementResponseAttributes;
 import io.appium.uiautomator2.model.settings.EnableNotificationListener;
 import io.appium.uiautomator2.model.settings.KeyInjectionDelay;
 import io.appium.uiautomator2.model.settings.ScrollAcknowledgmentTimeout;
@@ -123,8 +123,8 @@ public class UpdateSettingsTests {
     }
 
     @Test
-    public void shouldBeAbleToReturnElementResponseFieldsSetting() throws InstantiationException, IllegalAccessException {
-        verifySettingIsAvailable(ElementResponseFields.SETTING_NAME, ElementResponseFields.class);
+    public void shouldBeAbleToReturnElementResponseAttributesSetting() throws InstantiationException, IllegalAccessException {
+        verifySettingIsAvailable(ElementResponseAttributes.SETTING_NAME, ElementResponseAttributes.class);
     }
 
     @Test
