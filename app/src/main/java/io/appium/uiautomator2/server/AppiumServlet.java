@@ -76,7 +76,6 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.http.IHttpResponse;
 import io.appium.uiautomator2.http.IHttpServlet;
-import io.appium.uiautomator2.utils.Logger;
 
 public class AppiumServlet implements IHttpServlet {
 
@@ -228,11 +227,6 @@ public class AppiumServlet implements IHttpServlet {
         } else if ("DELETE".equals(request.method())) {
             handler = findMatcher(request, deleteHandler);
         }
-
-        if (handler != null) {
-            Logger.debug("-----handler ------ " + handler.getMappedUri());
-        }
-
         handleRequest(request, response, handler);
     }
 

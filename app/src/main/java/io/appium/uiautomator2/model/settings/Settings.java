@@ -4,7 +4,7 @@ public enum Settings {
     actionAcknowledgmentTimeout,
     allowInvisibleElements,
     ignoreUnimportantViews,
-    elementResponseFields,
+    elementResponseAttributes,
     enableNotificationListener,
     keyInjectionDelay,
     scrollAcknowledgmentTimeout,

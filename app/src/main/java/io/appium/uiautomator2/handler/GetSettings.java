@@ -9,12 +9,10 @@ import org.json.JSONObject;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.NotificationListener;
-import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.settings.ActionAcknowledgmentTimeout;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
-import io.appium.uiautomator2.model.settings.ElementResponseFields;
+import io.appium.uiautomator2.model.settings.ElementResponseAttributes;
 import io.appium.uiautomator2.model.settings.EnableNotificationListener;
 import io.appium.uiautomator2.model.settings.KeyInjectionDelay;
 import io.appium.uiautomator2.model.settings.ScrollAcknowledgmentTimeout;
@@ -80,8 +78,8 @@ public class GetSettings extends SafeRequestHandler {
                 return CompressedLayoutHierarchy.isEnabled();
             case allowInvisibleElements:
                 return AllowInvisibleElements.isEnabled();
-            case elementResponseFields:
-                return ElementResponseFields.isEnabled();
+            case elementResponseAttributes:
+                return ElementResponseAttributes.isEnabled();
             default:
                 throw new IllegalArgumentException();
         }
