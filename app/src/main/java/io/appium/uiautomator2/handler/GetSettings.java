@@ -48,17 +48,17 @@ public class GetSettings extends SafeRequestHandler {
     public JSONObject getPayload() throws JSONException {
         final JSONObject result = new JSONObject();
 
-        for (Settings value : Settings.values()) {
+        for (Settings settingName : Settings.values()) {
             try {
-                result.put(value.toString(), settingValue(value));
+                result.put(settingName.toString(), getSettingsValue(settingName));
             } catch (IllegalArgumentException e) {
-                Logger.error("No Setting: " + value.toString() + " : " + e);
+                Logger.error(String.format("No Setting: " + settingName + " : "), e);
             }
         }
         return result;
     }
 
-    private Object settingValue(Settings setting) {
+    private Object getSettingsValue(Settings setting) {
         switch (setting) {
             case keyInjectionDelay:
                 return KeyInjectionDelay.getTime();
