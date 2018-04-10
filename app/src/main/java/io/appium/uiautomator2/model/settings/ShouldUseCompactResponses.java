@@ -27,7 +27,6 @@ public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
         super(Boolean.class);
     }
 
-
     static public boolean isEnabled() {
         return  Session.shouldUseCompactResponses();
     }
