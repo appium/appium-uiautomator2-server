@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.utils;
 
+import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 
 import java.util.ArrayList;
@@ -31,14 +32,15 @@ public class UiAutomatorParser {
 
     private String text;
     private List<UiSelector> selectors;
-    private UiScrollableParser scrollableParser = new UiScrollableParser();
-    private UiSelectorParser selectorParser = new UiSelectorParser();
 
-    public List<UiSelector> parse(String textToParse) throws UiSelectorSyntaxException {
+    public List<UiSelector> parse(String textToParse) throws UiSelectorSyntaxException,
+            UiObjectNotFoundException {
         if (textToParse.isEmpty()) {
-            throw new UiSelectorSyntaxException("Tried to parse an empty string. Expected to see a string consisting of text to be interpreted as UiAutomator java code.");
+            throw new UiSelectorSyntaxException("Tried to parse an empty string. " +
+                    "Expected to see a string consisting of text to be interpreted as " +
+                    "UiAutomator java code.");
         }
-        selectors = new ArrayList<UiSelector>();
+        selectors = new ArrayList<>();
         text = textToParse.trim();
         removeTailingSemicolon();
         trimWhitespace();
@@ -64,45 +66,49 @@ public class UiAutomatorParser {
         }
     }
 
-    private void consumeSemicolon() throws UiSelectorSyntaxException {
-        if (text.charAt(0) != ';') {
-            throw new UiSelectorSyntaxException("Expected ';' but saw '" + text.charAt(0) + "'");
+    private void consumeSemicolon() {
+        if (text.charAt(0) == ';') {
+            text = text.substring(1);
         }
-
-        text = text.substring(1);
     }
 
-    private void consumeStatement() throws UiSelectorSyntaxException {
+    private void consumeStatement() throws UiSelectorSyntaxException, UiObjectNotFoundException {
         String statement;
         int index = 0;
-        int parenCount = -1; // semicolons could appear inside String arguments, so we make sure we only count occurrences outside of a parenthesis pair
+        boolean isInsideStringLiteral = false;
         while (index < text.length()) {
-            if (text.charAt(index) == ';' && parenCount == 0) {
+            final char currentChar = text.charAt(index);
+
+            if (currentChar == '"') {
+                /* Skip escaped quotes */
+                isInsideStringLiteral = !(isInsideStringLiteral && index > 0
+                        && text.charAt(index - 1) != '\\');
+            }
+
+            if (text.charAt(index) == ';' && !isInsideStringLiteral) {
                 break;
-            }
-            if (text.charAt(index) == '(') {
-                if (parenCount < 0) {
-                    parenCount = 1;
-                } else {
-                    parenCount++;
-                }
-            }
-            if (text.charAt(index) == ')') {
-                parenCount--;
             }
             index++;
         }
 
-        statement = text.substring(0, index);
-        if (UiScrollableParser.isUiScrollable(statement)) {
+        statement = text.substring(0, index).trim();
+        UiScrollableParser uiScrollableParser = createUiScrollableParser(statement);
+        if (uiScrollableParser.isUiScrollable()) {
             Logger.debug("Parsing scrollable: " + statement);
-            selectors.add(scrollableParser.parse(statement));
+            selectors.add(uiScrollableParser.parse());
         } else {
             Logger.debug("Parsing selector: " + statement);
-            selectors.add(selectorParser.parse(statement));
+            selectors.add(createUiSelectorParser(statement).parse());
         }
 
         text = text.substring(index);
     }
 
+    public UiSelectorParser createUiSelectorParser(String statement) {
+        return new UiSelectorParser(statement);
+    }
+
+    public UiScrollableParser createUiScrollableParser(String statement) {
+        return new UiScrollableParser(statement);
+    }
 }

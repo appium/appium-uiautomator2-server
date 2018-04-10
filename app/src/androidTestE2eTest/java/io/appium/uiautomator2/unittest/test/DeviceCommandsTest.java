@@ -55,6 +55,7 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getAttribute;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
+import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.sendKeys;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -105,9 +106,9 @@ public class DeviceCommandsTest extends BaseTest {
         Response response = findElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
 
-        By androidUiAutomator = By.androidUiAutomator("new UiScrollable(new UiSelector()"
-                + ".resourceId(\"android:id/list\")).scrollIntoView("
-                + "new UiSelector().text(\"Radio Group\"));");
+        By androidUiAutomator = By.androidUiAutomator("new UiSelector().text(\"Radio Group\");" +
+                "new UiScrollable(new UiSelector().resourceId(\"android:id/list\"))" +
+                ".scrollIntoView(new UiSelector().text(\"Radio Group\"));");
         response = findElement(androidUiAutomator);
         assertTrue(androidUiAutomator + " should be found", response.isSuccessful());
         click(response.getElementId());
@@ -411,6 +412,7 @@ public class DeviceCommandsTest extends BaseTest {
         scrollTo("Views"); // Due to 'Views' option not visible on small screen
         Response response = findElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
+        waitForElement(By.accessibilityId("Buttons"));
 
         String scrollToText = "WebView";
         By by = By.accessibilityId(scrollToText);
@@ -428,6 +430,7 @@ public class DeviceCommandsTest extends BaseTest {
     public void screenshotTest() throws JSONException {
         Response response = findElement(By.accessibilityId("Accessibility"));
         clickAndWaitForStaleness(response.getElementId());
+        waitForElement(By.accessibilityId("Custom View"));
 
         response = screenshot();
         String value = response.getValue();
@@ -469,5 +472,85 @@ public class DeviceCommandsTest extends BaseTest {
         } finally {
             updateSettings(defaultSettings);
         }
+    }
+
+    @Test
+    public void shouldBeAbleToFindElementViaUiSelectorWithQuotesInParams() throws JSONException {
+        startActivity(".view.TextFields");
+        Response response = waitForElement(By.id("io.appium.android.apis:id/edit"));
+        sendKeys(response.getElementId(), "Use a \"tel:\" URL");
+        By androidUiAutomator = By.androidUiAutomator("new UiSelector().textContains(" +
+                "\"Use a \\\"tel:\\\" URL\");");
+        response = findElement(androidUiAutomator);
+        assertTrue(androidUiAutomator + " should be found", response.isSuccessful());
+    }
+
+    @Test
+    public void shouldBeAbleToFindElementViaUiSelectorWithParenthesesInParams() throws JSONException {
+        startActivity(".view.TextFields");
+        Response response = waitForElement(By.id("io.appium.android.apis:id/edit"));
+        sendKeys(response.getElementId(), "(415)");
+        By androidUiAutomator = By.androidUiAutomator("new UiSelector().textContains(" +
+                "\"(415)\");");
+        response = findElement(androidUiAutomator);
+        assertTrue(androidUiAutomator + " should be found", response.isSuccessful());
+    }
+
+    @Test
+    public void shouldBeAbleToFindElementViaUiSelectorWithCommasInParams() throws JSONException {
+        startActivity(".view.TextFields");
+        Response response = waitForElement(By.id("io.appium.android.apis:id/edit"));
+        sendKeys(response.getElementId(), "Expressway, Suite 400, Austin");
+        By androidUiAutomator = By.androidUiAutomator("new UiSelector().text(" +
+                "\"Expressway, Suite 400, Austin\");");
+        response = findElement(androidUiAutomator);
+        assertTrue(androidUiAutomator + " should be found", response.isSuccessful());
+    }
+
+    @Test
+    public void shouldBeAbleToFindElementViaUiScrollableScrollIntoView() throws JSONException {
+        startActivity(".view.List1");
+        waitForElement(By.id("android:id/list"));
+        By androidUiAutomator = By.androidUiAutomator(
+                "new UiScrollable(new UiSelector().resourceId(\"android:id/list\"))" +
+                        ".scrollIntoView(new UiSelector().text(\"Beer Cheese\"));");
+        Response response = findElement(androidUiAutomator);
+        assertTrue(androidUiAutomator + " should be found", response.isSuccessful());
+    }
+
+    @Test
+    public void shouldBeAbleToFindElementViaUiScrollableScrollTextIntoView() throws JSONException {
+        startActivity(".view.List1");
+        waitForElement(By.id("android:id/list"));
+        By androidUiAutomator = By.androidUiAutomator(
+                "new UiScrollable(new UiSelector(). resourceId(\"android:id/list\"))" +
+                        ".scrollTextIntoView(\"Beer Cheese\");");
+        Response response = findElement(androidUiAutomator);
+        assertTrue(androidUiAutomator + " should be found", response.isSuccessful());
+    }
+
+    @Test
+    public void shouldBeAbleToFindElementViaUiScrollableGetChildByDescription() throws JSONException {
+        startActivity(".view.ScrollBar1");
+        waitForElement(By.accessibilityId("Lorem ipsum dolor sit amet."));
+        By androidUiAutomator = By.androidUiAutomator(
+                " new UiScrollable (new UiSelector() .className (android.widget.ScrollView))" +
+                        ". getChildByDescription ( new UiSelector() " +
+                        ".className( android.widget.TextView ),\"Lorem ipsum dolor sit amet.\"," +
+                        "true ) ; ");
+        Response response = findElement(androidUiAutomator);
+        assertTrue(androidUiAutomator + " should be found", response.isSuccessful());
+    }
+
+    @Test
+    public void scrollIntoViewShouldNotThrowExceptionIfScrollableDoesNotExist() throws
+            JSONException {
+        startActivity(".view.ScrollBar1");
+        waitForElement(By.accessibilityId("Lorem ipsum dolor sit amet."));
+        By androidUiAutomator = By.androidUiAutomator(
+                "new UiScrollable(new UiSelector().text(\"test\"))" +
+                        ".scrollIntoView(new UiSelector().text(\"Lorem ipsum dolor sit amet.\"))");
+        Response response = findElement(androidUiAutomator);
+        assertTrue(androidUiAutomator + " should be found", response.isSuccessful());
     }
 }

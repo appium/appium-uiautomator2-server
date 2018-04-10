@@ -67,10 +67,10 @@ public class TestUtils {
             if (waitStatus) {
                 return;
             }
-            Logger.error("Unable to find AUT. Is it System UI ARN on arm emu?");
+            Logger.error("Unable to find AUT. Is it System UI or AUT ARN on arm emu?");
             Logger.debug("Page sources:" + source().getValue());
             Response response = findElement(By.xpath("//*[@text='Close app' or @text='Wait' or " +
-                    "@text='OK']"));
+                    "@text='OK' or @text='Open app again']"));
             if (response.isSuccessful()) {
                 click(response.getElementId());
             }

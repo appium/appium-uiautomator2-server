@@ -60,6 +60,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -86,7 +87,7 @@ public class UpdateSettingsTests {
         HashMap<String, Object> payload = new HashMap<>();
         payload.put(SETTING_NAME, SETTING_VALUE);
 
-        doNothing().when(mySetting).update(Matchers.anyObject());
+        doNothing().when(mySetting).update(any());
 
         doReturn("sessionId").when(updateSettings).getSessionId(req);
         doReturn(payload).when(updateSettings).getPayload(req, "settings");

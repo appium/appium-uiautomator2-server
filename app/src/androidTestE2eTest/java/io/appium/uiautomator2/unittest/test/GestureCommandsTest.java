@@ -106,7 +106,7 @@ public class GestureCommandsTest extends BaseTest {
         int y = json.getInt("y");
         assertTrue("element location y coordinate is zero(0), which is not expected", y > 0);
 
-        response = tap(x, y);
+        response = tap(x + 5, y + 5);
         Boolean tapStatus = response.getValue();
         assertTrue("Unable to tap on location: " + x + " " + y, tapStatus);
         response = waitForElementInvisibility(elementId);

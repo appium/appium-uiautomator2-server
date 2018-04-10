@@ -140,7 +140,9 @@ public class FindElement extends SafeRequestHandler {
         }
     }
 
-    private Object findElement(By by) throws InvalidSelectorException, ElementNotFoundException, ParserConfigurationException, ClassNotFoundException, UiSelectorSyntaxException, UiAutomator2Exception {
+    private Object findElement(By by) throws InvalidSelectorException, ElementNotFoundException,
+            ParserConfigurationException, ClassNotFoundException, UiSelectorSyntaxException,
+            UiAutomator2Exception, UiObjectNotFoundException {
         if (by instanceof ById) {
             String locator = getElementLocator((ById)by);
             return getInstance().findObject(android.support.test.uiautomator.By.res(locator));
@@ -182,7 +184,8 @@ public class FindElement extends SafeRequestHandler {
     /**
      * finds the UiSelector for given expression
      */
-    public UiSelector findByUiAutomator(String expression) throws UiSelectorSyntaxException {
+    public UiSelector findByUiAutomator(String expression) throws UiSelectorSyntaxException,
+            UiObjectNotFoundException {
         List<UiSelector> parsedSelectors = null;
         UiAutomatorParser uiAutomatorParser = new UiAutomatorParser();
         final List<UiSelector> selectors = new ArrayList<UiSelector>();
