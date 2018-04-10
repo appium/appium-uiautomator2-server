@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import io.appium.uiautomator2.model.NotificationListener;
 
@@ -59,18 +60,24 @@ public class EnableNotificationListenerTests {
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("enableNotificationListener", enableNotificationListener.getSettingName());
+        Assert.assertEquals("enableNotificationListener", enableNotificationListener.getName());
     }
 
     @Test
     public void shouldBeAbleToStartNotificationListeners() {
-        enableNotificationListener.updateSetting(true);
+        enableNotificationListener.update(true);
         verify(notificationListener).start();
     }
 
     @Test
     public void shouldBeAbleToStopNotificationListeners() {
-        enableNotificationListener.updateSetting(false);
+        enableNotificationListener.update(false);
         verify(notificationListener).stop();
+    }
+
+    @Test
+    public void shouldBeAbleToGetNotificationListenersStatus() {
+        Whitebox.setInternalState(notificationListener, "isListening", true);
+        Assert.assertEquals(true, enableNotificationListener.getValue());
     }
 }

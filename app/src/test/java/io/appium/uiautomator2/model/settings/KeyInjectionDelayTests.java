@@ -46,23 +46,27 @@ public class KeyInjectionDelayTests {
         PowerMockito.mockStatic(Configurator.class);
         when(Configurator.getInstance()).thenReturn(configurator);
         when(configurator.setKeyInjectionDelay(anyLong())).thenReturn(configurator);
-        when(configurator.getKeyInjectionDelay()).thenReturn((long) 123);
     }
 
     @Test
-    public void shouldBeInteger() {
-        Assert.assertEquals(Integer.class, keyInjectionDelay.getValueType());
+    public void shouldBeLong() {
+        Assert.assertEquals(Long.class, keyInjectionDelay.getValueType());
     }
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("keyInjectionDelay", keyInjectionDelay.getSettingName());
+        Assert.assertEquals("keyInjectionDelay", keyInjectionDelay.getName());
     }
 
     @Test
-    public void shouldBeAbleToSetIdleTimeout() {
-        keyInjectionDelay.updateSetting(123);
+    public void shouldBeAbleToSetKeyInjectionDelay() {
+        keyInjectionDelay.update(123);
         verify(configurator).setKeyInjectionDelay(123);
-        Assert.assertEquals(123, KeyInjectionDelay.getTime());
+    }
+
+    @Test
+    public void shouldBeAbleToGetKeyInjectionDelay() {
+        when(configurator.getKeyInjectionDelay()).thenReturn((long) 123);
+        Assert.assertEquals(Long.valueOf(123), keyInjectionDelay.getValue());
     }
 }

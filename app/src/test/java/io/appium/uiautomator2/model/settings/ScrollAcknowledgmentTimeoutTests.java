@@ -46,23 +46,27 @@ public class ScrollAcknowledgmentTimeoutTests {
         PowerMockito.mockStatic(Configurator.class);
         when(Configurator.getInstance()).thenReturn(configurator);
         when(configurator.setScrollAcknowledgmentTimeout(anyLong())).thenReturn(configurator);
-        when(configurator.getScrollAcknowledgmentTimeout()).thenReturn((long) 123);
     }
 
     @Test
-    public void shouldBeInteger() {
-        Assert.assertEquals(Integer.class, scrollAcknowledgmentTimeout.getValueType());
+    public void shouldBeLong() {
+        Assert.assertEquals(Long.class, scrollAcknowledgmentTimeout.getValueType());
     }
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("scrollAcknowledgmentTimeout", scrollAcknowledgmentTimeout.getSettingName());
+        Assert.assertEquals("scrollAcknowledgmentTimeout", scrollAcknowledgmentTimeout.getName());
     }
 
     @Test
-    public void shouldBeAbleToSetIdleTimeout() {
-        scrollAcknowledgmentTimeout.updateSetting(123);
+    public void shouldBeAbleToSetScrollAcknowledgmentTimeout() {
+        scrollAcknowledgmentTimeout.update(123);
         verify(configurator).setScrollAcknowledgmentTimeout(123);
-        Assert.assertEquals(123, ScrollAcknowledgmentTimeout.getTime());
+    }
+
+    @Test
+    public void shouldBeAbleToGetScrollAcknowledgmentTimeout() {
+        when(configurator.getScrollAcknowledgmentTimeout()).thenReturn((long) 123);
+        Assert.assertEquals(Long.valueOf(123), scrollAcknowledgmentTimeout.getValue());
     }
 }

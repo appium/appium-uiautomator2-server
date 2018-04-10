@@ -17,19 +17,19 @@
 package io.appium.uiautomator2.model.settings;
 
 import io.appium.uiautomator2.utils.Device;
-import io.appium.uiautomator2.utils.Logger;
 
 public class CompressedLayoutHierarchy extends AbstractSetting<Boolean> {
 
-    public static final String SETTING_NAME = Settings.ignoreUnimportantViews.toString();
+    private static final String SETTING_NAME = "ignoreUnimportantViews";
 
     public static boolean compressedLayoutHierarchy = false;
 
     public CompressedLayoutHierarchy() {
-        super(Boolean.class);
+        super(Boolean.class, SETTING_NAME);
     }
 
-    public static boolean isEnabled() {
+    @Override
+    public Boolean getValue() {
         return compressedLayoutHierarchy;
     }
 
@@ -37,10 +37,5 @@ public class CompressedLayoutHierarchy extends AbstractSetting<Boolean> {
     protected void apply(Boolean compressLayout) {
         compressedLayoutHierarchy = compressLayout;
         Device.getUiDevice().setCompressedLayoutHeirarchy(compressLayout);
-    }
-
-    @Override
-    public String getSettingName() {
-        return SETTING_NAME;
     }
 }

@@ -46,23 +46,27 @@ public class WaitForIdleTimeoutTests {
         PowerMockito.mockStatic(Configurator.class);
         when(Configurator.getInstance()).thenReturn(configurator);
         when(configurator.setWaitForIdleTimeout(anyLong())).thenReturn(configurator);
-        when(configurator.getWaitForIdleTimeout()).thenReturn((long) 123);
     }
 
     @Test
-    public void shouldBeInteger() {
-        Assert.assertEquals(Integer.class, waitForIdeTimeout.getValueType());
+    public void shouldBeLong() {
+        Assert.assertEquals(Long.class, waitForIdeTimeout.getValueType());
     }
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("waitForIdleTimeout", waitForIdeTimeout.getSettingName());
+        Assert.assertEquals("waitForIdleTimeout", waitForIdeTimeout.getName());
     }
 
     @Test
     public void shouldBeAbleToSetIdleTimeout() {
-        waitForIdeTimeout.updateSetting(123);
+        waitForIdeTimeout.update(123);
         verify(configurator).setWaitForIdleTimeout(123);
-        Assert.assertEquals(123, WaitForIdleTimeout.getTime());
+    }
+
+    @Test
+    public void shouldBeAbleToGetIdleTimeout() {
+        when(configurator.getWaitForIdleTimeout()).thenReturn((long) 123);
+        Assert.assertEquals(Long.valueOf(123), waitForIdeTimeout.getValue());
     }
 }

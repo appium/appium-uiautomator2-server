@@ -28,6 +28,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,19 +50,24 @@ public class ActionAcknowledgmentTimeoutTests {
     }
 
     @Test
-    public void shouldBeInteger() {
-        Assert.assertEquals(Integer.class, actionAcknowledgmentTimeout.getValueType());
+    public void shouldBeLong() {
+        Assert.assertEquals(Long.class, actionAcknowledgmentTimeout.getValueType());
     }
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("actionAcknowledgmentTimeout", actionAcknowledgmentTimeout.getSettingName());
+        Assert.assertEquals("actionAcknowledgmentTimeout", actionAcknowledgmentTimeout.getName());
     }
 
     @Test
-    public void shouldBeAbleToSetIdleTimeout() {
-        actionAcknowledgmentTimeout.updateSetting(123);
+    public void shouldBeAbleToSetActionAcknowledgmentTimeout() {
+        actionAcknowledgmentTimeout.update(123);
         verify(configurator).setActionAcknowledgmentTimeout(123);
-        Assert.assertEquals(0, ActionAcknowledgmentTimeout.getTime());
+    }
+
+    @Test
+    public void shouldBeAbleToGetActionAcknowledgmentTimeout() {
+        doReturn(123L).when(configurator).getActionAcknowledgmentTimeout();
+        Assert.assertEquals(Long.valueOf(123), actionAcknowledgmentTimeout.getValue());
     }
 }

@@ -18,25 +18,21 @@ package io.appium.uiautomator2.model.settings;
 
 import android.support.test.uiautomator.Configurator;
 
-public class KeyInjectionDelay extends AbstractSetting<Integer> {
+public class KeyInjectionDelay extends AbstractSetting<Long> {
 
-    public static final String SETTING_NAME = Settings.keyInjectionDelay.toString();
+    private static final String SETTING_NAME = "keyInjectionDelay";
 
     public KeyInjectionDelay() {
-        super(Integer.class);
+        super(Long.class, SETTING_NAME);
     }
 
-    static public long getTime() {
+    @Override
+    public Long getValue() {
         return Configurator.getInstance().getKeyInjectionDelay();
     }
 
     @Override
-    public String getSettingName() {
-        return SETTING_NAME;
-    }
-
-    @Override
-    protected void apply(Integer timeout) {
+    protected void apply(Long timeout) {
         Configurator.getInstance().setKeyInjectionDelay(timeout);
     }
 }

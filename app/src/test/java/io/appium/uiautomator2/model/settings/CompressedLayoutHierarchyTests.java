@@ -29,6 +29,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.appium.uiautomator2.utils.Device;
 
+import static io.appium.uiautomator2.model.settings.Settings.COMPRESSED_LAYOUT_HIERARCHY;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -58,20 +59,20 @@ public class CompressedLayoutHierarchyTests {
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("ignoreUnimportantViews", compressedLayoutHierarchy.getSettingName());
+        Assert.assertEquals("ignoreUnimportantViews", compressedLayoutHierarchy.getName());
     }
 
     @Test
     public void shouldBeAbleToEnableCompressedLayout() {
-        compressedLayoutHierarchy.updateSetting(true);
+        compressedLayoutHierarchy.update(true);
         verify(uiDevice).setCompressedLayoutHeirarchy(true);
-        Assert.assertEquals(true, CompressedLayoutHierarchy.isEnabled());
+        Assert.assertEquals(true, COMPRESSED_LAYOUT_HIERARCHY.getSetting().getValue());
     }
 
     @Test
     public void shouldBeAbleToDisableCompressedLayout() {
-        compressedLayoutHierarchy.updateSetting(false);
+        compressedLayoutHierarchy.update(false);
         verify(uiDevice).setCompressedLayoutHeirarchy(false);
-        Assert.assertEquals(false, CompressedLayoutHierarchy.isEnabled());
+        Assert.assertEquals(false, COMPRESSED_LAYOUT_HIERARCHY.getSetting().getValue());
     }
 }

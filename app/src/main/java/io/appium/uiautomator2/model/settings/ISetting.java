@@ -16,8 +16,12 @@
 
 package io.appium.uiautomator2.model.settings;
 
-public interface ISetting {
+public interface ISetting<T> {
 
-    public void updateSetting(Object value);
+    void update(T value);
+
+    T getValue();
+
+    String getName();
 
 }

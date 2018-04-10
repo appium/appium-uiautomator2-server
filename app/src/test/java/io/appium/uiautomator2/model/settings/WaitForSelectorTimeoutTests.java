@@ -46,24 +46,27 @@ public class WaitForSelectorTimeoutTests {
         PowerMockito.mockStatic(Configurator.class);
         when(Configurator.getInstance()).thenReturn(configurator);
         when(configurator.setWaitForSelectorTimeout(anyLong())).thenReturn(configurator);
-        when(configurator.getWaitForSelectorTimeout()).thenReturn((long) 123);
-
     }
 
     @Test
-    public void shouldBeInteger() {
-        Assert.assertEquals(Integer.class, waitForSelectorTimeout.getValueType());
+    public void shouldBeLong() {
+        Assert.assertEquals(Long.class, waitForSelectorTimeout.getValueType());
     }
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("waitForSelectorTimeout", waitForSelectorTimeout.getSettingName());
+        Assert.assertEquals("waitForSelectorTimeout", waitForSelectorTimeout.getName());
     }
 
     @Test
-    public void shouldBeAbleToSetIdleTimeout() {
-        waitForSelectorTimeout.updateSetting(123);
+    public void shouldBeAbleToSetSelectorTimeout() {
+        waitForSelectorTimeout.update(123);
         verify(configurator).setWaitForSelectorTimeout(123);
-        Assert.assertEquals(123, WaitForSelectorTimeout.getTime());
+    }
+
+    @Test
+    public void shouldBeAbleToGetSelectorTimeout() {
+        when(configurator.getWaitForSelectorTimeout()).thenReturn((long) 123);
+        Assert.assertEquals(Long.valueOf(123), waitForSelectorTimeout.getValue());
     }
 }

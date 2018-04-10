@@ -18,25 +18,21 @@ package io.appium.uiautomator2.model.settings;
 
 import android.support.test.uiautomator.Configurator;
 
-public class WaitForSelectorTimeout extends AbstractSetting<Integer> {
+public class WaitForSelectorTimeout extends AbstractSetting<Long> {
 
-    public static final String SETTING_NAME = Settings.waitForSelectorTimeout.toString();
+    private static final String SETTING_NAME = "waitForSelectorTimeout";
 
     public WaitForSelectorTimeout() {
-        super(Integer.class);
+        super(Long.class, SETTING_NAME);
     }
 
-    static public long getTime() {
+    @Override
+    public Long getValue() {
         return Configurator.getInstance().getWaitForSelectorTimeout();
     }
 
     @Override
-    public String getSettingName() {
-        return SETTING_NAME;
-    }
-
-    @Override
-    protected void apply(Integer timeout) {
+    protected void apply(Long timeout) {
         Configurator.getInstance().setWaitForSelectorTimeout(timeout);
     }
 }

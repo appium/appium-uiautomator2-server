@@ -29,13 +29,13 @@ import java.util.List;
 
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
-import io.appium.uiautomator2.model.settings.EnableNotificationListener;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.unittest.test.internal.BaseTest;
 import io.appium.uiautomator2.unittest.test.internal.Response;
 import io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices;
 import io.appium.uiautomator2.utils.Device;
 
+import static io.appium.uiautomator2.model.settings.Settings.ENABLE_NOTIFICATION_LISTENER;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.getJsonObjectCountInJsonArray;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElement;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElementInvisibility;
@@ -45,11 +45,13 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getRotation;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands
         .getScreenOrientation;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getSettings;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.rotateScreen;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.screenshot;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollTo;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.setRotation;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.updateSetting;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.updateSettings;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getAttribute;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
@@ -354,7 +356,7 @@ public class DeviceCommandsTest extends BaseTest {
 
     @Test
     public void toastVerificationTest() throws JSONException {
-        updateSetting(EnableNotificationListener.SETTING_NAME, true);
+        updateSetting(ENABLE_NOTIFICATION_LISTENER.toString(), true);
         startActivity(".view.PopupMenu1");
         Response response = findElement(By.accessibilityId("Make a Popup!"));
         click(response.getElementId());
@@ -437,4 +439,35 @@ public class DeviceCommandsTest extends BaseTest {
         assertTrue(bitmap.sameAs(uiAutoBitmap));
     }
 
+    @Test
+    public void shouldBeAbleToUpdateSettings() throws JSONException {
+        Response response = getSettings();
+        JSONObject defaultSettings = response.getValue();
+        try {
+            updateSetting("actionAcknowledgmentTimeout", 123);
+            updateSetting("allowInvisibleElements", true);
+            updateSetting("ignoreUnimportantViews", true);
+            updateSetting("elementResponseAttributes", "text");
+            updateSetting("enableNotificationListener", true);
+            updateSetting("keyInjectionDelay", 10);
+            updateSetting("scrollAcknowledgmentTimeout", 300);
+            updateSetting("shouldUseCompactResponses", false);
+            updateSetting("waitForIdleTimeout", 50001);
+            updateSetting("waitForSelectorTimeout", 10);
+            response = getSettings();
+            JSONObject jsonObject = response.getValue();
+            assertEquals(123, jsonObject.get("actionAcknowledgmentTimeout"));
+            assertEquals(true, jsonObject.get("allowInvisibleElements"));
+            assertEquals(true, jsonObject.get("ignoreUnimportantViews"));
+            assertEquals("text", jsonObject.get("elementResponseAttributes"));
+            assertEquals(true, jsonObject.get("enableNotificationListener"));
+            assertEquals(10, jsonObject.get("keyInjectionDelay"));
+            assertEquals(300, jsonObject.get("scrollAcknowledgmentTimeout"));
+            assertEquals(false, jsonObject.get("shouldUseCompactResponses"));
+            assertEquals(50001, jsonObject.get("waitForIdleTimeout"));
+            assertEquals(10, jsonObject.get("waitForSelectorTimeout"));
+        } finally {
+            updateSettings(defaultSettings);
+        }
+    }
 }

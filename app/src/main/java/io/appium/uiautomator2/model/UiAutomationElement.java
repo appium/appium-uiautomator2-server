@@ -28,10 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Preconditions;
+
+import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
 
 
 /**
@@ -139,7 +140,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
       children = null;
     } else {
       children = new ArrayList<UiAutomationElement>(childCount);
-      Object allowInvisibleElements = Session.capabilities.get(AllowInvisibleElements.SETTING_NAME);
+      Object allowInvisibleElements = Session.capabilities.get(ALLOW_INVISIBLE_ELEMENTS.toString());
       boolean isAllowInvisibleElements = allowInvisibleElements != null && (boolean) allowInvisibleElements;
 
       for (int i = 0; i < childCount; i++) {

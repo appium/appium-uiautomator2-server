@@ -149,7 +149,7 @@ public class DeviceCommands {
     }
 
     /**
-     * return the appStrings
+     * update setting
      *
      * @return Response from UiAutomator2 server
      * @throws JSONException
@@ -159,6 +159,27 @@ public class DeviceCommands {
         JSONObject postBody = new JSONObject();
         postBody.put("settings", new JSONObject().put(settingName, settingValue));
         return Client.post("/appium/settings", postBody);
+    }
+
+    /**
+     * update settings
+     *
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response updateSettings(JSONObject settings) throws
+            JSONException {
+        return Client.post("/appium/settings", new JSONObject().put("settings",settings));
+    }
+
+    /**
+     * return settings
+     *
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response getSettings() {
+        return Client.get("/appium/settings");
     }
 
     /**

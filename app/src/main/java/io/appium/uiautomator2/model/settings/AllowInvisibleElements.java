@@ -21,20 +21,16 @@ import io.appium.uiautomator2.utils.Logger;
 
 public class AllowInvisibleElements extends AbstractSetting<Boolean> {
 
-    public static final String SETTING_NAME = Settings.allowInvisibleElements.toString();
+    private static final String SETTING_NAME = "allowInvisibleElements";
 
     public AllowInvisibleElements() {
-        super(Boolean.class);
-    }
-
-    static public boolean isEnabled() {
-        Object allowInvisibleElements = Session.capabilities.get(AllowInvisibleElements.SETTING_NAME);
-        return allowInvisibleElements != null && (boolean) allowInvisibleElements;
+        super(Boolean.class, SETTING_NAME);
     }
 
     @Override
-    public String getSettingName() {
-        return SETTING_NAME;
+    public Boolean getValue() {
+        Object allowInvisibleElements = Session.capabilities.get(getName());
+        return allowInvisibleElements != null && (boolean) allowInvisibleElements;
     }
 
     @Override

@@ -32,7 +32,7 @@ import org.junit.runners.MethodSorters;
 import java.io.IOException;
 
 import io.appium.uiautomator2.model.By;
-import io.appium.uiautomator2.model.settings.EnableNotificationListener;
+import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.server.ServerConfig;
 import io.appium.uiautomator2.server.ServerInstrumentation;
 import io.appium.uiautomator2.unittest.test.Config;
@@ -95,7 +95,7 @@ public abstract class BaseTest {
 
     @Before
     public void launchAUT() throws InterruptedException, JSONException {
-        updateSetting(EnableNotificationListener.SETTING_NAME, false);
+        updateSetting(Settings.ENABLE_NOTIFICATION_LISTENER.toString(), false);
         startActivity(Config.APP_NAME);
         waitForElement(By.accessibilityId("Accessibility"));
     }

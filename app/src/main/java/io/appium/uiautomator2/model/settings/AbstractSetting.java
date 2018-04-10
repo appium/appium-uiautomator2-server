@@ -22,35 +22,45 @@ import io.appium.uiautomator2.utils.Logger;
 public abstract class AbstractSetting<T> implements ISetting {
 
     private final Class<T> valueType;
+    private final String settingName;
 
-    public AbstractSetting(Class<T> valueType) {
+    public AbstractSetting(Class<T> valueType, String settingName) {
         this.valueType = valueType;
+        this.settingName = settingName;
     }
 
-    public void updateSetting(Object value) {
-        Logger.debug(String.format("Set the %s to %s", getSettingName(), String.valueOf(value)));
+    public void update(Object value) {
+        Logger.debug(String.format("Set the %s to %s", getName(), String.valueOf(value)));
         T convertedValue = convertValue(value);
         try {
             apply(convertedValue);
         } catch (Exception e) {
-            Logger.error(String.format("Unable to update the setting %s: %s", getSettingName(), e.toString()));
+            Logger.error(String.format("Unable to update the setting %s: %s", getName(), e.toString()));
         }
     }
 
-    public abstract String getSettingName();
+    public String getName() {
+        return settingName;
+    };
 
     public Class<T> getValueType() {
         return valueType;
     }
 
+    public abstract T getValue();
+
     protected abstract void apply(T value);
 
     private T convertValue(Object value) {
-        if (!valueType.isInstance(value)) {
+        try {
+            if (valueType == Long.class && value instanceof Number) {
+                return valueType.cast(Number.class.cast(value).longValue());
+            }
+            return valueType.cast(value);
+        } catch(ClassCastException e) {
             String errorMsg = String.format("Invalid setting value type. Got: %s. Expected: %s.",
                     value.getClass().getName(), valueType.getName());
             throw new UiAutomator2Exception(errorMsg);
         }
-        return valueType.cast(value);
     }
 }

@@ -38,20 +38,18 @@ public class AllowInvisibleElementsTest {
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("allowInvisibleElements", allowInvisibleElements.getSettingName());
+        Assert.assertEquals("allowInvisibleElements", allowInvisibleElements.getName());
     }
 
     @Test
     public void shouldBeAbleToDisableAllowInvisibleElements() {
-        Session.capabilities.put(AllowInvisibleElements.SETTING_NAME, false);
-
-        Assert.assertEquals(false, AllowInvisibleElements.isEnabled());
+        Session.capabilities.put(allowInvisibleElements.getName(), false);
+        Assert.assertEquals(false, allowInvisibleElements.getValue());
     }
 
     @Test
     public void shouldBeAbleToEnableAllowInvisibleElements() {
-        Session.capabilities.put(AllowInvisibleElements.SETTING_NAME, true);
-
-        Assert.assertEquals(true, AllowInvisibleElements.isEnabled());
+        Session.capabilities.put(allowInvisibleElements.getName(), true);
+        Assert.assertEquals(true, allowInvisibleElements.getValue());
     }
 }
