@@ -43,8 +43,8 @@ public class Session {
 
     public static String[] getElementResponseAttributes() {
         if (Session.capabilities.containsKey(ELEMENT_RESPONSE_ATTRIBUTES.toString())) {
-            return Session.capabilities.get(ELEMENT_RESPONSE_ATTRIBUTES.toString()).toString().
-                    split(",");
+            return Session.capabilities.get(ELEMENT_RESPONSE_ATTRIBUTES.toString()).toString()
+                    .split(",");
         }
         return new String[] { "name", "text" };
     }
