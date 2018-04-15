@@ -32,6 +32,5 @@ public class UiSelectorSyntaxException extends Exception {
 
     public UiSelectorSyntaxException(final String msg, final Throwable cause) {
         super(msg, cause);
-
     }
 }

@@ -108,36 +108,36 @@ abstract class UiExpressionParser<T, U> {
         startIndex = currentIndex = 0;
         boolean isInsideStringLiteral = false;
         do {
-                final char currentChar = expression.charAt(currentIndex);
+            final char currentChar = expression.charAt(currentIndex);
 
-                if (currentChar == '"') {
-                    /* Skip escaped quotes */
-                    isInsideStringLiteral = !(isInsideStringLiteral && currentIndex > 0
-                            && expression.charAt(currentIndex - 1) != '\\');
-                }
+            if (currentChar == '"') {
+                /* Skip escaped quotes */
+                isInsideStringLiteral = !(isInsideStringLiteral && currentIndex > 0
+                        && expression.charAt(currentIndex - 1) != '\\');
+            }
 
-                if (!isInsideStringLiteral) {
-                    switch (currentChar) {
-                        case ')':
-                            if (parenthesesStack.peek() == '(') {
-                                parenthesesStack.pop();
-                            } else {
-                                parenthesesStack.push(currentChar);
-                            }
-                            break;
-                        case '(':
+            if (!isInsideStringLiteral) {
+                switch (currentChar) {
+                    case ')':
+                        if (parenthesesStack.peek() == '(') {
+                            parenthesesStack.pop();
+                        } else {
                             parenthesesStack.push(currentChar);
-                            break;
-                        case ',':
-                            final String argument = expression.substring(startIndex + 1,
-                                    currentIndex);
-                            if (!argument.isEmpty()) {
-                                arguments.add(argument.trim());
-                            }
-                            startIndex = currentIndex;
-                            break;
-                    }
+                        }
+                        break;
+                    case '(':
+                        parenthesesStack.push(currentChar);
+                        break;
+                    case ',':
+                        final String argument = expression.substring(startIndex + 1,
+                                currentIndex);
+                        if (!argument.isEmpty()) {
+                            arguments.add(argument.trim());
+                        }
+                        startIndex = currentIndex;
+                        break;
                 }
+            }
             currentIndex++;
         } while (!parenthesesStack.empty() && currentIndex < expression.length());
 
