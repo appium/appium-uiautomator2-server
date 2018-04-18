@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.utils;
 
-import android.support.annotation.Nullable;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 
