@@ -64,7 +64,7 @@ public class UiAutomatorParserTests {
         final String firstStatement = "new UiScrollable(new UiSelector().index(0))" +
                 ".scrollTextIntoView(\"te;xt\")";
         final String secondStatement = "new UiSelector().text(\"te;st\")";
-        List<UiSelector> selectors = uiAutomatorParser.parse("  " + firstStatement + " ;" +
+        List<UiSelector> selectors = uiAutomatorParser.parse("  " + firstStatement + " ; " +
                  secondStatement + " ; ");
         verify(uiAutomatorParser).createUiScrollableParser(firstStatement);
         verify(uiAutomatorParser).createUiSelectorParser(secondStatement);

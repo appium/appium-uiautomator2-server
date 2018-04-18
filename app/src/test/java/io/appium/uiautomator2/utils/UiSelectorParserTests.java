@@ -106,7 +106,7 @@ public class UiSelectorParserTests {
     public void shouldThrowExceptionOnUnclosedParenthesis() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         expectedException.expect(UiSelectorSyntaxException.class);
-        expectedException.expectMessage("unclosed paren in expression:(\"test\"()");
+        expectedException.expectMessage("unclosed paren in expression: (\"test\"()");
         new UiSelectorParser("new UiSelector().text(\"test\"()").parse();
     }
 

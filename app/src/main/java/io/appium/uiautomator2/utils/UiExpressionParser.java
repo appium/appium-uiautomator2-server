@@ -64,7 +64,7 @@ abstract class UiExpressionParser<T, U> {
         if (!expression.startsWith(getConstructorExpression())) {
             throw new UiSelectorSyntaxException(String.format(
                     "Was trying to parse as %1$s, but didn't start with an acceptable prefix. " +
-                            "Acceptable prefixes are: 'new %1$s' or '%1$s'. Saw:%2$s",
+                            "Acceptable prefixes are: `new %1$s` or `%1$s`. Saw: `%2$s`",
                     clazz.getSimpleName(), expression));
         }
         expression = expression.substring(getConstructorExpression().length());
@@ -92,7 +92,7 @@ abstract class UiExpressionParser<T, U> {
         expression = expression.trim();
         final int firstParenIndex = expression.indexOf('(');
         if (firstParenIndex < 0) {
-            throw new UiSelectorSyntaxException("No opening parenthesis after method name:" +
+            throw new UiSelectorSyntaxException("No opening parenthesis after method name: " +
                     expression);
         }
         final String methodName = expression.substring(0, firstParenIndex).trim();
@@ -104,8 +104,8 @@ abstract class UiExpressionParser<T, U> {
         expression = expression.trim();
         final List<String> arguments = new ArrayList<>();
         final Stack<Character> parenthesesStack = new Stack<>();
-        int startIndex, currentIndex;
-        startIndex = currentIndex = 0;
+        int startIndex = 0;
+        int currentIndex = 0;
         boolean isInsideStringLiteral = false;
         do {
             final char currentChar = expression.charAt(currentIndex);
@@ -142,7 +142,7 @@ abstract class UiExpressionParser<T, U> {
         } while (!parenthesesStack.empty() && currentIndex < expression.length());
 
         if (!parenthesesStack.isEmpty()) {
-            throw new UiSelectorSyntaxException("unclosed paren in expression:" + expression);
+            throw new UiSelectorSyntaxException("unclosed paren in expression: " + expression);
         }
 
         final String argument = expression.substring(startIndex + 1, currentIndex - 1);

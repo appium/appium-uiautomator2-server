@@ -30,49 +30,43 @@ import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
  */
 public class UiAutomatorParser {
 
+    private static final String STATEMENT_DELIMETER = ";";
     private String text;
-    private List<UiSelector> selectors;
+    final private List<UiSelector> selectors = new ArrayList<>();
 
     public List<UiSelector> parse(String textToParse) throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
+        selectors.clear();
         if (textToParse.isEmpty()) {
             throw new UiSelectorSyntaxException("Tried to parse an empty string. " +
                     "Expected to see a string consisting of text to be interpreted as " +
                     "UiAutomator java code.");
         }
-        selectors = new ArrayList<>();
         text = textToParse.trim();
         removeTailingSemicolon();
-        trimWhitespace();
 
-        consumeStatement();
         while (text.length() > 0) {
-            trimWhitespace();
-            consumeSemicolon();
-            trimWhitespace();
             consumeStatement();
+            consumeSemicolon();
         }
 
         return selectors;
     }
 
-    private void trimWhitespace() {
-        text = text.trim();
-    }
-
     private void removeTailingSemicolon() {
-        if (text.charAt(text.length() - 1) == ';') {
+        if (text.endsWith(STATEMENT_DELIMETER)) {
             text = text.substring(0, text.length() - 1);
         }
     }
 
     private void consumeSemicolon() {
-        if (text.charAt(0) == ';') {
+        if (text.startsWith(STATEMENT_DELIMETER)) {
             text = text.substring(1);
         }
     }
 
     private void consumeStatement() throws UiSelectorSyntaxException, UiObjectNotFoundException {
+        text = text.trim();
         String statement;
         int index = 0;
         boolean isInsideStringLiteral = false;
@@ -85,7 +79,8 @@ public class UiAutomatorParser {
                         && text.charAt(index - 1) != '\\');
             }
 
-            if (text.charAt(index) == ';' && !isInsideStringLiteral) {
+            if (STATEMENT_DELIMETER.equals(String.valueOf(text.charAt(index)))
+                    && !isInsideStringLiteral) {
                 break;
             }
             index++;

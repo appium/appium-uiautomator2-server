@@ -184,7 +184,7 @@ public class UiScrollableParserTests {
             UiObjectNotFoundException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("didn't start with an acceptable prefix. " +
-                "Acceptable prefixes are: 'new UiScrollable' or 'UiScrollable'. Saw:test");
+                "Acceptable prefixes are: `new UiScrollable` or `UiScrollable`. Saw: `test`");
         new UiScrollableParserSpy("test").parse();
     }
 
