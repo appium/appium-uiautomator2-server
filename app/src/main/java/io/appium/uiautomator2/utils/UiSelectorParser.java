@@ -32,28 +32,30 @@ public class UiSelectorParser extends UiExpressionParser<UiSelector, UiSelector>
 
     @Override
     protected void prepareForParsing() {
-        expression = expression.trim();
         if (!(expression.startsWith(getConstructorExpression())
                 || expression.startsWith(clazz.getSimpleName())
                 || expression.startsWith("."))) {
-            expression = "." + expression;
+            expression.getStringBuilder().insert(0, ".");
         }
 
         super.prepareForParsing();
 
         if (!expression.startsWith(getConstructorExpression())) {
-            expression = getConstructorExpression() + "()" + expression;
+            expression.getStringBuilder().insert(0, "()");
+            expression.getStringBuilder().insert(0, getConstructorExpression());
         }
     }
 
     public UiSelector parse() throws UiSelectorSyntaxException, UiObjectNotFoundException {
+        resetCurrentIndex();
         consumeConstructor();
-        while (expression.length() > 0) {
+        while (!endOfExpression()) {
             consumePeriod();
             final Object result = consumeMethodCall();
             if (!(result instanceof UiSelector)) {
-                throw new UiSelectorSyntaxException(String.format("Unsupported return value " +
-                        "type:`%s`. Only methods with return type `UiSelector` are supported.",
+                throw new UiSelectorSyntaxException(expression.toString(),
+                        String.format("Unsupported return value type:`%s`. " +
+                                        "Only methods with return type `UiSelector` are supported.",
                         result.getClass().getSimpleName()));
             }
             setTarget((UiSelector) result);

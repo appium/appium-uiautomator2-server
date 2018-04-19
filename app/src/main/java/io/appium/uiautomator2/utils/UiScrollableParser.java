@@ -52,9 +52,10 @@ public class UiScrollableParser extends UiExpressionParser<UiScrollable, UiSelec
      */
     @Override
     public UiSelector parse() throws UiSelectorSyntaxException, UiObjectNotFoundException {
+        resetCurrentIndex();
         Object result = null;
         consumeConstructor();
-        while (expression.length() > 0) {
+        while (!endOfExpression()) {
             consumePeriod();
             result = consumeMethodCall();
             if (result instanceof UiScrollable) {
@@ -67,8 +68,8 @@ public class UiScrollableParser extends UiExpressionParser<UiScrollable, UiSelec
         }
 
         if (uiSelector == null) {
-            throw new UiSelectorSyntaxException("Last method called on a UiScrollable object must" +
-                    " return a UiObject object");
+            throw new UiSelectorSyntaxException(expression.toString(),
+                    "Last method called on a UiScrollable object must return a UiObject object");
         }
         return uiSelector;
     }

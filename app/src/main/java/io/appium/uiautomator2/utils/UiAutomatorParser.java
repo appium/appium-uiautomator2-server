@@ -38,7 +38,7 @@ public class UiAutomatorParser {
             UiObjectNotFoundException {
         selectors.clear();
         if (textToParse.isEmpty()) {
-            throw new UiSelectorSyntaxException("Tried to parse an empty string. " +
+            throw new UiSelectorSyntaxException(textToParse, "Tried to parse an empty string. " +
                     "Expected to see a string consisting of text to be interpreted as " +
                     "UiAutomator java code.");
         }

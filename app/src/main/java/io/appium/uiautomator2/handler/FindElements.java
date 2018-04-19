@@ -175,12 +175,7 @@ public class FindElements extends SafeRequestHandler {
         List<UiSelector> parsedSelectors = null;
         UiAutomatorParser uiAutomatorParser = new UiAutomatorParser();
         final List<UiSelector> selectors = new ArrayList<UiSelector>();
-        try {
-            parsedSelectors = uiAutomatorParser.parse(expression);
-        } catch (final UiSelectorSyntaxException e) {
-            throw new UiSelectorSyntaxException(
-                    "Could not parse UiSelector argument: " + e.getMessage());
-        }
+        parsedSelectors = uiAutomatorParser.parse(expression);
 
         for (final UiSelector selector : parsedSelectors) {
             selectors.add(selector);

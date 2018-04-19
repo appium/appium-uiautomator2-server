@@ -33,12 +33,13 @@ import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 
 abstract class UiExpressionParser<T, U> {
     protected final Class<T> clazz;
-    protected String expression;
+    final protected StringBuilderWrapper expression;
+    private int currentIndex;
     private T target;
 
     UiExpressionParser(Class<T> clazz, String expression) {
         this.clazz = clazz;
-        this.expression = expression;
+        this.expression = new StringBuilderWrapper(expression);
         prepareForParsing();
     }
 
@@ -50,69 +51,69 @@ abstract class UiExpressionParser<T, U> {
 
     // prepares text for the main parsing loop
     protected void prepareForParsing() {
-        expression = expression.trim();
         if (expression.startsWith(clazz.getSimpleName())) {
-            expression = "new " + expression;
+            expression.getStringBuilder().insert(0, "new ");
         }
     }
 
     @SuppressWarnings("unchecked")
     protected void consumeConstructor() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
-        expression = expression.trim();
-        if (!expression.startsWith(getConstructorExpression())) {
-            throw new UiSelectorSyntaxException(String.format(
+        skipLeadingSpaces();
+        final String constructorExpression = getConstructorExpression();
+        if (!expression.startsWith(constructorExpression, currentIndex)) {
+            throw new UiSelectorSyntaxException(expression.toString(), String.format(
                     "Was trying to parse as %1$s, but didn't start with an acceptable prefix. " +
-                            "Acceptable prefixes are: `new %1$s` or `%1$s`. Saw: `%2$s`",
-                    clazz.getSimpleName(), expression));
+                            "Acceptable prefixes are: `new %1$s` or `%1$s`",
+                    clazz.getSimpleName()));
         }
-        expression = expression.substring(getConstructorExpression().length());
+        currentIndex += constructorExpression.length();
         final List<String> params = consumeMethodParameters();
         final Pair<Constructor, List<Object>> constructor = findConstructor(params);
         try {
             target = (T) constructor.first.newInstance(constructor.second.toArray());
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new UiSelectorSyntaxException("Can not create instance of " +
+            throw new UiAutomator2Exception("Can not create instance of " +
                     clazz.getSimpleName(), e);
         }
     }
 
     protected void consumePeriod() throws UiSelectorSyntaxException {
-        expression = expression.trim();
-        if (expression.startsWith(".")) {
-            expression = expression.substring(1);
+        skipLeadingSpaces();
+        if (!endOfExpression() && expression.getStringBuilder().charAt(currentIndex) == '.') {
+            currentIndex++;
         } else {
-            throw new UiSelectorSyntaxException("Expected \".\" but saw \"" + expression.charAt(0) +
-                    "\"");
+            throw new UiSelectorSyntaxException(expression.toString(),
+                    "Expected \".\" at position " + currentIndex);
         }
     }
 
     protected String consumeMethodName() throws UiSelectorSyntaxException {
-        expression = expression.trim();
-        final int firstParenIndex = expression.indexOf('(');
+        skipLeadingSpaces();
+        final int firstParenIndex = expression.getStringBuilder().indexOf("(", currentIndex);
         if (firstParenIndex < 0) {
-            throw new UiSelectorSyntaxException("No opening parenthesis after method name: " +
-                    expression);
+            throw new UiSelectorSyntaxException(expression.toString(),
+                    "No opening parenthesis after method name at position " + currentIndex);
         }
-        final String methodName = expression.substring(0, firstParenIndex).trim();
-        expression = expression.substring(firstParenIndex);
+        final String methodName = expression.getStringBuilder()
+                .substring(currentIndex, firstParenIndex).trim();
+        currentIndex = firstParenIndex;
         return methodName;
     }
 
     protected List<String> consumeMethodParameters() throws UiSelectorSyntaxException {
-        expression = expression.trim();
+        skipLeadingSpaces();
         final List<String> arguments = new ArrayList<>();
         final Stack<Character> parenthesesStack = new Stack<>();
-        int startIndex = 0;
-        int currentIndex = 0;
+        int startIndex = currentIndex;
         boolean isInsideStringLiteral = false;
         do {
-            final char currentChar = expression.charAt(currentIndex);
+            final char currentChar = expression.getStringBuilder().charAt(currentIndex);
 
             if (currentChar == '"') {
                 /* Skip escaped quotes */
                 isInsideStringLiteral = !(isInsideStringLiteral && currentIndex > 0
-                        && expression.charAt(currentIndex - 1) != '\\');
+                        && expression.getStringBuilder().charAt(currentIndex - 1) != '\\');
             }
 
             if (!isInsideStringLiteral) {
@@ -128,8 +129,8 @@ abstract class UiExpressionParser<T, U> {
                         parenthesesStack.push(currentChar);
                         break;
                     case ',':
-                        final String argument = expression.substring(startIndex + 1,
-                                currentIndex);
+                        final String argument = expression.getStringBuilder()
+                                .substring(startIndex + 1, currentIndex);
                         if (!argument.isEmpty()) {
                             arguments.add(argument.trim());
                         }
@@ -138,18 +139,19 @@ abstract class UiExpressionParser<T, U> {
                 }
             }
             currentIndex++;
-        } while (!parenthesesStack.empty() && currentIndex < expression.length());
+        } while (!parenthesesStack.empty() && !endOfExpression());
 
         if (!parenthesesStack.isEmpty()) {
-            throw new UiSelectorSyntaxException("unclosed paren in expression: " + expression);
+            throw new UiSelectorSyntaxException(expression.toString(),
+                    "Unclosed paren in expression");
         }
 
-        final String argument = expression.substring(startIndex + 1, currentIndex - 1);
+        final String argument = expression.getStringBuilder()
+                .substring(startIndex + 1, currentIndex - 1);
         if (!argument.isEmpty()) {
             arguments.add(argument.trim());
         }
 
-        expression = expression.substring(currentIndex);
         return arguments;
     }
 
@@ -177,8 +179,9 @@ abstract class UiExpressionParser<T, U> {
         }
 
         if (candidates.isEmpty()) {
-            throw new UiSelectorSyntaxException(String.format("%s has no `%s` method",
-                    getTarget().getClass().getSimpleName(), methodName));
+            throw new UiSelectorSyntaxException(expression.toString(),
+                    String.format("%s has no `%s` method", getTarget().getClass().getSimpleName(),
+                            methodName));
         }
 
         UiSelectorSyntaxException exThrown = null;
@@ -195,8 +198,8 @@ abstract class UiExpressionParser<T, U> {
         final String errorMsg = "`%s` doesn't have suitable method `%s` with arguments %s" +
                 (exThrown != null ? ": " + exThrown.getMessage() : "");
 
-        throw new UiSelectorSyntaxException(String.format(errorMsg, clazz.getSimpleName(),
-                methodName, arguments), exThrown);
+        throw new UiSelectorSyntaxException(expression.toString(),
+                String.format(errorMsg, clazz.getSimpleName(), methodName, arguments), exThrown);
     }
 
     private Pair<Constructor, List<Object>> findConstructor(List<String> arguments) throws
@@ -212,8 +215,9 @@ abstract class UiExpressionParser<T, U> {
             }
         }
 
-        throw new UiSelectorSyntaxException(String.format("%s has no suitable constructor with " +
-                        "arguments %s", clazz.getSimpleName(), arguments), exThrown);
+        throw new UiSelectorSyntaxException(expression.toString(),
+                String.format("%s has no suitable constructor with arguments %s",
+                        clazz.getSimpleName(), arguments), exThrown);
     }
 
     @SuppressWarnings("unchecked")
@@ -223,7 +227,9 @@ abstract class UiExpressionParser<T, U> {
             return (V) method.invoke(receiver, arguments.toArray());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new UiSelectorSyntaxException("problem using reflection to call this method", e);
+            throw new UiSelectorSyntaxException(expression.toString(),
+                    String.format("Problem using reflection to call `%s` method",
+                            method.getName()), e);
         } catch (InvocationTargetException e) {
             Throwable targetException = e.getTargetException();
             if (targetException instanceof UiObjectNotFoundException) {
@@ -236,8 +242,9 @@ abstract class UiExpressionParser<T, U> {
     private List<Object> coerceArgsToTypes(Type[] types, List<String> arguments) throws
             UiSelectorSyntaxException, UiObjectNotFoundException {
         if (types.length != arguments.size()) {
-            throw new UiSelectorSyntaxException(String.format("Invalid arguments count. Actual:%s" +
-                    ". Expected:%s.", arguments.size(), types.length));
+            throw new UiSelectorSyntaxException(expression.toString(),
+                    String.format("Invalid arguments count. Actual: %s. Expected: %s.",
+                            arguments.size(), types.length));
         }
         List<Object> result = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
@@ -253,21 +260,24 @@ abstract class UiExpressionParser<T, U> {
             if (argument.matches("^(true|false)$")) {
                 return Boolean.valueOf(argument);
             }
-            throw new UiSelectorSyntaxException(argument + " is not a boolean");
+            throw new UiSelectorSyntaxException(expression.toString(),
+                    argument + " is not a boolean");
         }
 
         if (type == String.class) {
             if (argument.matches("^\"[\\s\\S]*\"$")) {
                 return argument.substring(1, argument.length() - 1).replaceAll("\\\\\"", "\"");
             }
-            throw new UiSelectorSyntaxException(argument + " is not a string");
+            throw new UiSelectorSyntaxException(expression.toString(),
+                    argument + " is not a string");
         }
 
         if (type == int.class) {
             try {
                 return Integer.parseInt(argument);
             } catch (NumberFormatException e) {
-                throw new UiSelectorSyntaxException(argument + " is not a integer");
+                throw new UiSelectorSyntaxException(expression.toString(),
+                        argument + " is not a integer");
             }
         }
 
@@ -275,7 +285,8 @@ abstract class UiExpressionParser<T, U> {
             try {
                 return Class.forName(argument);
             } catch (ClassNotFoundException e) {
-                throw new UiSelectorSyntaxException(argument + " class could not be found");
+                throw new UiSelectorSyntaxException(expression.toString(),
+                        argument + " class could not be found");
             }
         }
 
@@ -284,7 +295,8 @@ abstract class UiExpressionParser<T, U> {
             return parser.parse();
         }
 
-        throw new UiSelectorSyntaxException(String.format("Type `%s` is not supported.", type));
+        throw new UiSelectorSyntaxException(expression.toString(),
+                String.format("Type `%s` is not supported.", type));
     }
 
 
@@ -294,5 +306,44 @@ abstract class UiExpressionParser<T, U> {
 
     protected void setTarget(T target) {
         this.target = target;
+    }
+
+    protected void skipLeadingSpaces() {
+        while (!endOfExpression() && expression.getStringBuilder().charAt(currentIndex) == ' ') {
+            currentIndex++;
+        }
+    }
+
+    protected void resetCurrentIndex() {
+        currentIndex = 0;
+    }
+
+    protected boolean endOfExpression() {
+        return currentIndex >= expression.getStringBuilder().length();
+    }
+
+    class StringBuilderWrapper {
+        private StringBuilder sb;
+
+        public StringBuilderWrapper(String string) {
+            sb = new StringBuilder(string.trim());
+        }
+
+        public boolean startsWith(String str, int index) {
+            return sb.indexOf(str, index) == index;
+        }
+
+        public boolean startsWith(String str) {
+            return startsWith(str, 0);
+        }
+
+        public StringBuilder getStringBuilder() {
+            return sb;
+        }
+
+        @Override
+        public String toString() {
+            return sb.toString();
+        }
     }
 }

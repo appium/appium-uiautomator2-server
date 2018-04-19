@@ -75,14 +75,14 @@ public class UiAutomatorParserTests {
     public void shouldBeAbleToCreateUiScrollableParser() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         assertEquals("new UiScrollable().test", uiAutomatorParser
-                .createUiScrollableParser("UiScrollable().test").expression);
+                .createUiScrollableParser("UiScrollable().test").expression.toString());
     }
 
     @Test
     public void shouldBeAbleToCreateUiSelectorParser() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         assertEquals("new UiSelector().test", uiAutomatorParser.
-                createUiSelectorParser("test").expression);
+                createUiSelectorParser("test").expression.toString());
     }
 
     @Test

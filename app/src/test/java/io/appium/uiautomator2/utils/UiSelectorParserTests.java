@@ -51,6 +51,15 @@ public class UiSelectorParserTests {
     }
 
     @Test
+    public void shouldBeAbleToParseUiSelectorWithSpaces() throws UiSelectorSyntaxException,
+            UiObjectNotFoundException {
+        UiSelector expected = new UiSelector().text("test").clickable(false);
+        UiSelector actual = new UiSelectorParser(
+                "  new UiSelector() . text ( \"test\" ) . clickable ( false ) ").parse();
+        assertSame(expected, actual);
+    }
+
+    @Test
     public void shouldBeAbleToParseUiSelectorWithoutNewKeyword() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         UiSelector expected = new UiSelector().text("test");
@@ -106,7 +115,7 @@ public class UiSelectorParserTests {
     public void shouldThrowExceptionOnUnclosedParenthesis() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         expectedException.expect(UiSelectorSyntaxException.class);
-        expectedException.expectMessage("unclosed paren in expression: (\"test\"()");
+        expectedException.expectMessage("Unclosed paren in expression");
         new UiSelectorParser("new UiSelector().text(\"test\"()").parse();
     }
 
@@ -114,7 +123,7 @@ public class UiSelectorParserTests {
     public void shouldThrowExceptionIfNoPeriodAfterConstructor() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         expectedException.expect(UiSelectorSyntaxException.class);
-        expectedException.expectMessage(Matchers.startsWith("Expected \".\" but saw \"t\""));
+        expectedException.expectMessage("Expected \".\" at position 16");
         new UiSelectorParser("new UiSelector()text(\"test\")").parse();
     }
 
@@ -130,8 +139,7 @@ public class UiSelectorParserTests {
     public void shouldThrowExceptionIfNoOpeningParenthesisAfterMethodName() throws
             UiSelectorSyntaxException, UiObjectNotFoundException {
         expectedException.expect(UiSelectorSyntaxException.class);
-        expectedException.expectMessage(Matchers.startsWith(
-                "No opening parenthesis after method name"));
+        expectedException.expectMessage("No opening parenthesis after method name at position 17");
         new UiSelectorParser("new UiSelector().text)\"test\")").parse();
     }
 
@@ -196,7 +204,7 @@ public class UiSelectorParserTests {
     public void shouldThrowExceptionIfMethodIsNotAccessible() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         expectedException.expect(UiSelectorSyntaxException.class);
-        expectedException.expectMessage("problem using reflection to call this method");
+        expectedException.expectMessage("Problem using reflection to call `getInt` method");
         new UiSelectorParser("new UiSelector().getInt(5)").parse();
     }
 

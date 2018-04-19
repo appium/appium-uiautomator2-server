@@ -26,11 +26,12 @@ public class UiSelectorSyntaxException extends Exception {
      *
      * @param msg A descriptive message describing the error.
      */
-    public UiSelectorSyntaxException(final String msg) {
-        super(msg);
+    public UiSelectorSyntaxException(final String expression, final String msg) {
+        this(expression, msg, null);
     }
 
-    public UiSelectorSyntaxException(final String msg, final Throwable cause) {
-        super(msg, cause);
+    public UiSelectorSyntaxException(final String expression, final String msg,
+                                     final Throwable cause) {
+        super(String.format("Could not parse expression `%s`: %s", expression, msg), cause);
     }
 }
