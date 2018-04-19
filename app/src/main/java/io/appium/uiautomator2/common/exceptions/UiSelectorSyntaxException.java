@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
+import android.support.annotation.Nullable;
+
 import io.appium.uiautomator2.utils.UiSelectorParser;
 
 @SuppressWarnings("serial")
@@ -31,7 +33,7 @@ public class UiSelectorSyntaxException extends Exception {
     }
 
     public UiSelectorSyntaxException(final String expression, final String msg,
-                                     final Throwable cause) {
+                                     @Nullable final Throwable cause) {
         super(String.format("Could not parse expression `%s`: %s", expression, msg), cause);
     }
 }

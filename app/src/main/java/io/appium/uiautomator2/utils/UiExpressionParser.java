@@ -33,7 +33,7 @@ import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 
 abstract class UiExpressionParser<T, U> {
     protected final Class<T> clazz;
-    final protected StringBuilderWrapper expression;
+    protected final StringBuilderWrapper expression;
     private int currentIndex;
     private T target;
 
@@ -80,7 +80,7 @@ abstract class UiExpressionParser<T, U> {
 
     protected void consumePeriod() throws UiSelectorSyntaxException {
         skipLeadingSpaces();
-        if (!endOfExpression() && expression.getStringBuilder().charAt(currentIndex) == '.') {
+        if (hasMoreDataToParse() && expression.getStringBuilder().charAt(currentIndex) == '.') {
             currentIndex++;
         } else {
             throw new UiSelectorSyntaxException(expression.toString(),
@@ -139,7 +139,7 @@ abstract class UiExpressionParser<T, U> {
                 }
             }
             currentIndex++;
-        } while (!parenthesesStack.empty() && !endOfExpression());
+        } while (!parenthesesStack.empty() && hasMoreDataToParse());
 
         if (!parenthesesStack.isEmpty()) {
             throw new UiSelectorSyntaxException(expression.toString(),
@@ -309,7 +309,7 @@ abstract class UiExpressionParser<T, U> {
     }
 
     protected void skipLeadingSpaces() {
-        while (!endOfExpression() && expression.getStringBuilder().charAt(currentIndex) == ' ') {
+        while (hasMoreDataToParse() && expression.getStringBuilder().charAt(currentIndex) == ' ') {
             currentIndex++;
         }
     }
@@ -318,8 +318,8 @@ abstract class UiExpressionParser<T, U> {
         currentIndex = 0;
     }
 
-    protected boolean endOfExpression() {
-        return currentIndex >= expression.getStringBuilder().length();
+    protected boolean hasMoreDataToParse() {
+        return currentIndex < expression.getStringBuilder().length();
     }
 
     class StringBuilderWrapper {

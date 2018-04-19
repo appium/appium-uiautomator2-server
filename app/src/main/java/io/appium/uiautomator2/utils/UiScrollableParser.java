@@ -55,7 +55,7 @@ public class UiScrollableParser extends UiExpressionParser<UiScrollable, UiSelec
         resetCurrentIndex();
         Object result = null;
         consumeConstructor();
-        while (!endOfExpression()) {
+        while (hasMoreDataToParse()) {
             consumePeriod();
             result = consumeMethodCall();
             if (result instanceof UiScrollable) {

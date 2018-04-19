@@ -49,7 +49,7 @@ public class UiSelectorParser extends UiExpressionParser<UiSelector, UiSelector>
     public UiSelector parse() throws UiSelectorSyntaxException, UiObjectNotFoundException {
         resetCurrentIndex();
         consumeConstructor();
-        while (!endOfExpression()) {
+        while (hasMoreDataToParse()) {
             consumePeriod();
             final Object result = consumeMethodCall();
             if (!(result instanceof UiSelector)) {

@@ -32,7 +32,7 @@ public class UiAutomatorParser {
 
     private static final String STATEMENT_DELIMETER = ";";
     private String text;
-    final private List<UiSelector> selectors = new ArrayList<>();
+    private final List<UiSelector> selectors = new ArrayList<>();
 
     public List<UiSelector> parse(String textToParse) throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
