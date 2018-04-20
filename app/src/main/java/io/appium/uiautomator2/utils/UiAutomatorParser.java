@@ -30,7 +30,7 @@ import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
  */
 public class UiAutomatorParser {
 
-    private static final String STATEMENT_DELIMETER = ";";
+    private static final String STATEMENT_DELIMITER = ";";
     private String text;
     private final List<UiSelector> selectors = new ArrayList<>();
 
@@ -54,13 +54,13 @@ public class UiAutomatorParser {
     }
 
     private void removeTailingSemicolon() {
-        if (text.endsWith(STATEMENT_DELIMETER)) {
+        if (text.endsWith(STATEMENT_DELIMITER)) {
             text = text.substring(0, text.length() - 1);
         }
     }
 
     private void consumeSemicolon() {
-        if (text.startsWith(STATEMENT_DELIMETER)) {
+        if (text.startsWith(STATEMENT_DELIMITER)) {
             text = text.substring(1);
         }
     }
@@ -79,7 +79,7 @@ public class UiAutomatorParser {
                         && text.charAt(index - 1) != '\\');
             }
 
-            if (STATEMENT_DELIMETER.equals(String.valueOf(text.charAt(index)))
+            if (STATEMENT_DELIMITER.equals(String.valueOf(text.charAt(index)))
                     && !isInsideStringLiteral) {
                 break;
             }

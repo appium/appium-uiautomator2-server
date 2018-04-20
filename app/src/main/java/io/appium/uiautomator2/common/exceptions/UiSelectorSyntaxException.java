@@ -33,6 +33,11 @@ public class UiSelectorSyntaxException extends Exception {
     }
 
     public UiSelectorSyntaxException(final String expression, final String msg,
+                                     final int position) {
+        this(expression, msg + " at position " + position, null);
+    }
+
+    public UiSelectorSyntaxException(final String expression, final String msg,
                                      @Nullable final Throwable cause) {
         super(String.format("Could not parse expression `%s`: %s", expression, msg), cause);
     }

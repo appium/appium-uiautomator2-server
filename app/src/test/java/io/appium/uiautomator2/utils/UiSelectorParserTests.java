@@ -19,7 +19,6 @@ package io.appium.uiautomator2.utils;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -223,6 +222,30 @@ public class UiSelectorParserTests {
         expectedException.expectMessage("java.util.regex.PatternSyntaxException: " +
                 "Unclosed character class near index 0");
         new UiSelectorParser("new UiSelector().resourceIdMatches(\"[\")").parse();
+    }
+
+    @Test()
+    public void shouldThrowExceptionIfMethodNameIsMissing() throws UiSelectorSyntaxException,
+            UiObjectNotFoundException {
+        expectedException.expect(UiSelectorSyntaxException.class);
+        expectedException.expectMessage("Missing method name at position 17");
+        new UiSelectorParser("new UiSelector().(0)").parse();
+    }
+
+    @Test()
+    public void shouldThrowExceptionIfArgumentIsMissing() throws UiSelectorSyntaxException,
+            UiObjectNotFoundException {
+        expectedException.expect(UiSelectorSyntaxException.class);
+        expectedException.expectMessage("Missing argument at position 22");
+        new UiSelectorParser("new UiSelector().index(,1)").parse();
+    }
+
+    @Test()
+    public void shouldThrowExceptionIfLastArgumentIsMissing() throws UiSelectorSyntaxException,
+            UiObjectNotFoundException {
+        expectedException.expect(UiSelectorSyntaxException.class);
+        expectedException.expectMessage("Missing argument at position 24");
+        new UiSelectorParser("new UiSelector().index(0,)").parse();
     }
 
     private void assertSame(UiSelector expected, UiSelector actual) {

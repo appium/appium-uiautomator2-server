@@ -83,8 +83,8 @@ abstract class UiExpressionParser<T, U> {
         if (hasMoreDataToParse() && expression.getStringBuilder().charAt(currentIndex) == '.') {
             currentIndex++;
         } else {
-            throw new UiSelectorSyntaxException(expression.toString(),
-                    "Expected \".\" at position " + currentIndex);
+            throw new UiSelectorSyntaxException(expression.toString(), "Expected \".\"",
+                    currentIndex);
         }
     }
 
@@ -93,10 +93,14 @@ abstract class UiExpressionParser<T, U> {
         final int firstParenIndex = expression.getStringBuilder().indexOf("(", currentIndex);
         if (firstParenIndex < 0) {
             throw new UiSelectorSyntaxException(expression.toString(),
-                    "No opening parenthesis after method name at position " + currentIndex);
+                    "No opening parenthesis after method name", currentIndex);
         }
         final String methodName = expression.getStringBuilder()
                 .substring(currentIndex, firstParenIndex).trim();
+        if (methodName.isEmpty()) {
+            throw new UiSelectorSyntaxException(expression.toString(),
+                    "Missing method name", currentIndex);
+        }
         currentIndex = firstParenIndex;
         return methodName;
     }
@@ -130,10 +134,12 @@ abstract class UiExpressionParser<T, U> {
                         break;
                     case ',':
                         final String argument = expression.getStringBuilder()
-                                .substring(startIndex + 1, currentIndex);
-                        if (!argument.isEmpty()) {
-                            arguments.add(argument.trim());
+                                .substring(startIndex + 1, currentIndex).trim();
+                        if (argument.isEmpty()) {
+                            throw new UiSelectorSyntaxException(expression.toString(),
+                                    "Missing argument", startIndex);
                         }
+                        arguments.add(argument);
                         startIndex = currentIndex;
                         break;
                 }
@@ -147,9 +153,14 @@ abstract class UiExpressionParser<T, U> {
         }
 
         final String argument = expression.getStringBuilder()
-                .substring(startIndex + 1, currentIndex - 1);
+                .substring(startIndex + 1, currentIndex - 1).trim();
+
         if (!argument.isEmpty()) {
-            arguments.add(argument.trim());
+            arguments.add(argument);
+        } else if (!arguments.isEmpty()) {
+            /* Throw exception if the last argument is missing */
+            throw new UiSelectorSyntaxException(expression.toString(), "Missing argument",
+                    startIndex);
         }
 
         return arguments;
@@ -323,7 +334,8 @@ abstract class UiExpressionParser<T, U> {
     }
 
     class StringBuilderWrapper {
-        private StringBuilder sb;
+
+        private final StringBuilder sb;
 
         public StringBuilderWrapper(String string) {
             sb = new StringBuilder(string.trim());
