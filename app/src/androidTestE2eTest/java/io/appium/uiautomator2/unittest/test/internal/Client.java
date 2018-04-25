@@ -15,6 +15,8 @@
  */
 package io.appium.uiautomator2.unittest.test.internal;
 
+import android.os.SystemClock;
+
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -82,7 +84,8 @@ public abstract class Client {
             if (actualStatus.equals(status)) {
                 return;
             }
-        } while (elapsedRealtime() - start < Config.EXPLICIT_TIMEOUT);
+            SystemClock.sleep(500);
+        } while (elapsedRealtime() - start < Config.NETTY_STATUS_TIMEOUT);
         throw new TimeoutException(String.format("netty status. Expected:%s; Actual:%s;",
                 status, actualStatus));
     }

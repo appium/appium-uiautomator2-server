@@ -20,7 +20,6 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -42,6 +41,7 @@ import io.appium.uiautomator2.model.settings.KeyInjectionDelay;
 import io.appium.uiautomator2.model.settings.ScrollAcknowledgmentTimeout;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.ShouldUseCompactResponses;
+import io.appium.uiautomator2.model.settings.ShutdownOnPowerDisconnect;
 import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 import io.appium.uiautomator2.model.settings.WaitForSelectorTimeout;
 import io.appium.uiautomator2.server.WDStatus;
@@ -54,6 +54,7 @@ import static io.appium.uiautomator2.model.settings.Settings.ENABLE_NOTIFICATION
 import static io.appium.uiautomator2.model.settings.Settings.KEY_INJECTION_DELAY;
 import static io.appium.uiautomator2.model.settings.Settings.SCROLL_ACKNOWLEDGMENT_TIMEOUT;
 import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_RESPONSES;
+import static io.appium.uiautomator2.model.settings.Settings.SHUTDOWN_ON_POWER_DISCONNECT;
 import static io.appium.uiautomator2.model.settings.Settings.WAIT_FOR_IDLE_TIMEOUT;
 import static io.appium.uiautomator2.model.settings.Settings.WAIT_FOR_SELECTOR_TIMEOUT;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -68,7 +69,6 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(PowerMockRunner.class)
 public class UpdateSettingsTests {
-
     private static final String SETTING_NAME = "my_setting";
     private static final String SETTING_VALUE = "my_value";
 
@@ -95,57 +95,62 @@ public class UpdateSettingsTests {
     }
 
     @Test
-    public void shouldBeAbleToReturnAllowInvisibleElementsSetting() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnAllowInvisibleElementsSetting() {
         verifySettingIsAvailable(ALLOW_INVISIBLE_ELEMENTS, AllowInvisibleElements.class);
     }
 
     @Test
-    public void shouldBeAbleToReturnCompressedLayoutHierarchySetting() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnCompressedLayoutHierarchySetting() {
         verifySettingIsAvailable(COMPRESSED_LAYOUT_HIERARCHY, CompressedLayoutHierarchy.class);
     }
 
     @Test
-    public void shouldBeAbleToReturnAllowNotificationListenerSetting() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnAllowNotificationListenerSetting() {
         verifySettingIsAvailable(ENABLE_NOTIFICATION_LISTENER, EnableNotificationListener.class);
     }
 
     @Test
-    public void shouldBeAbleToReturnWaitForIdleTimeoutSetting() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnWaitForIdleTimeoutSetting() {
         verifySettingIsAvailable(WAIT_FOR_IDLE_TIMEOUT, WaitForIdleTimeout.class);
     }
 
     @Test
-    public void shouldBeAbleToReturnWaitForSelectorTimeoutSetting() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnWaitForSelectorTimeoutSetting() {
         verifySettingIsAvailable(WAIT_FOR_SELECTOR_TIMEOUT, WaitForSelectorTimeout.class);
     }
 
     @Test
-    public void shouldBeAbleToReturnActionAcknowledgmentTimeout() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnActionAcknowledgmentTimeout() {
         verifySettingIsAvailable(ACTION_ACKNOWLEDGMENT_TIMEOUT, ActionAcknowledgmentTimeout.class);
     }
 
     @Test
-    public void shouldBeAbleToReturnKeyInjectionDelay() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnKeyInjectionDelay() {
         verifySettingIsAvailable(KEY_INJECTION_DELAY, KeyInjectionDelay.class);
     }
 
     @Test
-    public void shouldBeAbleToReturnScrollAcknowledgmentTimeout() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnScrollAcknowledgmentTimeout() {
         verifySettingIsAvailable(SCROLL_ACKNOWLEDGMENT_TIMEOUT, ScrollAcknowledgmentTimeout.class);
     }
 
     @Test
-    public void shouldBeAbleToReturnElementResponseAttributesSetting() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnElementResponseAttributesSetting() {
         verifySettingIsAvailable(ELEMENT_RESPONSE_ATTRIBUTES, ElementResponseAttributes.class);
     }
 
     @Test
-    public void shouldBeAbleToReturnShouldUseCompactResponsesSetting() throws InstantiationException, IllegalAccessException {
+    public void shouldBeAbleToReturnShouldUseCompactResponsesSetting() {
         verifySettingIsAvailable(SHOULD_USE_COMPACT_RESPONSES, ShouldUseCompactResponses.class);
     }
 
+    @Test
+    public void shouldBeAbleToReturnShutdownOnPowerDisconnectSetting() {
+        verifySettingIsAvailable(SHUTDOWN_ON_POWER_DISCONNECT, ShutdownOnPowerDisconnect.class);
+    }
+
     @Test(expected=UnsupportedSettingException.class)
-    public void shouldThrowExceptionIfSettingIsNotSupported() throws InstantiationException, IllegalAccessException {
+    public void shouldThrowExceptionIfSettingIsNotSupported() {
         updateSettings.getSetting("unsupported_setting");
     }
 
@@ -160,13 +165,13 @@ public class UpdateSettingsTests {
 
     @Test
     public void shouldReturnResponseWithUnknownErrorStatusIfFailed() {
-        doThrow(new UiAutomator2Exception("error")).when(mySetting).update(Matchers.anyObject());
+        doThrow(new UiAutomator2Exception("error")).when(mySetting).update(any());
         AppiumResponse resp = updateSettings.safeHandle(req);
         assertEquals(WDStatus.UNKNOWN_ERROR.code(), resp.getStatus());
         assertThat(resp.getValue().toString(), containsString("UiAutomator2Exception: error"));
     }
 
-    private void verifySettingIsAvailable(Settings setting, Class<? extends AbstractSetting> clazz) throws InstantiationException, IllegalAccessException {
+    private void verifySettingIsAvailable(Settings setting, Class<? extends AbstractSetting> clazz) {
         assertThat(updateSettings.getSetting(setting.toString()), instanceOf(clazz));
     }
 }

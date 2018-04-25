@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.appium.uiautomator2.unittest.test.internal;
 
 import java.lang.annotation.ElementType;
@@ -22,5 +23,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SkipHeadlessDevices {
+public @interface RootRequired {
 }

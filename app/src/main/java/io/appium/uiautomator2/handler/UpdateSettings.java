@@ -28,6 +28,7 @@ public class UpdateSettings extends SafeRequestHandler {
                 String settingName = entry.getKey();
                 Object settingValue = entry.getValue();
                 ISetting setting = getSetting(settingName);
+                //noinspection unchecked
                 setting.update(settingValue);
                 Session.capabilities.put(settingName, settingValue);
             }
@@ -39,8 +40,8 @@ public class UpdateSettings extends SafeRequestHandler {
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
     }
 
-    public ISetting getSetting(String settingName) throws UnsupportedSettingException, IllegalAccessException, InstantiationException {
-        for (Settings value : Settings.values()) {
+    public ISetting getSetting(String settingName) throws UnsupportedSettingException {
+        for (final Settings value : Settings.values()) {
             if (value.toString().equals(settingName)) {
                 return value.getSetting();
             }

@@ -41,7 +41,7 @@ public abstract class AbstractSetting<T> implements ISetting {
 
     public String getName() {
         return settingName;
-    };
+    }
 
     public Class<T> getValueType() {
         return valueType;

@@ -17,6 +17,7 @@ package io.appium.uiautomator2.unittest.test;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.test.uiautomator.UiDevice;
 import android.util.Base64;
 
 import org.json.JSONArray;
@@ -24,18 +25,25 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.unittest.test.internal.BaseTest;
+import io.appium.uiautomator2.unittest.test.internal.NettyStatus;
 import io.appium.uiautomator2.unittest.test.internal.Response;
+import io.appium.uiautomator2.unittest.test.internal.RootRequired;
 import io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices;
 import io.appium.uiautomator2.utils.Device;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static io.appium.uiautomator2.model.settings.Settings.ENABLE_NOTIFICATION_LISTENER;
+import static io.appium.uiautomator2.unittest.test.internal.Client.waitForNettyStatus;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.getJsonObjectCountInJsonArray;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElement;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElementInvisibility;
@@ -43,8 +51,7 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElements;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getDeviceSize;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getRotation;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands
-        .getScreenOrientation;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getScreenOrientation;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getSettings;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.rotateScreen;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.screenshot;
@@ -446,29 +453,27 @@ public class DeviceCommandsTest extends BaseTest {
     public void shouldBeAbleToUpdateSettings() throws JSONException {
         Response response = getSettings();
         JSONObject defaultSettings = response.getValue();
+        Map<String, Object> settings = new HashMap<>();
+        settings.put("actionAcknowledgmentTimeout", 123);
+        settings.put("allowInvisibleElements", true);
+        settings.put("ignoreUnimportantViews", true);
+        settings.put("elementResponseAttributes", "text");
+        settings.put("enableNotificationListener", true);
+        settings.put("keyInjectionDelay", 10);
+        settings.put("scrollAcknowledgmentTimeout", 300);
+        settings.put("shouldUseCompactResponses", false);
+        settings.put("waitForIdleTimeout", 50001);
+        settings.put("waitForSelectorTimeout", 10);
+        settings.put("shutdownOnPowerDisconnect", false);
         try {
-            updateSetting("actionAcknowledgmentTimeout", 123);
-            updateSetting("allowInvisibleElements", true);
-            updateSetting("ignoreUnimportantViews", true);
-            updateSetting("elementResponseAttributes", "text");
-            updateSetting("enableNotificationListener", true);
-            updateSetting("keyInjectionDelay", 10);
-            updateSetting("scrollAcknowledgmentTimeout", 300);
-            updateSetting("shouldUseCompactResponses", false);
-            updateSetting("waitForIdleTimeout", 50001);
-            updateSetting("waitForSelectorTimeout", 10);
+            for (Map.Entry<String, Object> entry : settings.entrySet()) {
+                updateSetting(entry.getKey(), entry.getValue());
+            }
             response = getSettings();
             JSONObject jsonObject = response.getValue();
-            assertEquals(123, jsonObject.get("actionAcknowledgmentTimeout"));
-            assertEquals(true, jsonObject.get("allowInvisibleElements"));
-            assertEquals(true, jsonObject.get("ignoreUnimportantViews"));
-            assertEquals("text", jsonObject.get("elementResponseAttributes"));
-            assertEquals(true, jsonObject.get("enableNotificationListener"));
-            assertEquals(10, jsonObject.get("keyInjectionDelay"));
-            assertEquals(300, jsonObject.get("scrollAcknowledgmentTimeout"));
-            assertEquals(false, jsonObject.get("shouldUseCompactResponses"));
-            assertEquals(50001, jsonObject.get("waitForIdleTimeout"));
-            assertEquals(10, jsonObject.get("waitForSelectorTimeout"));
+            for (Map.Entry<String, Object> entry : settings.entrySet()) {
+                assertEquals(entry.getValue(), jsonObject.get(entry.getKey()));
+            }
         } finally {
             updateSettings(defaultSettings);
         }
@@ -552,5 +557,21 @@ public class DeviceCommandsTest extends BaseTest {
                         ".scrollIntoView(new UiSelector().text(\"Lorem ipsum dolor sit amet.\"))");
         Response response = findElement(androidUiAutomator);
         assertTrue(androidUiAutomator + " should be found", response.isSuccessful());
+    }
+
+    @Test
+    @RootRequired
+    public void shouldShutdownServerOnPowerDisconnect() throws IOException, JSONException,
+            InterruptedException {
+        try {
+            UiDevice.getInstance(getInstrumentation()).executeShellCommand(
+                    "su 0 am broadcast -a android.intent.action.ACTION_POWER_DISCONNECTED " +
+                            "io.appium.uiautomator2.e2etest &");
+            waitForNettyStatus(NettyStatus.OFFLINE);
+            assertTrue(serverInstrumentation.isStopServer());
+        } finally {
+            serverInstrumentation = null;
+            startServer();
+        }
     }
 }

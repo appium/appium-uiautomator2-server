@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.appium.uiautomator2.unittest.test.internal;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package io.appium.uiautomator2.model.settings;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface SkipHeadlessDevices {
+public class ShutdownOnPowerDisconnect extends AbstractSetting<Boolean> {
+    private static final String SETTING_NAME = "shutdownOnPowerDisconnect";
+
+    private boolean value = true;
+
+    public ShutdownOnPowerDisconnect() {
+        super(Boolean.class, SETTING_NAME);
+    }
+
+    @Override
+    public Boolean getValue() {
+        return value;
+    }
+
+    @Override
+    protected void apply(Boolean value) {
+        this.value = value;
+    }
 }
