@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import io.appium.uiautomator2.server.ServerInstrumentation.PowerConnectionReceiver;
 
@@ -54,6 +55,8 @@ public class ServerInstrumentationTests {
             serverInstrumentation = spy(new ServerInstrumentation(context, 1025));
 
             when(ServerInstrumentation.getInstance()).thenReturn(serverInstrumentation);
+            Whitebox.setInternalState(ServerInstrumentation.class, "instance",
+                    serverInstrumentation);
             doNothing().when(serverInstrumentation).stopServer();
             powerConnectionReceiver = new PowerConnectionReceiver();
         }
@@ -80,7 +83,8 @@ public class ServerInstrumentationTests {
 
         @Test
         public void shouldNOTShutdownServerIfAlreadyDown() {
-            doReturn(true).when(serverInstrumentation).isStopServer();
+            Whitebox.setInternalState(ServerInstrumentation.class, "instance",
+                    (ServerInstrumentation) null);
             powerConnectionReceiver.onReceive(context, intent);
             verify(serverInstrumentation, never()).stopServer();
         }

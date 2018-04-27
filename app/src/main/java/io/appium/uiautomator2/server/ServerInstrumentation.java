@@ -39,16 +39,16 @@ public class ServerInstrumentation {
                 return;
             }
 
+            if (instance == null) {
+                Logger.debug("The server is already down - doing nothing.");
+                return;
+            }
+
             final ShutdownOnPowerDisconnect shutdownOnPowerDisconnect =
                     (ShutdownOnPowerDisconnect) Settings.SHUTDOWN_ON_POWER_DISCONNECT.getSetting();
             if (!shutdownOnPowerDisconnect.getValue()) {
                 Logger.debug(String.format("The value of `%s` setting is false - " +
                                 "ignoring broadcasting.", shutdownOnPowerDisconnect.getName()));
-                return;
-            }
-
-            if (getInstance().isStopServer()) {
-                Logger.debug("The server is already down - doing nothing.");
                 return;
             }
 
