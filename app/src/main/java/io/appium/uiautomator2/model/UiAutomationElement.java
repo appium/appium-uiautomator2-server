@@ -46,7 +46,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
   private final Rect visibleBounds;
   private final UiAutomationElement parent;
   private final List<UiAutomationElement> children;
-  public final static Map<AccessibilityNodeInfo, UiAutomationElement>  map = new WeakHashMap<AccessibilityNodeInfo, UiAutomationElement>();
+  public final static Map<AccessibilityNodeInfo, UiAutomationElement> map = new WeakHashMap<>();
 
   /**
    * A snapshot of all attributes is taken at construction. The attributes of a
@@ -59,7 +59,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     this.node = Preconditions.checkNotNull(node);
     this.parent = parent;
 
-    Map<Attribute, Object> attribs = new EnumMap<Attribute, Object>(Attribute.class);
+    Map<Attribute, Object> attribs = new EnumMap<>(Attribute.class);
 
     put(attribs, Attribute.INDEX, index);
     put(attribs, Attribute.PACKAGE, charSequenceToString(node.getPackageName()));
@@ -95,7 +95,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
   protected UiAutomationElement(String hierarchyClassName,
                                 AccessibilityNodeInfo childNode, int index){
     this.parent = null;
-    Map<Attribute, Object> attribs = new EnumMap<Attribute, Object>(Attribute.class);
+    Map<Attribute, Object> attribs = new EnumMap<>(Attribute.class);
 
     put(attribs, Attribute.INDEX, index);
     put(attribs, Attribute.CLASS, charSequenceToString(hierarchyClassName));
@@ -113,7 +113,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     this.attributes = Collections.unmodifiableMap(attribs);
     this.visible= true;
     this.visibleBounds = null;
-    List<UiAutomationElement> mutableChildren =new ArrayList<UiAutomationElement>();
+    List<UiAutomationElement> mutableChildren = new ArrayList<>();
     mutableChildren.add(new UiAutomationElement(childNode, this /* parent UiAutomationElement*/, 0/* index */));
     this.children = mutableChildren;
   }
@@ -139,7 +139,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     if (childCount == 0) {
       children = null;
     } else {
-      children = new ArrayList<UiAutomationElement>(childCount);
+      children = new ArrayList<>(childCount);
       Object allowInvisibleElements = Session.capabilities.get(ALLOW_INVISIBLE_ELEMENTS.toString());
       boolean isAllowInvisibleElements = allowInvisibleElements != null && (boolean) allowInvisibleElements;
 
@@ -147,7 +147,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         AccessibilityNodeInfo child = node.getChild(i);
         //Ignore if element is not visible on the screen
         if (child != null && (child.isVisibleToUser() || isAllowInvisibleElements)) {
-          children.add(this.getElement(child, this, i));
+          children.add(getElement(child, this, i));
         }
       }
     }
@@ -171,7 +171,6 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
 
   private static void clearData() {
     map.clear();
-    XPathFinder.clearData();
   }
 
   public static UiAutomationElement getElement(AccessibilityNodeInfo rawElement, UiAutomationElement parent, int index) {
