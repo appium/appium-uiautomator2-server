@@ -27,7 +27,7 @@ public class ServerInstrumentation {
     private HttpdThread serverThread;
     private PowerManager.WakeLock wakeLock;
     private final int serverPort;
-    private boolean isStopServer;
+    private boolean isServerStopped;
 
     public static class PowerConnectionReceiver extends BroadcastReceiver {
 
@@ -66,8 +66,8 @@ public class ServerInstrumentation {
         this.context = context;
     }
 
-    public boolean isStopServer(){
-        return isStopServer;
+    public boolean isServerStopped(){
+        return isServerStopped;
     }
 
     private boolean isValidPort(int port) {
@@ -102,7 +102,7 @@ public class ServerInstrumentation {
             return;
         }
 
-        if(serverThread == null && isStopServer){
+        if(serverThread == null && isServerStopped){
             throw new SessionRemovedException("Delete Session has been invoked");
         }
 
@@ -134,7 +134,7 @@ public class ServerInstrumentation {
         } catch (InterruptedException ignored) {
         }
         serverThread = null;
-        isStopServer = true;
+        isServerStopped = true;
     }
 
     private class HttpdThread extends Thread {

@@ -568,7 +568,7 @@ public class DeviceCommandsTest extends BaseTest {
                     "su 0 am broadcast -a android.intent.action.ACTION_POWER_DISCONNECTED " +
                             "io.appium.uiautomator2.e2etest &");
             waitForNettyStatus(NettyStatus.OFFLINE);
-            assertTrue(serverInstrumentation.isStopServer());
+            assertTrue(serverInstrumentation.isServerStopped());
         } finally {
             serverInstrumentation = null;
             startServer();
