@@ -19,16 +19,11 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.QName;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XdmItem;
-import net.sf.saxon.s9api.XdmNode;
-import net.sf.saxon.s9api.XdmNodeKind;
-import net.sf.saxon.s9api.XdmValue;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.lang.IllegalStateException;
 import java.lang.reflect.Field;
@@ -38,7 +33,10 @@ import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -53,13 +51,9 @@ import io.appium.uiautomator2.utils.Preconditions;
  * Find matching UiElement by XPath.
  */
 public class XPathFinder implements Finder {
-    // Saxon XML API allows to use XPath 2.0 queries
-    private static final Processor processor = new Processor(false);
-    private final Document document;
-    // The two maps should be kept in sync
+    private static final XPath XPATH_COMPILER = XPathFactory.newInstance().newXPath();
     private final Map<String, UiElement<?, ?>> UI_ELEMENTS_MAP = new HashMap<>();
     private static final String UUID_ATTRIBUTE = "uuid";
-    private static final QName QNAME_UUID_ATTRIBUTE = new QName(UUID_ATTRIBUTE);
     private final String xPathString;
 
     @Override
@@ -69,43 +63,44 @@ public class XPathFinder implements Finder {
 
     private XPathFinder(String xPathString) {
         this.xPathString = Preconditions.checkNotNull(xPathString);
-        try {
-            this.document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new UiAutomator2Exception(e);
-        }
     }
 
     @Override
     public NodeInfoList find(UiElement context) {
-        Element domNode = toDOMElement((UiElement<?, ?>) context);
-        getDocument().appendChild(domNode);
+        final Document document;
         try {
-            final XdmNode xdm = processor
+            document = DocumentBuilderFactory.newInstance()
                     .newDocumentBuilder()
-                    .build(new DOMSource(getDocument()));
-            final XdmValue queryEvaluationResult = processor
-                    .newXPathCompiler()
-                    .evaluate(xPathString, xdm);
+                    .newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new UiAutomator2Exception(e);
+        }
+        final Element domNode = toDOMElement((UiElement<?, ?>) context, document);
+        document.appendChild(domNode);
+        try {
+            final NodeList nodes = (NodeList) XPATH_COMPILER
+                    .compile(xPathString)
+                    .evaluate(domNode, XPathConstants.NODESET);
             final NodeInfoList matchesList = new NodeInfoList();
-            for (final XdmItem item : queryEvaluationResult) {
-                if (!(item instanceof XdmNode)) {
-                    continue;
-                }
-                final XdmNode node = (XdmNode) item;
-                if (node.getNodeKind() != XdmNodeKind.ELEMENT) {
+            for (int i = 0; i < nodes.getLength(); i++) {
+                if (nodes.item(i).getNodeType() != Node.ELEMENT_NODE) {
                     continue;
                 }
 
-                final String uuid = node.getAttributeValue(QNAME_UUID_ATTRIBUTE);
-                if (!UI_ELEMENTS_MAP.containsKey(uuid) ||
-                        UI_ELEMENTS_MAP.get(uuid).getClassName().equals("hierarchy")) {
+                final NamedNodeMap attributes = nodes.item(i).getAttributes();
+                final Node uuidAttribute = attributes.getNamedItem(UUID_ATTRIBUTE);
+                if (uuidAttribute == null) {
                     continue;
                 }
-                matchesList.addToList(UI_ELEMENTS_MAP.get(uuid).node);
+                if (!UI_ELEMENTS_MAP.containsKey(uuidAttribute.getNodeValue()) ||
+                        UI_ELEMENTS_MAP.get(uuidAttribute.getNodeValue()).getClassName().equals("hierarchy")) {
+                    continue;
+                }
+
+                matchesList.addToList(UI_ELEMENTS_MAP.get(uuidAttribute.getNodeValue()).node);
             }
             return matchesList;
-        } catch (SaxonApiException e) {
+        } catch (XPathExpressionException e) {
             throw new ElementNotFoundException(e);
         }
     }
@@ -118,10 +113,6 @@ public class XPathFinder implements Finder {
         return new XPathFinder(xpathExpression).find(root);
     }
 
-    private Document getDocument() {
-        return this.document;
-    }
-
     private static void setNodeLocalName(Element element, String className) {
         try {
             Field localName = element.getClass().getDeclaredField("localName");
@@ -132,12 +123,12 @@ public class XPathFinder implements Finder {
         }
     }
 
-    private Element toDOMElement(UiElement<?, ?> uiElement) {
+    private Element toDOMElement(UiElement<?, ?> uiElement, Document document) {
         String className = uiElement.getClassName();
         if (className == null) {
             className = "UNKNOWN";
         }
-        Element element = getDocument().createElement(simpleClassName(className));
+        Element element = document.createElement(simpleClassName(className));
         final String uuid = UUID.randomUUID().toString();
         UI_ELEMENTS_MAP.put(uuid, uiElement);
 
@@ -177,7 +168,7 @@ public class XPathFinder implements Finder {
         element.setAttribute(UUID_ATTRIBUTE, uuid);
 
         for (UiElement<?, ?> child : uiElement.getChildren()) {
-            element.appendChild(toDOMElement(child));
+            element.appendChild(toDOMElement(child, document));
         }
         return element;
     }
