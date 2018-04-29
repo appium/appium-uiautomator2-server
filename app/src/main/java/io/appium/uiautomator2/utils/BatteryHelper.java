@@ -42,8 +42,9 @@ public class BatteryHelper {
      * where 1.0 means 100% charge.
      */
     public double getLevel() {
-        final int level = getBatteryStatusIntent().getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        final int scale = getBatteryStatusIntent().getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+        final Intent batteryStatus = getBatteryStatusIntent();
+        final int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        final int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
         return level * 1.0 / scale;
     }
 
