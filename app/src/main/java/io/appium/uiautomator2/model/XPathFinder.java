@@ -17,6 +17,7 @@ package io.appium.uiautomator2.model;
 
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.util.SparseArray;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import org.w3c.dom.Document;
@@ -27,9 +28,6 @@ import org.w3c.dom.NodeList;
 
 import java.lang.IllegalStateException;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,8 +50,7 @@ import io.appium.uiautomator2.utils.Preconditions;
  */
 public class XPathFinder implements Finder {
     private static final XPath XPATH_COMPILER = XPathFactory.newInstance().newXPath();
-    private final Map<String, UiElement<?, ?>> UI_ELEMENTS_MAP = new HashMap<>();
-    private static final String UUID_ATTRIBUTE = "uuid";
+    private static final String UI_ELEMENT_INDEX = "uiElementIndex";
     private final String xPathString;
 
     @Override
@@ -75,7 +72,8 @@ public class XPathFinder implements Finder {
         } catch (ParserConfigurationException e) {
             throw new UiAutomator2Exception(e);
         }
-        final Element domNode = toDOMElement((UiElement<?, ?>) context, document);
+        final SparseArray<UiElement<?, ?>> uiElementsMapping = new SparseArray<>();
+        final Element domNode = toDOMElement((UiElement<?, ?>) context, document, uiElementsMapping);
         document.appendChild(domNode);
         try {
             final NodeList nodes = (NodeList) XPATH_COMPILER
@@ -88,16 +86,17 @@ public class XPathFinder implements Finder {
                 }
 
                 final NamedNodeMap attributes = nodes.item(i).getAttributes();
-                final Node uuidAttribute = attributes.getNamedItem(UUID_ATTRIBUTE);
-                if (uuidAttribute == null) {
+                final Node uiElementIndexAttribute = attributes.getNamedItem(UI_ELEMENT_INDEX);
+                if (uiElementIndexAttribute == null) {
                     continue;
                 }
-                if (!UI_ELEMENTS_MAP.containsKey(uuidAttribute.getNodeValue()) ||
-                        UI_ELEMENTS_MAP.get(uuidAttribute.getNodeValue()).getClassName().equals("hierarchy")) {
+                final UiElement uiElement = uiElementsMapping
+                        .get(Integer.parseInt(uiElementIndexAttribute.getNodeValue()));
+                if (uiElement == null || uiElement.getClassName().equals("hierarchy")) {
                     continue;
                 }
 
-                matchesList.addToList(UI_ELEMENTS_MAP.get(uuidAttribute.getNodeValue()).node);
+                matchesList.addToList(uiElement.node);
             }
             return matchesList;
         } catch (XPathExpressionException e) {
@@ -123,14 +122,15 @@ public class XPathFinder implements Finder {
         }
     }
 
-    private Element toDOMElement(UiElement<?, ?> uiElement, Document document) {
+    private static Element toDOMElement(UiElement<?, ?> uiElement, final Document document,
+                                        final SparseArray<UiElement<?, ?>> uiElementsMapping) {
         String className = uiElement.getClassName();
         if (className == null) {
             className = "UNKNOWN";
         }
         Element element = document.createElement(simpleClassName(className));
-        final String uuid = UUID.randomUUID().toString();
-        UI_ELEMENTS_MAP.put(uuid, uiElement);
+        final int uiElementIndex = uiElementsMapping.size();
+        uiElementsMapping.put(uiElementIndex, uiElement);
 
         /*
          * Setting the Element's className field.
@@ -165,10 +165,10 @@ public class XPathFinder implements Finder {
         setAttribute(element, Attribute.SELECTED, uiElement.isSelected());
         element.setAttribute(Attribute.BOUNDS.getName(),
                 uiElement.getBounds() == null ? null : uiElement.getBounds().toShortString());
-        element.setAttribute(UUID_ATTRIBUTE, uuid);
+        element.setAttribute(UI_ELEMENT_INDEX, Integer.toString(uiElementIndex));
 
         for (UiElement<?, ?> child : uiElement.getChildren()) {
-            element.appendChild(toDOMElement(child, document));
+            element.appendChild(toDOMElement(child, document, uiElementsMapping));
         }
         return element;
     }
