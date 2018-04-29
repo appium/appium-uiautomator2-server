@@ -75,33 +75,34 @@ public class XPathFinder implements Finder {
         final SparseArray<UiElement<?, ?>> uiElementsMapping = new SparseArray<>();
         final Element domNode = toDOMElement((UiElement<?, ?>) context, document, uiElementsMapping);
         document.appendChild(domNode);
+        final NodeList nodes;
         try {
-            final NodeList nodes = (NodeList) XPATH_COMPILER
+            nodes = (NodeList) XPATH_COMPILER
                     .compile(xPathString)
                     .evaluate(domNode, XPathConstants.NODESET);
-            final NodeInfoList matchesList = new NodeInfoList();
-            for (int i = 0; i < nodes.getLength(); i++) {
-                if (nodes.item(i).getNodeType() != Node.ELEMENT_NODE) {
-                    continue;
-                }
-
-                final NamedNodeMap attributes = nodes.item(i).getAttributes();
-                final Node uiElementIndexAttribute = attributes.getNamedItem(UI_ELEMENT_INDEX);
-                if (uiElementIndexAttribute == null) {
-                    continue;
-                }
-                final UiElement uiElement = uiElementsMapping
-                        .get(Integer.parseInt(uiElementIndexAttribute.getNodeValue()));
-                if (uiElement == null || uiElement.getClassName().equals("hierarchy")) {
-                    continue;
-                }
-
-                matchesList.addToList(uiElement.node);
-            }
-            return matchesList;
         } catch (XPathExpressionException e) {
             throw new ElementNotFoundException(e);
         }
+        final NodeInfoList matchesList = new NodeInfoList();
+        for (int i = 0; i < nodes.getLength(); i++) {
+            if (nodes.item(i).getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+
+            final NamedNodeMap attributes = nodes.item(i).getAttributes();
+            final Node uiElementIndexAttribute = attributes.getNamedItem(UI_ELEMENT_INDEX);
+            if (uiElementIndexAttribute == null) {
+                continue;
+            }
+            final UiElement uiElement = uiElementsMapping
+                    .get(Integer.parseInt(uiElementIndexAttribute.getNodeValue()));
+            if (uiElement == null || uiElement.getClassName().equals("hierarchy")) {
+                continue;
+            }
+
+            matchesList.addToList(uiElement.node);
+        }
+        return matchesList;
     }
 
     public static NodeInfoList getNodesList(String xpathExpression,
