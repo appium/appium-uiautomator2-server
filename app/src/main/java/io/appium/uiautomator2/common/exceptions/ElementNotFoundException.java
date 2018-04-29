@@ -24,7 +24,7 @@ import io.appium.uiautomator2.model.Finder;
 
 @SuppressWarnings("serial")
 public class ElementNotFoundException extends UiAutomator2Exception {
-    final static String error = "Could not find an element using supplied strategy. ";
+    private final static String error = "Could not find an element using supplied strategy. ";
 
     public ElementNotFoundException() {
         super(error);
@@ -37,7 +37,8 @@ public class ElementNotFoundException extends UiAutomator2Exception {
     public ElementNotFoundException(Finder finder) {
         super(failMessage(finder));
     }
-    protected static String failMessage(Finder finder) {
+
+    private static String failMessage(Finder finder) {
         return "Could not find any element matching " + finder;
     }
 

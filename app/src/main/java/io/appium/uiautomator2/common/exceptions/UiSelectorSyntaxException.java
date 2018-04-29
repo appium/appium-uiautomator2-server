@@ -21,7 +21,7 @@ import android.support.annotation.Nullable;
 import io.appium.uiautomator2.utils.UiSelectorParser;
 
 @SuppressWarnings("serial")
-public class UiSelectorSyntaxException extends Exception {
+public class UiSelectorSyntaxException extends UiAutomator2Exception {
 
     /**
      * An exception involving an {@link UiSelectorParser}.

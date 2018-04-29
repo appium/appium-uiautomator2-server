@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
-public class TakeScreenshotException extends Exception {
+public class TakeScreenshotException extends UiAutomator2Exception {
     public TakeScreenshotException() {
         super("Failed to capture a screenshot. Does the current view have 'secure' flag set?");
     }

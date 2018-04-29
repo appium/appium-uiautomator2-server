@@ -148,7 +148,8 @@ public class UiObject2Element implements AndroidElement {
         return rectangle;
     }
 
-    public Object getChild(final Object selector) throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
+    public Object getChild(final Object selector) throws UiObjectNotFoundException,
+            InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof UiSelector) {
             /**
              * We can't find the child element with UiSelector on UiObject2,
@@ -167,7 +168,8 @@ public class UiObject2Element implements AndroidElement {
         return element.findObject((BySelector) selector);
     }
 
-    public List<Object> getChildren(final Object selector, final By by) throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
+    public List<Object> getChildren(final Object selector, final By by) throws
+            UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof UiSelector) {
             /**
              * We can't find the child elements with UiSelector on UiObject2,

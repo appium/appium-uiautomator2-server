@@ -42,7 +42,7 @@ public class KnownElements {
      * @param by, user provided selector criteria from appium client.
      * @return
      */
-    public static AndroidElement geElement(final BySelector ui2BySelector, By by) throws ElementNotFoundException, InvalidSelectorException, UiAutomator2Exception, ClassNotFoundException {
+    public static AndroidElement getElement(final BySelector ui2BySelector, By by) throws ElementNotFoundException, InvalidSelectorException, UiAutomator2Exception, ClassNotFoundException {
         Object ui2Object = getInstance().findObject(ui2BySelector);
         if (ui2Object == null) {
             throw new ElementNotFoundException();

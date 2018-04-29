@@ -19,9 +19,13 @@ package io.appium.uiautomator2.common.exceptions;
 /**
  * If an invalid element selector is encountered
  */
-public class InvalidSelectorException extends Throwable {
+public class InvalidSelectorException extends UiAutomator2Exception {
     public InvalidSelectorException(String message) {
         super(message);
+    }
+
+    public InvalidSelectorException(Throwable t) {
+        super(t);
     }
 
     public InvalidSelectorException(String message, Throwable t) {

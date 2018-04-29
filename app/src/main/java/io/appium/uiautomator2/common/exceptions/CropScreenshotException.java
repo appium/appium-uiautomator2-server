@@ -18,7 +18,7 @@ package io.appium.uiautomator2.common.exceptions;
 
 import android.graphics.Rect;
 
-public class CropScreenshotException extends Exception {
+public class CropScreenshotException extends UiAutomator2Exception {
     private static final String message = "The cropping area is outside of the original bitmap. " +
             "Bitmap rect: %s; Cropping area rect: %s";
 

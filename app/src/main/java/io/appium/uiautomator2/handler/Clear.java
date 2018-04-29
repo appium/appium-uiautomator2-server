@@ -36,7 +36,7 @@ public class Clear extends SafeRequestHandler {
             } else {
                 //perform action on focused element
                 try {
-                    element = KnownElements.geElement(android.support.test.uiautomator.By.focused(true), null /* by */);
+                    element = KnownElements.getElement(android.support.test.uiautomator.By.focused(true), null /* by */);
                 } catch (ElementNotFoundException e) {
                     Logger.debug("Error retrieving focused element: " + e);
                     return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);

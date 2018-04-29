@@ -148,8 +148,9 @@ public class FindElements extends SafeRequestHandler {
         throw new UnsupportedOperationException(msg);
     }
 
-    private List<Object> findElements(By by, String contextId) throws InvalidSelectorException, ParserConfigurationException, ClassNotFoundException, UiSelectorSyntaxException, UiAutomator2Exception, UiObjectNotFoundException {
-
+    private List<Object> findElements(By by, String contextId) throws InvalidSelectorException,
+            ParserConfigurationException, ClassNotFoundException, UiSelectorSyntaxException,
+            UiAutomator2Exception, UiObjectNotFoundException, ElementNotFoundException {
         AndroidElement element = KnownElements.getElementFromCache(contextId);
         if (element == null) {
             throw new ElementNotFoundException();

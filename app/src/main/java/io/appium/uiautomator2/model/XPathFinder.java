@@ -33,10 +33,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
+import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.utils.Attribute;
@@ -76,14 +77,14 @@ public class XPathFinder implements Finder {
         final Element domNode = toDOMElement((UiElement<?, ?>) context, document, uiElementsMapping);
         document.appendChild(domNode);
         final NodeList nodes;
+        final NodeInfoList matchesList = new NodeInfoList();
         try {
             nodes = (NodeList) XPATH_COMPILER
                     .compile(xPathString)
                     .evaluate(domNode, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
-            throw new ElementNotFoundException(e);
+            throw new InvalidSelectorException(e);
         }
-        final NodeInfoList matchesList = new NodeInfoList();
         for (int i = 0; i < nodes.getLength(); i++) {
             if (nodes.item(i).getNodeType() != Node.ELEMENT_NODE) {
                 continue;
@@ -106,7 +107,8 @@ public class XPathFinder implements Finder {
     }
 
     public static NodeInfoList getNodesList(String xpathExpression,
-                                            @Nullable AccessibilityNodeInfo nodeInfo) {
+                                            @Nullable AccessibilityNodeInfo nodeInfo)
+            throws InvalidSelectorException {
         final UiAutomationElement root = nodeInfo == null
                 ? XPathFinder.refreshUiElementTree()
                 : XPathFinder.refreshUiElementTree(nodeInfo);

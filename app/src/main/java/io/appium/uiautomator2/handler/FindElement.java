@@ -45,21 +45,20 @@ public class FindElement extends SafeRequestHandler {
 
     /**
      * java_package : type / name
-     *
+     * <p>
      * com.example.Test:id/enter
-     *
+     * <p>
      * ^[a-zA-Z_] - Java package must start with letter or underscore
      * [a-zA-Z0-9\._]* - Java package may contain letters, numbers, periods and
      * underscores : - : ends the package and starts the type [^\/]+ - type is
      * made up of at least one non-/ characters \\/ - / ends the type and starts
      * the name [\S]+$ - the name contains at least one non-space character and
      * then the line is ended
-     *
+     * <p>
      * Example:
      * http://java-regex-tester.appspot.com/regex/5f04ac92-f9aa-45a6-b1dc-e2c25fd3cc6b
-     *
      */
-    static final Pattern resourceIdRegex   = Pattern
+    static final Pattern resourceIdRegex = Pattern
             .compile("^[a-zA-Z_][a-zA-Z0-9\\._]*:[^\\/]+\\/[\\S]+$");
 
     public FindElement(String mappedUri) {
@@ -70,14 +69,15 @@ public class FindElement extends SafeRequestHandler {
      * returns  UiObject2 for an xpath expression
      * TODO: Need to handle contextId based finding
      */
-    private static Object getXPathUiObject(final String expression, AndroidElement element) throws ParserConfigurationException, InvalidSelectorException, ClassNotFoundException, UiAutomator2Exception {
+    private static Object getXPathUiObject(final String expression, AndroidElement element)
+            throws InvalidSelectorException, ClassNotFoundException, UiAutomator2Exception, ElementNotFoundException {
         AccessibilityNodeInfo nodeInfo = null;
-        if(element != null) {
+        if (element != null) {
             nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element.getUiObject());
         }
         final NodeInfoList nodeList = XPathFinder.getNodesList(expression, nodeInfo /* AccessibilityNodeInfo */);
         if (nodeList.size() == 0) {
-                throw new ElementNotFoundException();
+            throw new ElementNotFoundException();
         }
         return getInstance().findObject(nodeList);
     }
@@ -96,7 +96,7 @@ public class FindElement extends SafeRequestHandler {
 
             Device.waitForIdle();
             Object element;
-            if(contextId.length() > 0) {
+            if (contextId.length() > 0) {
                 element = this.findElement(by, contextId);
             } else {
                 element = this.findElement(by);
@@ -144,7 +144,7 @@ public class FindElement extends SafeRequestHandler {
             ParserConfigurationException, ClassNotFoundException, UiSelectorSyntaxException,
             UiAutomator2Exception, UiObjectNotFoundException {
         if (by instanceof ById) {
-            String locator = getElementLocator((ById)by);
+            String locator = getElementLocator((ById) by);
             return getInstance().findObject(android.support.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {
             return getInstance().findObject(android.support.test.uiautomator.By.desc(by.getElementLocator()));
@@ -159,14 +159,16 @@ public class FindElement extends SafeRequestHandler {
         throw new UnsupportedOperationException(msg);
     }
 
-    private Object findElement(By by, String contextId) throws InvalidSelectorException, ParserConfigurationException, ClassNotFoundException, UiSelectorSyntaxException, UiAutomator2Exception, UiObjectNotFoundException {
+    private Object findElement(By by, String contextId) throws InvalidSelectorException,
+            ClassNotFoundException, UiSelectorSyntaxException,
+            UiAutomator2Exception, UiObjectNotFoundException, ElementNotFoundException {
 
         AndroidElement element = KnownElements.getElementFromCache(contextId);
         if (element == null) {
             throw new ElementNotFoundException();
         }
         if (by instanceof ById) {
-            String locator = getElementLocator((ById)by);
+            String locator = getElementLocator((ById) by);
             return element.getChild(android.support.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {
             return element.getChild(android.support.test.uiautomator.By.desc(by.getElementLocator()));
@@ -181,6 +183,7 @@ public class FindElement extends SafeRequestHandler {
         throw new UnsupportedOperationException(msg);
 
     }
+
     /**
      * finds the UiSelector for given expression
      */
@@ -197,10 +200,10 @@ public class FindElement extends SafeRequestHandler {
         return selectors.get(0);
     }
 
-    public static String getElementLocator(ById by){
+    public static String getElementLocator(ById by) {
         String locator = by.getElementLocator();
 
-        if(!resourceIdRegex.matcher(by.getElementLocator()).matches()) {
+        if (!resourceIdRegex.matcher(by.getElementLocator()).matches()) {
             // not a fully qualified resource id
             // transform "textToBeChanged" into:
             // com.example.android.testing.espresso.BasicSample:id/textToBeChanged

@@ -17,7 +17,7 @@
 package io.appium.uiautomator2.common.exceptions;
 
 @SuppressWarnings("serial")
-public class InvalidCoordinatesException extends Exception {
+public class InvalidCoordinatesException extends UiAutomator2Exception {
     /**
      * An exception that is thrown when an invalid coordinate is used.
      *

@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
-public class UnsupportedSettingException extends RuntimeException {
+public class UnsupportedSettingException extends UiAutomator2Exception {
 
     public UnsupportedSettingException(String settingName) {
         super(String.format("Setting '%s' is not supported.", settingName));

@@ -1,6 +1,6 @@
 package io.appium.uiautomator2.common.exceptions;
 
-public class NoAttributeFoundException extends Exception {
+public class NoAttributeFoundException extends UiAutomator2Exception {
     private static final long serialVersionUID = -4526232656079801503L;
 
     /**

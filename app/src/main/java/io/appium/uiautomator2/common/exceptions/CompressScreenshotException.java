@@ -18,7 +18,7 @@ package io.appium.uiautomator2.common.exceptions;
 
 import android.graphics.Bitmap;
 
-public class CompressScreenshotException extends Exception {
+public class CompressScreenshotException extends UiAutomator2Exception {
     private static final String message = "Screenshot cannot be compressed to %s format";
 
     public CompressScreenshotException(Bitmap.CompressFormat format) {
