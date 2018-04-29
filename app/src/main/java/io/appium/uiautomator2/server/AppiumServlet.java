@@ -35,6 +35,7 @@ import io.appium.uiautomator2.handler.FindElement;
 import io.appium.uiautomator2.handler.FindElements;
 import io.appium.uiautomator2.handler.FirstVisibleView;
 import io.appium.uiautomator2.handler.Flick;
+import io.appium.uiautomator2.handler.GetBatteryInfo;
 import io.appium.uiautomator2.handler.GetClipboard;
 import io.appium.uiautomator2.handler.GetDevicePixelRatio;
 import io.appium.uiautomator2.handler.GetDeviceSize;
@@ -154,6 +155,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetDeviceSize("/wd/hub/session/:sessionId/window/:windowHandle/size"));
         register(getHandler, new Source("/wd/hub/session/:sessionId/source"));
         register(getHandler, new GetSystemBars("/wd/hub/session/:sessionId/appium/device/system_bars"));
+        register(getHandler, new GetBatteryInfo("/wd/hub/session/:sessionId/appium/device/battery_info"));
         register(getHandler, new GetSettings("/wd/hub/session/:sessionId/appium/settings"));
         register(getHandler, new GetDevicePixelRatio("/wd/hub/session/:sessionId/appium/device/pixel_ratio"));
         register(getHandler, new FirstVisibleView("/wd/hub/session/:sessionId/appium/element/:id/first_visible"));
