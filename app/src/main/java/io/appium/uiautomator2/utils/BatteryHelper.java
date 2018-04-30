@@ -40,12 +40,13 @@ public class BatteryHelper {
     /**
      * @return Current battery level as double value in range [0.0. 1.0],
      * where 1.0 means 100% charge.
+     * -1 is returned if the value actual cannot be read from the system.
      */
     public double getLevel() {
         final Intent batteryStatus = getBatteryStatusIntent();
         final int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         final int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-        return level * 1.0 / scale;
+        return level < 0 ? -1 : level * 1.0 / scale;
     }
 
     /**
@@ -55,6 +56,7 @@ public class BatteryHelper {
      * - BATTERY_STATUS_DISCHARGING = 3
      * - BATTERY_STATUS_NOT_CHARGING = 4
      * - BATTERY_STATUS_FULL = 5
+     * -1 is returned if the actual value cannot be read from the system.
      */
     public int getStatus() {
         return getBatteryStatusIntent().getIntExtra(BatteryManager.EXTRA_STATUS, -1);
