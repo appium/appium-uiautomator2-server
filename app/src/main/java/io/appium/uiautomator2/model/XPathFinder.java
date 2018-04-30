@@ -221,14 +221,15 @@ public class XPathFinder implements Finder {
     }
 
     /**
+     * @param clsName the original class name
+     *
      * @return The tag name used to build UiElement DOM. It is preferable to use
      * this to build XPath instead of String literals.
      */
-    private static String tag(String className) {
+    private static String tag(String clsName) {
         // the nth anonymous class has a class name ending in "Outer$n"
         // and local inner classes have names ending in "Outer.$1Inner"
-        className = className.replaceAll("\\$[0-9]+", "\\$");
-        return className;
+        return clsName.replaceAll("\\$[0-9]+", "\\$");
     }
 
     /**
