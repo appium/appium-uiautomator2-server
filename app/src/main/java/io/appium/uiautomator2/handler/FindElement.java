@@ -56,8 +56,8 @@ public class FindElement extends SafeRequestHandler {
      * Example:
      * http://java-regex-tester.appspot.com/regex/5f04ac92-f9aa-45a6-b1dc-e2c25fd3cc6b
      */
-    static final Pattern resourceIdRegex = Pattern
-            .compile("^[a-zA-Z_][a-zA-Z0-9\\._]*:[^\\/]+\\/[\\S]+$");
+    private static final Pattern resourceIdRegex = Pattern
+            .compile("^[a-zA-Z_][a-zA-Z0-9\\._]*:[^/]+/[\\S]+$");
 
     public FindElement(String mappedUri) {
         super(mappedUri);
@@ -140,18 +140,14 @@ public class FindElement extends SafeRequestHandler {
         } catch (UiSelectorSyntaxException e) {
             Logger.error("Unable to parse UiSelector: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, e);
-        } catch (UiAutomator2Exception e) {
+        } catch (Exception e) {
             Logger.error("Exception while finding element: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Element not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
         }
     }
 
-    private Object findElement(By by) throws
-            ClassNotFoundException,
-            UiAutomator2Exception, UiObjectNotFoundException {
+    private Object findElement(By by) throws ClassNotFoundException, UiAutomator2Exception,
+            UiObjectNotFoundException {
         if (by instanceof ById) {
             String locator = getElementLocator((ById) by);
             return getInstance().findObject(android.support.test.uiautomator.By.res(locator));
@@ -168,10 +164,8 @@ public class FindElement extends SafeRequestHandler {
         throw new UnsupportedOperationException(msg);
     }
 
-    private Object findElement(By by, String contextId) throws
-            ClassNotFoundException,
+    private Object findElement(By by, String contextId) throws ClassNotFoundException,
             UiAutomator2Exception, UiObjectNotFoundException {
-
         AndroidElement element = KnownElements.getElementFromCache(contextId);
         if (element == null) {
             throw new ElementNotFoundException();
@@ -190,22 +184,15 @@ public class FindElement extends SafeRequestHandler {
         }
         String msg = String.format("By locator %s is currently not supported!", by.getClass().getSimpleName());
         throw new UnsupportedOperationException(msg);
-
     }
 
     /**
      * finds the UiSelector for given expression
      */
-    public UiSelector findByUiAutomator(String expression) throws UiSelectorSyntaxException,
+    private UiSelector findByUiAutomator(String expression) throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
-        List<UiSelector> parsedSelectors = null;
         UiAutomatorParser uiAutomatorParser = new UiAutomatorParser();
-        final List<UiSelector> selectors = new ArrayList<UiSelector>();
-        parsedSelectors = uiAutomatorParser.parse(expression);
-
-        for (final UiSelector selector : parsedSelectors) {
-            selectors.add(selector);
-        }
-        return selectors.get(0);
+        List<UiSelector> parsedSelectors = uiAutomatorParser.parse(expression);
+        return new ArrayList<>(parsedSelectors).get(0);
     }
 }

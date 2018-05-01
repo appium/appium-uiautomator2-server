@@ -40,7 +40,7 @@ public class UiObject2Element implements AndroidElement {
         this.by = by;
     }
 
-    static boolean isToastElement(AccessibilityNodeInfo nodeInfo) {
+    private static boolean isToastElement(AccessibilityNodeInfo nodeInfo) {
         return nodeInfo.getClassName().toString().equals(Toast.class.getName());
     }
 
@@ -54,8 +54,9 @@ public class UiObject2Element implements AndroidElement {
     }
 
     public String getText() {
-        AccessibilityNodeInfo nodeInfo = (AccessibilityNodeInfo) getField(UiObject2.class, "mCachedNode", element);
-        /**
+        AccessibilityNodeInfo nodeInfo = (AccessibilityNodeInfo) getField(UiObject2.class,
+                "mCachedNode", element);
+        /*
          * If the given element is TOAST element, we can't perform any operation on {@link UiObject2} as it
          * not formed with valid AccessibilityNodeInfo, Instead we are using custom created AccessibilityNodeInfo of
          * TOAST Element to retrieve the Text.
@@ -95,8 +96,7 @@ public class UiObject2Element implements AndroidElement {
         return res;
     }
 
-    public boolean getBoolAttribute(final String attr)
-            throws UiAutomator2Exception {
+    public boolean getBoolAttribute(final String attr) throws UiAutomator2Exception {
         boolean res;
         if ("enabled".equals(attr)) {
             res = element.isEnabled();
@@ -143,14 +143,13 @@ public class UiObject2Element implements AndroidElement {
     }
 
     public Rect getBounds() {
-        Rect rectangle = element.getVisibleBounds();
-        return rectangle;
+        return element.getVisibleBounds();
     }
 
     public Object getChild(final Object selector) throws UiObjectNotFoundException,
             InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof UiSelector) {
-            /**
+            /*
              * We can't find the child element with UiSelector on UiObject2,
              * as an alternative creating UiObject with UiObject2's AccessibilityNodeInfo
              * and finding the child element on UiObject.
@@ -170,7 +169,7 @@ public class UiObject2Element implements AndroidElement {
     public List<Object> getChildren(final Object selector, final By by) throws
             UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof UiSelector) {
-            /**
+            /*
              * We can't find the child elements with UiSelector on UiObject2,
              * as an alternative creating UiObject with UiObject2's AccessibilityNodeInfo
              * and finding the child elements on UiObject.
@@ -185,6 +184,7 @@ public class UiObject2Element implements AndroidElement {
             AndroidElement androidElement = getAndroidElement(id, uiObject, by);
             return androidElement.getChildren(selector, by);
         }
+        //noinspection unchecked
         return (List) element.findObjects((BySelector) selector);
     }
 

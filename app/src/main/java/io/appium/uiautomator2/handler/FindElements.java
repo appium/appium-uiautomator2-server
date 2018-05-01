@@ -113,12 +113,12 @@ public class FindElements extends SafeRequestHandler {
         } catch (UiSelectorSyntaxException e) {
             Logger.error("Unable to parse UiSelector: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, e);
-        } catch (UiAutomator2Exception e) {
-            Logger.error("Exception while finding element: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
         } catch (UiObjectNotFoundException e) {
             Logger.error("Element not found: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
+        } catch (UiAutomator2Exception e) {
+            Logger.error("Exception while finding element: ", e);
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
         }
     }
 
@@ -165,19 +165,19 @@ public class FindElements extends SafeRequestHandler {
         throw new UnsupportedOperationException(msg);
     }
 
-    public List<UiSelector> findByUiAutomator(String expression) throws UiSelectorSyntaxException,
+    private List<UiSelector> findByUiAutomator(String expression) throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
-        List<UiSelector> parsedSelectors = null;
         UiAutomatorParser uiAutomatorParser = new UiAutomatorParser();
-        parsedSelectors = uiAutomatorParser.parse(expression);
+        List<UiSelector> parsedSelectors = uiAutomatorParser.parse(expression);
         return new ArrayList<>(parsedSelectors);
     }
 
     /**
      * returns  List<UiObject> using '-android automator' expression
      **/
-    private List<Object> getUiObjectsUsingAutomator(List<UiSelector> selectors, String contextId) throws InvalidSelectorException, ClassNotFoundException {
-        List<Object> foundElements = new ArrayList<Object>();
+    private List<Object> getUiObjectsUsingAutomator(List<UiSelector> selectors, String contextId)
+            throws InvalidSelectorException, ClassNotFoundException {
+        List<Object> foundElements = new ArrayList<>();
         for (final UiSelector sel : selectors) {
             // With multiple selectors, we expect that some elements may not
             // exist.
@@ -195,10 +195,6 @@ public class FindElements extends SafeRequestHandler {
 
     /**
      * finds elements with given UiSelector return List<UiObject
-     *
-     * @param sel
-     * @param key
-     * @return
      */
     private List<Object> fetchElements(UiSelector sel, String key) throws UiObjectNotFoundException,
             ClassNotFoundException, InvalidSelectorException {
@@ -208,7 +204,7 @@ public class FindElements extends SafeRequestHandler {
         final boolean useIndex = selectorString.contains("CLASS_REGEX=");
         final boolean endsWithInstance = endsWithInstancePattern.matcher(selectorString).matches();
         Logger.debug("getElements selector:" + selectorString);
-        final ArrayList<Object> elements = new ArrayList<Object>();
+        final ArrayList<Object> elements = new ArrayList<>();
 
         // If sel is UiSelector[CLASS=android.widget.Button, INSTANCE=0]
         // then invoking instance with a non-0 argument will corrupt the selector.
