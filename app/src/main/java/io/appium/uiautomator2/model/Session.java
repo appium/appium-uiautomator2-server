@@ -13,11 +13,11 @@ import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_
 
 public class Session {
     public static final String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
+    public static Map<String, Object> capabilities = new HashMap<>();
     private String sessionId;
     private ConcurrentMap<String, JSONObject> commandConfiguration;
     private KnownElements knownElements;
     private AccessibilityScrollData lastScrollData;
-    public static Map<String, Object> capabilities = new HashMap<>();
 
     public Session(String sessionId) {
         this.sessionId = sessionId;
@@ -26,10 +26,6 @@ public class Session {
         JSONObject configJsonObject = new JSONObject();
         this.commandConfiguration.put(SEND_KEYS_TO_ELEMENT, configJsonObject);
         NotificationListener.getInstance().start();
-    }
-
-    public String getSessionId() {
-        return sessionId;
     }
 
     public static boolean shouldUseCompactResponses() {
@@ -46,7 +42,11 @@ public class Session {
             return Session.capabilities.get(ELEMENT_RESPONSE_ATTRIBUTES.toString()).toString()
                     .split(",");
         }
-        return new String[] { "name", "text" };
+        return new String[]{"name", "text"};
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 
     public void setCommandConfiguration(String command, JSONObject config) {
@@ -63,11 +63,11 @@ public class Session {
         return commandConfiguration.get(command);
     }
 
-    public void setLastScrollData(AccessibilityScrollData scrollData) {
-        lastScrollData = scrollData;
-    }
-
     public AccessibilityScrollData getLastScrollData() {
         return lastScrollData;
+    }
+
+    public void setLastScrollData(AccessibilityScrollData scrollData) {
+        lastScrollData = scrollData;
     }
 }

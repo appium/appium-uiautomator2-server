@@ -56,9 +56,6 @@ public class WifiHandler {
             return false;
         } else if (desired == false && wfm.getWifiState() == WifiManager.WIFI_STATE_DISABLED) {
             return true;
-        } else if (desired == true && wfm.getWifiState() == WifiManager.WIFI_STATE_ENABLED) {
-            return true;
-        }
-        return false;
+        } else return desired == true && wfm.getWifiState() == WifiManager.WIFI_STATE_ENABLED;
     }
 }

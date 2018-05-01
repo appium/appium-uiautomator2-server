@@ -56,7 +56,7 @@ public class UiSelectorParser extends UiExpressionParser<UiSelector, UiSelector>
                 throw new UiSelectorSyntaxException(expression.toString(),
                         String.format("Unsupported return value type:`%s`. " +
                                         "Only methods with return type `UiSelector` are supported.",
-                        result.getClass().getSimpleName()));
+                                result.getClass().getSimpleName()));
             }
             setTarget((UiSelector) result);
         }

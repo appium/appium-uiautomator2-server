@@ -56,7 +56,7 @@ public abstract class Device {
     public static void waitForIdle() {
         try {
             getUiDevice().waitForIdle();
-        }catch (Exception e) {
+        } catch (Exception e) {
             Logger.error("Unable wait for AUT to idle");
         }
     }
@@ -64,7 +64,7 @@ public abstract class Device {
     public static void waitForIdle(long timeInMS) {
         try {
             getUiDevice().waitForIdle(timeInMS);
-        }catch (Exception e) {
+        } catch (Exception e) {
             Logger.error(String.format("Unable wait %d for AUT to idle", timeInMS));
         }
     }

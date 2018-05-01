@@ -58,7 +58,7 @@ public class UiObjectElement implements AndroidElement {
     }
 
     public String getClassName() throws UiObjectNotFoundException {
-            return element.getClassName();
+        return element.getClassName();
     }
 
     public String getStringAttribute(final String attr) throws UiObjectNotFoundException, NoAttributeFoundException {
@@ -104,7 +104,7 @@ public class UiObjectElement implements AndroidElement {
             res = element.exists();
         } else if ("password".equals(attr)) {
             res = AccessibilityNodeInfoGetter.fromUiObject(element).isPassword();
-        }  else {
+        } else {
             throw new NoAttributeFoundException(attr);
         }
         return res;
@@ -154,9 +154,9 @@ public class UiObjectElement implements AndroidElement {
              */
             AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
             UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo);
-            return (List)uiObject2.findObjects((BySelector) selector);
+            return (List) uiObject2.findObjects((BySelector) selector);
         }
-        return (List)this.getChildElements((UiSelector) selector);
+        return (List) this.getChildElements((UiSelector) selector);
     }
 
 
@@ -233,19 +233,19 @@ public class UiObjectElement implements AndroidElement {
         return PositionHelper.getAbsolutePosition(point, rect, new Point(rect.left, rect.top), false);
     }
 
-    public String getResourceId() throws UiObjectNotFoundException {
+    public String getResourceId() {
         String resourceId = "";
 
         try {
-      /*
-       * Unfortunately UiObject does not implement a getResourceId method.
-       * There is currently no way to determine the resource-id of a given
-       * element represented by UiObject. Until this support is added to
-       * UiAutomater, we try to match the implementation pattern that is
-       * already used by UiObject for getting attributes using reflection.
-       * The returned string matches exactly what is displayed in the
-       * UiAutomater inspector.
-       */
+            /*
+             * Unfortunately UiObject does not implement a getResourceId method.
+             * There is currently no way to determine the resource-id of a given
+             * element represented by UiObject. Until this support is added to
+             * UiAutomater, we try to match the implementation pattern that is
+             * already used by UiObject for getting attributes using reflection.
+             * The returned string matches exactly what is displayed in the
+             * UiAutomater inspector.
+             */
             AccessibilityNodeInfo node = (AccessibilityNodeInfo) invoke(method(element.getClass(), "findAccessibilityNodeInfo", long.class),
                     element, Configurator.getInstance().getWaitForSelectorTimeout());
 

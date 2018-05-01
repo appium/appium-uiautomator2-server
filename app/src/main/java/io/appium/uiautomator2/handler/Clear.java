@@ -43,7 +43,7 @@ public class Clear extends SafeRequestHandler {
                 } catch (InvalidSelectorException e) {
                     Logger.error("Invalid selector: ", e);
                     return new AppiumResponse(getSessionId(request), WDStatus.INVALID_SELECTOR, e);
-                }  catch ( UiAutomator2Exception | ClassNotFoundException e) {
+                } catch (UiAutomator2Exception | ClassNotFoundException e) {
                     Logger.debug("Error in finding focused element: " + e);
                     return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Unable to find a focused element." + e.getStackTrace());
                 }

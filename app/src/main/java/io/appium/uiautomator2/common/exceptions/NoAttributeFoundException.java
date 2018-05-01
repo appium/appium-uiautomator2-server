@@ -7,8 +7,7 @@ public class NoAttributeFoundException extends UiAutomator2Exception {
      * This exception is thrown when the element doesn't have the attribute searched
      * for.
      *
-     * @param attr
-     *          The attribute searched for.
+     * @param attr The attribute searched for.
      */
 
     public NoAttributeFoundException(String attr) {

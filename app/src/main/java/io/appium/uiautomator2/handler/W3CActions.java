@@ -54,8 +54,38 @@ import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.metaKeysToState;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.toolTypeToInputSource;
 
 public class W3CActions extends SafeRequestHandler {
+    private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
+            MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
+    );
+
     public W3CActions(String mappedUri) {
         super(mappedUri);
+    }
+
+    private static PointerProperties[] filterPointerProperties(
+            final List<MotionInputEventParams> motionEventsParams, final boolean shouldHovering) {
+        final List<PointerProperties> result = new ArrayList<>();
+        for (final MotionInputEventParams eventParams : motionEventsParams) {
+            if (shouldHovering && HOVERING_ACTIONS.contains(eventParams.actionCode)) {
+                result.add(eventParams.properties);
+            } else if (!shouldHovering && !HOVERING_ACTIONS.contains(eventParams.actionCode)) {
+                result.add(eventParams.properties);
+            }
+        }
+        return result.toArray(new PointerProperties[result.size()]);
+    }
+
+    private static PointerCoords[] filterPointerCoordinates(
+            final List<MotionInputEventParams> motionEventsParams, final boolean shouldHovering) {
+        final List<PointerCoords> result = new ArrayList<>();
+        for (final MotionInputEventParams eventParams : motionEventsParams) {
+            if (shouldHovering && HOVERING_ACTIONS.contains(eventParams.actionCode)) {
+                result.add(eventParams.coordinates);
+            } else if (!shouldHovering && !HOVERING_ACTIONS.contains(eventParams.actionCode)) {
+                result.add(eventParams.coordinates);
+            }
+        }
+        return result.toArray(new PointerCoords[result.size()]);
     }
 
     /**
@@ -111,36 +141,6 @@ public class W3CActions extends SafeRequestHandler {
 
     private boolean injectEventSync(InputEvent event) {
         return UiAutomatorBridge.getInstance().getInteractionController().injectEventSync(event);
-    }
-
-    private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
-            MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
-    );
-
-    private static PointerProperties[] filterPointerProperties(
-            final List<MotionInputEventParams> motionEventsParams, final boolean shouldHovering) {
-        final List<PointerProperties> result = new ArrayList<>();
-        for (final MotionInputEventParams eventParams : motionEventsParams) {
-            if (shouldHovering && HOVERING_ACTIONS.contains(eventParams.actionCode)) {
-                result.add(eventParams.properties);
-            } else if (!shouldHovering && !HOVERING_ACTIONS.contains(eventParams.actionCode)) {
-                result.add(eventParams.properties);
-            }
-        }
-        return result.toArray(new PointerProperties[result.size()]);
-    }
-
-    private static PointerCoords[] filterPointerCoordinates(
-            final List<MotionInputEventParams> motionEventsParams, final boolean shouldHovering) {
-        final List<PointerCoords> result = new ArrayList<>();
-        for (final MotionInputEventParams eventParams : motionEventsParams) {
-            if (shouldHovering && HOVERING_ACTIONS.contains(eventParams.actionCode)) {
-                result.add(eventParams.coordinates);
-            } else if (!shouldHovering && !HOVERING_ACTIONS.contains(eventParams.actionCode)) {
-                result.add(eventParams.coordinates);
-            }
-        }
-        return result.toArray(new PointerCoords[result.size()]);
     }
 
     private boolean executeActions(final JSONArray actions) throws JSONException {

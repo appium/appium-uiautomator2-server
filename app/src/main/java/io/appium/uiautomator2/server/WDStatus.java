@@ -52,12 +52,12 @@ public enum WDStatus {
     private final int statusCode;
     private final String statusMessage;
 
-    private WDStatus(final int code) {
+    WDStatus(final int code) {
         statusCode = code;
         statusMessage = "";
     }
 
-    private WDStatus(final int code, final String message) {
+    WDStatus(final int code, final String message) {
         statusCode = code;
         statusMessage = message;
     }

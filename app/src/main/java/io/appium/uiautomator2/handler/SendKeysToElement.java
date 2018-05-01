@@ -29,6 +29,10 @@ public class SendKeysToElement extends SafeRequestHandler {
         super(mappedUri);
     }
 
+    private static boolean isTextFieldClear(AndroidElement element) throws UiObjectNotFoundException {
+        return element.getText() == null || element.getText().isEmpty();
+    }
+
     @Override
     public AppiumResponse safeHandle(IHttpRequest request) {
         try {
@@ -99,10 +103,6 @@ public class SendKeysToElement extends SafeRequestHandler {
             Logger.error("Exception while reading JSON: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
         }
-    }
-
-    private static boolean isTextFieldClear(AndroidElement element) throws UiObjectNotFoundException {
-        return element.getText() == null || element.getText().isEmpty();
     }
 }
 

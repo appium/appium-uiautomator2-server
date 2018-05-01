@@ -26,7 +26,6 @@ import java.io.ByteArrayOutputStream;
 
 import io.appium.uiautomator2.common.exceptions.CompressScreenshotException;
 import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
-import io.appium.uiautomator2.common.exceptions.ElementNotVisibleException;
 import io.appium.uiautomator2.common.exceptions.TakeScreenshotException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 

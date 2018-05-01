@@ -59,7 +59,7 @@ public abstract class PositionHelper {
      */
     public static Point getAbsolutePosition(final Point point, final Rect displayRect,
                                             final Point offsets, final boolean shouldCheckBounds)
-            throws UiObjectNotFoundException, InvalidCoordinatesException {
+            throws InvalidCoordinatesException {
         final Point absolutePosition = new Point();
 
         absolutePosition.x = translateCoordinate(point.x, displayRect.width(), offsets.x);
@@ -74,8 +74,7 @@ public abstract class PositionHelper {
         return absolutePosition;
     }
 
-    public static Point getDeviceAbsPos(final Point point)
-            throws UiObjectNotFoundException, InvalidCoordinatesException {
+    public static Point getDeviceAbsPos(final Point point) throws InvalidCoordinatesException {
         final UiDevice d = UiDevice.getInstance();
         final Rect displayRect = new Rect(0, 0, d.getDisplayWidth(), d.getDisplayHeight());
 

@@ -28,10 +28,10 @@ public class RotateScreen extends SafeRequestHandler {
 
         try {
             JSONObject payload = getPayload(request);
-            if(payload.has("orientation")) {
+            if (payload.has("orientation")) {
                 String orientation = payload.getString("orientation");
                 return handleRotation(request, orientation);
-            } else if (payload.has("x") && payload.has("y") && payload.has("z")){
+            } else if (payload.has("x") && payload.has("y") && payload.has("z")) {
                 int x = payload.getInt("x");
                 int y = payload.getInt("y");
                 int z = payload.getInt("z");
@@ -54,18 +54,18 @@ public class RotateScreen extends SafeRequestHandler {
         }
     }
 
-    private AppiumResponse handleRotation(IHttpRequest request, int x, int y, int z) throws InvalidCoordinatesException, RemoteException, InterruptedException {
-        if ( x!=0 || y!=0 || !( z==0 || z==90 || z==180 || z==270 )) {
+    private AppiumResponse handleRotation(IHttpRequest request, int x, int y, int z) throws InvalidCoordinatesException, InterruptedException {
+        if (x != 0 || y != 0 || !(z == 0 || z == 90 || z == 180 || z == 270)) {
             throw new InvalidCoordinatesException("Unable to Rotate Device. Invalid rotation, valid params x=0, y=0, z=(0 or 90 or 180 or 270)");
         }
         OrientationEnum current = OrientationEnum.fromInteger(
                 getUiDevice().getDisplayRotation());
-        OrientationEnum desired = OrientationEnum.fromInteger(z/90);
-        if(current == desired) {
+        OrientationEnum desired = OrientationEnum.fromInteger(z / 90);
+        if (current == desired) {
             return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, String.format("Already in %s mode", current.getOrientation()));
         }
 
-        switch(desired) {
+        switch (desired) {
             case ROTATION_0:
             case ROTATION_90:
             case ROTATION_180:

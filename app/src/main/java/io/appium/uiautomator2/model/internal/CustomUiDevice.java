@@ -18,7 +18,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.utils.Device;
@@ -72,26 +71,26 @@ public class CustomUiDevice {
         return INSTANCE;
     }
 
-    public Instrumentation getInstrumentation(){
+    public Instrumentation getInstrumentation() {
         return mInstrumentation;
     }
 
     /**
      * Returns the first object to match the {@code selector} criteria.
      */
-    public Object findObject(Object selector) throws ClassNotFoundException, ElementNotFoundException, InvalidSelectorException, UiAutomator2Exception {
+    public Object findObject(Object selector) throws ClassNotFoundException, UiAutomator2Exception {
 
-        AccessibilityNodeInfo node ;
+        AccessibilityNodeInfo node;
         Device.waitForIdle();
         if (selector instanceof BySelector) {
             node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcher, Device.getUiDevice(), selector, getWindowRoots());
         } else if (selector instanceof NodeInfoList) {
-            node = ((NodeInfoList) selector).getNodeList().size()>0 ? ((NodeInfoList) selector).getNodeList().get(0) : null;
+            node = ((NodeInfoList) selector).getNodeList().size() > 0 ? ((NodeInfoList) selector).getNodeList().get(0) : null;
             selector = By.clazz(node.getClassName().toString());
-        }  else if (selector instanceof AccessibilityNodeInfo) {
+        } else if (selector instanceof AccessibilityNodeInfo) {
             node = (AccessibilityNodeInfo) selector;
             selector = By.clazz(node.getClassName().toString());
-        }else if (selector instanceof UiSelector) {
+        } else if (selector instanceof UiSelector) {
             UiObject uiObject = getUiDevice().findObject((UiSelector) selector);
             if (uiObject.exists()) {
                 return uiObject;
@@ -101,7 +100,7 @@ public class CustomUiDevice {
             throw new InvalidSelectorException("Selector of type " + selector.getClass().getName() + " not supported");
         }
         try {
-            if(node == null){
+            if (node == null) {
                 return null;
             }
             Class uiObject2 = Class.forName("android.support.test.uiautomator.UiObject2");
@@ -142,7 +141,7 @@ public class CustomUiDevice {
     /**
      * Returns List<object> to match the {@code selector} criteria.
      */
-    public List<Object> findObjects(Object selector) throws ClassNotFoundException, InvalidSelectorException, UiAutomator2Exception {
+    public List<Object> findObjects(Object selector) throws ClassNotFoundException, UiAutomator2Exception {
 
         List<Object> ret = new ArrayList<>();
 
@@ -164,7 +163,7 @@ public class CustomUiDevice {
                 cons.setAccessible(true);
                 selector = By.clazz(node.getClassName().toString());
                 Object[] constructorParams = {getUiDevice(), selector, node};
-                ret.add((UiObject2) cons.newInstance(constructorParams));
+                ret.add(cons.newInstance(constructorParams));
             } catch (InvocationTargetException e) {
                 final String msg = String.format("error while creating  UiObject2 object:");
                 Logger.error(msg + " " + e);

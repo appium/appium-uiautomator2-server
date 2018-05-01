@@ -612,6 +612,14 @@ public class ActionsHelpers {
         return result;
     }
 
+    public static int metaKeysToState(final Set<Integer> metaKeys) {
+        int result = 0;
+        for (final int metaKey : metaKeys) {
+            result |= metaKey;
+        }
+        return result;
+    }
+
     public static abstract class InputEventParams {
         public long startDelta = 0;
 
@@ -637,13 +645,5 @@ public class ActionsHelpers {
         MotionInputEventParams() {
             super();
         }
-    }
-
-    public static int metaKeysToState(final Set<Integer> metaKeys) {
-        int result = 0;
-        for (final int metaKey : metaKeys) {
-            result |= metaKey;
-        }
-        return result;
     }
 }

@@ -6,7 +6,6 @@ import android.support.test.uiautomator.StaleObjectException;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiScrollable;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import org.json.JSONException;
@@ -52,37 +51,6 @@ public class GetElementAttribute extends SafeRequestHandler {
 
     public GetElementAttribute(String mappedUri) {
         super(mappedUri);
-    }
-
-    @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
-        Logger.info("get attribute of element command");
-        String id = getElementId(request);
-        String attributeName = getNameAttribute(request);
-        AndroidElement element = KnownElements.getElementFromCache(id);
-        if (element == null) {
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-        }
-        try {
-            String attribute = getElementAttributeValue(element, attributeName);
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, attribute);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error(MessageFormat.format("Element not found while trying to get attribute '{0}'", attributeName), e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR);
-        } catch (NoAttributeFoundException e) {
-            Logger.error(MessageFormat.format("Requested attribute {0} not supported.", attributeName), e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, e);
-        } catch(StaleObjectException e){
-            Logger.error("Stale Element Exception: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.STALE_ELEMENT_REFERENCE, e);
-        } catch (UiAutomator2Exception e) {
-            Logger.error(MessageFormat.format("Unable to retrieve attribute {0}", attributeName), e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (ReflectiveOperationException e) {
-            Logger.error("Can not access to method or field: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        }
-
     }
 
     public static String getElementAttributeValue(AndroidElement element, String attributeName) throws NoAttributeFoundException, UiObjectNotFoundException, ReflectiveOperationException {
@@ -155,7 +123,7 @@ public class GetElementAttribute extends SafeRequestHandler {
         return getScrollableOffsetByItemCount(uiScrollable, lastScrollData.getItemCount());
     }
 
-    private static int getScrollableOffsetByItemCount (AndroidElement uiScrollable, int itemCount) {
+    private static int getScrollableOffsetByItemCount(AndroidElement uiScrollable, int itemCount) {
         Logger.debug("Figuring out scrollableOffset via item count of " + itemCount);
         Object scrollObject = uiScrollable.getUiObject();
         Rect scrollBounds = getElementBoundsInScreen(uiScrollable);
@@ -239,7 +207,8 @@ public class GetElementAttribute extends SafeRequestHandler {
 
         try {
             nodeInfo = AccessibilityNodeInfoGetter.fromUiObjectDefaultTimeout(uiObject);
-        } catch (UiAutomator2Exception ignored) {}
+        } catch (UiAutomator2Exception ignored) {
+        }
 
         if (nodeInfo == null) {
             throw new UiAutomator2Exception("Could not find accessibility node info for the view");
@@ -271,6 +240,37 @@ public class GetElementAttribute extends SafeRequestHandler {
         int touchPadding = (int) getScaledPagingTouchSlopMethod.invoke(viewConfigObject);
 
         return touchPadding / 2;
+    }
+
+    @Override
+    public AppiumResponse safeHandle(IHttpRequest request) {
+        Logger.info("get attribute of element command");
+        String id = getElementId(request);
+        String attributeName = getNameAttribute(request);
+        AndroidElement element = KnownElements.getElementFromCache(id);
+        if (element == null) {
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
+        }
+        try {
+            String attribute = getElementAttributeValue(element, attributeName);
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, attribute);
+        } catch (UiObjectNotFoundException e) {
+            Logger.error(MessageFormat.format("Element not found while trying to get attribute '{0}'", attributeName), e);
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR);
+        } catch (NoAttributeFoundException e) {
+            Logger.error(MessageFormat.format("Requested attribute {0} not supported.", attributeName), e);
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, e);
+        } catch (StaleObjectException e) {
+            Logger.error("Stale Element Exception: ", e);
+            return new AppiumResponse(getSessionId(request), WDStatus.STALE_ELEMENT_REFERENCE, e);
+        } catch (UiAutomator2Exception e) {
+            Logger.error(MessageFormat.format("Unable to retrieve attribute {0}", attributeName), e);
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+        } catch (ReflectiveOperationException e) {
+            Logger.error("Can not access to method or field: ", e);
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+        }
+
     }
 
     private static class ContentSize {

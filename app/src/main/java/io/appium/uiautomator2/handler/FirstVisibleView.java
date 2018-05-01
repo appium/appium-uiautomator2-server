@@ -87,7 +87,7 @@ public class FirstVisibleView extends SafeRequestHandler {
         } catch (UiObjectNotFoundException e) {
             Logger.error("Element not found: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-        } catch(StaleObjectException e){
+        } catch (StaleObjectException e) {
             Logger.error("Stale Element Exception: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.STALE_ELEMENT_REFERENCE, e);
         } catch (JSONException e) {

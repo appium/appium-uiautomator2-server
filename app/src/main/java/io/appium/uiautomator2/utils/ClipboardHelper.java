@@ -64,17 +64,17 @@ public class ClipboardHelper {
         cm.setPrimaryClip(ClipData.newPlainText(label, data));
     }
 
-    public static class ClipboardError extends RuntimeException {
-        ClipboardError(String message) {
-            super(message);
-        }
-    }
-
     public enum ClipDataType {
         PLAINTEXT;
 
         public static String supportedDataTypes() {
             return Arrays.toString(values());
+        }
+    }
+
+    public static class ClipboardError extends RuntimeException {
+        ClipboardError(String message) {
+            super(message);
         }
     }
 }

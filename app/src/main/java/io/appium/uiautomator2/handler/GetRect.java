@@ -39,6 +39,16 @@ public class GetRect extends SafeRequestHandler {
         super(mappedUri);
     }
 
+    public static JSONObject getElementRectJSON(AndroidElement element) throws UiObjectNotFoundException, JSONException {
+        final JSONObject result = new JSONObject();
+        final Rect rect = element.getBounds();
+        result.put("x", rect.left);
+        result.put("y", rect.top);
+        result.put("width", rect.width());
+        result.put("height", rect.height());
+        return result;
+    }
+
     @Override
     public AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Get Rect of element command");
@@ -59,15 +69,5 @@ public class GetRect extends SafeRequestHandler {
             return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
         }
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
-    }
-
-    public static JSONObject getElementRectJSON(AndroidElement element) throws UiObjectNotFoundException, JSONException {
-        final JSONObject result = new JSONObject();
-        final Rect rect = element.getBounds();
-        result.put("x", rect.left);
-        result.put("y", rect.top);
-        result.put("width", rect.width());
-        result.put("height", rect.height());
-        return result;
     }
 }

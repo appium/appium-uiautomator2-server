@@ -7,6 +7,7 @@ import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.server.ServerInstrumentation;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
+
 public class DeleteSession extends SafeRequestHandler {
 
     public DeleteSession(String mappedUri) {

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 
 import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
@@ -37,12 +36,11 @@ public class KnownElements {
     }
 
     /**
-     *
      * @param ui2BySelector, for finding {@link android.support.test.uiautomator.UiObject2} element derived using {@link By}
-     * @param by, user provided selector criteria from appium client.
+     * @param by,            user provided selector criteria from appium client.
      * @return
      */
-    public static AndroidElement getElement(final BySelector ui2BySelector, By by) throws ElementNotFoundException, InvalidSelectorException, UiAutomator2Exception, ClassNotFoundException {
+    public static AndroidElement getElement(final BySelector ui2BySelector, By by) throws UiAutomator2Exception, ClassNotFoundException {
         Object ui2Object = getInstance().findObject(ui2BySelector);
         if (ui2Object == null) {
             throw new ElementNotFoundException();

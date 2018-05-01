@@ -35,12 +35,12 @@ import io.appium.uiautomator2.utils.Logger;
 public class SetClipboard extends SafeRequestHandler {
     private final Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
 
-    private static String fromBase64String(String s) {
-        return new String(Base64.decode(s, Base64.DEFAULT), StandardCharsets.UTF_8);
-    }
-
     public SetClipboard(String mappedUri) {
         super(mappedUri);
+    }
+
+    private static String fromBase64String(String s) {
+        return new String(Base64.decode(s, Base64.DEFAULT), StandardCharsets.UTF_8);
     }
 
     @Override

@@ -72,10 +72,10 @@ public class UiObjectChildGenerator implements Iterable<Object> {
 
         @Override
         public boolean hasNext() {
-           if (curChild == -1) {
-               init();
-           }
-           return curChild < childCount;
-       }
+            if (curChild == -1) {
+                init();
+            }
+            return curChild < childCount;
+        }
     }
 }

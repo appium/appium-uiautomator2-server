@@ -26,7 +26,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.lang.IllegalStateException;
 import java.lang.reflect.Field;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -53,56 +52,8 @@ public class XPathFinder implements Finder {
     private static final String UI_ELEMENT_INDEX = "uiElementIndex";
     private final String xPathString;
 
-    @Override
-    public String toString() {
-        return xPathString;
-    }
-
     private XPathFinder(String xPathString) {
         this.xPathString = Preconditions.checkNotNull(xPathString);
-    }
-
-    @Override
-    public NodeInfoList find(UiElement context) {
-        final Document document;
-        try {
-            document = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder()
-                    .newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new UiAutomator2Exception(e);
-        }
-        final SparseArray<UiElement<?, ?>> uiElementsMapping = new SparseArray<>();
-        final Element domNode = toDOMElement((UiElement<?, ?>) context, document, uiElementsMapping);
-        document.appendChild(domNode);
-        final NodeList nodes;
-        final NodeInfoList matchesList = new NodeInfoList();
-        try {
-            nodes = (NodeList) XPATH_COMPILER
-                    .compile(xPathString)
-                    .evaluate(domNode, XPathConstants.NODESET);
-        } catch (XPathExpressionException e) {
-            throw new InvalidSelectorException(e);
-        }
-        for (int i = 0; i < nodes.getLength(); i++) {
-            if (nodes.item(i).getNodeType() != Node.ELEMENT_NODE) {
-                continue;
-            }
-
-            final NamedNodeMap attributes = nodes.item(i).getAttributes();
-            final Node uiElementIndexAttribute = attributes.getNamedItem(UI_ELEMENT_INDEX);
-            if (uiElementIndexAttribute == null) {
-                continue;
-            }
-            final UiElement uiElement = uiElementsMapping
-                    .get(Integer.parseInt(uiElementIndexAttribute.getNodeValue()));
-            if (uiElement == null || uiElement.getClassName().equals("hierarchy")) {
-                continue;
-            }
-
-            matchesList.addToList(uiElement.node);
-        }
-        return matchesList;
     }
 
     public static NodeInfoList getNodesList(String xpathExpression,
@@ -222,7 +173,6 @@ public class XPathFinder implements Finder {
 
     /**
      * @param clsName the original class name
-     *
      * @return The tag name used to build UiElement DOM. It is preferable to use
      * this to build XPath instead of String literals.
      */
@@ -246,5 +196,53 @@ public class XPathFinder implements Finder {
             return name;
         }
         return name.substring(0, start);
+    }
+
+    @Override
+    public String toString() {
+        return xPathString;
+    }
+
+    @Override
+    public NodeInfoList find(UiElement context) {
+        final Document document;
+        try {
+            document = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder()
+                    .newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new UiAutomator2Exception(e);
+        }
+        final SparseArray<UiElement<?, ?>> uiElementsMapping = new SparseArray<>();
+        final Element domNode = toDOMElement((UiElement<?, ?>) context, document, uiElementsMapping);
+        document.appendChild(domNode);
+        final NodeList nodes;
+        final NodeInfoList matchesList = new NodeInfoList();
+        try {
+            nodes = (NodeList) XPATH_COMPILER
+                    .compile(xPathString)
+                    .evaluate(domNode, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            throw new InvalidSelectorException(e);
+        }
+        for (int i = 0; i < nodes.getLength(); i++) {
+            if (nodes.item(i).getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+
+            final NamedNodeMap attributes = nodes.item(i).getAttributes();
+            final Node uiElementIndexAttribute = attributes.getNamedItem(UI_ELEMENT_INDEX);
+            if (uiElementIndexAttribute == null) {
+                continue;
+            }
+            final UiElement uiElement = uiElementsMapping
+                    .get(Integer.parseInt(uiElementIndexAttribute.getNodeValue()));
+            if (uiElement == null || uiElement.getClassName().equals("hierarchy")) {
+                continue;
+            }
+
+            matchesList.addToList(uiElement.node);
+        }
+        return matchesList;
     }
 }

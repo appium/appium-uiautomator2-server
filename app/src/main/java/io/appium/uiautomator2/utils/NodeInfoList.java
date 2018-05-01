@@ -6,17 +6,17 @@ import java.util.ArrayList;
 
 public class NodeInfoList {
 
-    private ArrayList<AccessibilityNodeInfo>  nodeList = new ArrayList<AccessibilityNodeInfo>();
+    private ArrayList<AccessibilityNodeInfo> nodeList = new ArrayList<AccessibilityNodeInfo>();
 
-    public void addToList(AccessibilityNodeInfo node){
+    public void addToList(AccessibilityNodeInfo node) {
         nodeList.add(node);
     }
 
-    public ArrayList<AccessibilityNodeInfo> getNodeList(){
+    public ArrayList<AccessibilityNodeInfo> getNodeList() {
         return nodeList;
     }
 
-    public int size(){
+    public int size() {
         return nodeList.size();
     }
 

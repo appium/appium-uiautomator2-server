@@ -8,11 +8,11 @@ public abstract class ReturningRunnable<T> implements Runnable {
         result = null;
     }
 
-    protected void setResult(T value) {
-        result = value;
-    }
-
     public T getResult() {
         return result;
+    }
+
+    protected void setResult(T value) {
+        result = value;
     }
 }

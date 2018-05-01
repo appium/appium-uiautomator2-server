@@ -32,7 +32,7 @@ public class NetworkConnection extends SafeRequestHandler {
                 case NONE:
                     return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, new NotImplementedException("Setting Network Connection to: " + networkType.getNetworkType() + " :is not implemented"));
                 default:
-                    return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, new UiAutomator2Exception("Invalid Network Connection type: "+ requestedType));
+                    return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, new UiAutomator2Exception("Invalid Network Connection type: " + requestedType));
             }
         } catch (JSONException e) {
             Logger.error("Exception while reading JSON: ", e);

@@ -15,8 +15,8 @@
  */
 package io.appium.uiautomator2.core;
 
-import android.os.Bundle;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 

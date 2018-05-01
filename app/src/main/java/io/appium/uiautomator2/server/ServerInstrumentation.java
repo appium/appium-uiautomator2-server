@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.os.RemoteException;
+
 import io.appium.uiautomator2.common.exceptions.SessionRemovedException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.settings.Settings;
@@ -24,10 +25,89 @@ public class ServerInstrumentation {
     private static ServerInstrumentation instance;
 
     private final Context context;
+    private final int serverPort;
     private HttpdThread serverThread;
     private PowerManager.WakeLock wakeLock;
-    private final int serverPort;
     private boolean isServerStopped;
+
+    public ServerInstrumentation(Context context, int serverPort) {
+        if (!isValidPort(serverPort)) {
+            throw new UiAutomator2Exception(String.format(
+                    "The port is out of valid range [%s;%s]: %s", MIN_PORT, MAX_PORT, serverPort));
+        }
+        this.serverPort = serverPort;
+        this.context = context;
+    }
+
+    public static synchronized ServerInstrumentation getInstance() {
+        if (instance == null) {
+            instance = new ServerInstrumentation(getContext(), getServerPort());
+        }
+        return instance;
+    }
+
+    public boolean isServerStopped() {
+        return isServerStopped;
+    }
+
+    private boolean isValidPort(int port) {
+        return port >= MIN_PORT && port <= MAX_PORT;
+    }
+
+    public void stopServer() {
+        try {
+            if (wakeLock != null) {
+                try {
+                    wakeLock.release();
+                } catch (Exception e) {/* ignore */}
+                wakeLock = null;
+            }
+            stopServerThread();
+
+        } finally {
+            instance = null;
+        }
+    }
+
+    public void startServer() throws SessionRemovedException {
+        if (serverThread != null && serverThread.isAlive()) {
+            return;
+        }
+
+        if (serverThread == null && isServerStopped) {
+            throw new SessionRemovedException("Delete Session has been invoked");
+        }
+
+        if (serverThread != null) {
+            Logger.error("Stopping UiAutomator2 io.appium.uiautomator2.http io.appium.uiautomator2.server");
+            stopServer();
+        }
+
+        serverThread = new HttpdThread(this.serverPort);
+        serverThread.start();
+        //client to wait for io.appium.uiautomator2.server to up
+        Logger.info("io.appium.uiautomator2.server started:");
+    }
+
+    private void stopServerThread() {
+        if (serverThread == null) {
+            return;
+        }
+        if (!serverThread.isAlive()) {
+            serverThread = null;
+            return;
+        }
+
+        Logger.info("Stopping uiautomator2 io.appium.uiautomator2.http io.appium.uiautomator2.server");
+        serverThread.stopLooping();
+        serverThread.interrupt();
+        try {
+            serverThread.join();
+        } catch (InterruptedException ignored) {
+        }
+        serverThread = null;
+        isServerStopped = true;
+    }
 
     public static class PowerConnectionReceiver extends BroadcastReceiver {
 
@@ -48,93 +128,13 @@ public class ServerInstrumentation {
                     (ShutdownOnPowerDisconnect) Settings.SHUTDOWN_ON_POWER_DISCONNECT.getSetting();
             if (!shutdownOnPowerDisconnect.getValue()) {
                 Logger.debug(String.format("The value of `%s` setting is false - " +
-                                "ignoring broadcasting.", shutdownOnPowerDisconnect.getName()));
+                        "ignoring broadcasting.", shutdownOnPowerDisconnect.getName()));
                 return;
             }
 
             Logger.info("The device was disconnected from power source. Shutting down the server.");
             getInstance().stopServer();
         }
-    }
-
-    public ServerInstrumentation(Context context, int serverPort) {
-        if (!isValidPort(serverPort)) {
-            throw new UiAutomator2Exception(String.format(
-                    "The port is out of valid range [%s;%s]: %s", MIN_PORT, MAX_PORT, serverPort));
-        }
-        this.serverPort = serverPort;
-        this.context = context;
-    }
-
-    public boolean isServerStopped(){
-        return isServerStopped;
-    }
-
-    private boolean isValidPort(int port) {
-        return port >= MIN_PORT && port <= MAX_PORT;
-    }
-
-    public static synchronized ServerInstrumentation getInstance() {
-        if (instance == null) {
-            instance = new ServerInstrumentation(getContext(), getServerPort());
-        }
-        return instance;
-    }
-
-    public void stopServer() {
-        try {
-            if (wakeLock != null) {
-                try {
-                    wakeLock.release();
-                }catch(Exception e){/* ignore */}
-                wakeLock = null;
-            }
-            stopServerThread();
-
-        } finally {
-            instance = null;
-        }
-    }
-
-
-    public void startServer() throws SessionRemovedException {
-        if (serverThread != null && serverThread.isAlive()) {
-            return;
-        }
-
-        if(serverThread == null && isServerStopped){
-            throw new SessionRemovedException("Delete Session has been invoked");
-        }
-
-        if (serverThread != null) {
-            Logger.error("Stopping UiAutomator2 io.appium.uiautomator2.http io.appium.uiautomator2.server");
-            stopServer();
-        }
-
-        serverThread = new HttpdThread(this.serverPort);
-        serverThread.start();
-        //client to wait for io.appium.uiautomator2.server to up
-        Logger.info("io.appium.uiautomator2.server started:");
-    }
-
-    private void stopServerThread()  {
-        if (serverThread == null) {
-            return;
-        }
-        if (!serverThread.isAlive()) {
-            serverThread = null;
-            return;
-        }
-
-        Logger.info("Stopping uiautomator2 io.appium.uiautomator2.http io.appium.uiautomator2.server");
-        serverThread.stopLooping();
-        serverThread.interrupt();
-        try {
-            serverThread.join();
-        } catch (InterruptedException ignored) {
-        }
-        serverThread = null;
-        isServerStopped = true;
     }
 
     private class HttpdThread extends Thread {

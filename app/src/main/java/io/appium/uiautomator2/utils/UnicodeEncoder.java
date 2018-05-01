@@ -27,7 +27,7 @@ public class UnicodeEncoder {
     public static String encode(final String text) {
         byte[] encoded = text.getBytes(M_UTF7);
         String ret = new String(encoded, ASCII);
-        if (ret.charAt(ret.length()-1) != text.charAt(text.length()-1) && !ret.endsWith("-")) {
+        if (ret.charAt(ret.length() - 1) != text.charAt(text.length() - 1) && !ret.endsWith("-")) {
             // in some cases there is a problem and the closing tag is not added
             // to the encoded text (for instance, with `ü`)
             //

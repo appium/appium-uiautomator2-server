@@ -31,8 +31,8 @@ import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 public class UiAutomatorParser {
 
     private static final String STATEMENT_DELIMITER = ";";
-    private String text;
     private final List<UiSelector> selectors = new ArrayList<>();
+    private String text;
 
     public List<UiSelector> parse(String textToParse) throws UiSelectorSyntaxException,
             UiObjectNotFoundException {

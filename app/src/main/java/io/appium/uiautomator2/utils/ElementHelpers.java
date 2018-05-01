@@ -30,10 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
-import io.appium.uiautomator2.core.AccessibilityNodeInfoHelper;
-import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
-import io.appium.uiautomator2.handler.GetElementAttribute;
+import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
+import io.appium.uiautomator2.core.AccessibilityNodeInfoHelper;
 import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.Session;
@@ -43,13 +42,13 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public abstract class ElementHelpers {
 
-    private static Method findAccessibilityNodeInfo;
     private static final String ATTRIBUTE_PREFIX = "attribute/";
+    private static Method findAccessibilityNodeInfo;
 
     private static AccessibilityNodeInfo elementToNode(Object element) {
         AccessibilityNodeInfo result = null;
         try {
-            result = (AccessibilityNodeInfo) findAccessibilityNodeInfo.invoke((UiObject) element, 5000L);
+            result = (AccessibilityNodeInfo) findAccessibilityNodeInfo.invoke(element, 5000L);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,7 +59,6 @@ public abstract class ElementHelpers {
      * Remove all duplicate elements from the provided list
      *
      * @param elements - elements to remove duplicates from
-     *
      * @return a new list with duplicates removed
      */
     public static List<Object> dedupe(List<Object> elements) {
@@ -86,7 +84,7 @@ public abstract class ElementHelpers {
 
     /**
      * Return the JSONObject which Appium returns for an element
-     *
+     * <p>
      * For example, appium returns elements like [{"ELEMENT":1}, {"ELEMENT":2}]
      */
     public static JSONObject toJSON(AndroidElement el) throws JSONException, UiObjectNotFoundException {
@@ -130,8 +128,8 @@ public abstract class ElementHelpers {
     /**
      * Set text of an element
      *
-     * @param element - target element
-     * @param text - desired text
+     * @param element         - target element
+     * @param text            - desired text
      * @param unicodeKeyboard - true, if text should be encoded to unicode
      */
     public static void setText(final Object element, final String text, final boolean unicodeKeyboard) throws UiObjectNotFoundException {

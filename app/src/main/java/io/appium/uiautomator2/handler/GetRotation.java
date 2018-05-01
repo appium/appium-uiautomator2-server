@@ -31,7 +31,7 @@ public class GetRotation extends SafeRequestHandler {
     private JSONObject getOrientationMap(int orientation) throws JSONException {
         JSONObject orientationMap = new JSONObject().put("x", 0).put("y", 0);
         OrientationEnum orientationEnum = OrientationEnum.fromInteger(orientation);
-        switch (orientationEnum){
+        switch (orientationEnum) {
             case ROTATION_0:
                 orientationMap.put("z", 0);
                 break;

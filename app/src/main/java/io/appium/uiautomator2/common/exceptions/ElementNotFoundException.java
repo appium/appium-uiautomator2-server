@@ -38,11 +38,11 @@ public class ElementNotFoundException extends UiAutomator2Exception {
         super(failMessage(finder));
     }
 
-    private static String failMessage(Finder finder) {
-        return "Could not find any element matching " + finder;
-    }
-
     public ElementNotFoundException(Throwable t) {
         super(t);
+    }
+
+    private static String failMessage(Finder finder) {
+        return "Could not find any element matching " + finder;
     }
 }
