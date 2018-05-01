@@ -128,7 +128,7 @@ public class FindElement extends SafeRequestHandler {
         } catch (InvalidSelectorException e) {
             Logger.error("Invalid selector: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.INVALID_SELECTOR, e);
-        } catch (ElementNotFoundException e) {
+        } catch (ElementNotFoundException | UiObjectNotFoundException e) {
             Logger.error("Element not found: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
         } catch (ClassNotFoundException e) {
