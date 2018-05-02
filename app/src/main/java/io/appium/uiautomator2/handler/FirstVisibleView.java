@@ -1,6 +1,5 @@
 package io.appium.uiautomator2.handler;
 
-import android.support.test.uiautomator.StaleObjectException;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
@@ -34,7 +33,8 @@ public class FirstVisibleView extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
+            JSONException {
         Logger.info("Get first visible element inside provided element");
         String elementId = getElementId(request);
 
@@ -42,57 +42,46 @@ public class FirstVisibleView extends SafeRequestHandler {
         if (element == null) {
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
         }
-        try {
-            KnownElements ke = new KnownElements();
-            Object firstObject = null;
-            if (element.getUiObject() instanceof UiObject) {
-                UiObject uiObject = (UiObject) element.getUiObject();
-                Logger.debug("Container for first visible is a uiobject; looping through children");
-                for (int i = 0; i < uiObject.getChildCount(); i++) {
-                    UiObject object = uiObject.getChild(new UiSelector().index(i));
-                    if (object.exists()) {
-                        firstObject = object;
+        KnownElements ke = new KnownElements();
+        Object firstObject = null;
+        if (element.getUiObject() instanceof UiObject) {
+            UiObject uiObject = (UiObject) element.getUiObject();
+            Logger.debug("Container for first visible is a uiobject; looping through children");
+            for (int i = 0; i < uiObject.getChildCount(); i++) {
+                UiObject object = uiObject.getChild(new UiSelector().index(i));
+                if (object.exists()) {
+                    firstObject = object;
+                    break;
+                }
+            }
+        } else {
+            UiObject2 uiObject = (UiObject2) element.getUiObject();
+            Logger.debug("Container for first visible is a uiobject2; looping through children");
+            List<UiObject2> childObjects = uiObject.getChildren();
+            if (childObjects.isEmpty()) {
+                throw new UiObjectNotFoundException("Could not get children for container object");
+            }
+            for (UiObject2 childObject : childObjects) {
+                try {
+                    if (AccessibilityNodeInfoGetter.fromUiObject(childObject) != null) {
+                        firstObject = childObject;
                         break;
                     }
-                }
-            } else {
-                UiObject2 uiObject = (UiObject2) element.getUiObject();
-                Logger.debug("Container for first visible is a uiobject2; looping through children");
-                List<UiObject2> childObjects = uiObject.getChildren();
-                if (childObjects.isEmpty()) {
-                    throw new UiObjectNotFoundException("Could not get children for container object");
-                }
-                for (UiObject2 childObject : childObjects) {
-                    try {
-                        if (AccessibilityNodeInfoGetter.fromUiObject(childObject) != null) {
-                            firstObject = childObject;
-                            break;
-                        }
-                    } catch (UiAutomator2Exception ignored) {
-                    }
+                } catch (UiAutomator2Exception ignored) {
                 }
             }
-
-            if (firstObject == null) {
-                Logger.error("No visible child was found for element");
-                return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-            }
-
-            String id = UUID.randomUUID().toString();
-            AndroidElement androidElement = getAndroidElement(id, firstObject, null);
-            ke.add(androidElement);
-            JSONObject result = new JSONObject();
-            result.put("ELEMENT", id);
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Element not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-        } catch (StaleObjectException e) {
-            Logger.error("Stale Element Exception: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.STALE_ELEMENT_REFERENCE, e);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
         }
+
+        if (firstObject == null) {
+            Logger.error("No visible child was found for element");
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
+        }
+
+        String id = UUID.randomUUID().toString();
+        AndroidElement androidElement = getAndroidElement(id, firstObject, null);
+        ke.add(androidElement);
+        JSONObject result = new JSONObject();
+        result.put("ELEMENT", id);
+        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
 }

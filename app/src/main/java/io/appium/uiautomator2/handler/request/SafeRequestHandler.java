@@ -1,12 +1,21 @@
 package io.appium.uiautomator2.handler.request;
 
 import android.support.test.uiautomator.StaleObjectException;
+import android.support.test.uiautomator.UiObjectNotFoundException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.MessageFormat;
+
+import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
+import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
+import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
+import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.common.exceptions.NoSuchContextException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
@@ -48,18 +57,41 @@ public abstract class SafeRequestHandler extends BaseRequestHandler {
         return toReturn;
     }
 
-    public abstract AppiumResponse safeHandle(IHttpRequest request);
-
     @Override
     public final AppiumResponse handle(IHttpRequest request) {
         try {
             return safeHandle(request);
+        } catch (InvalidSelectorException e) {
+            Logger.error("Invalid selector: ", e);
+            return new AppiumResponse(getSessionId(request), WDStatus.INVALID_SELECTOR, e);
+        } catch (ElementNotFoundException | UiObjectNotFoundException e) {
+            Logger.error("Element not found: ", e);
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
+        } catch (UiSelectorSyntaxException e) {
+            Logger.error("Unable to parse UiSelector: ", e);
+            return new AppiumResponse(getSessionId(request), WDStatus.INVALID_SELECTOR, e);
+        } catch (CropScreenshotException e) {
+            return new AppiumResponse(getSessionId(request), WDStatus.ELEMENT_NOT_VISIBLE, e);
+        } catch (NoAttributeFoundException e) {
+            Logger.error(MessageFormat.format(
+                    "The requested attribute name '%s' is not supported.", e.getAttributeName()), e);
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, e);
+        } catch (InvalidCoordinatesException e) {
+            Logger.error("The coordinates provided to an interactions operation are invalid. ", e);
+            return new AppiumResponse(getSessionId(request), WDStatus.INVALID_ELEMENT_COORDINATES, e);
         } catch (NoSuchContextException e) {
             //TODO: update error code when w3c spec gets updated
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_WINDOW, new UiAutomator2Exception("Invalid window handle was used: only 'NATIVE_APP' and 'WEBVIEW' are supported."));
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_WINDOW,
+                    new UiAutomator2Exception("Invalid window handle was used: only 'NATIVE_APP' and 'WEBVIEW' are supported."));
         } catch (StaleObjectException e) {
             Logger.error("Stale Element Reference Exception: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.STALE_ELEMENT_REFERENCE, e);
+        } catch (UnsupportedOperationException e) {
+            Logger.error("Unsupported operation: ", e);
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+        } catch (JSONException e) {
+            Logger.error("Exception while reading JSON: ", e);
+            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
         } catch (NoClassDefFoundError e) {
             // This is a potentially interesting class path problem which should be returned to client.
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, e);

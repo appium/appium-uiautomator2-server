@@ -19,7 +19,7 @@ public class GetSystemBars extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.info("Get status bar height of the device");
 
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
@@ -27,13 +27,7 @@ public class GetSystemBars extends SafeRequestHandler {
         int height = getStatusBarHeight(instrumentation);
 
         JSONObject result = new JSONObject();
-        try {
-            result.put("statusBar", height);
-        } catch (JSONException e) {
-            Logger.error("Exception while building JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
-        }
-
+        result.put("statusBar", height);
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
 

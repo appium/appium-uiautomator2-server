@@ -1,5 +1,7 @@
 package io.appium.uiautomator2.handler;
 
+import org.json.JSONException;
+
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -20,23 +22,17 @@ public class UpdateSettings extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
-        try {
-            Map<String, Object> settings = getPayload(request, "settings");
-            Logger.debug("Update settings: " + settings.toString());
-            for (Entry<String, Object> entry : settings.entrySet()) {
-                String settingName = entry.getKey();
-                Object settingValue = entry.getValue();
-                ISetting setting = getSetting(settingName);
-                //noinspection unchecked
-                setting.update(settingValue);
-                Session.capabilities.put(settingName, settingValue);
-            }
-        } catch (Exception e) {
-            Logger.error("error settings " + e.getMessage());
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+        Map<String, Object> settings = getPayload(request, "settings");
+        Logger.debug("Update settings: " + settings.toString());
+        for (Entry<String, Object> entry : settings.entrySet()) {
+            String settingName = entry.getKey();
+            Object settingValue = entry.getValue();
+            ISetting setting = getSetting(settingName);
+            //noinspection unchecked
+            setting.update(settingValue);
+            Session.capabilities.put(settingName, settingValue);
         }
-
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
     }
 

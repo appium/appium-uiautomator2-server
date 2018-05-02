@@ -82,7 +82,7 @@ public class UpdateSettingsTests {
     private IHttpRequest req;
 
     @Before
-    public void setup() throws InstantiationException, IllegalAccessException, JSONException {
+    public void setup() throws JSONException {
         Session.capabilities.remove(SETTING_NAME);
         HashMap<String, Object> payload = new HashMap<>();
         payload.put(SETTING_NAME, SETTING_VALUE);
@@ -155,7 +155,7 @@ public class UpdateSettingsTests {
     }
 
     @Test
-    public void shouldBeAbleToUpdateSetting() {
+    public void shouldBeAbleToUpdateSetting() throws JSONException {
         AppiumResponse response = updateSettings.safeHandle(req);
         verify(mySetting).update(SETTING_VALUE);
         assertEquals(Session.capabilities.get(SETTING_NAME), SETTING_VALUE);
@@ -164,7 +164,7 @@ public class UpdateSettingsTests {
     }
 
     @Test
-    public void shouldReturnResponseWithUnknownErrorStatusIfFailed() {
+    public void shouldReturnResponseWithUnknownErrorStatusIfFailed() throws JSONException {
         doThrow(new UiAutomator2Exception("error")).when(mySetting).update(any());
         AppiumResponse resp = updateSettings.safeHandle(req);
         assertEquals(WDStatus.UNKNOWN_ERROR.code(), resp.getStatus());

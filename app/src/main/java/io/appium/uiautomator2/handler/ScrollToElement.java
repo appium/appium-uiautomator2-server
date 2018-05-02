@@ -1,6 +1,5 @@
 package io.appium.uiautomator2.handler;
 
-import android.support.test.uiautomator.StaleObjectException;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
@@ -25,7 +24,7 @@ public class ScrollToElement extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("Scroll into view command");
         String id = getElementId(request);
         String scrollToId = getElementNextId(request);
@@ -65,19 +64,9 @@ public class ScrollToElement extends SafeRequestHandler {
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, errorMsg);
         }
 
-        try {
-            UiScrollable uiScrollable = new UiScrollable(elementUiObject.getSelector());
-
-            boolean elementIsFound = uiScrollable.scrollIntoView(scrollElementUiObject);
-
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, elementIsFound);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Element not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-        } catch (StaleObjectException e) {
-            Logger.error("Stale Element Exception: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.STALE_ELEMENT_REFERENCE, e);
-        }
+        UiScrollable uiScrollable = new UiScrollable(elementUiObject.getSelector());
+        boolean elementIsFound = uiScrollable.scrollIntoView(scrollElementUiObject);
+        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, elementIsFound);
     }
 
     private class UiScrollable extends android.support.test.uiautomator.UiScrollable {

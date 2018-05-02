@@ -16,11 +16,7 @@ public class CaptureScreenshot extends SafeRequestHandler {
     @Override
     public AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Capture screenshot command");
-        try {
-            final String result = ScreenshotHelper.takeScreenshot();
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
-        } catch (Exception e) {
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        }
+        final String result = ScreenshotHelper.takeScreenshot();
+        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
 }

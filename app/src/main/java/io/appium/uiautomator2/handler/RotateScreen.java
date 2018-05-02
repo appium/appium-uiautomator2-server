@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
+import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -24,10 +25,9 @@ public class RotateScreen extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
-
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+        JSONObject payload = getPayload(request);
         try {
-            JSONObject payload = getPayload(request);
             if (payload.has("orientation")) {
                 String orientation = payload.getString("orientation");
                 return handleRotation(request, orientation);
@@ -36,21 +36,12 @@ public class RotateScreen extends SafeRequestHandler {
                 int y = payload.getInt("y");
                 int z = payload.getInt("z");
                 return handleRotation(request, x, y, z);
-            } else {
-                return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, "Unable to Rotate Device, Unsupported arguments");
             }
-        } catch (RemoteException e) {
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND,
+                    "Unable to Rotate Device, Unsupported arguments");
+        } catch (RemoteException | InterruptedException e) {
             Logger.error("Exception while rotating Screen ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
-        } catch (InterruptedException e) {
-            Logger.error("Exception while rotating Screen ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (InvalidCoordinatesException e) {
-            Logger.error("Invalid rotation arguments ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, "Unable to Rotate Device");
+            throw new UiAutomator2Exception(e);
         }
     }
 

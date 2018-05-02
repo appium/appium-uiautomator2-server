@@ -16,16 +16,12 @@ public class OpenNotification extends SafeRequestHandler {
 
     @Override
     public AppiumResponse safeHandle(IHttpRequest request) {
-        boolean isNotificationOpened;
-        isNotificationOpened = Device.getUiDevice().openNotification();
-
-        if (isNotificationOpened) {
+        if (Device.getUiDevice().openNotification()) {
             Logger.info("Opened Notification");
             return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
-        } else {
-            Logger.info("Unable to Open Notification");
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Device failed to open notifications.");
         }
+        Logger.info("Unable to Open Notification");
+        return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Device failed to open notifications.");
     }
 
 }

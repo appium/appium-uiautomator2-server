@@ -118,7 +118,7 @@ public class W3CActions extends SafeRequestHandler {
      * @return The standard {@link AppiumResponse} instance with return value or error code inside.
      */
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         try {
             final JSONArray actions = ActionsHelpers.preprocessActions(
                     (JSONArray) getPayload(request).get("actions")
@@ -130,12 +130,9 @@ public class W3CActions extends SafeRequestHandler {
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
                     "Unable to perform W3C actions. Check the logcat output " +
                             "for possible error reports and make sure your input actions chain is valid.");
-        } catch (JSONException | ActionsParseException e) {
+        } catch (ActionsParseException e) {
             Logger.error("Exception while reading JSON: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
-        } catch (Exception e) {
-            Logger.error("Exception while performing W3C action: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
         }
     }
 

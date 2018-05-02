@@ -50,7 +50,7 @@ public class GetRect extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         Logger.info("Get Rect of element command");
         String id = getElementId(request);
         final JSONObject result;
@@ -58,16 +58,7 @@ public class GetRect extends SafeRequestHandler {
         if (element == null) {
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
         }
-        try {
-            result = getElementRectJSON(element);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Element not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            Logger.error(WDStatus.JSON_DECODER_ERROR, e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
-        }
+        result = getElementRectJSON(element);
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
 }

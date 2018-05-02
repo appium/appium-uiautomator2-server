@@ -243,7 +243,7 @@ public class GetElementAttribute extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("get attribute of element command");
         String id = getElementId(request);
         String attributeName = getNameAttribute(request);
@@ -254,23 +254,10 @@ public class GetElementAttribute extends SafeRequestHandler {
         try {
             String attribute = getElementAttributeValue(element, attributeName);
             return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, attribute);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error(MessageFormat.format("Element not found while trying to get attribute '{0}'", attributeName), e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR);
-        } catch (NoAttributeFoundException e) {
-            Logger.error(MessageFormat.format("Requested attribute {0} not supported.", attributeName), e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, e);
-        } catch (StaleObjectException e) {
-            Logger.error("Stale Element Exception: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.STALE_ELEMENT_REFERENCE, e);
-        } catch (UiAutomator2Exception e) {
-            Logger.error(MessageFormat.format("Unable to retrieve attribute {0}", attributeName), e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
         } catch (ReflectiveOperationException e) {
             Logger.error("Can not access to method or field: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
         }
-
     }
 
     private static class ContentSize {

@@ -14,7 +14,6 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
@@ -95,55 +94,37 @@ public class FindElement extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
-        try {
-            Logger.info("Find element command");
-            KnownElements ke = new KnownElements();
-            final JSONObject payload = getPayload(request);
-            final String method = payload.getString("strategy");
-            final String selector = payload.getString("selector");
-            final String contextId = payload.getString("context");
-            Logger.info(String.format("find element command using '%s' with selector '%s'.", method, selector));
-            final By by = new NativeAndroidBySelector().pickFrom(method, selector);
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
+            UiObjectNotFoundException {
+        Logger.info("Find element command");
+        KnownElements ke = new KnownElements();
+        final JSONObject payload = getPayload(request);
+        final String method = payload.getString("strategy");
+        final String selector = payload.getString("selector");
+        final String contextId = payload.getString("context");
+        Logger.info(String.format("find element command using '%s' with selector '%s'.", method, selector));
+        final By by = new NativeAndroidBySelector().pickFrom(method, selector);
 
-            Device.waitForIdle();
-            Object element;
+        Device.waitForIdle();
+        Object element;
+        try {
             if (contextId.length() > 0) {
                 element = this.findElement(by, contextId);
             } else {
                 element = this.findElement(by);
             }
-            if (element == null) {
-                return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-            } else {
-                String id = UUID.randomUUID().toString();
-                AndroidElement androidElement = getAndroidElement(id, element, by);
-                ke.add(androidElement);
-                JSONObject result = ElementHelpers.toJSON(androidElement);
-                return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
-            }
-        } catch (UnsupportedOperationException e) {
-            Logger.error("Unsupported operation: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (InvalidSelectorException e) {
-            Logger.error("Invalid selector: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.INVALID_SELECTOR, e);
-        } catch (ElementNotFoundException | UiObjectNotFoundException e) {
-            Logger.error("Element not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
         } catch (ClassNotFoundException e) {
-            Logger.error("Class not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
-        } catch (UiSelectorSyntaxException e) {
-            Logger.error("Unable to parse UiSelector: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, e);
-        } catch (Exception e) {
-            Logger.error("Exception while finding element: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+            throw new UiAutomator2Exception(e);
         }
+        if (element == null) {
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
+        }
+
+        String id = UUID.randomUUID().toString();
+        AndroidElement androidElement = getAndroidElement(id, element, by);
+        ke.add(androidElement);
+        JSONObject result = ElementHelpers.toJSON(androidElement);
+        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
 
     private Object findElement(By by) throws ClassNotFoundException, UiAutomator2Exception,

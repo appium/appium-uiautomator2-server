@@ -23,15 +23,9 @@ public class GetSettings extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.debug("Get settings:");
-
-        try {
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, getPayload());
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
-        }
+        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, getPayload());
     }
 
     @VisibleForTesting

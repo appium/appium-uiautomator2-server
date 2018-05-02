@@ -20,14 +20,8 @@ public class GetDataDir extends SafeRequestHandler {
 
     @Override
     public AppiumResponse safeHandle(IHttpRequest request) {
-
-        try {
-            dataDirectory = Environment.getDataDirectory();
-            Logger.info("data directory at " + dataDirectory);
-        } catch (Exception e) {
-            Logger.error("Exception while accessing data directory" + e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        }
+        dataDirectory = Environment.getDataDirectory();
+        Logger.info("data directory at " + dataDirectory);
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, dataDirectory);
     }
 }

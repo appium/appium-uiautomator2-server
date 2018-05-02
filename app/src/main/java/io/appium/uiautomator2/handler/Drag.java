@@ -24,21 +24,14 @@ public class Drag extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         // DragArguments is created on each execute which prevents leaking state
         // across executions.
-        final DragArguments dragArgs;
-        try {
-            dragArgs = new DragArguments(request);
-            if (getPayload(request).has("elementId")) {
-                return dragElement(dragArgs, request);
-            } else {
-                return drag(dragArgs, request);
-            }
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+        final DragArguments dragArgs = new DragArguments(request);
+        if (getPayload(request).has("elementId")) {
+            return dragElement(dragArgs, request);
         }
+        return drag(dragArgs, request);
     }
 
     private AppiumResponse drag(final DragArguments dragArgs, final IHttpRequest request) {

@@ -28,7 +28,6 @@ import io.appium.uiautomator2.model.By.ById;
 import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.model.XPathFinder;
 import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
@@ -65,19 +64,20 @@ public class FindElements extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
+            UiObjectNotFoundException {
         JSONArray result = new JSONArray();
+        Logger.info("Find elements command");
+        KnownElements ke = new KnownElements();
+        JSONObject payload = getPayload(request);
+        String method = payload.getString("strategy");
+        String selector = payload.getString("selector");
+        final String contextId = payload.getString("context");
+        Logger.info(String.format("find element command using '%s' with selector '%s'.", method, selector));
+        By by = new NativeAndroidBySelector().pickFrom(method, selector);
+        Device.waitForIdle();
+        List<Object> elements;
         try {
-            Logger.info("Find elements command");
-            KnownElements ke = new KnownElements();
-            JSONObject payload = getPayload(request);
-            String method = payload.getString("strategy");
-            String selector = payload.getString("selector");
-            final String contextId = payload.getString("context");
-            Logger.info(String.format("find element command using '%s' with selector '%s'.", method, selector));
-            By by = new NativeAndroidBySelector().pickFrom(method, selector);
-            Device.waitForIdle();
-            List<Object> elements;
             if (contextId.length() > 0) {
                 elements = this.findElements(by, contextId);
             } else {
@@ -98,27 +98,8 @@ public class FindElements extends SafeRequestHandler {
                https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#sessionsessionidelements
               */
             return new AppiumResponse(getSessionId(request), result);
-        } catch (UnsupportedOperationException e) {
-            Logger.error("Unsupported operation: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (InvalidSelectorException e) {
-            Logger.error("Invalid selector: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.INVALID_SELECTOR, e);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
         } catch (ClassNotFoundException e) {
-            Logger.error("Class not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (UiSelectorSyntaxException e) {
-            Logger.error("Unable to parse UiSelector: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, e);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Element not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-        } catch (UiAutomator2Exception e) {
-            Logger.error("Exception while finding element: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+            throw new UiAutomator2Exception(e);
         }
     }
 

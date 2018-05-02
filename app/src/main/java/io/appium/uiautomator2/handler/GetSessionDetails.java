@@ -10,7 +10,6 @@ import io.appium.uiautomator2.model.AccessibilityScrollData;
 import io.appium.uiautomator2.model.AppiumUiAutomatorDriver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.server.WDStatus;
-import io.appium.uiautomator2.utils.Logger;
 
 public class GetSessionDetails extends SafeRequestHandler {
 
@@ -21,21 +20,15 @@ public class GetSessionDetails extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         session = AppiumUiAutomatorDriver.getInstance().getSession();
-        try {
-            JSONObject result = new JSONObject();
-            AccessibilityScrollData scrollData = session.getLastScrollData();
-            JSONObject lastScrollData = null;
-            if (scrollData != null) {
-                lastScrollData = new JSONObject(scrollData.getAsMap());
-            }
-            result.put("lastScrollData", lastScrollData);
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            Logger.error(WDStatus.JSON_DECODER_ERROR, e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
+        JSONObject result = new JSONObject();
+        AccessibilityScrollData scrollData = session.getLastScrollData();
+        JSONObject lastScrollData = null;
+        if (scrollData != null) {
+            lastScrollData = new JSONObject(scrollData.getAsMap());
         }
+        result.put("lastScrollData", lastScrollData);
+        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
 }

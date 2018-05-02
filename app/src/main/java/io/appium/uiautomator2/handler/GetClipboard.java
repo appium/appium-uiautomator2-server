@@ -20,6 +20,7 @@ import android.app.Instrumentation;
 import android.support.test.InstrumentationRegistry;
 import android.util.Base64;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
@@ -44,7 +45,7 @@ public class GetClipboard extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.info("Get Clipboard command");
         ClipDataType contentType = ClipDataType.PLAINTEXT;
         try {
@@ -61,8 +62,6 @@ public class GetClipboard extends SafeRequestHandler {
                     String.format("Only '%s' content types are supported. '%s' is given instead",
                             ClipDataType.supportedDataTypes(),
                             contentType));
-        } catch (Exception e) {
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
         }
     }
 
