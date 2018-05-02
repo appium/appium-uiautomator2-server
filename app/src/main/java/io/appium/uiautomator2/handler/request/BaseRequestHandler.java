@@ -69,7 +69,7 @@ public abstract class BaseRequestHandler {
 
     public abstract AppiumResponse handle(IHttpRequest request);
 
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
             UiObjectNotFoundException {
         return handle(request);
     }

@@ -18,7 +18,7 @@ public class NewSession extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Session.capabilities = getPayload(request, "desiredCapabilities");
         String sessionID = AppiumUiAutomatorDriver.getInstance().initializeSession();
         Logger.info("Session Created with SessionID:" + sessionID);

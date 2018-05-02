@@ -19,7 +19,7 @@ public class GetElementScreenshot extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("Capture screenshot of an element command");
         String id = getElementId(request);
         AndroidElement element = KnownElements.getElementFromCache(id);

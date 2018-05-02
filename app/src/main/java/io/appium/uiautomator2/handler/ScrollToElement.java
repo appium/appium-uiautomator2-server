@@ -24,7 +24,7 @@ public class ScrollToElement extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("Scroll into view command");
         String id = getElementId(request);
         String scrollToId = getElementNextId(request);

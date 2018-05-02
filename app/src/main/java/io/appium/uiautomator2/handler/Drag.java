@@ -24,7 +24,7 @@ public class Drag extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         // DragArguments is created on each execute which prevents leaking state
         // across executions.
         final DragArguments dragArgs = new DragArguments(request);

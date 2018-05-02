@@ -22,7 +22,7 @@ public class UpdateSettings extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Map<String, Object> settings = getPayload(request, "settings");
         Logger.debug("Update settings: " + settings.toString());
         for (Entry<String, Object> entry : settings.entrySet()) {

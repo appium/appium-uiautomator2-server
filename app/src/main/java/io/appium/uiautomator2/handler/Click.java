@@ -25,7 +25,7 @@ public class Click extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
             UiObjectNotFoundException {
         JSONObject payload = getPayload(request);
         if (payload.has(ELEMENT_ID_KEY_NAME)) {

@@ -31,7 +31,7 @@ public class SendKeysToElement extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
             UiObjectNotFoundException {
         Logger.info("send keys to element command");
         JSONObject payload = getPayload(request);

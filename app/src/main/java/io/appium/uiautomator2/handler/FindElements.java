@@ -64,7 +64,7 @@ public class FindElements extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
             UiObjectNotFoundException {
         JSONArray result = new JSONArray();
         Logger.info("Find elements command");

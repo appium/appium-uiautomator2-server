@@ -19,7 +19,7 @@ public class MultiPointerGesture extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         final PointerCoords[][] pcs = parsePointerCoords(request);
 
         Boolean rt = UiAutomatorBridge.getInstance().getInteractionController().performMultiPointerGesture(pcs);

@@ -37,7 +37,7 @@ public class GetBatteryInfo extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.info("Get Battery Info command");
         final JSONObject response = new JSONObject();
         final BatteryHelper batteryHelper = new BatteryHelper(mInstrumentation

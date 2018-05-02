@@ -40,7 +40,7 @@ public class GetSize extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
             JSONException {
         Logger.info("Get Size of element command");
         String id = getElementId(request);

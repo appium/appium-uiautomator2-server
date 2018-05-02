@@ -22,7 +22,7 @@ public class Clear extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
             UiObjectNotFoundException {
         Logger.info("Clear element command");
         JSONObject payload = getPayload(request);

@@ -24,7 +24,7 @@ public class Flick extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
             JSONException {
         Logger.info("Get Text of element command");
         Point start = new Point(0.5, 0.5);

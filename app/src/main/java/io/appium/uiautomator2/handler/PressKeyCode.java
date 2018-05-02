@@ -12,19 +12,17 @@ import io.appium.uiautomator2.utils.Logger;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 
 public class PressKeyCode extends SafeRequestHandler {
-    public Integer keyCode;
-    public Integer metaState;
-
     public PressKeyCode(String mappedUri) {
         super(mappedUri);
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         try {
             Logger.info("Calling PressKeyCode... ");
             JSONObject payload = getPayload(request);
             Object kc = payload.get("keycode");
+            Integer keyCode;
             if (kc instanceof Integer) {
                 keyCode = (Integer) kc;
             } else if (kc instanceof String) {
@@ -32,6 +30,7 @@ public class PressKeyCode extends SafeRequestHandler {
             } else {
                 return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Keycode of type " + kc.getClass() + "not supported.");
             }
+            Integer metaState;
             if (payload.has("metastate") && payload.get("metastate") != JSONObject.NULL) {
                 metaState = (Integer) payload.get("metastate");
                 getUiDevice().pressKeyCode(keyCode, metaState);

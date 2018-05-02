@@ -17,7 +17,7 @@ public class GetText extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("Get Text of element command");
         String id = getElementId(request);
         String text;

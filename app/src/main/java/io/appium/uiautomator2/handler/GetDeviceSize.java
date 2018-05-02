@@ -37,7 +37,7 @@ public class GetDeviceSize extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.info("Get window size of the device");
         // only makes sense on a device
         final JSONObject res = new JSONObject();

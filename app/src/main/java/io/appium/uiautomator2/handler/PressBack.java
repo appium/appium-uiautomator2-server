@@ -14,7 +14,7 @@ public class PressBack extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         back();
         // Press back returns false even when back was successfully pressed.
         // Always return true.

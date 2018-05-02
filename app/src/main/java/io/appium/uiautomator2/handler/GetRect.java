@@ -50,7 +50,7 @@ public class GetRect extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         Logger.info("Get Rect of element command");
         String id = getElementId(request);
         final JSONObject result;

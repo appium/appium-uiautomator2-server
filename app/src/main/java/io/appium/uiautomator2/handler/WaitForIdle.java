@@ -16,7 +16,7 @@ public class WaitForIdle extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Integer timeout = 1000;
         JSONObject payload = getPayload(request);
         if (payload.has("timeout")) {

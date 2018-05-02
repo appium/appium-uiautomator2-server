@@ -243,7 +243,7 @@ public class GetElementAttribute extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("get attribute of element command");
         String id = getElementId(request);
         String attributeName = getNameAttribute(request);

@@ -25,7 +25,7 @@ public class ScrollTo extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
             UiObjectNotFoundException {
         String json = getPayload(request).toString();
         String selector = "$.params.selector", uiSelectorString, scrollToString = "";

@@ -118,7 +118,7 @@ public class W3CActions extends SafeRequestHandler {
      * @return The standard {@link AppiumResponse} instance with return value or error code inside.
      */
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         try {
             final JSONArray actions = ActionsHelpers.preprocessActions(
                     (JSONArray) getPayload(request).get("actions")

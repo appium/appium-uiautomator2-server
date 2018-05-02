@@ -20,7 +20,7 @@ public class GetSessionDetails extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         session = AppiumUiAutomatorDriver.getInstance().getSession();
         JSONObject result = new JSONObject();
         AccessibilityScrollData scrollData = session.getLastScrollData();

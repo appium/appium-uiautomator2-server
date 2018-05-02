@@ -33,7 +33,7 @@ public class FirstVisibleView extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
             JSONException {
         Logger.info("Get first visible element inside provided element");
         String elementId = getElementId(request);

@@ -45,7 +45,7 @@ public class SetClipboard extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.info("Set Clipboard command");
         final String content;
         ClipDataType contentType = ClipDataType.PLAINTEXT;

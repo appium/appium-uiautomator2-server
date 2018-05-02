@@ -26,7 +26,7 @@ public class Swipe extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
             JSONException {
         final Point absStartPos, absEndPos;
         final boolean isSwipePerformed;

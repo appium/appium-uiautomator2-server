@@ -11,7 +11,7 @@ public class Status extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         return new AppiumResponse("SESSIONID", "Status Invoked");
     }
 }

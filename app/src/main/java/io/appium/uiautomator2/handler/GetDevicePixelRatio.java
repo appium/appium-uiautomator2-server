@@ -26,13 +26,10 @@ public class GetDevicePixelRatio extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Get device pixel ratio");
-
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-
         Float ratio = getDeviceScaleRatio(instrumentation);
-
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, ratio);
     }
 }

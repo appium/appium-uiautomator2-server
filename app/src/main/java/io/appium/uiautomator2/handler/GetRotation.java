@@ -18,7 +18,7 @@ public class GetRotation extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
        int rotation = Device.getUiDevice().getDisplayRotation();
        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, getOrientationMap(rotation));
     }

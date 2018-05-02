@@ -19,7 +19,7 @@ public class GetSystemBars extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.info("Get status bar height of the device");
 
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();

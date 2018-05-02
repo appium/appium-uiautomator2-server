@@ -22,7 +22,7 @@ public class LongPressKeyCode extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         InteractionController interactionController = UiAutomatorBridge.getInstance()
                 .getInteractionController();
 

@@ -21,7 +21,7 @@ public class AppStrings extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         String msg;
         final String filePath = "/data/local/tmp/strings.json";
         final File jsonFile = new File(filePath);
