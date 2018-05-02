@@ -31,12 +31,15 @@ public class RotateScreen extends SafeRequestHandler {
             if (payload.has("orientation")) {
                 String orientation = payload.getString("orientation");
                 return handleRotation(request, orientation);
-            } else if (payload.has("x") && payload.has("y") && payload.has("z")) {
+            }
+
+            if (payload.has("x") && payload.has("y") && payload.has("z")) {
                 int x = payload.getInt("x");
                 int y = payload.getInt("y");
                 int z = payload.getInt("z");
                 return handleRotation(request, x, y, z);
             }
+
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND,
                     "Unable to Rotate Device, Unsupported arguments");
         } catch (RemoteException | InterruptedException e) {

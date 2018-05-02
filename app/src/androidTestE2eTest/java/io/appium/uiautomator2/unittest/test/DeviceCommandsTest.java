@@ -226,7 +226,7 @@ public class DeviceCommandsTest extends BaseTest {
         rotateMap = new JSONObject().put("x", 0).put("y", 0)
                 .put("z", 10);
         response = setRotation(rotateMap);
-        assertEquals(WDStatus.UNKNOWN_COMMAND.code(), response.getStatus());
+        assertEquals(WDStatus.INVALID_ELEMENT_COORDINATES.code(), response.getStatus());
     }
 
     /**
