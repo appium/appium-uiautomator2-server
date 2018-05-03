@@ -96,9 +96,13 @@ public class TestUtils {
         final long start = elapsedRealtime();
         Response response;
         do {
-            response = getName(elementId);
-            if (!response.isSuccessful()) {
-                return response;
+            try {
+                response = getName(elementId);
+                if (!response.isSuccessful()) {
+                    return response;
+                }
+            } catch (Exception e) {
+                // ignore stale reference, etc. errors
             }
             waitForMillis(DEFAULT_POLLING_INTERVAL);
         } while (elapsedRealtime() - start < Config.EXPLICIT_TIMEOUT);

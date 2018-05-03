@@ -25,16 +25,19 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import io.appium.uiautomator2.handler.AcceptAlert;
 import io.appium.uiautomator2.handler.AppStrings;
 import io.appium.uiautomator2.handler.CaptureScreenshot;
 import io.appium.uiautomator2.handler.Clear;
 import io.appium.uiautomator2.handler.Click;
 import io.appium.uiautomator2.handler.DeleteSession;
+import io.appium.uiautomator2.handler.DismissAlert;
 import io.appium.uiautomator2.handler.Drag;
 import io.appium.uiautomator2.handler.FindElement;
 import io.appium.uiautomator2.handler.FindElements;
 import io.appium.uiautomator2.handler.FirstVisibleView;
 import io.appium.uiautomator2.handler.Flick;
+import io.appium.uiautomator2.handler.GetAlertText;
 import io.appium.uiautomator2.handler.GetBatteryInfo;
 import io.appium.uiautomator2.handler.GetClipboard;
 import io.appium.uiautomator2.handler.GetDevicePixelRatio;
@@ -137,6 +140,8 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new ScrollToElement("/wd/hub/session/:sessionId/appium/element/:id/scroll_to/:elementId"));
         register(postHandler, new GetClipboard("/wd/hub/session/:sessionId/appium/device/get_clipboard"));
         register(postHandler, new SetClipboard("/wd/hub/session/:sessionId/appium/device/set_clipboard"));
+        register(postHandler, new AcceptAlert("/wd/hub/session/:sessionId/alert/accept"));
+        register(postHandler, new DismissAlert("/wd/hub/session/:sessionId/alert/dismiss"));
     }
 
     private void registerGetHandler() {
@@ -159,6 +164,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetSettings("/wd/hub/session/:sessionId/appium/settings"));
         register(getHandler, new GetDevicePixelRatio("/wd/hub/session/:sessionId/appium/device/pixel_ratio"));
         register(getHandler, new FirstVisibleView("/wd/hub/session/:sessionId/appium/element/:id/first_visible"));
+        register(getHandler, new GetAlertText("/wd/hub/session/:sessionId/alert/text"));
     }
 
     protected void register(Map<String, BaseRequestHandler> registerOn, BaseRequestHandler handler) {

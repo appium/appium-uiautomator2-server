@@ -11,7 +11,9 @@ import java.text.MessageFormat;
 import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
+import io.appium.uiautomator2.common.exceptions.NoAlertOpenException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.common.exceptions.NoSuchContextException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -72,6 +74,10 @@ public abstract class SafeRequestHandler extends BaseRequestHandler {
             return new AppiumResponse(getSessionId(request), WDStatus.INVALID_SELECTOR, e);
         } catch (CropScreenshotException e) {
             return new AppiumResponse(getSessionId(request), WDStatus.ELEMENT_NOT_VISIBLE, e);
+        } catch (InvalidElementStateException e) {
+            return new AppiumResponse(getSessionId(request), WDStatus.INVALID_ELEMENT_STATE, e);
+        } catch (NoAlertOpenException e) {
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_ALERT_OPEN_ERROR, e);
         } catch (NoAttributeFoundException e) {
             Logger.error(MessageFormat.format(
                     "The requested attribute name '%s' is not supported.", e.getAttributeName()), e);

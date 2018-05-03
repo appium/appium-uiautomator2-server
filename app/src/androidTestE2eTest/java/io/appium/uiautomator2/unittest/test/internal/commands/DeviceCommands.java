@@ -15,6 +15,8 @@
  */
 package io.appium.uiautomator2.unittest.test.internal.commands;
 
+import android.support.annotation.Nullable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -211,5 +213,44 @@ public class DeviceCommands {
      */
     public static Response screenshot() {
         return Client.get("/screenshot");
+    }
+
+    /**
+     * Accepts an on-screen alert
+     *
+     * @param buttonLabel optional button label to click on
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response acceptAlert(@Nullable String buttonLabel) throws JSONException {
+        final JSONObject payload = new JSONObject();
+        if (buttonLabel != null) {
+            payload.put("buttonLabel", buttonLabel);
+        }
+        return Client.post("/alert/accept", payload);
+    }
+
+    /**
+     * Dismisses an on-screen alert
+     *
+     * @param buttonLabel optional button label to click on
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response dismissAlert(@Nullable String buttonLabel) throws JSONException {
+        final JSONObject payload = new JSONObject();
+        if (buttonLabel != null) {
+            payload.put("buttonLabel", buttonLabel);
+        }
+        return Client.post("/alert/dismiss", payload);
+    }
+
+    /**
+     * Gets the text content of an on-screen alert
+     *
+     * @return Response from UiAutomator2 server
+     */
+    public static Response getAlertText() {
+        return Client.get("/alert/text");
     }
 }
