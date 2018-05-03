@@ -60,9 +60,11 @@ public class AlertHelpers {
         Device.waitForIdle();
 
         if (!getUiDevice().findObjects(By.res(regularAlertTitleResIdPattern)).isEmpty()) {
+            Log.d(TAG, "Regular alert has been detected");
             return AlertType.REGULAR;
         }
         if (!getUiDevice().findObjects(By.res(permissionAlertTitleResIdPattern)).isEmpty()) {
+            Log.d(TAG, "Permission alert has been detected");
             return AlertType.PERMISSION;
         }
 
@@ -88,27 +90,33 @@ public class AlertHelpers {
             alertButtonsMapping.put(resId, button);
             buttonIndexes.add(Integer.parseInt(resId.substring(regularAlertButtonResIdPrefix.length())));
         }
+        if (alertButtonsMapping.isEmpty()) {
+            return null;
+        }
+        Log.d(TAG, String.format("Found %d buttons on the alert", alertButtonsMapping.size()));
 
         if (buttonLabel == null) {
-            final int minButtonId = Collections.min(buttonIndexes);
+            final int minIdx = Collections.min(buttonIndexes);
             return action == AlertAction.ACCEPT
-                    ? alertButtonsMapping.get(buttonResIdByIdx(minButtonId))
-                    : alertButtonsMapping.get(buttonResIdByIdx(alertButtonsMapping.size() > 1
-                    ? minButtonId + 1
-                    : minButtonId));
+                    ? alertButtonsMapping.get(buttonResIdByIdx(minIdx))
+                    : alertButtonsMapping.get(buttonResIdByIdx(alertButtonsMapping.size() > 1 ? minIdx + 1 : minIdx));
         }
         return filterButtonByLabel(alertButtonsMapping.values(), buttonLabel);
     }
 
     @Nullable
     private static UiObject2 getPermissionAlertButton(AlertAction action, @Nullable String buttonLabel) {
-        final List<UiObject2> buttons = getUiDevice()
-                .findObjects(By.res(permissionAlertButtonResIdPattern));
+        final List<UiObject2> buttons = getUiDevice().findObjects(By.res(permissionAlertButtonResIdPattern));
+        if (buttons.isEmpty()) {
+            return null;
+        }
+        Log.d(TAG, String.format("Found %d buttons on the alert", buttons.size()));
+
         if (buttonLabel == null) {
             if (action == AlertAction.ACCEPT) {
                 return buttons.size() > 1 ? buttons.get(1) : buttons.get(0);
             }
-            if (action == AlertAction.DISMISS && buttons.size() > 0) {
+            if (action == AlertAction.DISMISS) {
                 return buttons.get(0);
             }
         } else {
@@ -140,7 +148,7 @@ public class AlertHelpers {
         }
 
         final String actualLabel = dstButton.getText();
-        Logger.info(String.format("Clicking dialog button '%s' in order to %s it",
+        Logger.info(String.format("Clicking alert button '%s' in order to %s it",
                 actualLabel, action.name().toLowerCase()));
         dstButton.click();
         return actualLabel;
@@ -156,12 +164,13 @@ public class AlertHelpers {
 
         final List<UiObject2> alertRoots = getUiDevice().findObjects(By.res(alertContentResId));
         if (alertRoots.isEmpty()) {
+            Log.w(TAG, "Alert content container is missing");
             throw new NoAlertOpenException();
         }
 
         final List<String> result = new ArrayList<>();
         final List<UiObject2> alertElements = alertRoots.get(0).findObjects(By.res(alertElementsResIdPattern));
-        Log.d(TAG, String.format("Got %d alert elements", alertElements.size()));
+        Log.d(TAG, String.format("Detected %d alert elements", alertElements.size()));
         final String alertButtonsResIdPattern = alertType == AlertType.REGULAR
                 ? regularAlertButtonResIdPattern.toString()
                 : permissionAlertButtonResIdPattern.toString();
