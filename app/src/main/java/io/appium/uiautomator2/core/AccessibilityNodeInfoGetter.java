@@ -1,6 +1,5 @@
 package io.appium.uiautomator2.core;
 
-import android.support.test.uiautomator.Configurator;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -15,8 +14,6 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.method;
  * Static helper class for getting {@link AccessibilityNodeInfo} instances.
  */
 public abstract class AccessibilityNodeInfoGetter {
-
-    private static Configurator configurator = Configurator.getInstance();
     private static long TIME_IN_MS = 10000;
 
     /**

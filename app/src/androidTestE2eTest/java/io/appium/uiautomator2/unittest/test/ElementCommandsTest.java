@@ -85,9 +85,9 @@ public class ElementCommandsTest extends BaseTest {
      */
     @Test
     public void getTextTest() {
-        Response response = findElement(By.id("android:id/text1"));
+        Response response = findElement(By.accessibilityId("App"));
         response = getText(response.getElementId());
-        assertEquals("Access'ibility", response.getValue());
+        assertEquals("App", response.getValue());
     }
 
     /**

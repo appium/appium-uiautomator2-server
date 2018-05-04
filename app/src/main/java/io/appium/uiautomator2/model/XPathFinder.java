@@ -139,7 +139,7 @@ public class XPathFinder implements Finder {
 
     public static UiAutomationElement refreshUiElementTree() {
         return UiAutomationElement.newRootElement(getRootAccessibilityNode(),
-                NotificationListener.getToastMSGs());
+                NotificationListener.getInstance().getToastMessage());
     }
 
     public static UiAutomationElement refreshUiElementTree(AccessibilityNodeInfo nodeInfo) {
