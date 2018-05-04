@@ -70,6 +70,7 @@ before_script:
     fi
 script:
   - |
+    ./gradlew compileServerDebugSources compileServerDebugAndroidTestSources
     if [ "$TEST" == "unit" ]; then
       ./gradlew testServerDebugUnitTest
     else
@@ -83,7 +84,7 @@ after_failure:
     if [ "$TEST" != "unit" ]; then
       echo -e "----UIAUTOMATOR DUMPS----\n"
       adb pull /sdcard/hierarchy .
-      for f in *.xml
+      for f in ./hierarchy/*.xml
       do
         echo -e "Hierarchy dump for $f\n"
         cat "$f"
