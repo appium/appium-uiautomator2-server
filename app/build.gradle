@@ -62,8 +62,8 @@ android {
         exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
     }
     sourceSets {
-        androidTest {
-            java.srcDirs = ['src/androidTestE2eTest/java',
+        main {
+            java.srcDirs = ['src/main/java',
                             'src/androidTestServer/java']
         }
     }

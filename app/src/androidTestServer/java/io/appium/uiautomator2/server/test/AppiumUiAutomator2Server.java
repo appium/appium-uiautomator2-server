@@ -15,7 +15,9 @@ public class AppiumUiAutomator2Server {
     private static ServerInstrumentation serverInstrumentation;
 
     /**
-     * Starts the server on the device
+     * Starts the server on the device.
+     * !!! This class is the main entry point for UIA2 driver package.
+     * !!! Do not rename or move it unless you know what you are doing.
      */
     @Test
     public void startServer() {
