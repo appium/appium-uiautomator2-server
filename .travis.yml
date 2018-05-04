@@ -30,6 +30,7 @@ env:
   matrix:
     - TEST=unit START_EMU=0
     - TEST=AlertCommandsTest ANDROID_EMU_TARGET=android-24
+    - TEST=ActionsCommandsTest ANDROID_EMU_TARGET=android-24
     - TEST=GestureCommandsTest ANDROID_EMU_TARGET=android-24
     - TEST=DeviceCommandsTest ANDROID_EMU_TARGET=android-24
     - TEST=ElementCommandsTest ANDROID_EMU_TARGET=android-24
