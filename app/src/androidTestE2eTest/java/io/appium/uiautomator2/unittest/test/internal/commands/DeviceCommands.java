@@ -17,6 +17,7 @@ package io.appium.uiautomator2.unittest.test.internal.commands;
 
 import android.support.annotation.Nullable;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -252,5 +253,29 @@ public class DeviceCommands {
      */
     public static Response getAlertText() {
         return Client.get("/alert/text");
+    }
+
+    /**
+     * Performs W3C action
+     *
+     * @param actions valid W3C actions list
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response performActions(JSONArray actions) throws JSONException {
+        JSONObject payload = new JSONObject();
+        payload.put("actions", actions);
+        return Client.post("/actions", payload);
+    }
+
+    /**
+     * Retrieves element attribute value
+     *
+     * @param elementId element identifier
+     * @param attrName valid attribute name
+     * @return Response from UiAutomator2 server
+     */
+    public static Response getElementAttribute(String elementId, String attrName){
+        return Client.get(String.format("/element/%s/attribute/%s", elementId, attrName));
     }
 }

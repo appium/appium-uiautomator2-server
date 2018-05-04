@@ -137,7 +137,7 @@ public class W3CActions extends SafeRequestHandler {
     }
 
     private boolean injectEventSync(InputEvent event) {
-        return UiAutomatorBridge.getInstance().getInteractionController().injectEventSync(event);
+        return UiAutomatorBridge.getInstance().injectInputEvent(event, true);
     }
 
     private boolean executeActions(final JSONArray actions) throws JSONException {
