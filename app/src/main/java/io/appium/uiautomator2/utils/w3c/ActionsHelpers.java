@@ -561,7 +561,9 @@ public class ActionsHelpers {
                                 ACTION_ITEM_VALUE_KEY, action, action.getString(ACTION_KEY_ID)));
                     }
                     final KeyInputEventParams evtParams = new KeyInputEventParams();
-                    evtParams.keyCode = value.charAt(0);
+                    final Integer keyCode = ASCIICodeToKeyEventConstantTranslator
+                            .translate(value.codePointAt(0));
+                    evtParams.keyCode = keyCode == null ? value.codePointAt(0) : keyCode;
                     evtParams.keyAction = itemType.equals(ACTION_ITEM_TYPE_KEY_DOWN) ?
                             KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP;
                     evtParams.startDelta = chainEntryPointDelta;

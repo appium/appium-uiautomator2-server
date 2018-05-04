@@ -91,11 +91,11 @@ public class W3CActionsTransformationTests {
 
         assertThat(((KeyInputEventParams) generatedParams.get(1)).keyAction,
                 equalTo(KeyEvent.ACTION_DOWN));
-        assertThat(((KeyInputEventParams) generatedParams.get(1)).keyCode, equalTo(65));
+        assertThat(((KeyInputEventParams) generatedParams.get(1)).keyCode, equalTo(29));
 
         assertThat(((KeyInputEventParams) generatedParams.get(2)).keyAction,
                 equalTo(KeyEvent.ACTION_UP));
-        assertThat(((KeyInputEventParams) generatedParams.get(2)).keyCode, equalTo(65));
+        assertThat(((KeyInputEventParams) generatedParams.get(2)).keyCode, equalTo(29));
 
         assertThat(((KeyInputEventParams) generatedParams.get(3)).keyAction,
                 equalTo(KeyEvent.ACTION_UP));
@@ -122,7 +122,7 @@ public class W3CActionsTransformationTests {
         final KeyInputEventParams downParams = (KeyInputEventParams) paramSet1.get(0);
         assertThat(downParams.startDelta, equalTo(0L));
         assertThat(downParams.keyAction, equalTo(KeyEvent.ACTION_DOWN));
-        assertThat(downParams.keyCode, equalTo(65));
+        assertThat(downParams.keyCode, equalTo(29));
 
 
         assertThat(eventsChain.keyAt(1), equalTo(500L));
@@ -131,7 +131,7 @@ public class W3CActionsTransformationTests {
         final KeyInputEventParams upParams = (KeyInputEventParams) paramSet2.get(0);
         assertThat(upParams.startDelta, equalTo(0L));
         assertThat(upParams.keyAction, equalTo(KeyEvent.ACTION_UP));
-        assertThat(upParams.keyCode, equalTo(65));
+        assertThat(upParams.keyCode, equalTo(29));
     }
 
     @Test

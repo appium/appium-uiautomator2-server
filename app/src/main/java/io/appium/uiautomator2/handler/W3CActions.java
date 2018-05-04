@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.handler;
 
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.LongSparseArray;
 import android.view.InputDevice;
 import android.view.InputEvent;
@@ -29,6 +30,7 @@ import android.view.MotionEvent.PointerProperties;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,6 +56,10 @@ import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.metaKeysToState;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.toolTypeToInputSource;
 
 public class W3CActions extends SafeRequestHandler {
+    private static final String TAG = W3CActions.class.getSimpleName();
+
+    private static final Set<Integer> META_KEY_CODES = getMetaKeyCodes();
+
     private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
             MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
     );
@@ -140,6 +146,21 @@ public class W3CActions extends SafeRequestHandler {
         return UiAutomatorBridge.getInstance().injectInputEvent(event, true);
     }
 
+    private static Set<Integer> getMetaKeyCodes() {
+        final Field[] fields = KeyEvent.class.getFields();
+        final Set<Integer> result = new HashSet<>();
+        for (Field field : fields) {
+            if (field.getName().startsWith("META_") && field.getType() == int.class) {
+                try {
+                    result.add(field.getInt(null));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
+
     private boolean executeActions(final JSONArray actions) throws JSONException {
         final LongSparseArray<List<InputEventParams>> inputEventsMapping = actionsToInputEventsMapping(actions);
         final List<Long> allDeltas = new ArrayList<>();
@@ -160,16 +181,23 @@ public class W3CActions extends SafeRequestHandler {
                 if (eventParam instanceof KeyInputEventParams) {
                     final int keyCode = ((KeyInputEventParams) eventParam).keyCode;
                     final int keyAction = ((KeyInputEventParams) eventParam).keyAction;
-                    if (keyCode > KeyEvent.getMaxKeyCode()) {
+                    if (META_KEY_CODES.contains(keyCode)) {
                         if (keyAction == KeyEvent.ACTION_DOWN) {
                             depressedMetaKeys.add(keyCode);
                         } else {
                             depressedMetaKeys.remove(keyCode);
                         }
+                    } else if (keyCode <= 0) {
+                        depressedMetaKeys.clear();
                     } else {
+                        final int metaState = metaKeysToState(depressedMetaKeys);
                         result &= injectEventSync(new KeyEvent(startTimestamp + eventParam.startDelta,
-                                SystemClock.uptimeMillis(), keyAction, keyCode, metaKeysToState(depressedMetaKeys),
-                                KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0, InputDevice.SOURCE_KEYBOARD));
+                                SystemClock.uptimeMillis(), keyAction, keyCode, 0,
+                                metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
+                                0, KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
+                                InputDevice.SOURCE_KEYBOARD));
+                        Log.d(TAG, String.format("Generated KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
+                                keyAction, keyCode, metaState));
                     }
                 } else if (eventParam instanceof MotionInputEventParams) {
                     final int inputSource = toolTypeToInputSource(((MotionInputEventParams) eventParam).properties.toolType);
@@ -210,6 +238,7 @@ public class W3CActions extends SafeRequestHandler {
                                     action == MotionEvent.ACTION_DOWN ? 1 : upDownBalance, nonHoveringProps, nonHoveringCoords,
                                     metaKeysToState(depressedMetaKeys), motionEventParams.button,
                                     1, 1, 0, 0, inputSource, 0));
+                            Log.d(TAG, String.format("Generated MotionEvent for action '%s'", action));
                         }
                         break;
                         case MotionEvent.ACTION_UP: {
@@ -227,6 +256,7 @@ public class W3CActions extends SafeRequestHandler {
                             if (upDownBalance > 0) {
                                 --upDownBalance;
                             }
+                            Log.d(TAG, String.format("Generated MotionEvent for action '%s'", action));
                         }
                         break;
                         case MotionEvent.ACTION_MOVE: {

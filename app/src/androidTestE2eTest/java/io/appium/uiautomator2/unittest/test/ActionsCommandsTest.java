@@ -29,6 +29,7 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getElementAttribute;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.performActions;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollTo;
+import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -54,6 +55,15 @@ public class ActionsCommandsTest extends BaseTest {
         clickAndWaitForStaleness(response.getElementId());
     }
 
+    private void setupEditView() throws JSONException {
+        Response response = findElement(By.accessibilityId("App"));
+        clickAndWaitForStaleness(response.getElementId());
+        response = findElement(By.accessibilityId("Alert Dialogs"));
+        clickAndWaitForStaleness(response.getElementId());
+        response = findElement(By.accessibilityId("Text Entry dialog"));
+        clickAndWaitForStaleness(response.getElementId());
+    }
+
     @Test
     public void verifyDragAndDropOnAnotherElement() throws JSONException {
         setupDragDropView();
@@ -74,5 +84,28 @@ public class ActionsCommandsTest extends BaseTest {
         Response actionsResponse = performActions(actionsJson);
         assertThat(actionsResponse.getStatus(), equalTo(WDStatus.SUCCESS.code()));
         verifyDragResult("Dropped");
+    }
+
+    @Test
+    public void verifyTypingText() throws JSONException {
+        setupEditView();
+
+        Response edit = findElement(By.id("io.appium.android.apis:id/username_edit"));
+        click(edit.getElementId());
+        final JSONArray actionsJson = new JSONArray("[ {" +
+                "\"type\": \"key\"," +
+                "\"id\": \"keyboard\"," +
+                "\"actions\": [" +
+                "{\"type\": \"keyDown\", \"value\": \"\u00c1\"}," +
+                "{\"type\": \"keyDown\", \"value\": \"h\"}," +
+                "{\"type\": \"keyUp\", \"value\": \"h\"}," +
+                "{\"type\": \"keyUp\", \"value\": \"\u00c1\"}," +
+                "{\"type\": \"keyDown\", \"value\": \"i\"}," +
+                "{\"type\": \"keyUp\", \"value\": \"i\"}]" +
+                "} ]");
+        Response actionsResponse = performActions(actionsJson);
+        assertThat(actionsResponse.getStatus(), equalTo(WDStatus.SUCCESS.code()));
+        Response response = getElementAttribute(edit.getElementId(), "text");
+        assertThat((String) response.getValue(), equalTo("Hi"));
     }
 }
