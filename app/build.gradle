@@ -64,8 +64,7 @@ android {
     sourceSets {
         androidTest {
             java.srcDirs = ['src/androidTestE2eTest/java',
-                            'src/androidTestServer/java',
-                            'src/test/java']
+                            'src/androidTestServer/java']
         }
     }
 }
