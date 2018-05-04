@@ -61,6 +61,13 @@ android {
         exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
         exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
     }
+    sourceSets {
+        androidTest {
+            java.srcDirs = ['src/androidTestE2eTest/java',
+                            'src/androidTestServer/java',
+                            'src/test/java']
+        }
+    }
 }
 
 unMock {
