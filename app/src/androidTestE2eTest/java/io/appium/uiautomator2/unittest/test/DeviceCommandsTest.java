@@ -561,8 +561,7 @@ public class DeviceCommandsTest extends BaseTest {
 
     @Test
     @RootRequired
-    public void shouldShutdownServerOnPowerDisconnect() throws IOException, JSONException,
-            InterruptedException {
+    public void shouldShutdownServerOnPowerDisconnect() throws IOException, JSONException {
         try {
             UiDevice.getInstance(getInstrumentation()).executeShellCommand(
                     "su 0 am broadcast -a android.intent.action.ACTION_POWER_DISCONNECTED " +

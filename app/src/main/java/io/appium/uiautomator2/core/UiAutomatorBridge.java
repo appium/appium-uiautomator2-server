@@ -46,7 +46,6 @@ public class UiAutomatorBridge {
 
     public UiAutomatorBridge() {
         try {
-
             this.uiAutomatorBridge = getField(UiDevice.class, FIELD_UI_AUTOMATOR_BRIDGE, Device.getUiDevice());
         } catch (Error error) {
             Logger.error("ERROR", error);

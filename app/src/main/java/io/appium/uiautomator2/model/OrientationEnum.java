@@ -38,8 +38,10 @@ public enum OrientationEnum {
                 return ROTATION_180;
             case 3:
                 return ROTATION_270;
+            default:
+                throw new IllegalArgumentException(String.format(
+                        "Orientation value '%s' is not supported", x));
         }
-        return null;
     }
 
     public int getValue() {
@@ -56,7 +58,8 @@ public enum OrientationEnum {
                 return "PORTRAIT UPSIDE DOWN";
             case 3:
                 return "LANDSCAPE LEFT";
+            default:
+                return "UNKNOWN(" + this.getValue() + ")";
         }
-        return "UNKNOWN(" + this.getValue() + ")";
     }
 }

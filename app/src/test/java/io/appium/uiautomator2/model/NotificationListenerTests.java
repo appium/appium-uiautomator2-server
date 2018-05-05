@@ -50,15 +50,15 @@ import static org.powermock.api.support.membermodification.MemberMatcher.constru
 public class NotificationListenerTests {
 
     @Mock
-    UiAutomatorBridge uiAutomatorBridge;
+    private UiAutomatorBridge uiAutomatorBridge;
 
     @Mock
-    UiAutomation uiAutomation;
+    private UiAutomation uiAutomation;
 
     @Mock
-    AccessibilityEvent accessibilityEvent;
+    private AccessibilityEvent accessibilityEvent;
 
-    NotificationListener notificationListener;
+    private NotificationListener notificationListener;
 
     @Before
     public void setup() throws Exception {

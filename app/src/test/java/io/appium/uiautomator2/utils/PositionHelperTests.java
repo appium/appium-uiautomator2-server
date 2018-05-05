@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
 public class PositionHelperTests {
 
     @Test
-    public void zeroPointAndOffsets() throws UiObjectNotFoundException, InvalidCoordinatesException {
+    public void zeroPointAndOffsets() throws InvalidCoordinatesException {
         Point zeroPoint = new Point();
         Point zeroOffset = new Point();
 
@@ -29,7 +29,7 @@ public class PositionHelperTests {
     }
 
     @Test
-    public void zeroOnePointAndOneZeroOffsets() throws UiObjectNotFoundException, InvalidCoordinatesException {
+    public void zeroOnePointAndOneZeroOffsets() throws InvalidCoordinatesException {
         Point onePoint = new Point(0, 1);
         Point oneOffset = new Point(1, 0);
 
@@ -44,7 +44,7 @@ public class PositionHelperTests {
     }
 
     @Test
-    public void zeroPointAndOffsetsWithOneRect() throws UiObjectNotFoundException, InvalidCoordinatesException {
+    public void zeroPointAndOffsetsWithOneRect() throws InvalidCoordinatesException {
         Point onePoint = new Point(0, 1);
         Point oneOffset = new Point(1, 0);
 
@@ -59,7 +59,7 @@ public class PositionHelperTests {
     }
 
     @Test
-    public void zeroOnePointAndOneZeroOffsetsWithOneRect() throws UiObjectNotFoundException, InvalidCoordinatesException {
+    public void zeroOnePointAndOneZeroOffsetsWithOneRect() throws InvalidCoordinatesException {
         Point onePoint = new Point(0, 1);
         Point oneOffset = new Point(1, 0);
 
@@ -75,7 +75,7 @@ public class PositionHelperTests {
 
 
     @Test(expected = InvalidCoordinatesException.class)
-    public void onePointOverRect() throws UiObjectNotFoundException, InvalidCoordinatesException {
+    public void onePointOverRect() throws InvalidCoordinatesException {
         Point onePoint = new Point(1, 1);
         Point oneOffset = new Point(1, 1);
 

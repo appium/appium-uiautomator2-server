@@ -5,12 +5,10 @@ import io.appium.uiautomator2.utils.Logger;
 
 
 public class AndroidServer {
-    private final int driverPort;
     private final HttpServer webServer;
 
     public AndroidServer(int port) {
-        driverPort = port;
-        webServer = new HttpServer(driverPort);
+        webServer = new HttpServer(port);
         init();
         Logger.info("AndroidServer created on port " + port);
     }

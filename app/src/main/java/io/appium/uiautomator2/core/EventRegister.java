@@ -16,8 +16,8 @@ import io.appium.uiautomator2.utils.Logger;
 
 public abstract class EventRegister {
 
-    public static int EVENT_COOLDOWN_MS = 750;
-    private static String EVENT_COOLDOWN_CAP = "scrollEventTimeout";
+    public static final int EVENT_COOLDOWN_MS = 750;
+    private static final String EVENT_COOLDOWN_CAP = "scrollEventTimeout";
 
     public static Boolean runAndRegisterScrollEvents(ReturningRunnable<Boolean> runnable, long timeout) {
         // turn off listening to notifications since it interferes with us listening for the scroll
@@ -38,6 +38,7 @@ public abstract class EventRegister {
         try {
             automation.executeAndWaitForEvent(runnable, filter, timeout);
         } catch (TimeoutException ign) {
+            // ignore
         }
 
         // if we have caught any events in our net, snatch the last one
@@ -88,8 +89,8 @@ public abstract class EventRegister {
 
     // https://android.googlesource.com/platform/frameworks/testing/+/master/uiautomator/library/core-src/com/android/uiautomator/core/InteractionController.java#96
     static class EventCollectingPredicate implements UiAutomation.AccessibilityEventFilter {
-        int mMask;
-        List<AccessibilityEvent> mEventsList;
+        private final int mMask;
+        private final List<AccessibilityEvent> mEventsList;
 
         EventCollectingPredicate(int mask, List<AccessibilityEvent> events) {
             mMask = mask;

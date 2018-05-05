@@ -12,16 +12,13 @@ import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.server.WDStatus;
 
 public class GetSessionDetails extends SafeRequestHandler {
-
-    private Session session;
-
     public GetSessionDetails(String mappedUri) {
         super(mappedUri);
     }
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
-        session = AppiumUiAutomatorDriver.getInstance().getSession();
+        Session session = AppiumUiAutomatorDriver.getInstance().getSession();
         JSONObject result = new JSONObject();
         AccessibilityScrollData scrollData = session.getLastScrollData();
         JSONObject lastScrollData = null;

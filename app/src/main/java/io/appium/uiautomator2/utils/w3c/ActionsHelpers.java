@@ -321,6 +321,9 @@ public class ActionsHelpers {
                         return MotionEvent.TOOL_TYPE_STYLUS;
                     case POINTER_TYPE_TOUCH:
                         return MotionEvent.TOOL_TYPE_FINGER;
+                    default:
+                        // use default
+                        break;
                 }
             }
         }
@@ -335,6 +338,9 @@ public class ActionsHelpers {
                 return InputDevice.SOURCE_STYLUS;
             case MotionEvent.TOOL_TYPE_FINGER:
                 return InputDevice.SOURCE_TOUCHSCREEN;
+            default:
+                // use default
+                break;
         }
         return InputDevice.SOURCE_MOUSE;
     }

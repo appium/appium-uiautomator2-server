@@ -42,7 +42,8 @@ import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
-import io.appium.uiautomator2.utils.Preconditions;
+
+import static android.support.test.internal.util.Checks.checkNotNull;
 
 /**
  * Find matching UiElement by XPath.
@@ -53,7 +54,7 @@ public class XPathFinder implements Finder {
     private final String xPathString;
 
     private XPathFinder(String xPathString) {
-        this.xPathString = Preconditions.checkNotNull(xPathString);
+        this.xPathString = checkNotNull(xPathString);
     }
 
     public static NodeInfoList getNodesList(String xpathExpression,
@@ -185,17 +186,17 @@ public class XPathFinder implements Finder {
     /**
      * returns by excluding inner class name.
      */
-    private static String simpleClassName(String name) {
-        name = name.replaceAll("\\$[0-9]+", "\\$");
+    private static String simpleClassName(String clsName) {
+        clsName = clsName.replaceAll("\\$[0-9]+", "\\$");
         // we want the index of the inner class
-        int start = name.lastIndexOf('$');
+        int start = clsName.lastIndexOf('$');
 
         // if this isn't an inner class, just find the start of the
         // top level class name.
         if (start == -1) {
-            return name;
+            return clsName;
         }
-        return name.substring(0, start);
+        return clsName.substring(0, start);
     }
 
     @Override

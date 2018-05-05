@@ -2,7 +2,6 @@ package io.appium.uiautomator2.handler;
 
 import android.graphics.Rect;
 import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.StaleObjectException;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
@@ -14,7 +13,6 @@ import org.json.JSONObject;
 import java.io.InvalidClassException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.MessageFormat;
 import java.util.Arrays;
 
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
@@ -33,7 +31,6 @@ import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.UiObject2Element;
 import io.appium.uiautomator2.server.WDStatus;
-import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -43,11 +40,11 @@ public class GetElementAttribute extends SafeRequestHandler {
     // these constants are magic numbers experimentally determined to minimize flakiness in generating
     // last scroll data used in getting the 'contentSize' attribute.
     // TODO see whether anchoring these to time and screen size is more reliable across devices
-    private static int MINI_SWIPE_STEPS = 10;
-    private static int MINI_SWIPE_PIXELS = 200;
+    private static final int MINI_SWIPE_STEPS = 10;
+    private static final int MINI_SWIPE_PIXELS = 200;
 
     // https://android.googlesource.com/platform/frameworks/testing/+/master/uiautomator/library/core-src/com/android/uiautomator/core/UiScrollable.java#635
-    private static double SWIPE_DEAD_ZONE_PCT = 0.1;
+    private static final double SWIPE_DEAD_ZONE_PCT = 0.1;
 
     public GetElementAttribute(String mappedUri) {
         super(mappedUri);
@@ -188,7 +185,7 @@ public class GetElementAttribute extends SafeRequestHandler {
     }
 
     private static boolean swipe(final int startX, final int startY, final int endX, final int endY) {
-        Logger.debug(String.format("Swiping from [%d, %d] to [%d, %d]", startX, startY, endX, endY));
+        Logger.debug(String.format("Swiping from [%s, %s] to [%s, %s]", startX, startY, endX, endY));
         return EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
             @Override
             public void run() {
@@ -223,9 +220,9 @@ public class GetElementAttribute extends SafeRequestHandler {
     private static int getTouchPadding(AndroidElement element) throws UiObjectNotFoundException, ReflectiveOperationException {
         UiObject2 uiObject2;
         if (element instanceof UiObject2Element) {
-            uiObject2 = Device.getUiDevice().findObject(By.clazz(((UiObject2) element.getUiObject()).getClassName()));
+            uiObject2 = getUiDevice().findObject(By.clazz(((UiObject2) element.getUiObject()).getClassName()));
         } else {
-            uiObject2 = Device.getUiDevice().findObject(By.clazz(((UiObject) element.getUiObject()).getClassName()));
+            uiObject2 = getUiDevice().findObject(By.clazz(((UiObject) element.getUiObject()).getClassName()));
         }
         Field gestureField = uiObject2.getClass().getDeclaredField("mGestures");
         gestureField.setAccessible(true);
@@ -261,13 +258,12 @@ public class GetElementAttribute extends SafeRequestHandler {
     }
 
     private static class ContentSize {
-
-        int width;
-        int height;
-        int top;
-        int left;
-        int scrollableOffset;
-        int touchPadding;
+        public int width;
+        public int height;
+        public int top;
+        public int left;
+        public int scrollableOffset;
+        public int touchPadding;
 
         ContentSize(Rect rect) {
             width = rect.width();

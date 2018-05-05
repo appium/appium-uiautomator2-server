@@ -89,9 +89,9 @@ public class AppiumServlet implements IHttpServlet {
     public static final String ELEMENT_ID_NEXT_KEY = "elementId";
     public static final String COMMAND_NAME_KEY = "COMMAND_KEY";
     public static final String NAME_ID_KEY = "NAME_ID_KEY";
-    protected static ConcurrentMap<String, BaseRequestHandler> getHandler = new ConcurrentHashMap<String, BaseRequestHandler>();
-    protected static ConcurrentMap<String, BaseRequestHandler> postHandler = new ConcurrentHashMap<String, BaseRequestHandler>();
-    protected static ConcurrentMap<String, BaseRequestHandler> deleteHandler = new ConcurrentHashMap<String, BaseRequestHandler>();
+    protected static ConcurrentMap<String, BaseRequestHandler> getHandler = new ConcurrentHashMap<>();
+    protected static ConcurrentMap<String, BaseRequestHandler> postHandler = new ConcurrentHashMap<>();
+    protected static ConcurrentMap<String, BaseRequestHandler> deleteHandler = new ConcurrentHashMap<>();
     private ConcurrentMap<String, String[]> mapperUrlSectionsCache = new ConcurrentHashMap<>();
 
 
@@ -302,10 +302,8 @@ public class AppiumServlet implements IHttpServlet {
     protected String getParameter(String configuredUri, String actualUri, String param, boolean sectionLengthValidation) {
         String[] configuredSections = configuredUri.split("/");
         String[] currentSections = actualUri.split("/");
-        if (sectionLengthValidation) {
-            if (configuredSections.length != currentSections.length) {
-                return null;
-            }
+        if (sectionLengthValidation && configuredSections.length != currentSections.length) {
+            return null;
         }
         for (int i = 0; i < currentSections.length; i++) {
             if (configuredSections[i].contains(param)) {

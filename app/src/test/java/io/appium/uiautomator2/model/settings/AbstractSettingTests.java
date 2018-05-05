@@ -39,7 +39,7 @@ public class AbstractSettingTests {
     private DummySetting dummySetting;
 
     @Before
-    public void setup() {
+    public void setUp() {
         initMocks(this);
     }
 
@@ -80,7 +80,7 @@ public class AbstractSettingTests {
 
         @Override
         protected void apply(Long value) {
-
+            // do nothing
         }
     }
 

@@ -49,7 +49,7 @@ public class ServerInstrumentationTests {
         private PowerConnectionReceiver powerConnectionReceiver;
 
         @Before
-        public void setUp() throws Exception {
+        public void setUp() {
             PowerMockito.mockStatic(ServerInstrumentation.class);
             SHUTDOWN_ON_POWER_DISCONNECT.getSetting().update(true);
             serverInstrumentation = spy(new ServerInstrumentation(context, 1025));

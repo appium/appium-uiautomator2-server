@@ -1,6 +1,5 @@
 package io.appium.uiautomator2.model;
 
-
 import android.support.test.uiautomator.UiSelector;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -9,23 +8,19 @@ import io.appium.uiautomator2.utils.Attribute;
 import static io.appium.uiautomator2.model.UiAutomationElement.charSequenceToString;
 
 public class CustomUiSelector {
-
-    private UiSelector selector = new UiSelector();
-    private UiAutomationElement uiAutomationElement;
+    private UiSelector selector;
 
     CustomUiSelector(UiSelector selector) {
         this.selector = selector;
     }
 
     /**
-     * returns UiSelector object, based on UiAutomationElement attributes
-     *
      * @param node
-     * @return
+     * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
         XPathFinder.refreshUiElementTree();
-        uiAutomationElement = UiAutomationElement.map.get(node);
+        UiAutomationElement uiAutomationElement = UiAutomationElement.map.get(node);
         put(Attribute.PACKAGE, charSequenceToString(uiAutomationElement.getPackageName()));
         put(Attribute.CLASS, charSequenceToString(uiAutomationElement.getClassName()));
         put(Attribute.TEXT, charSequenceToString(uiAutomationElement.getText()));

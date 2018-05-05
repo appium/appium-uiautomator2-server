@@ -30,8 +30,8 @@ import java.util.WeakHashMap;
 
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
-import io.appium.uiautomator2.utils.Preconditions;
 
+import static android.support.test.internal.util.Checks.checkNotNull;
 import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
 
 
@@ -56,7 +56,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
      */
     protected UiAutomationElement(AccessibilityNodeInfo node,
                                   UiAutomationElement parent, int index) {
-        this.node = Preconditions.checkNotNull(node);
+        this.node = checkNotNull(node);
         this.parent = parent;
 
         Map<Attribute, Object> attribs = new EnumMap<>(Attribute.class);

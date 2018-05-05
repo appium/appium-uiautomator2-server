@@ -142,6 +142,8 @@ abstract class UiExpressionParser<T, U> {
                         arguments.add(argument);
                         startIndex = currentIndex;
                         break;
+                    default:
+                        break;
                 }
             }
             currentIndex++;

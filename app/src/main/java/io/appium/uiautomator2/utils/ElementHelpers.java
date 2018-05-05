@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -95,17 +96,17 @@ public abstract class ElementHelpers {
         }
         for (String field : Session.getElementResponseAttributes()) {
             try {
-                if (field.equals("name")) {
+                if (Objects.equals(field, "name")) {
                     putNullable(jsonObject, field, el.getContentDesc());
-                } else if (field.equals("text")) {
+                } else if (Objects.equals(field, "text")) {
                     putNullable(jsonObject, field, el.getText());
-                } else if (field.equals("rect")) {
+                } else if (Objects.equals(field, "rect")) {
                     putNullable(jsonObject, field, GetRect.getElementRectJSON(el));
-                } else if (field.equals("enabled")) {
+                } else if (Objects.equals(field, "enabled")) {
                     putNullable(jsonObject, field, getElementAttributeValue(el, field));
-                } else if (field.equals("displayed")) {
+                } else if (Objects.equals(field, "displayed")) {
                     putNullable(jsonObject, field, getElementAttributeValue(el, field));
-                } else if (field.equals("selected")) {
+                } else if (Objects.equals(field, "selected")) {
                     putNullable(jsonObject, field, getElementAttributeValue(el, field));
                 } else if (field.startsWith(ATTRIBUTE_PREFIX)) {
                     String attributeName = field.substring(ATTRIBUTE_PREFIX.length());
@@ -118,11 +119,12 @@ public abstract class ElementHelpers {
         return jsonObject;
     }
 
-    private static void putNullable(JSONObject jsonObject, String fieldName, Object value) throws JSONException {
-        if (value == null) {
-            value = JSONObject.NULL;
+    private static void putNullable(JSONObject jsonObject, String fieldName,
+                                    Object objValue) throws JSONException {
+        if (objValue == null) {
+            objValue = JSONObject.NULL;
         }
-        jsonObject.put(fieldName, value);
+        jsonObject.put(fieldName, objValue);
     }
 
     /**

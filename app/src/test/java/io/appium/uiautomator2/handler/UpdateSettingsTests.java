@@ -82,7 +82,7 @@ public class UpdateSettingsTests {
     private IHttpRequest req;
 
     @Before
-    public void setup() throws JSONException {
+    public void setUp() throws JSONException {
         Session.capabilities.remove(SETTING_NAME);
         HashMap<String, Object> payload = new HashMap<>();
         payload.put(SETTING_NAME, SETTING_VALUE);

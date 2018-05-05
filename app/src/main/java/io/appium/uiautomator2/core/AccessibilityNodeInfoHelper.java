@@ -34,7 +34,7 @@ public class AccessibilityNodeInfoHelper {
      * @param height pixel height of the display
      * @return null if node is null, else a Rect containing visible bounds
      */
-    static Rect getVisibleBoundsInScreen(AccessibilityNodeInfo node, int width, int height) {
+    public static Rect getVisibleBoundsInScreen(AccessibilityNodeInfo node, int width, int height) {
         if (node == null) {
             return null;
         }

@@ -48,15 +48,17 @@ public class RotateScreen extends SafeRequestHandler {
         }
     }
 
-    private AppiumResponse handleRotation(IHttpRequest request, int x, int y, int z) throws InvalidCoordinatesException, InterruptedException {
+    private AppiumResponse handleRotation(IHttpRequest request, int x, int y, int z)
+            throws InvalidCoordinatesException, InterruptedException {
         if (x != 0 || y != 0 || !(z == 0 || z == 90 || z == 180 || z == 270)) {
-            throw new InvalidCoordinatesException("Unable to Rotate Device. Invalid rotation, valid params x=0, y=0, z=(0 or 90 or 180 or 270)");
+            throw new InvalidCoordinatesException(
+                    "Unable to Rotate Device. Invalid rotation, valid params x=0, y=0, z=(0 or 90 or 180 or 270)");
         }
-        OrientationEnum current = OrientationEnum.fromInteger(
-                getUiDevice().getDisplayRotation());
+        OrientationEnum current = OrientationEnum.fromInteger(getUiDevice().getDisplayRotation());
         OrientationEnum desired = OrientationEnum.fromInteger(z / 90);
-        if (current == desired) {
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, String.format("Already in %s mode", current.getOrientation()));
+        if (current.equals(desired)) {
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
+                    String.format("Already in %s mode", current.getOrientation()));
         }
 
         switch (desired) {
@@ -64,8 +66,14 @@ public class RotateScreen extends SafeRequestHandler {
             case ROTATION_90:
             case ROTATION_180:
             case ROTATION_270:
-                CustomUiDevice.getInstance().getInstrumentation().getUiAutomation().setRotation(desired.getValue());
+                CustomUiDevice.getInstance()
+                        .getInstrumentation()
+                        .getUiAutomation()
+                        .setRotation(desired.getValue());
                 break;
+            default:
+                throw new InvalidCoordinatesException(String.format(
+                        "Unable to Rotate Device. Invalid desired orientation value '%s'", desired));
         }
 
         return verifyRotation(request, desired);
@@ -98,7 +106,8 @@ public class RotateScreen extends SafeRequestHandler {
                     desired = OrientationEnum.ROTATION_270;
                     break;
                 default:
-                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "Already in landscape mode.");
+                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
+                            "Already in landscape mode.");
             }
         } else {
             switch (current) {
@@ -122,7 +131,7 @@ public class RotateScreen extends SafeRequestHandler {
         final int TIMEOUT = 2000;
         final long then = System.currentTimeMillis();
         long now = then;
-        while (current != desired && now - then < TIMEOUT) {
+        while (!current.equals(desired) && now - then < TIMEOUT) {
             Thread.sleep(100);
             now = System.currentTimeMillis();
             current = OrientationEnum.fromInteger(getUiDevice().getDisplayRotation());

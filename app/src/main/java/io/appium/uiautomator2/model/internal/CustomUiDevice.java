@@ -123,15 +123,7 @@ public class CustomUiDevice {
                 SystemClock.sleep(Math.min(200, remainingMillis));
             }
 
-        } catch (InvocationTargetException e) {
-            final String msg = String.format("error while creating  UiObject2 object");
-            Logger.error(msg + " " + e);
-            throw new UiAutomator2Exception(msg, e);
-        } catch (InstantiationException e) {
-            final String msg = String.format("error while creating  UiObject2 object");
-            Logger.error(msg + " " + e);
-            throw new UiAutomator2Exception(msg, e);
-        } catch (IllegalAccessException e) {
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             final String msg = String.format("error while creating  UiObject2 object");
             Logger.error(msg + " " + e);
             throw new UiAutomator2Exception(msg, e);
@@ -164,16 +156,8 @@ public class CustomUiDevice {
                 selector = By.clazz(node.getClassName().toString());
                 Object[] constructorParams = {getUiDevice(), selector, node};
                 ret.add(cons.newInstance(constructorParams));
-            } catch (InvocationTargetException e) {
-                final String msg = String.format("error while creating  UiObject2 object:");
-                Logger.error(msg + " " + e);
-                throw new UiAutomator2Exception(msg, e);
-            } catch (InstantiationException e) {
-                final String msg = String.format("error while creating  UiObject2 object");
-                Logger.error(msg + " " + e);
-                throw new UiAutomator2Exception(msg, e);
-            } catch (IllegalAccessException e) {
-                final String msg = String.format("error while creating  UiObject2 object");
+            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                final String msg = "error while creating  UiObject2 object";
                 Logger.error(msg + " " + e);
                 throw new UiAutomator2Exception(msg, e);
             }
@@ -185,10 +169,10 @@ public class CustomUiDevice {
     /**
      * Returns a list containing the root {@link AccessibilityNodeInfo}s for each active window
      */
-    AccessibilityNodeInfo[] getWindowRoots() throws UiAutomator2Exception {
+    public AccessibilityNodeInfo[] getWindowRoots() throws UiAutomator2Exception {
         Device.waitForIdle();
         ArrayList<AccessibilityNodeInfo> ret = new ArrayList<>();
-        /**
+        /*
          * TODO: MULTI_WINDOW is disabled, UIAutomatorViewer captures active window properties and
          * end users always relay on UIAutomatorViewer while writing tests.
          * If we enable MULTI_WINDOW it effects end users.
