@@ -44,6 +44,7 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
+import io.appium.uiautomator2.utils.w3c.ASCIICodeToKeyEventConstantTranslator;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.InputEventParams;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.KeyInputEventParams;
@@ -151,10 +152,14 @@ public class W3CActions extends SafeRequestHandler {
         final Set<Integer> result = new HashSet<>();
         for (Field field : fields) {
             if (field.getName().startsWith("META_") && field.getType() == int.class) {
+                final int metaCode;
                 try {
-                    result.add(field.getInt(null));
+                    metaCode = field.getInt(null);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    continue;
+                }
+                if (ASCIICodeToKeyEventConstantTranslator.translate(metaCode) == null) {
+                    result.add(metaCode);
                 }
             }
         }
