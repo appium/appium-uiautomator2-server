@@ -56,6 +56,23 @@ public class ElementCommands {
     }
 
     /**
+     * Send a keycode with particular parameters
+     *
+     * @param keyCode Android key code
+     * @param metaState the state of meta keys
+     * @param flags KeyEvent flags
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response pressKeyCode(int keyCode, int metaState, int flags) throws JSONException {
+        JSONObject payload = new JSONObject();
+        payload.put("keycode", keyCode);
+        payload.put("metastate", metaState);
+        payload.put("flags", flags);
+        return Client.post("/appium/device/press_keycode", payload);
+    }
+
+    /**
      * get the text from the element
      * GET /element/:elementId/text
      *

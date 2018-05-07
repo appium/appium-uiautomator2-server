@@ -19,8 +19,6 @@ package io.appium.uiautomator2.handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.LongSparseArray;
-import android.view.InputDevice;
-import android.view.InputEvent;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -38,7 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -50,6 +47,7 @@ import io.appium.uiautomator2.utils.w3c.ActionsHelpers.KeyInputEventParams;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.MotionInputEventParams;
 import io.appium.uiautomator2.utils.w3c.ActionsParseException;
 
+import static io.appium.uiautomator2.utils.InteractionUtils.injectEventSync;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.actionsToInputEventsMapping;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.getPointerAction;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.metaKeysToState;
@@ -142,10 +140,6 @@ public class W3CActions extends SafeRequestHandler {
         }
     }
 
-    private boolean injectEventSync(InputEvent event) {
-        return UiAutomatorBridge.getInstance().injectInputEvent(event, true);
-    }
-
     private static Set<Integer> getMetaKeyCodes() {
         final Field[] fields = KeyEvent.class.getFields();
         final Set<Integer> result = new HashSet<>();
@@ -193,9 +187,7 @@ public class W3CActions extends SafeRequestHandler {
                         final int metaState = metaKeysToState(depressedMetaKeys);
                         result &= injectEventSync(new KeyEvent(startTimestamp + eventParam.startDelta,
                                 SystemClock.uptimeMillis(), keyAction, keyCode, 0,
-                                metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
-                                0, KeyEvent.FLAG_FROM_SYSTEM | KeyEvent.FLAG_VIRTUAL_HARD_KEY,
-                                InputDevice.SOURCE_KEYBOARD));
+                                metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0));
                         Log.d(TAG, String.format("Generated KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
                                 keyAction, keyCode, metaState));
                     }

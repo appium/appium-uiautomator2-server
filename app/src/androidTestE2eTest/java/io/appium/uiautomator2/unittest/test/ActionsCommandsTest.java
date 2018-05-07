@@ -26,10 +26,10 @@ import io.appium.uiautomator2.unittest.test.internal.BaseTest;
 import io.appium.uiautomator2.unittest.test.internal.Response;
 
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getElementAttribute;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.performActions;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollTo;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
+import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,7 +43,7 @@ public class ActionsCommandsTest extends BaseTest {
 
     private void verifyDragResult(String expectedText) {
         Response response = findElement(DRAG_TEXT);
-        response = getElementAttribute(response.getElementId(), "text");
+        response = getText(response.getElementId());
         assertThat((String) response.getValue(), containsString(expectedText));
     }
 
@@ -105,7 +105,7 @@ public class ActionsCommandsTest extends BaseTest {
                 "} ]");
         Response actionsResponse = performActions(actionsJson);
         assertThat(actionsResponse.getStatus(), equalTo(WDStatus.SUCCESS.code()));
-        Response response = getElementAttribute(edit.getElementId(), "text");
+        Response response = getText(edit.getElementId());
         assertThat((String) response.getValue(), equalTo("Hi"));
     }
 }

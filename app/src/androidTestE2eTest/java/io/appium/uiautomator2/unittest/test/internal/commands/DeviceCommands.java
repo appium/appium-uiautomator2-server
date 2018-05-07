@@ -267,15 +267,4 @@ public class DeviceCommands {
         payload.put("actions", actions);
         return Client.post("/actions", payload);
     }
-
-    /**
-     * Retrieves element attribute value
-     *
-     * @param elementId element identifier
-     * @param attrName valid attribute name
-     * @return Response from UiAutomator2 server
-     */
-    public static Response getElementAttribute(String elementId, String attrName){
-        return Client.get(String.format("/element/%s/attribute/%s", elementId, attrName));
-    }
 }
