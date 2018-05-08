@@ -19,7 +19,6 @@ package io.appium.uiautomator2.model.settings;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.UiDevice;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +34,8 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({NotificationListener.class, UiAutomation.class, UiAutomatorBridge.class,
@@ -70,12 +71,12 @@ public class EnableNotificationListenerTests {
 
     @Test
     public void shouldBeBoolean() {
-        Assert.assertEquals(Boolean.class, enableNotificationListener.getValueType());
+        assertEquals(Boolean.class, enableNotificationListener.getValueType());
     }
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("enableNotificationListener", enableNotificationListener.getName());
+        assertEquals("enableNotificationListener", enableNotificationListener.getName());
     }
 
     @Test
@@ -93,8 +94,8 @@ public class EnableNotificationListenerTests {
     @Test
     public void shouldBeAbleToGetNotificationListenersStatus() {
         when(notificationListener.isListening()).thenReturn(true);
-        boolean value = enableNotificationListener.getValue();
-        Assert.assertEquals(true, value);
+
+        assertTrue(enableNotificationListener.getValue());
         verify(notificationListener).isListening();
     }
 }
