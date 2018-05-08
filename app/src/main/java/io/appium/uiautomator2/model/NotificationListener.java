@@ -35,7 +35,7 @@ public final class NotificationListener implements OnAccessibilityEventListener 
     private static final int TOAST_CLEAR_TIMEOUT = 3500;
 
     private List<CharSequence> toastMessage = new CopyOnWriteArrayList<>();
-    private long previousTime = currentTimeMillis();
+    private long recentToastTimestamp = currentTimeMillis();
     private OnAccessibilityEventListener originalListener = null;
     private final UiAutomation uiAutomation;
 
@@ -95,7 +95,7 @@ public final class NotificationListener implements OnAccessibilityEventListener 
 
     @NonNull
     protected List<CharSequence> getToastMessage() {
-        if (!toastMessage.isEmpty() && currentTimeMillis() - previousTime > getToastClearTimeout()) {
+        if (!toastMessage.isEmpty() && currentTimeMillis() - recentToastTimestamp > getToastClearTimeout()) {
             Logger.debug("Clearing toast message:" + toastMessage);
             toastMessage.clear();
         }
@@ -105,6 +105,6 @@ public final class NotificationListener implements OnAccessibilityEventListener 
     protected void setToastMessage(@NonNull List<CharSequence> text) {
         toastMessage.clear();
         toastMessage.addAll(text);
-        previousTime = currentTimeMillis();
+        recentToastTimestamp = currentTimeMillis();
     }
 }
