@@ -22,6 +22,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.appium.uiautomator2.core.UiAutomation;
 import io.appium.uiautomator2.utils.Logger;
@@ -33,7 +34,7 @@ public final class NotificationListener implements OnAccessibilityEventListener 
     private static final NotificationListener INSTANCE = new NotificationListener();
     private static final int TOAST_CLEAR_TIMEOUT = 3500;
 
-    private List<CharSequence> toastMessage = null;
+    private List<CharSequence> toastMessage = new CopyOnWriteArrayList<>();
     private long previousTime = currentTimeMillis();
     private OnAccessibilityEventListener originalListener = null;
     private UiAutomation uiAutomation;
@@ -92,17 +93,18 @@ public final class NotificationListener implements OnAccessibilityEventListener 
         return TOAST_CLEAR_TIMEOUT;
     }
 
-    @Nullable
+    @NonNull
     protected List<CharSequence> getToastMessage() {
-        if (toastMessage != null && currentTimeMillis() - previousTime > getToastClearTimeout()) {
+        if (!toastMessage.isEmpty() && currentTimeMillis() - previousTime > getToastClearTimeout()) {
             Logger.debug("Clearing toast message:" + toastMessage);
-            toastMessage = null;
+            toastMessage.clear();
         }
         return toastMessage;
     }
 
     protected void setToastMessage(@NonNull List<CharSequence> text) {
-        toastMessage = new ArrayList<>(text);
+        toastMessage.clear();
+        toastMessage.addAll(text);
         previousTime = currentTimeMillis();
     }
 }

@@ -143,7 +143,7 @@ public class NotificationListenerTests {
         notificationListener.setToastMessage(toastText);
         when(notificationListener.getToastClearTimeout()).thenReturn(-1L);
 
-        assertNull(notificationListener.getToastMessage());
+        assertTrue(notificationListener.getToastMessage().isEmpty());
     }
 
     @Test

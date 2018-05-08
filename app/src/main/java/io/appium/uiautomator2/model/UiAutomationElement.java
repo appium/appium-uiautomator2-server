@@ -124,7 +124,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
          * Injecting root element as hierarchy and adding rawElement as a child.
          */
         UiAutomationElement rootElement = new UiAutomationElement("hierarchy" /*root element*/, rawElement /* child nodInfo */, 0 /* index */);
-        if (toastMSGs != null) {
+        if (!toastMSGs.isEmpty()) {
             for (CharSequence toastMSG : toastMSGs) {
                 Logger.debug("Adding toastMSG to root:" + toastMSG);
                 rootElement.addToastMsgToRoot(toastMSG);
