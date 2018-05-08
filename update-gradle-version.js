@@ -23,9 +23,9 @@ if (!/\d+\.\d+\.\d+/.test(version)) {
 console.log(`Updating gradle build file to version '${version}'`);
 replace({
   files: GRADLE_BUILD_FILE,
-  from: /^\s+versionName\s"(.+)"$/gm,
+  from: /^\s+versionName\s'(.+)'$/gm,
   to: (match, ...args) => {
-    // match will be like `versionName "1.2.3"`
+    // match will be like `versionName '1.2.3'`
     return match.replace(/\d+\.\d+\.\d/, version);
   },
 }).then((changes) => {
