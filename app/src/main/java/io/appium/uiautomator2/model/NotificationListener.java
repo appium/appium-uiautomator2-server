@@ -37,7 +37,7 @@ public final class NotificationListener implements OnAccessibilityEventListener 
     private List<CharSequence> toastMessage = new CopyOnWriteArrayList<>();
     private long previousTime = currentTimeMillis();
     private OnAccessibilityEventListener originalListener = null;
-    private UiAutomation uiAutomation;
+    private final UiAutomation uiAutomation;
 
     NotificationListener() {
         uiAutomation = UiAutomation.getInstance();
