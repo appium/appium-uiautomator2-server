@@ -134,17 +134,15 @@ public class CustomUiDevice {
      * Returns List<object> to match the {@code selector} criteria.
      */
     public List<Object> findObjects(Object selector) throws ClassNotFoundException, UiAutomator2Exception {
-
         List<Object> ret = new ArrayList<>();
 
-        ArrayList<AccessibilityNodeInfo> list = new ArrayList<AccessibilityNodeInfo>();
+        ArrayList<AccessibilityNodeInfo> list;
         if (selector instanceof BySelector) {
             ReflectionUtils.getClass("android.support.test.uiautomator.ByMatcher");
             Object nodes = invoke(METHOD_FIND_MATCHS, ByMatcher, getUiDevice(), selector, getWindowRoots());
             list = (ArrayList) nodes;
         } else if (selector instanceof NodeInfoList) {
             list = ((NodeInfoList) selector).getNodeList();
-
         } else {
             throw new InvalidSelectorException("Selector of type " + selector.getClass().getName() + " not supported");
         }
@@ -169,7 +167,7 @@ public class CustomUiDevice {
     /**
      * Returns a list containing the root {@link AccessibilityNodeInfo}s for each active window
      */
-    public AccessibilityNodeInfo[] getWindowRoots() throws UiAutomator2Exception {
+    private AccessibilityNodeInfo[] getWindowRoots() throws UiAutomator2Exception {
         Device.waitForIdle();
         ArrayList<AccessibilityNodeInfo> ret = new ArrayList<>();
         /*
