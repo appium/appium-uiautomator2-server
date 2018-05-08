@@ -57,7 +57,7 @@ public final class NotificationListener implements OnAccessibilityEventListener 
         }
         Logger.debug("Starting toast notification listener.");
         originalListener = uiAutomation.getOnAccessibilityEventListener();
-        Logger.debug("Original listener:" + originalListener);
+        Logger.debug("Original listener: " + originalListener);
         uiAutomation.setOnAccessibilityEventListener(this);
     }
 
@@ -73,7 +73,7 @@ public final class NotificationListener implements OnAccessibilityEventListener 
     @Override
     public synchronized void onAccessibilityEvent(AccessibilityEvent event) {
         if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
-            Logger.debug("Catch toast message:" + event);
+            Logger.debug("Catch toast message: " + event);
             List<CharSequence> text = event.getText();
             if (text != null && !text.isEmpty()) {
                 setToastMessage(event.getText());
