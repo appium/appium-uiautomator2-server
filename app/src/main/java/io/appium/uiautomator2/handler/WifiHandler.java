@@ -52,8 +52,11 @@ public class WifiHandler {
     }
 
     private static boolean isSuccessful(boolean desired) {
-        return !isInProgress() &&
-                (!desired && wfm.getWifiState() == WifiManager.WIFI_STATE_DISABLED
-                        || desired && wfm.getWifiState() == WifiManager.WIFI_STATE_ENABLED);
+        if (isInProgress()) {
+            return false;
+        }
+        return desired
+                ? wfm.getWifiState() == WifiManager.WIFI_STATE_ENABLED
+                : wfm.getWifiState() == WifiManager.WIFI_STATE_DISABLED;
     }
 }

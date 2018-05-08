@@ -34,7 +34,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 import io.appium.uiautomator2.model.XPathFinder;
@@ -65,11 +64,11 @@ public abstract class XMLHierarchy {
     public static Node formatXMLInput(InputSource input) {
         XPath xpath = XPathFactory.newInstance().newXPath();
 
-        Node root;
+        final Node root;
         try {
             root = (Node) xpath.evaluate("/", input, XPathConstants.NODE);
         } catch (XPathExpressionException e) {
-            throw new InvalidSelectorException("Could not read xml hierarchy: ", e);
+            throw new UiAutomator2Exception("Could not read xml hierarchy: ", e);
         }
 
         HashMap<String, Integer> instances = new HashMap<>();
@@ -99,7 +98,6 @@ public abstract class XMLHierarchy {
     // we also take this chance to clean class names that might have dollar signs in
     // them (and other odd characters)
     private static void visitNode(Node node, HashMap<String, Integer> instances) {
-
         Document doc = node.getOwnerDocument();
         NamedNodeMap attributes = node.getAttributes();
 

@@ -218,12 +218,9 @@ public class GetElementAttribute extends SafeRequestHandler {
     }
 
     private static int getTouchPadding(AndroidElement element) throws UiObjectNotFoundException, ReflectiveOperationException {
-        UiObject2 uiObject2;
-        if (element instanceof UiObject2Element) {
-            uiObject2 = getUiDevice().findObject(By.clazz(((UiObject2) element.getUiObject()).getClassName()));
-        } else {
-            uiObject2 = getUiDevice().findObject(By.clazz(((UiObject) element.getUiObject()).getClassName()));
-        }
+        final UiObject2 uiObject2 = element instanceof UiObject2Element
+                ? getUiDevice().findObject(By.clazz(((UiObject2) element.getUiObject()).getClassName()))
+                : getUiDevice().findObject(By.clazz(((UiObject) element.getUiObject()).getClassName()));
         Field gestureField = uiObject2.getClass().getDeclaredField("mGestures");
         gestureField.setAccessible(true);
         Object gestureObject = gestureField.get(uiObject2);
@@ -258,12 +255,12 @@ public class GetElementAttribute extends SafeRequestHandler {
     }
 
     private static class ContentSize {
-        public int width;
-        public int height;
-        public int top;
-        public int left;
-        public int scrollableOffset;
-        public int touchPadding;
+        private int width;
+        private int height;
+        private int top;
+        private int left;
+        private int scrollableOffset;
+        private int touchPadding;
 
         ContentSize(Rect rect) {
             width = rect.width();
