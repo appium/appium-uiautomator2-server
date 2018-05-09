@@ -30,7 +30,7 @@ public interface AndroidElement {
     boolean getBoolAttribute(final String attr)
             throws UiObjectNotFoundException, UiAutomator2Exception;
 
-    void setText(final String text, boolean unicodeKeyboard) throws UiObjectNotFoundException;
+    boolean setText(final String text, boolean unicodeKeyboard) throws UiObjectNotFoundException;
 
     String getId();
 

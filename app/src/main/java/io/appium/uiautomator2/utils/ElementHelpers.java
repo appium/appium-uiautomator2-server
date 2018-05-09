@@ -17,8 +17,8 @@
 package io.appium.uiautomator2.utils;
 
 import android.os.Build;
+import android.os.Bundle;
 import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Objects;
 
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelper;
 import io.appium.uiautomator2.handler.GetRect;
@@ -69,8 +68,8 @@ public abstract class ElementHelpers {
             e.printStackTrace();
         }
 
-        List<Object> result = new ArrayList<Object>();
-        List<AccessibilityNodeInfo> nodes = new ArrayList<AccessibilityNodeInfo>();
+        List<Object> result = new ArrayList<>();
+        List<AccessibilityNodeInfo> nodes = new ArrayList<>();
 
         for (Object element : elements) {
             AccessibilityNodeInfo node = elementToNode(element);
@@ -133,9 +132,11 @@ public abstract class ElementHelpers {
      * @param element         - target element
      * @param text            - desired text
      * @param unicodeKeyboard - true, if text should be encoded to unicode
+     * @return true if the text has been successfully set
      */
-    public static void setText(final Object element, final String text, final boolean unicodeKeyboard) throws UiObjectNotFoundException {
-        String textToSend = text;
+    public static boolean setText(final Object element, final String text, final boolean unicodeKeyboard) {
+        // Per framework convention, setText(null) means clearing it
+        String textToSend = text == null ? "" : text;
         AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
 
         /*
@@ -146,13 +147,12 @@ public abstract class ElementHelpers {
         if (nodeInfo.getRangeInfo() != null && Build.VERSION.SDK_INT >= 24) {
             Logger.debug("Element has range info.");
             try {
-                if (AccessibilityNodeInfoHelper.setProgressValue(nodeInfo, Float.parseFloat(text))) {
-                    return;
-                }
+                return AccessibilityNodeInfoHelper.setProgressValue(nodeInfo, Float.parseFloat(text));
             } catch (NumberFormatException e) {
                 Logger.debug(String.format("Can not convert \"%s\" to float.", text));
             }
-            Logger.debug("Unable to perform ACTION_SET_PROGRESS action.  Falling back to element.setText()");
+            Logger.debug("Unable to perform ACTION_SET_PROGRESS action. " +
+                    "Falling back to element.setText()");
         }
 
         /*
@@ -169,13 +169,10 @@ public abstract class ElementHelpers {
             textToSend = UnicodeEncoder.encode(textToSend);
             Logger.debug("Encoded text: " + textToSend);
         }
+
         Logger.debug("Sending text to element: " + textToSend);
-        if (element instanceof UiObject2) {
-            UiObject2.class.cast(element).setText(textToSend);
-        } else if (element instanceof UiObject) {
-            UiObject.class.cast(element).setText(textToSend);
-        } else {
-            throw new UiAutomator2Exception("Unknown object type: " + element.getClass().getName());
-        }
+        Bundle args = new Bundle();
+        args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, textToSend);
+        return nodeInfo.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
     }
 }

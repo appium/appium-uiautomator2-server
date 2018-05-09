@@ -19,7 +19,7 @@ android {
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "io.appium.uiautomator2"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 24
         versionCode 1
         archivesBaseName = "appium-uiautomator2"
