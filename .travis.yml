@@ -55,7 +55,7 @@ before_script:
       echo y | android update sdk --no-ui -t tools
       echo y | android update sdk --no-ui -t ${ANDROID_EMU_TARGET}
 
-      # android stuff
+      # print lists of android sdk and targets
       android list sdk --extended --no-ui --all
       android list targets
 
