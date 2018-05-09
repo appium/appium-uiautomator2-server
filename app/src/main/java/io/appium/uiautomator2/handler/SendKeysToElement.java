@@ -96,7 +96,7 @@ public class SendKeysToElement extends SafeRequestHandler {
         }
         if (!element.setText(text, unicodeKeyboard)) {
             throw new InvalidElementStateException(String.format("Cannot set the element to '%s'. " +
-                    "Did you locate a correct one?", text));
+                    "Did you interact with the correct element?", text));
         }
 
         String actionMsg = "";
