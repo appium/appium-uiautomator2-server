@@ -147,7 +147,9 @@ public abstract class ElementHelpers {
         if (nodeInfo.getRangeInfo() != null && Build.VERSION.SDK_INT >= 24) {
             Logger.debug("Element has range info.");
             try {
-                return AccessibilityNodeInfoHelper.setProgressValue(nodeInfo, Float.parseFloat(text));
+                if (AccessibilityNodeInfoHelper.setProgressValue(nodeInfo, Float.parseFloat(text))) {
+                    return true;
+                }
             } catch (NumberFormatException e) {
                 Logger.debug(String.format("Can not convert \"%s\" to float.", text));
             }
