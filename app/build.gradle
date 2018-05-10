@@ -18,16 +18,16 @@ android {
     compileSdkVersion 24
     buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "io.appium.uiautomator2"
+        applicationId 'io.appium.uiautomator2'
         minSdkVersion 21
         targetSdkVersion 24
         versionCode 1
-        archivesBaseName = "appium-uiautomator2"
+        archivesBaseName = 'appium-uiautomator2'
         /**
          * versionName should be updated and inline with version in package.json for every npm release.
          */
-        versionName "1.10.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionName '1.10.0'
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         debug {
@@ -38,11 +38,11 @@ android {
         }
         applicationVariants.all { variant ->
             variant.outputs.all {
-                outputFileName = outputFileName.replace("debug.apk", "v${defaultConfig.versionName}.apk")
+                outputFileName = outputFileName.replace('debug.apk', "v${defaultConfig.versionName}.apk")
             }
         }
     }
-    flavorDimensions "default"
+    flavorDimensions 'default'
     lintOptions {
         abortOnError false
     }
@@ -64,10 +64,10 @@ android {
 }
 
 unMock {
-    keepStartingWith "com.android.internal.util."
-    keepStartingWith "android.util."
-    keepStartingWith "android.view."
-    keepStartingWith "android.internal."
+    keepStartingWith 'com.android.internal.util.'
+    keepStartingWith 'android.util.'
+    keepStartingWith 'android.view.'
+    keepStartingWith 'android.internal.'
 }
 
 dependencies {
@@ -96,15 +96,15 @@ task installAUT(type: Exec) {
     group = 'test'
     description = 'Install app under test'
     doFirst {
-        println("Install AUT")
+        println('Install AUT')
         def adb = android.getAdbExecutable().toString()
         def apk = file('../node_modules/android-apidemos/bin/ApiDemos-debug.apk')
         def sdkVersion = "$adb shell getprop ro.build.version.sdk".execute().text.trim()
-        println "Device SDK version:" + sdkVersion
+        println "Device SDK version: $sdkVersion"
         /* This seems weird but it is what it is: https://github.com/wix/detox/issues/274 */
         def command = sdkVersion.toInteger() < 24 ? "$adb install -rg $apk" : "$adb install -r -g $apk"
-        println "Execute command:" + command
-        commandLine command.split(" ")
+        println "Execute command: $command"
+        commandLine command.split(' ')
     }
 }
 

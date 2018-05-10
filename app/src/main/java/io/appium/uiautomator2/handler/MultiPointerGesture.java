@@ -32,7 +32,7 @@ public class MultiPointerGesture extends SafeRequestHandler {
 
     private PointerCoords[][] parsePointerCoords(final IHttpRequest request)
             throws JSONException {
-        final JSONArray actions = (org.json.JSONArray) getPayload(request).get("actions");
+        final JSONArray actions = (JSONArray) getPayload(request).get("actions");
 
         final double time = computeLongestTime(actions);
 

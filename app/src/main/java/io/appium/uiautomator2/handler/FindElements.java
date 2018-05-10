@@ -221,7 +221,7 @@ public class FindElements extends SafeRequestHandler {
                 }
 
                 Logger.debug("getElements tmp selector:" + tmp.toString());
-                lastFoundObj = Device.getUiDevice().findObject(tmp);
+                lastFoundObj = getUiDevice().findObject(tmp);
             } else {
                 Logger.debug("Element[" + key + "] is " + baseEl.getId() + ", counter: "
                         + counter);

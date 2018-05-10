@@ -18,6 +18,7 @@ package io.appium.uiautomator2.model;
 
 import android.annotation.TargetApi;
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
@@ -118,13 +119,14 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         this.children = mutableChildren;
     }
 
-    public static UiAutomationElement newRootElement(AccessibilityNodeInfo rawElement, List<CharSequence> toastMSGs) {
+    public static UiAutomationElement newRootElement(AccessibilityNodeInfo rawElement,
+                                                     @Nullable List<CharSequence> toastMSGs) {
         clearData();
         /**
          * Injecting root element as hierarchy and adding rawElement as a child.
          */
         UiAutomationElement rootElement = new UiAutomationElement("hierarchy" /*root element*/, rawElement /* child nodInfo */, 0 /* index */);
-        if (toastMSGs != null) {
+        if (toastMSGs != null && !toastMSGs.isEmpty()) {
             for (CharSequence toastMSG : toastMSGs) {
                 Logger.debug("Adding toastMSG to root:" + toastMSG);
                 rootElement.addToastMsgToRoot(toastMSG);

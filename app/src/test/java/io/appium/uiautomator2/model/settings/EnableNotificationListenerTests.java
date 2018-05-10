@@ -16,51 +16,67 @@
 
 package io.appium.uiautomator2.model.settings;
 
-import org.junit.Assert;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.uiautomator.UiDevice;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
+import io.appium.uiautomator2.core.UiAutomation;
+import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.NotificationListener;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({NotificationListener.class})
+@PrepareForTest({NotificationListener.class, UiAutomation.class, UiAutomatorBridge.class,
+        UiDevice.class, InstrumentationRegistry.class})
 public class EnableNotificationListenerTests {
 
-    @Mock
-    private static NotificationListener notificationListener;
-
+    private NotificationListener notificationListener;
     private EnableNotificationListener enableNotificationListener;
 
     @Before
     public void setup() {
-        enableNotificationListener = new EnableNotificationListener();
-        notificationListener = mock(NotificationListener.class);
-        doNothing().when(notificationListener).stop();
-        doNothing().when(notificationListener).start();
+        PowerMockito.mockStatic(InstrumentationRegistry.class);
+        when(InstrumentationRegistry.getInstrumentation()).thenReturn(null);
+
+        PowerMockito.mockStatic(UiDevice.class);
+        when(UiDevice.getInstance(null)).thenReturn(mock(UiDevice.class));
+
+        PowerMockito.mockStatic(UiAutomatorBridge.class);
+        when(UiAutomatorBridge.getInstance()).thenReturn(mock(UiAutomatorBridge.class));
+
+        PowerMockito.mockStatic(UiAutomation.class);
+        when(UiAutomation.getInstance()).thenReturn(mock(UiAutomation.class));
 
         PowerMockito.mockStatic(NotificationListener.class);
+        notificationListener = mock(NotificationListener.class);
         when(NotificationListener.getInstance()).thenReturn(notificationListener);
+
+        enableNotificationListener = new EnableNotificationListener();
+
+        doNothing().when(notificationListener).stop();
+        doNothing().when(notificationListener).start();
     }
 
     @Test
     public void shouldBeBoolean() {
-        Assert.assertEquals(Boolean.class, enableNotificationListener.getValueType());
+        assertEquals(Boolean.class, enableNotificationListener.getValueType());
     }
 
     @Test
     public void shouldReturnValidSettingName() {
-        Assert.assertEquals("enableNotificationListener", enableNotificationListener.getName());
+        assertEquals("enableNotificationListener", enableNotificationListener.getName());
     }
 
     @Test
@@ -77,7 +93,9 @@ public class EnableNotificationListenerTests {
 
     @Test
     public void shouldBeAbleToGetNotificationListenersStatus() {
-        Whitebox.setInternalState(notificationListener, "isListening", true);
-        Assert.assertEquals(true, enableNotificationListener.getValue());
+        when(notificationListener.isListening()).thenReturn(true);
+
+        assertTrue(enableNotificationListener.getValue());
+        verify(notificationListener).isListening();
     }
 }

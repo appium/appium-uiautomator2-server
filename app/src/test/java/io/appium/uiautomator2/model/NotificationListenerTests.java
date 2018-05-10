@@ -16,117 +16,157 @@
 
 package io.appium.uiautomator2.model;
 
-import android.app.UiAutomation;
+import android.app.UiAutomation.OnAccessibilityEventListener;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.uiautomator.UiDevice;
 import android.view.accessibility.AccessibilityEvent;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import io.appium.uiautomator2.core.UiAutomation;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
-import static org.powermock.api.support.membermodification.MemberMatcher.constructor;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({UiAutomatorBridge.class, NotificationListener.class, UiAutomation.class})
-@SuppressStaticInitializationFor({"io.appium.uiautomator2.core.UiAutomatorBridge"})
+@PrepareForTest({NotificationListener.class, UiAutomation.class, UiAutomatorBridge.class,
+        UiDevice.class, InstrumentationRegistry.class})
 public class NotificationListenerTests {
 
-    @Mock
-    private UiAutomatorBridge uiAutomatorBridge;
-
-    @Mock
-    private UiAutomation uiAutomation;
-
-    @Mock
-    private AccessibilityEvent accessibilityEvent;
-
     private NotificationListener notificationListener;
+    private UiAutomation uiAutomation;
+    private OnAccessibilityEventListener originalAccessibilityEventListener;
+    private List<CharSequence> toastText;
 
     @Before
     public void setup() throws Exception {
-        notificationListener = constructor(NotificationListener.class).newInstance();
+        toastText =  new ArrayList<>();
+        toastText.add("toast text");
+
+        originalAccessibilityEventListener = mock(OnAccessibilityEventListener.class);
+        PowerMockito.mockStatic(InstrumentationRegistry.class);
+        when(InstrumentationRegistry.getInstrumentation()).thenReturn(null);
+
+        PowerMockito.mockStatic(UiDevice.class);
+        when(UiDevice.getInstance(null)).thenReturn(mock(UiDevice.class));
+        when(UiDevice.getInstance()).thenReturn(mock(UiDevice.class));
 
         PowerMockito.mockStatic(UiAutomatorBridge.class);
-        PowerMockito.mockStatic(NotificationListener.class);
-        PowerMockito.suppress(constructor(UiAutomatorBridge.class));
+        when(UiAutomatorBridge.getInstance()).thenReturn(mock(UiAutomatorBridge.class));
 
-        when(UiAutomatorBridge.getInstance()).thenReturn(uiAutomatorBridge);
+        PowerMockito.mockStatic(UiAutomation.class);
+        uiAutomation = mock(UiAutomation.class);
+        when(UiAutomation.getInstance()).thenReturn(uiAutomation);
+        when(uiAutomation.getOnAccessibilityEventListener())
+                .thenReturn(originalAccessibilityEventListener);
 
-        when(accessibilityEvent.getText()).thenReturn(new ArrayList<CharSequence>());
-
-        when(uiAutomatorBridge.getUiAutomation()).thenReturn(uiAutomation);
-        when(uiAutomation.executeAndWaitForEvent(
-                (Runnable) any(), (UiAutomation.AccessibilityEventFilter) any(), anyLong()))
-                .thenReturn(accessibilityEvent);
+        notificationListener = spy(new NotificationListener());
     }
 
     @Test
     public void shouldBeAbleToStartListener() {
+        doReturn(false).when(notificationListener).isListening();
         notificationListener.start();
-        Thread listener = getListener();
-        assertTrue(listener.isAlive());
+        verify(uiAutomation).setOnAccessibilityEventListener(notificationListener);
     }
 
     @Test
     public void shouldBeAbleToStopListener() {
-        notificationListener.start();
+        doReturn(true).when(notificationListener).isListening();
         notificationListener.stop();
-        Thread listener = getListener();
-        assertFalse(listener.isAlive());
+        verify(uiAutomation).setOnAccessibilityEventListener(null);
     }
 
     @Test
-    public void shouldDoNothingOnStopIfListenerIsNeverStartedYet() {
-        Thread listener = getListener();
+    public void shouldDoNothingOnStopIfListenerIsAlreadyStopped() {
+        doReturn(false).when(notificationListener).isListening();
         notificationListener.stop();
-        assertNull(listener);
-    }
-
-    @Test
-    public void shouldDoNothingOnStopIfListenerIsAlreadyStopped() throws InterruptedException {
-        notificationListener.start();
-        notificationListener.stop();
-        Thread listener = spy(getListener());
-        notificationListener.stop();
-        verify(listener, never()).join();
+        verify(uiAutomation, never())
+                .setOnAccessibilityEventListener((OnAccessibilityEventListener) any());
     }
 
     @Test
     public void shouldDoNothingOnStartIfListenerIsAlreadyStarted() {
+        doReturn(true).when(notificationListener).isListening();
         notificationListener.start();
-        Thread listener = spy(getListener());
-        notificationListener.start();
-        verify(listener, never()).start();
+        verify(uiAutomation, never())
+                .setOnAccessibilityEventListener((OnAccessibilityEventListener) any());
     }
 
     @Test
-    public void shouldBeAbleToRestartListener() {
+    public void shouldRestoreOriginalListener() {
+        ArgumentCaptor<OnAccessibilityEventListener> argumentCaptor =
+                ArgumentCaptor.forClass(OnAccessibilityEventListener.class);
+        doNothing().when(uiAutomation).setOnAccessibilityEventListener(argumentCaptor.capture());
+        doReturn(false).when(notificationListener).isListening();
         notificationListener.start();
+        doReturn(true).when(notificationListener).isListening();
         notificationListener.stop();
-        notificationListener.start();
-        Thread listener = getListener();
-        assertTrue(listener.isAlive());
+
+        assertEquals(notificationListener, argumentCaptor.getAllValues().get(0));
+        assertEquals(originalAccessibilityEventListener, argumentCaptor.getAllValues().get(1));
     }
 
-    private Thread getListener() {
-        return Thread.class.cast(Whitebox.getInternalState(notificationListener, "listener"));
+    @Test
+    public void shouldGrabAccessibilityEvent() {
+        AccessibilityEvent accessibilityEvent = mock(AccessibilityEvent.class);
+        when(accessibilityEvent.getEventType()).thenReturn(
+                AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED);
+        when(accessibilityEvent.getText()).thenReturn(toastText);
+
+        notificationListener.onAccessibilityEvent(accessibilityEvent);
+        assertEquals(toastText.get(0), notificationListener.getToastMessage().get(0));
+    }
+
+    @Test
+    public void shouldClearToastMessageByTimeout() {
+        notificationListener.setToastMessage(toastText);
+        when(notificationListener.getToastClearTimeout()).thenReturn(-1L);
+
+        assertTrue(notificationListener.getToastMessage().isEmpty());
+    }
+
+    @Test
+    public void shouldProperlyDetectListeningState() {
+        doReturn(originalAccessibilityEventListener).when(uiAutomation)
+                .getOnAccessibilityEventListener();
+        assertFalse(notificationListener.isListening());
+
+        doReturn(notificationListener).when(uiAutomation).getOnAccessibilityEventListener();
+        assertTrue(notificationListener.isListening());
+    }
+
+    @Test
+    public void verifyClearTimeout() {
+        assertEquals(3_500, notificationListener.getToastClearTimeout());
+    }
+
+    @Test
+    public void shouldInvokeOriginalListener() {
+        notificationListener.start();
+        AccessibilityEvent accessibilityEvent = mock(AccessibilityEvent.class);
+        notificationListener.onAccessibilityEvent(accessibilityEvent);
+
+        verify(originalAccessibilityEventListener).onAccessibilityEvent(accessibilityEvent);
     }
 }

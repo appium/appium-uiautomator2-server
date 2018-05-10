@@ -1,114 +1,110 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.uiautomator2.model;
 
-import android.app.UiAutomation;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import io.appium.uiautomator2.core.UiAutomatorBridge;
+import io.appium.uiautomator2.core.UiAutomation;
 import io.appium.uiautomator2.utils.Logger;
 
+import static android.app.UiAutomation.OnAccessibilityEventListener;
 import static java.lang.System.currentTimeMillis;
 
+public final class NotificationListener implements OnAccessibilityEventListener {
+    private static final NotificationListener INSTANCE = new NotificationListener();
+    private static final int TOAST_CLEAR_TIMEOUT = 3500;
 
-public final class NotificationListener {
-    private final static NotificationListener INSTANCE = new NotificationListener();
-    private static List<CharSequence> toastMessages = new ArrayList<CharSequence>();
-    private final int TOAST_CLEAR_TIMEOUT = 3500;
-    private final int WAIT_FOR_EVENT_TIMEOUT = 500;
-    public boolean isListening = false;
-    private Listener listener;
+    private List<CharSequence> toastMessage = new CopyOnWriteArrayList<>();
+    private long recentToastTimestamp = currentTimeMillis();
+    private OnAccessibilityEventListener originalListener = null;
+    private final UiAutomation uiAutomation;
 
-    private NotificationListener() {
+    protected NotificationListener() {
+        uiAutomation = UiAutomation.getInstance();
     }
 
     public static NotificationListener getInstance() {
         return INSTANCE;
     }
 
-    public static List<CharSequence> getToastMSGs() {
-        return toastMessages;
-    }
-
     /**
      * Listens for Notification Messages
      */
     public void start() {
-        Logger.debug("Starting toast notification listener.");
-        if (listener != null && listener.isAlive()) {
+        if (isListening()) {
             Logger.debug("Toast notification listener is already started.");
             return;
         }
-        listener = new Listener();
-        listener.start();
-        isListening = true;
+        Logger.debug("Starting toast notification listener.");
+        originalListener = uiAutomation.getOnAccessibilityEventListener();
+        Logger.debug("Original listener: " + originalListener);
+        uiAutomation.setOnAccessibilityEventListener(this);
     }
 
     public void stop() {
-        Logger.debug("Stopping toast notification listener.");
-        if (listener == null || !listener.isAlive()) {
+        if (!isListening()) {
             Logger.debug("Toast notification listener is already stopped.");
             return;
         }
-        listener.stopLooping();
-        try {
-            listener.join(WAIT_FOR_EVENT_TIMEOUT);
-        } catch (InterruptedException ignore) {
-        }
-        isListening = false;
+        Logger.debug("Stopping toast notification listener.");
+        uiAutomation.setOnAccessibilityEventListener(originalListener);
     }
 
-    private class Listener extends Thread {
-
-        //return true if the AccessibilityEvent type is NOTIFICATION type
-        private final UiAutomation.AccessibilityEventFilter eventFilter = new UiAutomation.AccessibilityEventFilter() {
-            @Override
-            public boolean accept(AccessibilityEvent event) {
-                return event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
-            }
-        };
-        private final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                // Not performing any event.
-            }
-        };
-        private boolean stopLooping = false;
-        private long previousTime = currentTimeMillis();
-
-        public void run() {
-            while (true) {
-                AccessibilityEvent accessibilityEvent = null;
-                toastMessages = init();
-
-                try {
-                    //wait for AccessibilityEvent filter
-                    accessibilityEvent = UiAutomatorBridge.getInstance().getUiAutomation()
-                            .executeAndWaitForEvent(runnable /*executable event*/, eventFilter /* event to filter*/, WAIT_FOR_EVENT_TIMEOUT /*time out in ms*/);
-                } catch (Exception ignore) {
-                }
-
-                if (accessibilityEvent != null) {
-                    toastMessages = accessibilityEvent.getText();
-                    previousTime = currentTimeMillis();
-                }
-                if (stopLooping) {
-                    break;
-                }
+    @Override
+    public synchronized void onAccessibilityEvent(AccessibilityEvent event) {
+        if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
+            Logger.debug("Catch toast message: " + event);
+            List<CharSequence> text = event.getText();
+            if (text != null && !text.isEmpty()) {
+                setToastMessage(event.getText());
             }
         }
 
-        public List<CharSequence> init() {
-            if (currentTimeMillis() - previousTime > TOAST_CLEAR_TIMEOUT) {
-                return new ArrayList<CharSequence>();
-            }
-            return toastMessages;
-        }
-
-        public void stopLooping() {
-            stopLooping = true;
+        if (originalListener != null) {
+            originalListener.onAccessibilityEvent(event);
         }
     }
 
+    public boolean isListening() {
+        return uiAutomation.getOnAccessibilityEventListener() == this;
+    }
+
+    protected long getToastClearTimeout() {
+        return TOAST_CLEAR_TIMEOUT;
+    }
+
+    @NonNull
+    protected List<CharSequence> getToastMessage() {
+        if (!toastMessage.isEmpty() && currentTimeMillis() - recentToastTimestamp > getToastClearTimeout()) {
+            Logger.debug("Clearing toast message: " + toastMessage);
+            toastMessage.clear();
+        }
+        return toastMessage;
+    }
+
+    protected void setToastMessage(@NonNull List<CharSequence> text) {
+        toastMessage.clear();
+        toastMessage.addAll(text);
+        recentToastTimestamp = currentTimeMillis();
+    }
 }

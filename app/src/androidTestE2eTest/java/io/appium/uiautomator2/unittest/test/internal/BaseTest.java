@@ -91,7 +91,6 @@ public abstract class BaseTest {
 
     @Before
     public void launchAUT() throws JSONException {
-        updateSetting(Settings.ENABLE_NOTIFICATION_LISTENER.toString(), false);
         startActivity(Config.APP_NAME);
         waitForElement(By.accessibilityId("Accessibility"));
     }

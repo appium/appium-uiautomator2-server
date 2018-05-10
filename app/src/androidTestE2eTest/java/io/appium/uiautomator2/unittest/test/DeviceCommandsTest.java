@@ -364,7 +364,6 @@ public class DeviceCommandsTest extends BaseTest {
 
     @Test
     public void toastVerificationTest() throws JSONException {
-        updateSetting(ENABLE_NOTIFICATION_LISTENER.toString(), true);
         startActivity(".view.PopupMenu1");
         Response response = findElement(By.accessibilityId("Make a Popup!"));
         click(response.getElementId());
@@ -458,7 +457,7 @@ public class DeviceCommandsTest extends BaseTest {
         settings.put("allowInvisibleElements", true);
         settings.put("ignoreUnimportantViews", true);
         settings.put("elementResponseAttributes", "text");
-        settings.put("enableNotificationListener", true);
+        settings.put("enableNotificationListener", false);
         settings.put("keyInjectionDelay", 10);
         settings.put("scrollAcknowledgmentTimeout", 300);
         settings.put("shouldUseCompactResponses", false);

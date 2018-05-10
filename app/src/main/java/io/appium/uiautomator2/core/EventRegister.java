@@ -24,7 +24,7 @@ public abstract class EventRegister {
         // event here
         NotificationListener listener = NotificationListener.getInstance();
 
-        boolean notificationListenerActive = listener.isListening;
+        boolean notificationListenerActive = listener.isListening();
         if (notificationListenerActive) {
             listener.stop();
         }
