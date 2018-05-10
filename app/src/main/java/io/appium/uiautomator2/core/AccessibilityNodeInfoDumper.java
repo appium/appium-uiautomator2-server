@@ -88,15 +88,15 @@ public class AccessibilityNodeInfoDumper {
         Logger.info("Fetch time: " + (endTime - startTime) + "ms");
         return xmlDump.toString();
     }
-
-
+    
     private static void dumpNodeRec(AccessibilityNodeInfo node, XmlSerializer serializer,
-                                    int index, int width, int height, int depth) throws IOException {
+                                    int index, int width, int height, final int depth)
+            throws IOException {
         // Some views might have unlimited number of children:
         // https://bugs.chromium.org/p/chromium/issues/detail?id=805014
         if (depth >= MAX_DEPTH) {
             Logger.error(String.format("The xml tree dump has reached its maximum depth of %s at " +
-                    "%s. The recursion is stopped to avoid StackOverflowError", MAX_DEPTH,
+                            "%s. The recursion is stopped to avoid StackOverflowError", MAX_DEPTH,
                     node.toString()));
             return;
         }
@@ -181,7 +181,7 @@ public class AccessibilityNodeInfoDumper {
         // check children since sometimes the containing element is clickable
         // and NAF but a child's text or description is available. Will assume
         // such layout as fine.
-        return isAnyDescendantAccessibilityFriendly(node);
+        return isAnyDescendantAccessibilityFriendly(node, 0);
     }
 
     /**
@@ -194,7 +194,17 @@ public class AccessibilityNodeInfoDumper {
      *
      * @return false if node fails the check.
      */
-    private static boolean isAnyDescendantAccessibilityFriendly(AccessibilityNodeInfo node) {
+    private static boolean isAnyDescendantAccessibilityFriendly(AccessibilityNodeInfo node,
+                                                                final int depth) {
+        // Some views might have unlimited number of children:
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=805014
+        if (depth >= MAX_DEPTH) {
+            Logger.error(String.format("The NAF verification has reached its maximum depth of %s at " +
+                            "%s. The recursion is stopped to avoid StackOverflowError", MAX_DEPTH,
+                    node.toString()));
+            return false;
+        }
+
         int childCount = node.getChildCount();
         for (int x = 0; x < childCount; x++) {
             AccessibilityNodeInfo childNode = node.getChild(x);
@@ -206,7 +216,7 @@ public class AccessibilityNodeInfoDumper {
                     || !safeCharSeqToString(childNode.getText()).isEmpty()) {
                 return true;
             }
-            if (isAnyDescendantAccessibilityFriendly(childNode)) {
+            if (isAnyDescendantAccessibilityFriendly(childNode, depth + 1)) {
                 return true;
             }
         }
