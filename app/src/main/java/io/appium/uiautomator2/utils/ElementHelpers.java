@@ -18,6 +18,7 @@ package io.appium.uiautomator2.utils;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelper;
@@ -134,10 +136,14 @@ public abstract class ElementHelpers {
      * @param unicodeKeyboard - true, if text should be encoded to unicode
      * @return true if the text has been successfully set
      */
-    public static boolean setText(final Object element, final String text, final boolean unicodeKeyboard) {
+    public static boolean setText(final Object element,
+                                  @Nullable final String text, final boolean unicodeKeyboard) {
         // Per framework convention, setText(null) means clearing it
         String textToSend = text == null ? "" : text;
         AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+        if (nodeInfo == null) {
+            throw new ElementNotFoundException();
+        }
 
         /*
          * Execute ACTION_SET_PROGRESS action (introduced in API level 24)
