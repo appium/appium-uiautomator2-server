@@ -39,7 +39,7 @@ public final class NotificationListener implements OnAccessibilityEventListener 
     private OnAccessibilityEventListener originalListener = null;
     private final UiAutomation uiAutomation;
 
-    NotificationListener() {
+    protected NotificationListener() {
         uiAutomation = UiAutomation.getInstance();
     }
 
