@@ -25,20 +25,23 @@ public interface AndroidElement {
 
     String getName() throws UiObjectNotFoundException;
 
-    String getStringAttribute(final String attr) throws UiObjectNotFoundException, NoAttributeFoundException;
+    String getStringAttribute(final String attr) throws UiObjectNotFoundException,
+            NoAttributeFoundException;
 
     boolean getBoolAttribute(final String attr)
             throws UiObjectNotFoundException, UiAutomator2Exception;
 
-    boolean setText(final String text, boolean unicodeKeyboard) throws UiObjectNotFoundException;
+    boolean setText(final String text, boolean unicodeKeyboard);
 
     String getId();
 
     Rect getBounds() throws UiObjectNotFoundException;
 
-    Object getChild(final Object sel) throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException;
+    Object getChild(final Object sel) throws UiObjectNotFoundException,
+            InvalidSelectorException, ClassNotFoundException;
 
-    List<Object> getChildren(final Object selector, final By by) throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException;
+    List<Object> getChildren(final Object selector, final By by)
+            throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException;
 
     String getContentDesc() throws UiObjectNotFoundException;
 

@@ -110,7 +110,7 @@ public class UiObjectElement implements AndroidElement {
         return res;
     }
 
-    public boolean setText(final String text, boolean unicodeKeyboard) throws UiObjectNotFoundException {
+    public boolean setText(final String text, boolean unicodeKeyboard) {
         return ElementHelpers.setText(element, text, unicodeKeyboard);
     }
 
