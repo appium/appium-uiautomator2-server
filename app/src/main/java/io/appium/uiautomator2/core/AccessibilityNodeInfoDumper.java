@@ -181,7 +181,7 @@ public class AccessibilityNodeInfoDumper {
         // check children since sometimes the containing element is clickable
         // and NAF but a child's text or description is available. Will assume
         // such layout as fine.
-        return isAnyChildAccessibilityFriendly(node);
+        return isAnyDescendantAccessibilityFriendly(node);
     }
 
     /**
@@ -194,7 +194,7 @@ public class AccessibilityNodeInfoDumper {
      *
      * @return false if node fails the check.
      */
-    private static boolean isAnyChildAccessibilityFriendly(AccessibilityNodeInfo node) {
+    private static boolean isAnyDescendantAccessibilityFriendly(AccessibilityNodeInfo node) {
         int childCount = node.getChildCount();
         for (int x = 0; x < childCount; x++) {
             AccessibilityNodeInfo childNode = node.getChild(x);
@@ -206,7 +206,7 @@ public class AccessibilityNodeInfoDumper {
                     || !safeCharSeqToString(childNode.getText()).isEmpty()) {
                 return true;
             }
-            if (isAnyChildAccessibilityFriendly(childNode)) {
+            if (isAnyDescendantAccessibilityFriendly(childNode)) {
                 return true;
             }
         }
