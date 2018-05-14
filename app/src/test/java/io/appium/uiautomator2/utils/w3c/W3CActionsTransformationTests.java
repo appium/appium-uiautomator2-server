@@ -108,9 +108,9 @@ public class W3CActionsTransformationTests {
                 "\"type\": \"key\"," +
                 "\"id\": \"keyboard\"," +
                 "\"actions\": [" +
-                "{\"type\": \"keyDown\", \"value\": \"A\"}," +
+                "{\"type\": \"keyDown\", \"value\": \"" + Character.toString((char) KeyEvent.KEYCODE_A) +"\"}," +
                 "{\"type\": \"pause\", \"duration\": 500}," +
-                "{\"type\": \"keyUp\", \"value\": \"A\"}]" +
+                "{\"type\": \"keyUp\", \"value\": \"" + Character.toString((char) KeyEvent.KEYCODE_A) + "\"}]" +
                 "} ]");
         final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
                 preprocessActions(actionJson)
@@ -122,7 +122,7 @@ public class W3CActionsTransformationTests {
         final KeyInputEventParams downParams = (KeyInputEventParams) paramSet1.get(0);
         assertThat(downParams.startDelta, equalTo(0L));
         assertThat(downParams.keyAction, equalTo(KeyEvent.ACTION_DOWN));
-        assertThat(downParams.keyCode, equalTo(29));
+        assertThat(downParams.keyCode, equalTo(KeyEvent.KEYCODE_A));
 
 
         assertThat(eventsChain.keyAt(1), equalTo(500L));
@@ -131,7 +131,7 @@ public class W3CActionsTransformationTests {
         final KeyInputEventParams upParams = (KeyInputEventParams) paramSet2.get(0);
         assertThat(upParams.startDelta, equalTo(0L));
         assertThat(upParams.keyAction, equalTo(KeyEvent.ACTION_UP));
-        assertThat(upParams.keyCode, equalTo(29));
+        assertThat(upParams.keyCode, equalTo(KeyEvent.KEYCODE_A));
     }
 
     @Test
