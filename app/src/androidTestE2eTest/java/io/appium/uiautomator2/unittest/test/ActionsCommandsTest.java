@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.unittest.test;
 
+import android.view.KeyEvent;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Test;
@@ -30,6 +32,7 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollTo;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
+import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.META_CODES_SHIFT;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -92,16 +95,20 @@ public class ActionsCommandsTest extends BaseTest {
 
         Response edit = findElement(By.id("io.appium.android.apis:id/username_edit"));
         click(edit.getElementId());
+        final String codeH = Character.toString((char) KeyEvent.KEYCODE_H);
+        final String codeI = Character.toString((char) KeyEvent.KEYCODE_I);
+        final String codeShift = new String(
+                Character.toChars(META_CODES_SHIFT + KeyEvent.META_SHIFT_ON));
         final JSONArray actionsJson = new JSONArray("[ {" +
                 "\"type\": \"key\"," +
                 "\"id\": \"keyboard\"," +
                 "\"actions\": [" +
-                "{\"type\": \"keyDown\", \"value\": \"\u00c1\"}," +
-                "{\"type\": \"keyDown\", \"value\": \"h\"}," +
-                "{\"type\": \"keyUp\", \"value\": \"h\"}," +
-                "{\"type\": \"keyUp\", \"value\": \"\u00c1\"}," +
-                "{\"type\": \"keyDown\", \"value\": \"i\"}," +
-                "{\"type\": \"keyUp\", \"value\": \"i\"}]" +
+                "{\"type\": \"keyDown\", \"value\": \"" + codeShift + "\"}," +
+                "{\"type\": \"keyDown\", \"value\": \"" + codeH + "\"}," +
+                "{\"type\": \"keyUp\", \"value\": \"" + codeH + "\"}," +
+                "{\"type\": \"keyUp\", \"value\": \"" + codeShift + "\"}," +
+                "{\"type\": \"keyDown\", \"value\": \"" + codeI + "\"}," +
+                "{\"type\": \"keyUp\", \"value\": \"" + codeI + "\"}]" +
                 "} ]");
         Response actionsResponse = performActions(actionsJson);
         assertThat(actionsResponse.getStatus(), equalTo(WDStatus.SUCCESS.code()));

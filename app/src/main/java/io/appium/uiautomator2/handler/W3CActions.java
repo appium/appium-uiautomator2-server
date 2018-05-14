@@ -28,7 +28,6 @@ import android.view.MotionEvent.PointerProperties;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,7 +40,6 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
-import io.appium.uiautomator2.utils.w3c.ASCIICodeToKeyEventConstantTranslator;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.InputEventParams;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.KeyInputEventParams;
@@ -49,15 +47,15 @@ import io.appium.uiautomator2.utils.w3c.ActionsHelpers.MotionInputEventParams;
 import io.appium.uiautomator2.utils.w3c.ActionsParseException;
 
 import static io.appium.uiautomator2.utils.InteractionUtils.injectEventSync;
+import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.META_CODES_SHIFT;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.actionsToInputEventsMapping;
+import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.getMetaKeyCodes;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.getPointerAction;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.metaKeysToState;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.toolTypeToInputSource;
 
 public class W3CActions extends SafeRequestHandler {
     private static final String TAG = W3CActions.class.getSimpleName();
-
-    private static final Set<Integer> META_KEY_CODES = getMetaKeyCodes();
 
     private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
             MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
@@ -141,25 +139,6 @@ public class W3CActions extends SafeRequestHandler {
         }
     }
 
-    private static Set<Integer> getMetaKeyCodes() {
-        final Field[] fields = KeyEvent.class.getFields();
-        final Set<Integer> result = new HashSet<>();
-        for (Field field : fields) {
-            if (field.getName().startsWith("META_") && field.getType() == int.class) {
-                final int metaCode;
-                try {
-                    metaCode = field.getInt(null);
-                } catch (IllegalAccessException e) {
-                    continue;
-                }
-                if (ASCIICodeToKeyEventConstantTranslator.translate(metaCode) == null) {
-                    result.add(metaCode);
-                }
-            }
-        }
-        return result;
-    }
-
     private boolean executeActions(final JSONArray actions) throws JSONException {
         final LongSparseArray<List<InputEventParams>> inputEventsMapping = actionsToInputEventsMapping(actions);
         final List<Long> allDeltas = new ArrayList<>();
@@ -180,11 +159,11 @@ public class W3CActions extends SafeRequestHandler {
                 if (eventParam instanceof KeyInputEventParams) {
                     final int keyCode = ((KeyInputEventParams) eventParam).keyCode;
                     final int keyAction = ((KeyInputEventParams) eventParam).keyAction;
-                    if (META_KEY_CODES.contains(keyCode)) {
+                    if (getMetaKeyCodes().contains(keyCode)) {
                         if (keyAction == KeyEvent.ACTION_DOWN) {
-                            depressedMetaKeys.add(keyCode);
+                            depressedMetaKeys.add(keyCode - META_CODES_SHIFT);
                         } else {
-                            depressedMetaKeys.remove(keyCode);
+                            depressedMetaKeys.remove(keyCode - META_CODES_SHIFT);
                         }
                     } else if (keyCode <= 0) {
                         depressedMetaKeys.clear();
