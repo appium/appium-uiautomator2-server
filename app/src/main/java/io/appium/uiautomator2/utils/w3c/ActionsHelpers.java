@@ -31,7 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -89,7 +88,6 @@ public class ActionsHelpers {
      * to keep the value.
      */
     public static final int META_CODES_SHIFT = 0x1000;
-    private static final Set<Integer> metaKeyCodes = new HashSet<>();
 
     private static JSONArray preprocessActionItems(final String actionId,
                                                    final String actionType,
@@ -663,23 +661,5 @@ public class ActionsHelpers {
         MotionInputEventParams() {
             super();
         }
-    }
-
-    public static Set<Integer> getMetaKeyCodes() {
-        if (metaKeyCodes.isEmpty()) {
-            final Field[] fields = KeyEvent.class.getFields();
-            for (Field field : fields) {
-                if (field.getName().startsWith("META_") && field.getType() == int.class) {
-                    final int metaCode;
-                    try {
-                        metaCode = field.getInt(null);
-                    } catch (IllegalAccessException e) {
-                        continue;
-                    }
-                    metaKeyCodes.add(META_CODES_SHIFT + metaCode);
-                }
-            }
-        }
-        return metaKeyCodes;
     }
 }

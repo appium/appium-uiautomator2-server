@@ -49,7 +49,6 @@ import io.appium.uiautomator2.utils.w3c.ActionsParseException;
 import static io.appium.uiautomator2.utils.InteractionUtils.injectEventSync;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.META_CODES_SHIFT;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.actionsToInputEventsMapping;
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.getMetaKeyCodes;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.getPointerAction;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.metaKeysToState;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.toolTypeToInputSource;
@@ -159,7 +158,7 @@ public class W3CActions extends SafeRequestHandler {
                 if (eventParam instanceof KeyInputEventParams) {
                     final int keyCode = ((KeyInputEventParams) eventParam).keyCode;
                     final int keyAction = ((KeyInputEventParams) eventParam).keyAction;
-                    if (getMetaKeyCodes().contains(keyCode)) {
+                    if (keyCode > META_CODES_SHIFT) {
                         if (keyAction == KeyEvent.ACTION_DOWN) {
                             depressedMetaKeys.add(keyCode - META_CODES_SHIFT);
                         } else {
