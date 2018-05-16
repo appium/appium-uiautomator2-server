@@ -32,7 +32,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -80,15 +79,6 @@ import static io.appium.uiautomator2.utils.w3c.ActionsConstants.POINTER_TYPE_PEN
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.POINTER_TYPE_TOUCH;
 
 public class ActionsHelpers {
-    /**
-     * This is necessary to shift the meta codes to avoid
-     * unexpected matches with key codes.
-     * Unfortunately there is no other way to distinguish
-     * key codes from meta codes, since the standard only provides a single field
-     * to keep the value.
-     */
-    public static final int META_CODES_SHIFT = 0x1000;
-
     private static JSONArray preprocessActionItems(final String actionId,
                                                    final String actionType,
                                                    final JSONArray actionItems) throws JSONException {

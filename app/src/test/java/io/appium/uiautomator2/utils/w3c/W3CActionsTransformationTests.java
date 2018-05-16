@@ -30,7 +30,6 @@ import io.appium.uiautomator2.utils.w3c.ActionsHelpers.InputEventParams;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.KeyInputEventParams;
 import io.appium.uiautomator2.utils.w3c.ActionsHelpers.MotionInputEventParams;
 
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.META_CODES_SHIFT;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.actionsToInputEventsMapping;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.preprocessActions;
 import static junit.framework.Assert.assertEquals;
@@ -64,16 +63,16 @@ public class W3CActionsTransformationTests {
 
     @Test
     public void verifyValidInputEventsChainIsCompiledForSingleKeysGesture() throws JSONException {
-        final int keyCode = KeyEvent.KEYCODE_A;
-        final int metaCode = META_CODES_SHIFT + KeyEvent.META_CTRL_LEFT_ON;
+        final int keyCode = 0xE019;
+        final int metaCode = 0xE009;
         final JSONArray actionJson = new JSONArray("[ {" +
                 "\"type\": \"key\"," +
                 "\"id\": \"keyboard\"," +
                 "\"actions\": [" +
-                "{\"type\": \"keyDown\", \"value\": \"" + new String(Character.toChars(metaCode)) + "\"}," +
-                "{\"type\": \"keyDown\", \"value\": \"" + Character.toString((char) keyCode) + "\"}," +
-                "{\"type\": \"keyUp\", \"value\": \"" + Character.toString((char) keyCode) + "\"}," +
-                "{\"type\": \"keyUp\", \"value\": \"" + new String(Character.toChars(metaCode)) + "\"}]" +
+                "{\"type\": \"keyDown\", \"value\": \"\uE009\"}," +
+                "{\"type\": \"keyDown\", \"value\": \"\uE019\"}," +
+                "{\"type\": \"keyUp\", \"value\": \"\uE019\"}," +
+                "{\"type\": \"keyUp\", \"value\": \"\uE009\"}]" +
                 "} ]");
         final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
                 preprocessActions(actionJson)
@@ -106,14 +105,13 @@ public class W3CActionsTransformationTests {
 
     @Test
     public void verifyValidInputEventsChainIsCompiledForSingleKeysGestureWithPause() throws JSONException {
-        final int keyCode = KeyEvent.KEYCODE_A;
         final JSONArray actionJson = new JSONArray("[ {" +
                 "\"type\": \"key\"," +
                 "\"id\": \"keyboard\"," +
                 "\"actions\": [" +
-                "{\"type\": \"keyDown\", \"value\": \"" + Character.toString((char) keyCode) + "\"}," +
+                "{\"type\": \"keyDown\", \"value\": \"A\"}," +
                 "{\"type\": \"pause\", \"duration\": 500}," +
-                "{\"type\": \"keyUp\", \"value\": \"" + Character.toString((char) keyCode) + "\"}]" +
+                "{\"type\": \"keyUp\", \"value\": \"A\"}]" +
                 "} ]");
         final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
                 preprocessActions(actionJson)
@@ -125,7 +123,7 @@ public class W3CActionsTransformationTests {
         final KeyInputEventParams downParams = (KeyInputEventParams) paramSet1.get(0);
         assertThat(downParams.startDelta, equalTo(0L));
         assertThat(downParams.keyAction, equalTo(KeyEvent.ACTION_DOWN));
-        assertThat(downParams.keyCode, equalTo(keyCode));
+        assertThat(downParams.keyCode, equalTo(65));
 
 
         assertThat(eventsChain.keyAt(1), equalTo(500L));
@@ -134,7 +132,7 @@ public class W3CActionsTransformationTests {
         final KeyInputEventParams upParams = (KeyInputEventParams) paramSet2.get(0);
         assertThat(upParams.startDelta, equalTo(0L));
         assertThat(upParams.keyAction, equalTo(KeyEvent.ACTION_UP));
-        assertThat(upParams.keyCode, equalTo(keyCode));
+        assertThat(upParams.keyCode, equalTo(65));
     }
 
     @Test
