@@ -31,9 +31,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -47,10 +45,8 @@ import io.appium.uiautomator2.utils.w3c.ActionsHelpers.MotionInputEventParams;
 import io.appium.uiautomator2.utils.w3c.ActionsParseException;
 
 import static io.appium.uiautomator2.utils.InteractionUtils.injectEventSync;
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.META_CODES_SHIFT;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.actionsToInputEventsMapping;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.getPointerAction;
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.metaKeysToState;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.toolTypeToInputSource;
 
 public class W3CActions extends SafeRequestHandler {
@@ -148,8 +144,8 @@ public class W3CActions extends SafeRequestHandler {
 
         long recentTimeDelta = 0;
         boolean result = true;
-        final Set<Integer> depressedMetaKeys = new HashSet<>();
         final long startTimestamp = SystemClock.uptimeMillis();
+        int metaState = 0;
         final LongSparseArray<Integer> motionEventsBalanceByInputSource = new LongSparseArray<>();
         for (final Long currentTimeDelta : allDeltas) {
             final List<InputEventParams> eventParams = inputEventsMapping.get(currentTimeDelta);
@@ -158,22 +154,12 @@ public class W3CActions extends SafeRequestHandler {
                 if (eventParam instanceof KeyInputEventParams) {
                     final int keyCode = ((KeyInputEventParams) eventParam).keyCode;
                     final int keyAction = ((KeyInputEventParams) eventParam).keyAction;
-                    if (keyCode > META_CODES_SHIFT) {
-                        if (keyAction == KeyEvent.ACTION_DOWN) {
-                            depressedMetaKeys.add(keyCode - META_CODES_SHIFT);
-                        } else {
-                            depressedMetaKeys.remove(keyCode - META_CODES_SHIFT);
-                        }
-                    } else if (keyCode <= 0) {
-                        depressedMetaKeys.clear();
-                    } else {
-                        final int metaState = metaKeysToState(depressedMetaKeys);
-                        result &= injectEventSync(new KeyEvent(startTimestamp + eventParam.startDelta,
-                                SystemClock.uptimeMillis(), keyAction, keyCode, 0,
-                                metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0));
-                        Log.d(TAG, String.format("Generated KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
-                                keyAction, keyCode, metaState));
-                    }
+                    metaState = ((KeyInputEventParams) eventParam).metaState;
+                    result &= injectEventSync(new KeyEvent(startTimestamp + eventParam.startDelta,
+                            SystemClock.uptimeMillis(), keyAction, keyCode, 0,
+                            metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0));
+                    Log.d(TAG, String.format("Generated KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
+                            keyAction, keyCode, metaState));
                 } else if (eventParam instanceof MotionInputEventParams) {
                     final int inputSource = toolTypeToInputSource(((MotionInputEventParams) eventParam).properties.toolType);
                     final List<MotionInputEventParams> events = (motionParamsByInputSource.get(inputSource) == null) ?
@@ -211,7 +197,7 @@ public class W3CActions extends SafeRequestHandler {
                             result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), action,
                                     action == MotionEvent.ACTION_DOWN ? 1 : upDownBalance, nonHoveringProps, nonHoveringCoords,
-                                    metaKeysToState(depressedMetaKeys), motionEventParams.button,
+                                    metaState, motionEventParams.button,
                                     1, 1, 0, 0, inputSource, 0));
                             Log.d(TAG, String.format("Generated MotionEvent for action '%s'", action));
                         }
@@ -226,7 +212,7 @@ public class W3CActions extends SafeRequestHandler {
                                     getPointerAction(MotionEvent.ACTION_POINTER_UP, upDownBalance - 1);
                             result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), action, action == MotionEvent.ACTION_UP ? 1 : upDownBalance,
-                                    nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys), motionEventParams.button,
+                                    nonHoveringProps, nonHoveringCoords, metaState, motionEventParams.button,
                                     1, 1, 0, 0, inputSource, 0));
                             if (upDownBalance > 0) {
                                 --upDownBalance;
@@ -237,7 +223,7 @@ public class W3CActions extends SafeRequestHandler {
                         case MotionEvent.ACTION_MOVE: {
                             result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), actionCode, upDownBalance,
-                                    nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys),
+                                    nonHoveringProps, nonHoveringCoords, metaState,
                                     motionEventParams.button, 1, 1, 0, 0, inputSource, 0)
                             );
                         }
@@ -247,7 +233,7 @@ public class W3CActions extends SafeRequestHandler {
                         case MotionEvent.ACTION_HOVER_MOVE: {
                             result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), actionCode, hoveringProps.length,
-                                    hoveringProps, hoveringCoords, metaKeysToState(depressedMetaKeys),
+                                    hoveringProps, hoveringCoords, metaState,
                                     0, 1, 1, 0, 0, inputSource, 0)
                             );
                         }

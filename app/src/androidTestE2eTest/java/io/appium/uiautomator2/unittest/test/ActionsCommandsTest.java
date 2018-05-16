@@ -32,7 +32,6 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollTo;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.META_CODES_SHIFT;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -97,16 +96,12 @@ public class ActionsCommandsTest extends BaseTest {
         click(edit.getElementId());
         final String codeH = Character.toString((char) KeyEvent.KEYCODE_H);
         final String codeI = Character.toString((char) KeyEvent.KEYCODE_I);
-        final String codeShift = new String(
-                Character.toChars(META_CODES_SHIFT + KeyEvent.META_SHIFT_ON));
         final JSONArray actionsJson = new JSONArray("[ {" +
                 "\"type\": \"key\"," +
                 "\"id\": \"keyboard\"," +
                 "\"actions\": [" +
-                "{\"type\": \"keyDown\", \"value\": \"" + codeShift + "\"}," +
-                "{\"type\": \"keyDown\", \"value\": \"" + codeH + "\"}," +
-                "{\"type\": \"keyUp\", \"value\": \"" + codeH + "\"}," +
-                "{\"type\": \"keyUp\", \"value\": \"" + codeShift + "\"}," +
+                "{\"type\": \"keyDown\", \"value\": \"" + codeH + "\", \"shiftKey\": true}," +
+                "{\"type\": \"keyUp\", \"value\": \"" + codeH + "\", \"shiftKey\": true}," +
                 "{\"type\": \"keyDown\", \"value\": \"" + codeI + "\"}," +
                 "{\"type\": \"keyUp\", \"value\": \"" + codeI + "\"}]" +
                 "} ]");

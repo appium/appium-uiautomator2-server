@@ -32,16 +32,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.KnownElements;
 
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_BUTTON_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_DURATION_KEY;
+import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_META_ALT_KEY;
+import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_META_CAPS_KEY;
+import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_META_CTRL_KEY;
+import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_META_FUNCTION_KEY;
+import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_META_META_KEY;
+import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_META_SHIFT_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_ORIGIN_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_ORIGIN_POINTER;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_ORIGIN_VIEWPORT;
@@ -80,14 +84,6 @@ import static io.appium.uiautomator2.utils.w3c.ActionsConstants.POINTER_TYPE_PEN
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.POINTER_TYPE_TOUCH;
 
 public class ActionsHelpers {
-    /**
-     * This is necessary to shift the meta codes to avoid
-     * unexpected matches with key codes.
-     * Unfortunately there is no other way to distinguish
-     * key codes from meta codes, since the standard only provides a single field
-     * to keep the value.
-     */
-    public static final int META_CODES_SHIFT = 0x1000;
 
     private static JSONArray preprocessActionItems(final String actionId,
                                                    final String actionType,
@@ -548,6 +544,35 @@ public class ActionsHelpers {
         return button;
     }
 
+    private static int extractMetaState(JSONObject actionItem) throws JSONException {
+        int result = 0;
+        if (actionItem.has(ACTION_ITEM_META_ALT_KEY)
+                && actionItem.getBoolean(ACTION_ITEM_META_ALT_KEY)) {
+            result |= KeyEvent.META_ALT_ON;
+        }
+        if (actionItem.has(ACTION_ITEM_META_CTRL_KEY)
+                && actionItem.getBoolean(ACTION_ITEM_META_CTRL_KEY)) {
+            result |= KeyEvent.META_CTRL_ON;
+        }
+        if (actionItem.has(ACTION_ITEM_META_SHIFT_KEY)
+                && actionItem.getBoolean(ACTION_ITEM_META_SHIFT_KEY)) {
+            result |= KeyEvent.META_SHIFT_ON;
+        }
+        if (actionItem.has(ACTION_ITEM_META_META_KEY)
+                && actionItem.getBoolean(ACTION_ITEM_META_META_KEY)) {
+            result |= KeyEvent.META_META_ON;
+        }
+        if (actionItem.has(ACTION_ITEM_META_FUNCTION_KEY)
+                && actionItem.getBoolean(ACTION_ITEM_META_FUNCTION_KEY)) {
+            result |= KeyEvent.META_FUNCTION_ON;
+        }
+        if (actionItem.has(ACTION_ITEM_META_CAPS_KEY)
+                && actionItem.getBoolean(ACTION_ITEM_META_CAPS_KEY)) {
+            result |= KeyEvent.META_CAPS_LOCK_ON;
+        }
+        return result;
+    }
+
     private static void applyKeyActionToEventsMapping(
             final JSONObject action, final LongSparseArray<List<InputEventParams>> mapping)
             throws JSONException {
@@ -580,6 +605,7 @@ public class ActionsHelpers {
                     evtParams.keyCode = value.codePointAt(0);
                     evtParams.keyAction = itemType.equals(ACTION_ITEM_TYPE_KEY_DOWN) ?
                             KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP;
+                    evtParams.metaState = extractMetaState(actionItem);
                     evtParams.startDelta = chainEntryPointDelta;
                     recordEventParams(timeDelta, mapping, evtParams);
                     chainEntryPointDelta = timeDelta;
@@ -628,14 +654,6 @@ public class ActionsHelpers {
         return result;
     }
 
-    public static int metaKeysToState(final Set<Integer> metaKeys) {
-        int result = 0;
-        for (final int metaKey : metaKeys) {
-            result |= metaKey;
-        }
-        return result;
-    }
-
     public static abstract class InputEventParams {
         public long startDelta = 0;
 
@@ -646,6 +664,7 @@ public class ActionsHelpers {
     public static class KeyInputEventParams extends InputEventParams {
         public int keyAction;
         public int keyCode;
+        public int metaState = 0;
 
         KeyInputEventParams() {
             super();
