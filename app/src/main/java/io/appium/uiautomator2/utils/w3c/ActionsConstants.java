@@ -57,6 +57,13 @@ public class ActionsConstants {
             Collections.singletonList(ACTION_ITEM_TYPE_PAUSE);
 
     public static final String ACTION_ITEM_VALUE_KEY = "value";
+    public static final String ACTION_ITEM_META_ALT_KEY = "altKey";
+    public static final String ACTION_ITEM_META_CTRL_KEY = "ctrlKey";
+    public static final String ACTION_ITEM_META_SHIFT_KEY = "shiftKey";
+    public static final String ACTION_ITEM_META_META_KEY = "metaKey";
+    public static final String ACTION_ITEM_META_CAPS_KEY = "capsKey";
+    public static final String ACTION_ITEM_META_FUNCTION_KEY = "functionKey";
+
     public static final String ACTION_ITEM_PRESSURE_KEY = "pressure";
     public static final String ACTION_ITEM_SIZE_KEY = "size";
     public static final String ACTION_ITEM_BUTTON_KEY = "button";
