@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/appium/appium-uiautomator2-server",
   "scripts": {
-    "bump-gradle-version": "node update-gradle-version.js --package-version=${npm_package_version} && git add app/build.gradle",
+    "bump-gradle-version": "gulp gradle-version-update --package-version=${npm_package_version} && git add app/build.gradle",
     "build": "./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks",
     "move-server": "cp app/build/outputs/apk/server/debug/appium-uiautomator2-server-v${npm_package_version}.apk ./apks",
     "move-test": "cp app/build/outputs/apk/androidTest/server/debug/appium-uiautomator2-server-debug-androidTest.apk ./apks",
@@ -29,8 +29,7 @@
     "clean-device": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test"
   },
   "devDependencies": {
-    "replace-in-file": "^3.1.0",
-    "yargs": "^10.1.1",
-    "android-apidemos": "^2.1.2"
+    "android-apidemos": "^3.0.0",
+    "appium-gulp-plugins": "^2.4.0"
   }
 }

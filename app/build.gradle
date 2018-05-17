@@ -98,7 +98,7 @@ task installAUT(type: Exec) {
     doFirst {
         println('Install AUT')
         def adb = android.getAdbExecutable().toString()
-        def apk = file('../node_modules/android-apidemos/bin/ApiDemos-debug.apk')
+        def apk = file('../node_modules/android-apidemos/apks/ApiDemos-debug.apk')
         def sdkVersion = "$adb shell getprop ro.build.version.sdk".execute().text.trim()
         println "Device SDK version: $sdkVersion"
         /* This seems weird but it is what it is: https://github.com/wix/detox/issues/274 */
