@@ -180,23 +180,21 @@ public class XPathFinder implements Finder {
     private static String tag(String clsName) {
         // the nth anonymous class has a class name ending in "Outer$n"
         // and local inner classes have names ending in "Outer.$1Inner"
-        return clsName.replaceAll("\\$[0-9]+", "\\$");
+        return clsName
+                .replaceAll("\\?+", "_")
+                .replaceAll("\\$[0-9]+", "\\$");
     }
 
     /**
      * returns by excluding inner class name.
      */
     private static String simpleClassName(String clsName) {
-        clsName = clsName.replaceAll("\\$[0-9]+", "\\$");
+        clsName = tag(clsName);
         // we want the index of the inner class
         int start = clsName.lastIndexOf('$');
-
         // if this isn't an inner class, just find the start of the
         // top level class name.
-        if (start == -1) {
-            return clsName;
-        }
-        return clsName.substring(0, start);
+        return start <= 0 ? clsName : clsName.substring(0, start);
     }
 
     @Override
