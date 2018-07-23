@@ -1,5 +1,11 @@
 language: android
 dist: precise
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.9
 android:
   components:
     # use the latest revision of Android SDK Tools
@@ -27,6 +33,7 @@ env:
     - ANDROID_EMU_ABI=armeabi-v7a
     - ANDROID_BUILD_TOOLS=26.0.2
     - E2E_TEST_PACKAGE=io.appium.uiautomator2.unittest.test
+    - CC=gcc-4.9 CXX=g++-4.9
   matrix:
     - TEST=unit START_EMU=0
     - TEST=AlertCommandsTest ANDROID_EMU_TARGET=android-24
@@ -44,7 +51,7 @@ before_script:
   - node --version
   - npm --version
   - npm install appium-test-support # get the travis emu scripts
-  
+
   # npm stuff
   - npm install
 
