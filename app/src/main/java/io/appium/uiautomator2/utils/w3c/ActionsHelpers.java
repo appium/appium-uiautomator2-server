@@ -495,13 +495,13 @@ public class ActionsHelpers {
         if (!actionItem.has(ACTION_ITEM_DURATION_KEY)) {
             throw new ActionsParseException(String.format(
                     "Missing %s key for action item '%s' of action with id '%s'",
-                    ACTION_ITEM_DURATION_KEY, action, action.getString(ACTION_KEY_ID)));
+                    ACTION_ITEM_DURATION_KEY, actionItem, action.getString(ACTION_KEY_ID)));
         }
         final long duration = actionItem.getLong(ACTION_ITEM_DURATION_KEY);
         if (duration < 0) {
             throw new ActionsParseException(String.format(
                     "%s key cannot be negative for action item '%s' of action with id '%s'",
-                    ACTION_ITEM_DURATION_KEY, action, action.getString(ACTION_KEY_ID)));
+                    ACTION_ITEM_DURATION_KEY, actionItem, action.getString(ACTION_KEY_ID)));
         }
         return duration;
     }
@@ -558,13 +558,13 @@ public class ActionsHelpers {
                     if (!actionItem.has(ACTION_ITEM_VALUE_KEY)) {
                         throw new ActionsParseException(String.format(
                                 "Missing %s key for action item '%s' of action with id '%s'",
-                                ACTION_ITEM_VALUE_KEY, action, action.getString(ACTION_KEY_ID)));
+                                ACTION_ITEM_VALUE_KEY, actionItem, action.getString(ACTION_KEY_ID)));
                     }
                     final String value = actionItem.getString(ACTION_ITEM_VALUE_KEY);
                     if (value.isEmpty()) {
                         throw new ActionsParseException(String.format(
                                 "%s key cannot be empty for action item '%s' of action with id '%s'",
-                                ACTION_ITEM_VALUE_KEY, action, action.getString(ACTION_KEY_ID)));
+                                ACTION_ITEM_VALUE_KEY, actionItem, action.getString(ACTION_KEY_ID)));
                     }
                     final KeyInputEventParams evtParams = new KeyInputEventParams();
                     evtParams.keyCode = value.codePointAt(0);
