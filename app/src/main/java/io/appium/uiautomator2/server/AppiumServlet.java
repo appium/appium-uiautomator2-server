@@ -155,7 +155,10 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetRect("/wd/hub/session/:sessionId/element/:id/rect"));
         register(getHandler, new GetSize("/wd/hub/session/:sessionId/element/:id/size"));
         register(getHandler, new GetName("/wd/hub/session/:sessionId/element/:id/name"));
+        // W3C endpoint
         register(getHandler, new GetElementScreenshot("/wd/hub/session/:sessionId/element/:id/screenshot"));
+        // JSONWP endpoint
+        register(getHandler, new GetElementScreenshot("/wd/hub/session/:sessionId/screenshot/:id"));
         register(getHandler, new Location("/wd/hub/session/:sessionId/element/:id/location"));
         register(getHandler, new GetDeviceSize("/wd/hub/session/:sessionId/window/:windowHandle/size"));
         register(getHandler, new Source("/wd/hub/session/:sessionId/source"));
