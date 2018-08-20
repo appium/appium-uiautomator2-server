@@ -41,7 +41,6 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
 import static android.support.test.internal.util.Checks.checkNotNull;
-import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.refreshUiElementTree;
 
 /**
  * Find matching UiElement by XPath.
@@ -51,17 +50,8 @@ public class XPathFinder implements Finder {
     private static final String UI_ELEMENT_INDEX = "uiElementIndex";
     private final String xPathString;
 
-    private XPathFinder(String xPathString) {
+    public XPathFinder(String xPathString) {
         this.xPathString = checkNotNull(xPathString);
-    }
-
-    public static NodeInfoList getNodesList(String xpathExpression,
-                                            @Nullable AccessibilityNodeInfo nodeInfo)
-            throws InvalidSelectorException {
-        final UiAutomationElement root = nodeInfo == null
-                ? refreshUiElementTree()
-                : refreshUiElementTree(nodeInfo);
-        return new XPathFinder(xpathExpression).find(root);
     }
 
     private static void setNodeLocalName(Element element, String className) {

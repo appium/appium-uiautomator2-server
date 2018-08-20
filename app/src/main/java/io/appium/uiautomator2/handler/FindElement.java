@@ -27,7 +27,9 @@ import io.appium.uiautomator2.model.By.ByClass;
 import io.appium.uiautomator2.model.By.ById;
 import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.model.Session;
+import io.appium.uiautomator2.model.UiAutomationElement;
 import io.appium.uiautomator2.model.XPathFinder;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Device;
@@ -36,8 +38,9 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.UiAutomatorParser;
 
-import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.refreshUiElementTree;
-import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
+import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.getRootAccessibilityNodeInActiveWindow;
+import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.uiTreeWithRootElement;
+import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.uiTreeWithToastElement;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 
 public class FindElement extends SafeRequestHandler {
@@ -58,7 +61,7 @@ public class FindElement extends SafeRequestHandler {
      * http://java-regex-tester.appspot.com/regex/5f04ac92-f9aa-45a6-b1dc-e2c25fd3cc6b
      */
     private static final Pattern resourceIdRegex = Pattern
-            .compile("^[a-zA-Z_][a-zA-Z0-9\\._]*:[^/]+/[\\S]+$");
+            .compile("^[a-zA-Z_][a-zA-Z0-9._]*:[^/]+/[\\S]+$");
 
     public FindElement(String mappedUri) {
         super(mappedUri);
@@ -69,17 +72,17 @@ public class FindElement extends SafeRequestHandler {
      * TODO: Need to handle contextId based finding
      */
     private static Object getXPathUiObject(final String expression,
-                                           @Nullable AndroidElement element)
+                                           @Nullable AndroidElement element,
+                                           AccessibilityNodeInfo windowRoot)
             throws ClassNotFoundException, UiAutomator2Exception {
-        AccessibilityNodeInfo nodeInfo = null;
-        if (element != null) {
-            nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element.getUiObject());
-        }
-        final NodeInfoList nodeList = XPathFinder.getNodesList(expression, nodeInfo /* AccessibilityNodeInfo */);
+        final UiAutomationElement xpathRoot = element == null
+                ? uiTreeWithToastElement(windowRoot)
+                : uiTreeWithRootElement(AccessibilityNodeInfoGetter.fromUiObject(element.getUiObject()));
+        final NodeInfoList nodeList = new XPathFinder(expression).find(xpathRoot);
         if (nodeList.size() == 0) {
             throw new ElementNotFoundException();
         }
-        return getInstance().findObject(nodeList);
+        return CustomUiDevice.getInstance().findObject(nodeList, windowRoot);
     }
 
     public static String getElementLocator(ById by) {
@@ -130,50 +133,47 @@ public class FindElement extends SafeRequestHandler {
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
 
+    @Nullable
     private Object findElement(By by) throws ClassNotFoundException, UiAutomator2Exception,
             UiObjectNotFoundException {
-        if (!(by instanceof By.ByXPath)) {
-            refreshUiElementTree();
-        }
+        final AccessibilityNodeInfo windowRoot = getRootAccessibilityNodeInActiveWindow();
 
         if (by instanceof ById) {
             String locator = getElementLocator((ById) by);
-            return getInstance().findObject(android.support.test.uiautomator.By.res(locator));
+            return CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.res(locator), windowRoot);
         } else if (by instanceof By.ByAccessibilityId) {
-            return getInstance().findObject(android.support.test.uiautomator.By.desc(by.getElementLocator()));
+            return CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.desc(by.getElementLocator()), windowRoot);
         } else if (by instanceof ByClass) {
-            return getInstance().findObject(android.support.test.uiautomator.By.clazz(by.getElementLocator()));
+            return CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.clazz(by.getElementLocator()), windowRoot);
         } else if (by instanceof By.ByXPath) {
-            return getXPathUiObject(by.getElementLocator(), null /* AndroidElement */);
+            return getXPathUiObject(by.getElementLocator(), null /* AndroidElement */, windowRoot);
         } else if (by instanceof By.ByAndroidUiAutomator) {
-            return getInstance().findObject(findByUiAutomator(by.getElementLocator()));
+            return CustomUiDevice.getInstance().findObject(findByUiAutomator(by.getElementLocator()), windowRoot);
         }
         String msg = String.format("By locator %s is currently not supported!", by.getClass().getSimpleName());
         throw new UnsupportedOperationException(msg);
     }
 
+    @Nullable
     private Object findElement(By by, String contextId) throws ClassNotFoundException,
             UiAutomator2Exception, UiObjectNotFoundException {
         AndroidElement element = KnownElements.getElementFromCache(contextId);
         if (element == null) {
             throw new ElementNotFoundException();
         }
-
-        if (!(by instanceof By.ByXPath)) {
-            refreshUiElementTree();
-        }
+        final AccessibilityNodeInfo windowRoot = getRootAccessibilityNodeInActiveWindow();
 
         if (by instanceof ById) {
             String locator = getElementLocator((ById) by);
-            return element.getChild(android.support.test.uiautomator.By.res(locator));
+            return element.getChild(android.support.test.uiautomator.By.res(locator), windowRoot);
         } else if (by instanceof By.ByAccessibilityId) {
-            return element.getChild(android.support.test.uiautomator.By.desc(by.getElementLocator()));
+            return element.getChild(android.support.test.uiautomator.By.desc(by.getElementLocator()), windowRoot);
         } else if (by instanceof ByClass) {
-            return element.getChild(android.support.test.uiautomator.By.clazz(by.getElementLocator()));
+            return element.getChild(android.support.test.uiautomator.By.clazz(by.getElementLocator()), windowRoot);
         } else if (by instanceof By.ByXPath) {
-            return getXPathUiObject(by.getElementLocator(), element);
+            return getXPathUiObject(by.getElementLocator(), element, windowRoot);
         } else if (by instanceof By.ByAndroidUiAutomator) {
-            return element.getChild(findByUiAutomator(by.getElementLocator()));
+            return element.getChild(findByUiAutomator(by.getElementLocator()), windowRoot);
         }
         String msg = String.format("By locator %s is currently not supported!", by.getClass().getSimpleName());
         throw new UnsupportedOperationException(msg);

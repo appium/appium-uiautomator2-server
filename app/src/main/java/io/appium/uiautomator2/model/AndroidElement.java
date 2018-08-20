@@ -1,7 +1,9 @@
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.support.test.uiautomator.UiObjectNotFoundException;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.List;
 
@@ -37,10 +39,10 @@ public interface AndroidElement {
 
     Rect getBounds() throws UiObjectNotFoundException;
 
-    Object getChild(final Object sel) throws UiObjectNotFoundException,
+    Object getChild(final Object sel, @Nullable AccessibilityNodeInfo root) throws UiObjectNotFoundException,
             InvalidSelectorException, ClassNotFoundException;
 
-    List<Object> getChildren(final Object selector, final By by)
+    List<Object> getChildren(final Object selector, final By by, @Nullable AccessibilityNodeInfo root)
             throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException;
 
     String getContentDesc() throws UiObjectNotFoundException;

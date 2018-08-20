@@ -36,7 +36,7 @@ public class Clear extends SafeRequestHandler {
         } else {
             //perform action on focused element
             try {
-                element = KnownElements.getElement(focused(true), null /* by */);
+                element = KnownElements.getElement(focused(true), null /* by */, null);
             } catch (ClassNotFoundException e) {
                 throw new UiAutomator2Exception(e);
             }

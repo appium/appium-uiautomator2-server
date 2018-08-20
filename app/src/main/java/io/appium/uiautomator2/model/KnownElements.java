@@ -1,6 +1,8 @@
 package io.appium.uiautomator2.model;
 
+import android.support.annotation.Nullable;
 import android.support.test.uiautomator.BySelector;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,8 +42,9 @@ public class KnownElements {
      * @param by,            user provided selector criteria from appium client.
      * @return
      */
-    public static AndroidElement getElement(final BySelector ui2BySelector, By by) throws UiAutomator2Exception, ClassNotFoundException {
-        Object ui2Object = getInstance().findObject(ui2BySelector);
+    public static AndroidElement getElement(final BySelector ui2BySelector, By by, @Nullable AccessibilityNodeInfo root)
+            throws UiAutomator2Exception, ClassNotFoundException {
+        Object ui2Object = getInstance().findObject(ui2BySelector, root);
         if (ui2Object == null) {
             throw new ElementNotFoundException();
         }

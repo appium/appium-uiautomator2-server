@@ -1,7 +1,6 @@
 package io.appium.uiautomator2.model.internal;
 
 import android.app.Instrumentation;
-import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.test.uiautomator.By;
@@ -11,7 +10,6 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiSelector;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.accessibility.AccessibilityWindowInfo;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -26,7 +24,7 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.ReflectionUtils;
 
-import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.getRootAccessibilityNodeInActiveWindow;
+import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.getWindowRoots;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
@@ -36,13 +34,17 @@ public class CustomUiDevice {
 
     private static final String FIELD_M_INSTRUMENTATION = "mInstrumentation";
     private static final String FIELD_API_LEVEL_ACTUAL = "API_LEVEL_ACTUAL";
-    private static final boolean MULTI_WINDOW = false;
 
     private static CustomUiDevice INSTANCE = new CustomUiDevice();
     private final Method METHOD_FIND_MATCH;
     private final Method METHOD_FIND_MATCHS;
     private final Class ByMatcher;
     private final Instrumentation mInstrumentation;
+
+    public Integer getApiLevelActual() {
+        return (Integer) API_LEVEL_ACTUAL;
+    }
+
     private final Object API_LEVEL_ACTUAL;
 
     /**
@@ -79,14 +81,18 @@ public class CustomUiDevice {
 
     /**
      * Returns the first object to match the {@code selector} criteria.
+     *
+     * @throws InvalidSelectorException if given selector is unsupported/unknown
      */
     @Nullable
-    public Object findObject(Object selector) throws ClassNotFoundException, UiAutomator2Exception {
+    public Object findObject(Object selector, @Nullable AccessibilityNodeInfo root)
+            throws ClassNotFoundException, UiAutomator2Exception {
 
         AccessibilityNodeInfo node;
         Device.waitForIdle();
         if (selector instanceof BySelector) {
-            node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcher, Device.getUiDevice(), selector, getWindowRoots());
+            node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcher,
+                    Device.getUiDevice(), selector, getWindowRoots(root));
         } else if (selector instanceof NodeInfoList) {
             List<AccessibilityNodeInfo> nodesList = ((NodeInfoList) selector).getNodeList();
             if (nodesList.isEmpty()) {
@@ -137,13 +143,15 @@ public class CustomUiDevice {
     /**
      * Returns List<object> to match the {@code selector} criteria.
      */
-    public List<Object> findObjects(Object selector) throws ClassNotFoundException, UiAutomator2Exception {
+    public List<Object> findObjects(Object selector, @Nullable AccessibilityNodeInfo root)
+            throws ClassNotFoundException, UiAutomator2Exception {
         List<Object> ret = new ArrayList<>();
 
         List<AccessibilityNodeInfo> axNodesList;
         if (selector instanceof BySelector) {
             ReflectionUtils.getClass("android.support.test.uiautomator.ByMatcher");
-            Object nodes = invoke(METHOD_FIND_MATCHS, ByMatcher, getUiDevice(), selector, getWindowRoots());
+            Object nodes = invoke(METHOD_FIND_MATCHS, ByMatcher, getUiDevice(), selector,
+                    getWindowRoots(root));
             //noinspection unchecked
             axNodesList = (List) nodes;
         } else if (selector instanceof NodeInfoList) {
@@ -167,39 +175,5 @@ public class CustomUiDevice {
         }
 
         return ret;
-    }
-
-    /**
-     * Returns a list containing the root {@link AccessibilityNodeInfo}s for each active window
-     */
-    private AccessibilityNodeInfo[] getWindowRoots() throws UiAutomator2Exception {
-        List<AccessibilityNodeInfo> ret = new ArrayList<>();
-        /*
-         * TODO: MULTI_WINDOW is disabled, UIAutomatorViewer captures active window properties and
-         * end users always relay on UIAutomatorViewer while writing tests.
-         * If we enable MULTI_WINDOW it effects end users.
-         * https://code.google.com/p/android/issues/detail?id=207569
-         */
-        if ((Integer) API_LEVEL_ACTUAL >= Build.VERSION_CODES.LOLLIPOP && MULTI_WINDOW) {
-            // Support multi-window searches for API level 21 and up
-            for (AccessibilityWindowInfo window : mInstrumentation.getUiAutomation().getWindows()) {
-                AccessibilityNodeInfo root = window.getRoot();
-
-                if (root == null) {
-                    Logger.debug(String.format("Skipping null root node for window: %s", window.toString()));
-                    continue;
-                }
-                ret.add(root);
-            }
-            // Prior to API level 21 we can only access the active window
-        } else {
-            AccessibilityNodeInfo node = getRootAccessibilityNodeInActiveWindow();
-            if (node == null) {
-                throw new UiAutomator2Exception("Unable to get Root in Active window," +
-                        " ERROR: null root node returned by UiTestAutomationBridge.");
-            }
-            ret.add(node);
-        }
-        return ret.toArray(new AccessibilityNodeInfo[ret.size()]);
     }
 }

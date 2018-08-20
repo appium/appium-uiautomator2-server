@@ -1,6 +1,7 @@
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.Configurator;
 import android.support.test.uiautomator.UiObject;
@@ -131,29 +132,33 @@ public class UiObjectElement implements AndroidElement {
         return rectangle;
     }
 
-    public Object getChild(final Object selector) throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
+    @Nullable
+    public Object getChild(final Object selector, @Nullable AccessibilityNodeInfo root)
+            throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof BySelector) {
-            /**
+            /*
              * We can't find the child element with BySelector on UiObject,
              * as an alternative creating UiObject2 with UiObject's AccessibilityNodeInfo
              * and finding the child element on UiObject2.
              */
             AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-            UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo);
-            return uiObject2.findObject((BySelector) selector);
+            Object uiObject2 = CustomUiDevice.getInstance().findObject(nodeInfo, root);
+            return (uiObject2 instanceof UiObject2)
+                ? ((UiObject2) uiObject2).findObject((BySelector) selector) : null;
         }
         return element.getChild((UiSelector) selector);
     }
 
-    public List<Object> getChildren(final Object selector, final By by) throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
+    public List<Object> getChildren(final Object selector, final By by, @Nullable AccessibilityNodeInfo root)
+            throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof BySelector) {
-            /**
+            /*
              * We can't find the child elements with BySelector on UiObject,
              * as an alternative creating UiObject2 with UiObject's AccessibilityNodeInfo
              * and finding the child elements on UiObject2.
              */
             AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-            UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo);
+            UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo, root);
             return (List) uiObject2.findObjects((BySelector) selector);
         }
         return (List) this.getChildElements((UiSelector) selector);
