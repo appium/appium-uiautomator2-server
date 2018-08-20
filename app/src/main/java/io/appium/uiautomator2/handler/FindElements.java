@@ -1,5 +1,6 @@
 package io.appium.uiautomator2.handler;
 
+import android.support.annotation.Nullable;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
@@ -35,6 +36,7 @@ import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.UiAutomatorParser;
 
 import static io.appium.uiautomator2.handler.FindElement.getElementLocator;
+import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.refreshUiElementTree;
 import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -50,7 +52,8 @@ public class FindElements extends SafeRequestHandler {
     /**
      * returns  UiObject2 for an xpath expression
      **/
-    private static List<Object> getXPathUiObjects(final String expression, AndroidElement element)
+    private static List<Object> getXPathUiObjects(final String expression,
+                                                  @Nullable AndroidElement element)
             throws ClassNotFoundException, UiAutomator2Exception {
         AccessibilityNodeInfo nodeInfo = null;
         if (element != null) {
@@ -105,6 +108,10 @@ public class FindElements extends SafeRequestHandler {
 
     private List<Object> findElements(By by) throws ClassNotFoundException,
             UiAutomator2Exception, UiObjectNotFoundException {
+        if (!(by instanceof By.ByXPath)) {
+            refreshUiElementTree();
+        }
+
         if (by instanceof By.ById) {
             String locator = getElementLocator((ById) by);
             return getInstance().findObjects(android.support.test.uiautomator.By.res(locator));
@@ -130,6 +137,10 @@ public class FindElements extends SafeRequestHandler {
         if (element == null) {
             throw new ElementNotFoundException();
         }
+        if (!(by instanceof By.ByXPath)) {
+            refreshUiElementTree();
+        }
+
         if (by instanceof ById) {
             String locator = getElementLocator((ById) by);
             return element.getChildren(android.support.test.uiautomator.By.res(locator), by);

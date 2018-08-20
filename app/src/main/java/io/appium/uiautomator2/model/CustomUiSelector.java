@@ -19,7 +19,6 @@ public class CustomUiSelector {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        XPathFinder.refreshUiElementTree();
         UiAutomationElement uiAutomationElement = UiAutomationElement.map.get(node);
         put(Attribute.PACKAGE, charSequenceToString(uiAutomationElement.getPackageName()));
         put(Attribute.CLASS, charSequenceToString(uiAutomationElement.getClassName()));

@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.model;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
@@ -45,6 +46,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     public final static Map<AccessibilityNodeInfo, UiAutomationElement> map = new WeakHashMap<>();
     private final Map<Attribute, Object> attributes;
     private final boolean visible;
+    @SuppressWarnings("unused")
     private final Rect visibleBounds;
     private final UiAutomationElement parent;
     private final List<UiAutomationElement> children;
@@ -88,7 +90,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
 
         // Order matters as getVisibleBounds depends on visible
         visible = node.isVisibleToUser();
-        visibleBounds = getVisibleBounds(node);
+        visibleBounds = getVisibleBounds();
         List<UiAutomationElement> mutableChildren = buildChildren(node);
         this.children = mutableChildren == null ? null : Collections.unmodifiableList(mutableChildren);
     }
@@ -122,7 +124,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     public static UiAutomationElement newRootElement(AccessibilityNodeInfo rawElement,
                                                      @Nullable List<CharSequence> toastMSGs) {
         clearData();
-        /**
+        /*
          * Injecting root element as hierarchy and adding rawElement as a child.
          */
         UiAutomationElement rootElement = new UiAutomationElement("hierarchy" /*root element*/, rawElement /* child nodInfo */, 0 /* index */);
@@ -194,7 +196,8 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         return rect;
     }
 
-    private Rect getVisibleBounds(AccessibilityNodeInfo node) {
+    @SuppressLint("CheckResult")
+    private Rect getVisibleBounds() {
         if (!visible) {
             return new Rect();
         }

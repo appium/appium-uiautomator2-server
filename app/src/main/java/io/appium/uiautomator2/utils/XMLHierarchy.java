@@ -36,7 +36,8 @@ import javax.xml.xpath.XPathFactory;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
-import io.appium.uiautomator2.model.XPathFinder;
+
+import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.getRootAccessibilityNode;
 
 public abstract class XMLHierarchy {
     // XML 1.0 Legal Characters (http://stackoverflow.com/a/4237934/347155)
@@ -46,7 +47,7 @@ public abstract class XMLHierarchy {
     private final static String DEFAULT_VIEW_NAME = "android.view.View";
 
     public static InputSource getRawXMLHierarchy() throws UiAutomator2Exception {
-        AccessibilityNodeInfo root = XPathFinder.getRootAccessibilityNode();
+        AccessibilityNodeInfo root = getRootAccessibilityNode();
         return getRawXMLHierarchy(root);
     }
 
@@ -55,11 +56,9 @@ public abstract class XMLHierarchy {
         return new InputSource(new StringReader(xmlDump));
     }
 
-
     public static Node getFormattedXMLDoc() throws UiAutomator2Exception {
         return formatXMLInput(getRawXMLHierarchy());
     }
-
 
     public static Node formatXMLInput(InputSource input) {
         XPath xpath = XPathFactory.newInstance().newXPath();
@@ -79,7 +78,6 @@ public abstract class XMLHierarchy {
 
         return root;
     }
-
 
     private static void annotateNodes(Node node, HashMap<String, Integer> instances) {
         NodeList children = node.getChildNodes();
