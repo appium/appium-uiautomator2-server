@@ -26,7 +26,7 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.ReflectionUtils;
 
-import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.getRootAccessibilityNode;
+import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.getRootAccessibilityNodeInActiveWindow;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
@@ -193,33 +193,12 @@ public class CustomUiDevice {
             }
             // Prior to API level 21 we can only access the active window
         } else {
-            AccessibilityNodeInfo node = mInstrumentation.getUiAutomation().getRootInActiveWindow();
-            if (node != null) {
-                ret.add(node);
-            } else {
-                /*
-                TODO: As we can't proceed to find element with out root node,
-                TODO: retrying for 5 times to get the root node if UiTestAutomationBridge reruns null
-                TODO: need to handle gracefully
-                */
-                //AccessibilityNodeInfo should not be null.
-                int retryCount = 0;
-                while (retryCount < 5) {
-                    SystemClock.sleep(1000);
-                    Device.waitForIdle();
-                    Logger.debug(" ERROR: null root node returned by UiTestAutomationBridge, retrying: " + retryCount);
-                    node = mInstrumentation.getUiAutomation().getRootInActiveWindow();
-                    if (node != null) {
-                        ret.add(node);
-                        break;
-                    }
-                    retryCount++;
-                }
-                if (retryCount >= 5) {
-                    throw new UiAutomator2Exception("Unable to get Root in Active window," +
-                            " ERROR: null root node returned by UiTestAutomationBridge.");
-                }
+            AccessibilityNodeInfo node = getRootAccessibilityNodeInActiveWindow();
+            if (node == null) {
+                throw new UiAutomator2Exception("Unable to get Root in Active window," +
+                        " ERROR: null root node returned by UiTestAutomationBridge.");
             }
+            ret.add(node);
         }
         return ret.toArray(new AccessibilityNodeInfo[ret.size()]);
     }

@@ -15,6 +15,7 @@
  */
 package io.appium.uiautomator2.core;
 
+import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -33,6 +34,12 @@ public class QueryController {
         this.queryController = queryController;
     }
 
+    /**
+     * Gets the root node from accessibility and if it fails to get one it will
+     * retry every 250ms for up to 1000ms.
+     * @return null if no root node is obtained
+     */
+    @Nullable
     public AccessibilityNodeInfo getAccessibilityRootNode() throws UiAutomator2Exception {
         return (AccessibilityNodeInfo) invoke(method(CLASS_QUERY_CONTROLLER, METHOD_GET_ACCESSIBILITY_ROOT_NODE), queryController);
     }

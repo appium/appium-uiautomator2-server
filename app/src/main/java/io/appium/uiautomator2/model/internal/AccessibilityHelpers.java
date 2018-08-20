@@ -14,7 +14,7 @@ public class AccessibilityHelpers {
     public static final long AX_ROOT_RETRIEVAL_TIMEOUT = 10000;
 
     public static UiAutomationElement refreshUiElementTree() {
-        return UiAutomationElement.newRootElement(getRootAccessibilityNode(),
+        return UiAutomationElement.newRootElement(getRootAccessibilityNodeInActiveWindow(),
                 NotificationListener.getInstance().getToastMessage());
     }
 
@@ -22,11 +22,11 @@ public class AccessibilityHelpers {
         return UiAutomationElement.newRootElement(nodeInfo, null /*Toast Messages*/);
     }
 
-    public static AccessibilityNodeInfo getRootAccessibilityNode() throws UiAutomator2Exception {
-        return getRootAccessibilityNode(AX_ROOT_RETRIEVAL_TIMEOUT);
+    public static AccessibilityNodeInfo getRootAccessibilityNodeInActiveWindow() throws UiAutomator2Exception {
+        return getRootAccessibilityNodeInActiveWindow(AX_ROOT_RETRIEVAL_TIMEOUT);
     }
 
-    public static AccessibilityNodeInfo getRootAccessibilityNode(long timeoutMillis)
+    public static AccessibilityNodeInfo getRootAccessibilityNodeInActiveWindow(long timeoutMillis)
             throws UiAutomator2Exception {
         Device.waitForIdle();
 
@@ -35,20 +35,21 @@ public class AccessibilityHelpers {
             AccessibilityNodeInfo root = null;
             try {
                 root = UiAutomatorBridge.getInstance().getQueryController().getAccessibilityRootNode();
-            } catch (IllegalStateException ignore) {
+            } catch (Exception e) {
                 /*
                  * Sometimes getAccessibilityRootNode() throws
                  * "java.lang.IllegalStateException: Cannot perform this action on a sealed instance."
                  * Ignore it and try to re-get root node.
                  */
-                Logger.debug("IllegalStateException was caught while invoking getAccessibilityRootNode() - ignring it");
+                Logger.debug(String.format("'%s' exception was caught while invoking " +
+                        "getRootAccessibilityNodeInActiveWindow() - ignoring it", e.getMessage()));
             }
             if (root != null) {
                 return root;
             }
-            SystemClock.sleep(250);
         }
-        final String message = "Timed out after %d milliseconds waiting for root AccessibilityNodeInfo";
-        throw new UiAutomator2Exception(String.format(message, timeoutMillis));
+        throw new UiAutomator2Exception(String.format(
+                "Timed out after %d milliseconds waiting for root AccessibilityNodeInfo",
+                timeoutMillis));
     }
 }
