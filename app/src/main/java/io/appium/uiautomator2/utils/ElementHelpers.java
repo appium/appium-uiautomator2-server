@@ -40,7 +40,6 @@ import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelper;
 import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.model.AndroidElement;
-import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.Session;
 
 import static io.appium.uiautomator2.handler.GetElementAttribute.getElementAttributeValue;
