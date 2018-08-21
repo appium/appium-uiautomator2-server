@@ -36,6 +36,12 @@ public class AccessibilityHelpers {
     public static AccessibilityNodeInfo getRootAccessibilityNodeInActiveWindow(long timeoutMillis)
             throws UiAutomator2Exception {
         Device.waitForIdle();
+        // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
+        // which resets the internal accessibility cache
+        //noinspection EmptyCatchBlock
+        try {
+            UiAutomatorBridge.getInstance().getUiAutomation().setServiceInfo(null);
+        } catch (Exception ign) {}
 
         long end = SystemClock.uptimeMillis() + timeoutMillis;
         while (end > SystemClock.uptimeMillis()) {
