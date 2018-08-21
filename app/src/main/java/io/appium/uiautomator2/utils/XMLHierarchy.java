@@ -38,6 +38,7 @@ import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 
 import static io.appium.uiautomator2.model.internal.AccessibilityWindowHelpers.currentActiveWindowRoot;
+import static io.appium.uiautomator2.model.internal.AccessibilityWindowHelpers.refreshRootAccessibilityNodeInActiveWindow;
 
 public abstract class XMLHierarchy {
     // XML 1.0 Legal Characters (http://stackoverflow.com/a/4237934/347155)
@@ -47,6 +48,7 @@ public abstract class XMLHierarchy {
     private final static String DEFAULT_VIEW_NAME = "android.view.View";
 
     public static InputSource getRawXMLHierarchy() throws UiAutomator2Exception {
+        refreshRootAccessibilityNodeInActiveWindow();
         return getRawXMLHierarchy(currentActiveWindowRoot());
     }
 
