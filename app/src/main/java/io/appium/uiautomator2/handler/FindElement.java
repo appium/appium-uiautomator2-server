@@ -126,7 +126,6 @@ public class FindElement extends SafeRequestHandler {
         if (element == null) {
             throw new ElementNotFoundException();
         }
-        refreshRootAccessibilityNodeInActiveWindow();
 
         if (by instanceof ById) {
             String locator = rewriteIdLocator((ById) by);
