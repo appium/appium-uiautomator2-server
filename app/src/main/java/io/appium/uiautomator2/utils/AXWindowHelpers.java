@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.internal;
+package io.appium.uiautomator2.utils;
 
 import android.os.Build;
 import android.os.SystemClock;
@@ -28,15 +28,14 @@ import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.UiAutomationElement;
-import io.appium.uiautomator2.utils.Device;
-import io.appium.uiautomator2.utils.Logger;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
-public class AccessibilityWindowHelpers {
+public class AXWindowHelpers {
     public static final long AX_ROOT_RETRIEVAL_TIMEOUT = 10000;
     private static final boolean MULTI_WINDOW = false;
     private static AccessibilityNodeInfo currentActiveWindowRoot = null;
 
-    public static void refreshRootAccessibilityNodeInActiveWindow() throws UiAutomator2Exception {
+    public static void refreshRootAXNode() throws UiAutomator2Exception {
         Device.waitForIdle();
         // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
         // which resets the internal accessibility cache
@@ -74,8 +73,7 @@ public class AccessibilityWindowHelpers {
     /**
      * Returns a list containing the root {@link AccessibilityNodeInfo}s for each active window
      */
-    public static AccessibilityNodeInfo[] getWindowRoots()
-            throws UiAutomator2Exception {
+    public static AccessibilityNodeInfo[] getWindowRoots() throws UiAutomator2Exception {
         List<AccessibilityNodeInfo> ret = new ArrayList<>();
         /*
          * TODO: MULTI_WINDOW is disabled, UIAutomatorViewer captures active window properties and
@@ -109,7 +107,7 @@ public class AccessibilityWindowHelpers {
 
     public static synchronized AccessibilityNodeInfo currentActiveWindowRoot() {
         if (currentActiveWindowRoot == null) {
-            refreshRootAccessibilityNodeInActiveWindow();
+            refreshRootAXNode();
         }
         return currentActiveWindowRoot;
     }

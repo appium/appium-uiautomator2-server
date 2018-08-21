@@ -33,7 +33,7 @@ import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.UiAutomationElement;
 import io.appium.uiautomator2.model.XPathFinder;
 
-import static io.appium.uiautomator2.model.internal.AccessibilityWindowHelpers.currentActiveWindowRoot;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
 
 public class LocationHelpers {
     /**

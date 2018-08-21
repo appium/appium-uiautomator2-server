@@ -59,7 +59,7 @@ public class NotificationListenerTests {
     private List<CharSequence> toastText;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         toastText =  new ArrayList<>();
         toastText.add("toast text");
 

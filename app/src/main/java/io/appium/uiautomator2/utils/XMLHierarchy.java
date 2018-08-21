@@ -37,8 +37,8 @@ import javax.xml.xpath.XPathFactory;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 
-import static io.appium.uiautomator2.model.internal.AccessibilityWindowHelpers.currentActiveWindowRoot;
-import static io.appium.uiautomator2.model.internal.AccessibilityWindowHelpers.refreshRootAccessibilityNodeInActiveWindow;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshRootAXNode;
 
 public abstract class XMLHierarchy {
     // XML 1.0 Legal Characters (http://stackoverflow.com/a/4237934/347155)
@@ -48,11 +48,11 @@ public abstract class XMLHierarchy {
     private final static String DEFAULT_VIEW_NAME = "android.view.View";
 
     public static InputSource getRawXMLHierarchy() throws UiAutomator2Exception {
-        refreshRootAccessibilityNodeInActiveWindow();
+        refreshRootAXNode();
         return getRawXMLHierarchy(currentActiveWindowRoot());
     }
 
-    public static InputSource getRawXMLHierarchy(AccessibilityNodeInfo root) throws UiAutomator2Exception {
+    private static InputSource getRawXMLHierarchy(AccessibilityNodeInfo root) throws UiAutomator2Exception {
         String xmlDump = AccessibilityNodeInfoDumper.getWindowXMLHierarchy(root);
         return new InputSource(new StringReader(xmlDump));
     }
@@ -61,7 +61,7 @@ public abstract class XMLHierarchy {
         return formatXMLInput(getRawXMLHierarchy());
     }
 
-    public static Node formatXMLInput(InputSource input) {
+    private static Node formatXMLInput(InputSource input) {
         XPath xpath = XPathFactory.newInstance().newXPath();
 
         final Node root;
