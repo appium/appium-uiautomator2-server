@@ -20,13 +20,13 @@ public class AccessibilityHelpers {
     public static final long AX_ROOT_RETRIEVAL_TIMEOUT = 10000;
     private static final boolean MULTI_WINDOW = false;
 
-    public static UiAutomationElement uiTreeWithToastElement(AccessibilityNodeInfo nodeInfo) {
-        return UiAutomationElement.newRootElement(nodeInfo,
+    public static UiAutomationElement uiTreeWithToastElement(AccessibilityNodeInfo root) {
+        return UiAutomationElement.rebuildForNewRoot(root,
                 NotificationListener.getInstance().getToastMessage());
     }
 
-    public static UiAutomationElement uiTreeWithRootElement(AccessibilityNodeInfo nodeInfo) {
-        return UiAutomationElement.newRootElement(nodeInfo, null /*Toast Messages*/);
+    public static UiAutomationElement uiTreeWithRootElement(AccessibilityNodeInfo root) {
+        return UiAutomationElement.rebuildForNewRoot(root, null);
     }
 
     public static AccessibilityNodeInfo getRootAccessibilityNodeInActiveWindow() throws UiAutomator2Exception {
@@ -58,6 +58,8 @@ public class AccessibilityHelpers {
                         "getRootAccessibilityNodeInActiveWindow() - ignoring it", e.getMessage()));
             }
             if (root != null) {
+                UiAutomationElement.rebuildForNewRoot(root,
+                        NotificationListener.getInstance().getToastMessage());
                 return root;
             }
         }

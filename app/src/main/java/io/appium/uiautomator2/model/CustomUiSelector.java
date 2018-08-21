@@ -19,7 +19,11 @@ public class CustomUiSelector {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        UiAutomationElement uiAutomationElement = UiAutomationElement.map.get(node);
+        UiAutomationElement uiAutomationElement = UiAutomationElement.getElement(node);
+        if (uiAutomationElement == null) {
+            throw new IllegalArgumentException(String.format(
+                    "The '%s' node is not found in the cache", node));
+        }
         put(Attribute.PACKAGE, charSequenceToString(uiAutomationElement.getPackageName()));
         put(Attribute.CLASS, charSequenceToString(uiAutomationElement.getClassName()));
         put(Attribute.TEXT, charSequenceToString(uiAutomationElement.getText()));
