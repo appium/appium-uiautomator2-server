@@ -133,7 +133,7 @@ public class UiObjectElement implements AndroidElement {
     }
 
     @Nullable
-    public Object getChild(final Object selector, @Nullable AccessibilityNodeInfo root)
+    public Object getChild(final Object selector)
             throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof BySelector) {
             /*
@@ -142,14 +142,14 @@ public class UiObjectElement implements AndroidElement {
              * and finding the child element on UiObject2.
              */
             AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-            Object uiObject2 = CustomUiDevice.getInstance().findObject(nodeInfo, root);
+            Object uiObject2 = CustomUiDevice.getInstance().findObject(nodeInfo);
             return (uiObject2 instanceof UiObject2)
                 ? ((UiObject2) uiObject2).findObject((BySelector) selector) : null;
         }
         return element.getChild((UiSelector) selector);
     }
 
-    public List<Object> getChildren(final Object selector, final By by, @Nullable AccessibilityNodeInfo root)
+    public List<Object> getChildren(final Object selector, final By by)
             throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof BySelector) {
             /*
@@ -158,7 +158,7 @@ public class UiObjectElement implements AndroidElement {
              * and finding the child elements on UiObject2.
              */
             AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-            UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo, root);
+            UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo);
             return (List) uiObject2.findObjects((BySelector) selector);
         }
         return (List) this.getChildElements((UiSelector) selector);

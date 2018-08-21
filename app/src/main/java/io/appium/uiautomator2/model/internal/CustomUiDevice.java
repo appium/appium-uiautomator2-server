@@ -24,7 +24,7 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.ReflectionUtils;
 
-import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.getWindowRoots;
+import static io.appium.uiautomator2.model.internal.AccessibilityWindowHelpers.getWindowRoots;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
@@ -85,14 +85,14 @@ public class CustomUiDevice {
      * @throws InvalidSelectorException if given selector is unsupported/unknown
      */
     @Nullable
-    public Object findObject(Object selector, @Nullable AccessibilityNodeInfo root)
+    public Object findObject(Object selector)
             throws ClassNotFoundException, UiAutomator2Exception {
 
         AccessibilityNodeInfo node;
         Device.waitForIdle();
         if (selector instanceof BySelector) {
             node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcher,
-                    Device.getUiDevice(), selector, getWindowRoots(root));
+                    Device.getUiDevice(), selector, getWindowRoots());
         } else if (selector instanceof NodeInfoList) {
             List<AccessibilityNodeInfo> nodesList = ((NodeInfoList) selector).getNodeList();
             if (nodesList.isEmpty()) {
@@ -143,7 +143,7 @@ public class CustomUiDevice {
     /**
      * Returns List<object> to match the {@code selector} criteria.
      */
-    public List<Object> findObjects(Object selector, @Nullable AccessibilityNodeInfo root)
+    public List<Object> findObjects(Object selector)
             throws ClassNotFoundException, UiAutomator2Exception {
         List<Object> ret = new ArrayList<>();
 
@@ -151,7 +151,7 @@ public class CustomUiDevice {
         if (selector instanceof BySelector) {
             ReflectionUtils.getClass("android.support.test.uiautomator.ByMatcher");
             Object nodes = invoke(METHOD_FIND_MATCHS, ByMatcher, getUiDevice(), selector,
-                    getWindowRoots(root));
+                    getWindowRoots());
             //noinspection unchecked
             axNodesList = (List) nodes;
         } else if (selector instanceof NodeInfoList) {

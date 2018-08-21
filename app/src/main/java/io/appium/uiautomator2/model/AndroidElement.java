@@ -39,10 +39,10 @@ public interface AndroidElement {
 
     Rect getBounds() throws UiObjectNotFoundException;
 
-    Object getChild(final Object sel, @Nullable AccessibilityNodeInfo root) throws UiObjectNotFoundException,
+    Object getChild(final Object sel) throws UiObjectNotFoundException,
             InvalidSelectorException, ClassNotFoundException;
 
-    List<Object> getChildren(final Object selector, final By by, @Nullable AccessibilityNodeInfo root)
+    List<Object> getChildren(final Object selector, final By by)
             throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException;
 
     String getContentDesc() throws UiObjectNotFoundException;

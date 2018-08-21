@@ -1,21 +1,22 @@
 package io.appium.uiautomator2.model;
 
 import android.support.annotation.Nullable;
-import android.support.test.uiautomator.BySelector;
-import android.view.accessibility.AccessibilityNodeInfo;
+import android.support.test.uiautomator.UiSelector;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.utils.NodeInfoList;
 
-import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
+import static io.appium.uiautomator2.utils.LocationHelpers.getXPathNodeMatch;
+import static io.appium.uiautomator2.utils.LocationHelpers.rewriteIdLocator;
+import static io.appium.uiautomator2.utils.LocationHelpers.toSelector;
 
 public class KnownElements {
-    private static Map<String, AndroidElement> cache = new HashMap<String, AndroidElement>();
+    private static Map<String, AndroidElement> cache = new HashMap<>();
 
     private static String getCacheKey(AndroidElement element) {
         for (Map.Entry<String, AndroidElement> entry : cache.entrySet()) {
@@ -33,25 +34,50 @@ public class KnownElements {
         return null;
     }
 
+    @Nullable
     public static AndroidElement getElementFromCache(String id) {
-        return cache.get(id);
-    }
-
-    /**
-     * @param ui2BySelector, for finding {@link android.support.test.uiautomator.UiObject2} element derived using {@link By}
-     * @param by,            user provided selector criteria from appium client.
-     * @return
-     */
-    public static AndroidElement getElement(final BySelector ui2BySelector, By by, @Nullable AccessibilityNodeInfo root)
-            throws UiAutomator2Exception, ClassNotFoundException {
-        Object ui2Object = getInstance().findObject(ui2BySelector, root);
-        if (ui2Object == null) {
-            throw new ElementNotFoundException();
+        AndroidElement result = cache.get(id);
+        if (result != null) {
+            // It might be that cached UI object has been invalidated
+            // after AX cache reset has been performed. So we try to recreate
+            // the cached object automatically
+            // in order to avoid an unexpected StaleElementReferenceException
+            try {
+                result.getName();
+            } catch (Exception e) {
+                final By by = result.getBy();
+                Object ui2Object = null;
+                try {
+                    if (by instanceof By.ById) {
+                        String locator = rewriteIdLocator((By.ById) by);
+                        ui2Object = CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.res(locator));
+                    } else if (by instanceof By.ByAccessibilityId) {
+                        ui2Object = CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.desc(by.getElementLocator()));
+                    } else if (by instanceof By.ByClass) {
+                        ui2Object = CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.clazz(by.getElementLocator()));
+                    } else if (by instanceof By.ByXPath) {
+                        final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null);
+                        if (matchedNodes.size() > 0) {
+                            ui2Object = CustomUiDevice.getInstance().findObject(matchedNodes);
+                        }
+                    } else if (by instanceof By.ByAndroidUiAutomator) {
+                        UiSelector selector = toSelector(by.getElementLocator());
+                        if (selector != null) {
+                            ui2Object = CustomUiDevice.getInstance().findObject(selector);
+                        }
+                    }
+                } catch (Exception e1) {
+                    // ignore
+                }
+                if (ui2Object == null) {
+                    throw new StaleElementReferenceException(String.format(
+                            "The element '%s' does not exist in DOM anymore", id));
+                }
+                AndroidElement androidElement = getAndroidElement(id, ui2Object, result.getBy());
+                cache.put(androidElement.getId(), androidElement);
+            }
         }
-        String id = UUID.randomUUID().toString();
-        AndroidElement androidElement = getAndroidElement(id, ui2Object, by);
-        cache.put(androidElement.getId(), androidElement);
-        return androidElement;
+        return cache.get(id);
     }
 
     public String add(AndroidElement element) {

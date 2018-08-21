@@ -164,7 +164,7 @@ public class UiObject2Element implements AndroidElement {
     }
 
     @Nullable
-    public Object getChild(final Object selector, @Nullable AccessibilityNodeInfo root)
+    public Object getChild(final Object selector)
             throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof UiSelector) {
             /*
@@ -177,7 +177,7 @@ public class UiObject2Element implements AndroidElement {
             UiSelector uiSelector = new UiSelector();
             CustomUiSelector customUiSelector = new CustomUiSelector(uiSelector);
             uiSelector = customUiSelector.getUiSelector(nodeInfo);
-            Object uiObject = CustomUiDevice.getInstance().findObject(uiSelector, root);
+            Object uiObject = CustomUiDevice.getInstance().findObject(uiSelector);
             if (uiObject instanceof UiObject) {
                 AccessibilityNodeInfoGetter.fromUiObject(element);
                 return ((UiObject) uiObject).getChild((UiSelector) selector);
@@ -187,7 +187,7 @@ public class UiObject2Element implements AndroidElement {
         return element.findObject((BySelector) selector);
     }
 
-    public List<Object> getChildren(final Object selector, final By by, @Nullable AccessibilityNodeInfo root)
+    public List<Object> getChildren(final Object selector, final By by)
             throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof UiSelector) {
             /*
@@ -200,10 +200,10 @@ public class UiObject2Element implements AndroidElement {
             UiSelector uiSelector = new UiSelector();
             CustomUiSelector customUiSelector = new CustomUiSelector(uiSelector);
             uiSelector = customUiSelector.getUiSelector(nodeInfo);
-            UiObject uiObject = (UiObject) CustomUiDevice.getInstance().findObject(uiSelector, root);
+            UiObject uiObject = (UiObject) CustomUiDevice.getInstance().findObject(uiSelector);
             String id = UUID.randomUUID().toString();
             AndroidElement androidElement = getAndroidElement(id, uiObject, by);
-            return androidElement.getChildren(selector, by, root);
+            return androidElement.getChildren(selector, by);
         }
         //noinspection unchecked
         return (List) element.findObjects((BySelector) selector);

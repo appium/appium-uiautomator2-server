@@ -1,8 +1,23 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.uiautomator2.model.internal;
 
 import android.os.Build;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
@@ -16,25 +31,12 @@ import io.appium.uiautomator2.model.UiAutomationElement;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
 
-public class AccessibilityHelpers {
+public class AccessibilityWindowHelpers {
     public static final long AX_ROOT_RETRIEVAL_TIMEOUT = 10000;
     private static final boolean MULTI_WINDOW = false;
+    private static AccessibilityNodeInfo currentActiveWindowRoot = null;
 
-    public static UiAutomationElement uiTreeWithToastElement(AccessibilityNodeInfo root) {
-        return UiAutomationElement.rebuildForNewRoot(root,
-                NotificationListener.getInstance().getToastMessage());
-    }
-
-    public static UiAutomationElement uiTreeWithRootElement(AccessibilityNodeInfo root) {
-        return UiAutomationElement.rebuildForNewRoot(root, null);
-    }
-
-    public static AccessibilityNodeInfo getRootAccessibilityNodeInActiveWindow() throws UiAutomator2Exception {
-        return getRootAccessibilityNodeInActiveWindow(AX_ROOT_RETRIEVAL_TIMEOUT);
-    }
-
-    public static AccessibilityNodeInfo getRootAccessibilityNodeInActiveWindow(long timeoutMillis)
-            throws UiAutomator2Exception {
+    public static void refreshRootAccessibilityNodeInActiveWindow() throws UiAutomator2Exception {
         Device.waitForIdle();
         // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
         // which resets the internal accessibility cache
@@ -43,7 +45,7 @@ public class AccessibilityHelpers {
             UiAutomatorBridge.getInstance().getUiAutomation().setServiceInfo(null);
         } catch (Exception ign) {}
 
-        long end = SystemClock.uptimeMillis() + timeoutMillis;
+        long end = SystemClock.uptimeMillis() + AX_ROOT_RETRIEVAL_TIMEOUT;
         while (end > SystemClock.uptimeMillis()) {
             AccessibilityNodeInfo root = null;
             try {
@@ -60,18 +62,19 @@ public class AccessibilityHelpers {
             if (root != null) {
                 UiAutomationElement.rebuildForNewRoot(root,
                         NotificationListener.getInstance().getToastMessage());
-                return root;
+                currentActiveWindowRoot = root;
+                return;
             }
         }
         throw new UiAutomator2Exception(String.format(
                 "Timed out after %d milliseconds waiting for root AccessibilityNodeInfo",
-                timeoutMillis));
+                AX_ROOT_RETRIEVAL_TIMEOUT));
     }
 
     /**
      * Returns a list containing the root {@link AccessibilityNodeInfo}s for each active window
      */
-    public static AccessibilityNodeInfo[] getWindowRoots(@Nullable AccessibilityNodeInfo activeWindowRoot)
+    public static AccessibilityNodeInfo[] getWindowRoots()
             throws UiAutomator2Exception {
         List<AccessibilityNodeInfo> ret = new ArrayList<>();
         /*
@@ -94,8 +97,7 @@ public class AccessibilityHelpers {
             }
             // Prior to API level 21 we can only access the active window
         } else {
-            AccessibilityNodeInfo node = activeWindowRoot == null ?
-                    getRootAccessibilityNodeInActiveWindow() : activeWindowRoot;
+            AccessibilityNodeInfo node = currentActiveWindowRoot();
             if (node == null) {
                 throw new UiAutomator2Exception("Unable to get Root in Active window," +
                         " ERROR: null root node returned by UiTestAutomationBridge.");
@@ -103,5 +105,12 @@ public class AccessibilityHelpers {
             ret.add(node);
         }
         return ret.toArray(new AccessibilityNodeInfo[ret.size()]);
+    }
+
+    public static synchronized AccessibilityNodeInfo currentActiveWindowRoot() {
+        if (currentActiveWindowRoot == null) {
+            refreshRootAccessibilityNodeInActiveWindow();
+        }
+        return currentActiveWindowRoot;
     }
 }

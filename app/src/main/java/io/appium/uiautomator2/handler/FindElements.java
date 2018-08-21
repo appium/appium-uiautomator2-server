@@ -1,16 +1,31 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.uiautomator2.handler;
 
-import android.support.annotation.Nullable;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -18,8 +33,6 @@ import java.util.regex.Pattern;
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
-import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
-import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -27,23 +40,20 @@ import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.By.ById;
 import io.appium.uiautomator2.model.KnownElements;
-import io.appium.uiautomator2.model.UiAutomationElement;
-import io.appium.uiautomator2.model.XPathFinder;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
-import io.appium.uiautomator2.utils.UiAutomatorParser;
 
-import static io.appium.uiautomator2.handler.FindElement.getElementLocator;
-import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.getRootAccessibilityNodeInActiveWindow;
-import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.uiTreeWithRootElement;
-import static io.appium.uiautomator2.model.internal.AccessibilityHelpers.uiTreeWithToastElement;
+import static io.appium.uiautomator2.model.internal.AccessibilityWindowHelpers.refreshRootAccessibilityNodeInActiveWindow;
 
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.LocationHelpers.getXPathNodeMatch;
+import static io.appium.uiautomator2.utils.LocationHelpers.rewriteIdLocator;
+import static io.appium.uiautomator2.utils.LocationHelpers.toSelectors;
 
 public class FindElements extends SafeRequestHandler {
 
@@ -51,23 +61,6 @@ public class FindElements extends SafeRequestHandler {
 
     public FindElements(String mappedUri) {
         super(mappedUri);
-    }
-
-    /**
-     * returns  UiObject2 for an xpath expression
-     **/
-    private static List<Object> getXPathUiObjects(final String expression,
-                                                  @Nullable AndroidElement element,
-                                                  AccessibilityNodeInfo windowRoot)
-            throws ClassNotFoundException, UiAutomator2Exception {
-        final UiAutomationElement xpathRoot = element == null
-                ? uiTreeWithToastElement(windowRoot)
-                : uiTreeWithRootElement(AccessibilityNodeInfoGetter.fromUiObject(element.getUiObject()));
-        final NodeInfoList nodeList = new XPathFinder(expression).find(xpathRoot);
-        if (nodeList.size() == 0) {
-            throw new ElementNotFoundException();
-        }
-        return CustomUiDevice.getInstance().findObjects(nodeList, windowRoot);
     }
 
     @Override
@@ -112,21 +105,25 @@ public class FindElements extends SafeRequestHandler {
 
     private List<Object> findElements(By by) throws ClassNotFoundException,
             UiAutomator2Exception, UiObjectNotFoundException {
-        final AccessibilityNodeInfo windowRoot = getRootAccessibilityNodeInActiveWindow();
+        refreshRootAccessibilityNodeInActiveWindow();
 
         if (by instanceof By.ById) {
-            String locator = getElementLocator((ById) by);
-            return CustomUiDevice.getInstance().findObjects(android.support.test.uiautomator.By.res(locator), windowRoot);
+            String locator = rewriteIdLocator((ById) by);
+            return CustomUiDevice.getInstance().findObjects(android.support.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {
-            return CustomUiDevice.getInstance().findObjects(android.support.test.uiautomator.By.desc(by.getElementLocator()), windowRoot);
+            return CustomUiDevice.getInstance().findObjects(android.support.test.uiautomator.By.desc(by.getElementLocator()));
         } else if (by instanceof By.ByClass) {
-            return CustomUiDevice.getInstance().findObjects(android.support.test.uiautomator.By.clazz(by.getElementLocator()), windowRoot);
+            return CustomUiDevice.getInstance().findObjects(android.support.test.uiautomator.By.clazz(by.getElementLocator()));
         } else if (by instanceof By.ByXPath) {
             //TODO: need to handle the context parameter in a smart way
-            return getXPathUiObjects(by.getElementLocator(), null, windowRoot);
+            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null);
+            if (matchedNodes.size() == 0) {
+                return Collections.emptyList();
+            }
+            return CustomUiDevice.getInstance().findObjects(matchedNodes);
         } else if (by instanceof By.ByAndroidUiAutomator) {
             //TODO: need to handle the context parameter in a smart way
-            return getUiObjectsUsingAutomator(findByUiAutomator(by.getElementLocator()), "", windowRoot);
+            return getUiObjectsUsingAutomator(toSelectors(by.getElementLocator()), "");
         }
 
         String msg = String.format("By locator %s is curently not supported!", by.getClass().getSimpleName());
@@ -139,36 +136,32 @@ public class FindElements extends SafeRequestHandler {
         if (element == null) {
             throw new ElementNotFoundException();
         }
-        final AccessibilityNodeInfo windowRoot = getRootAccessibilityNodeInActiveWindow();
+        refreshRootAccessibilityNodeInActiveWindow();
 
         if (by instanceof ById) {
-            String locator = getElementLocator((ById) by);
-            return element.getChildren(android.support.test.uiautomator.By.res(locator), by, windowRoot);
+            String locator = rewriteIdLocator((ById) by);
+            return element.getChildren(android.support.test.uiautomator.By.res(locator), by);
         } else if (by instanceof By.ByAccessibilityId) {
-            return element.getChildren(android.support.test.uiautomator.By.desc(by.getElementLocator()), by, windowRoot);
+            return element.getChildren(android.support.test.uiautomator.By.desc(by.getElementLocator()), by);
         } else if (by instanceof By.ByClass) {
-            return element.getChildren(android.support.test.uiautomator.By.clazz(by.getElementLocator()), by, windowRoot);
+            return element.getChildren(android.support.test.uiautomator.By.clazz(by.getElementLocator()), by);
         } else if (by instanceof By.ByXPath) {
-            return getXPathUiObjects(by.getElementLocator(), element, windowRoot);
+            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), element);
+            if (matchedNodes.size() == 0) {
+                return Collections.emptyList();
+            }
+            return CustomUiDevice.getInstance().findObjects(matchedNodes);
         } else if (by instanceof By.ByAndroidUiAutomator) {
-            return getUiObjectsUsingAutomator(findByUiAutomator(by.getElementLocator()), contextId, windowRoot);
+            return getUiObjectsUsingAutomator(toSelectors(by.getElementLocator()), contextId);
         }
         String msg = String.format("By locator %s is currently not supported!", by.getClass().getSimpleName());
         throw new UnsupportedOperationException(msg);
     }
 
-    private List<UiSelector> findByUiAutomator(String expression) throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
-        UiAutomatorParser uiAutomatorParser = new UiAutomatorParser();
-        List<UiSelector> parsedSelectors = uiAutomatorParser.parse(expression);
-        return new ArrayList<>(parsedSelectors);
-    }
-
     /**
      * returns  List<UiObject> using '-android automator' expression
      **/
-    private List<Object> getUiObjectsUsingAutomator(List<UiSelector> selectors, String contextId,
-                                                    @Nullable AccessibilityNodeInfo root)
+    private List<Object> getUiObjectsUsingAutomator(List<UiSelector> selectors, String contextId)
             throws InvalidSelectorException, ClassNotFoundException {
         List<Object> foundElements = new ArrayList<>();
         for (final UiSelector sel : selectors) {
@@ -176,7 +169,7 @@ public class FindElements extends SafeRequestHandler {
             // exist.
             try {
                 Logger.debug("Using: " + sel.toString());
-                final List<Object> elementsFromSelector = fetchElements(sel, contextId, root);
+                final List<Object> elementsFromSelector = fetchElements(sel, contextId);
                 foundElements.addAll(elementsFromSelector);
             } catch (final UiObjectNotFoundException ignored) {
                 //for findElements up on no elements, empty array should return.
@@ -189,7 +182,7 @@ public class FindElements extends SafeRequestHandler {
     /**
      * finds elements with given UiSelector return List<UiObject
      */
-    private List<Object> fetchElements(UiSelector sel, String key, @Nullable AccessibilityNodeInfo root)
+    private List<Object> fetchElements(UiSelector sel, String key)
             throws UiObjectNotFoundException, ClassNotFoundException, InvalidSelectorException {
         //TODO: finding elements with contextId yet to implement
         boolean keepSearching = true;
@@ -237,7 +230,7 @@ public class FindElements extends SafeRequestHandler {
             } else {
                 Logger.debug("Element[" + key + "] is " + baseEl.getId() + ", counter: "
                         + counter);
-                lastFoundObj = (UiObject) baseEl.getChild(sel.instance(counter), root);
+                lastFoundObj = (UiObject) baseEl.getChild(sel.instance(counter));
             }
             counter++;
             if (lastFoundObj != null && lastFoundObj.exists()) {

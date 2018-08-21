@@ -6,6 +6,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import io.appium.uiautomator2.utils.Attribute;
 
 import static io.appium.uiautomator2.model.UiAutomationElement.charSequenceToString;
+import static io.appium.uiautomator2.model.internal.AccessibilityWindowHelpers.currentActiveWindowRoot;
 
 public class CustomUiSelector {
     private UiSelector selector;
@@ -19,7 +20,8 @@ public class CustomUiSelector {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        UiAutomationElement uiAutomationElement = UiAutomationElement.getElement(node);
+        UiAutomationElement uiAutomationElement = UiAutomationElement.getCachedElement(node,
+                currentActiveWindowRoot());
         if (uiAutomationElement == null) {
             throw new IllegalArgumentException(String.format(
                     "The '%s' node is not found in the cache", node));

@@ -33,6 +33,7 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static android.support.test.uiautomator.By.focused;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.ElementHelpers.createAndGetElement;
 
 /**
  * Send keys to a given element.
@@ -62,7 +63,7 @@ public class SendKeysToElement extends SafeRequestHandler {
         } else {
             //perform action on focused element
             try {
-                element = KnownElements.getElement(focused(true), null /* by */, null);
+                element = createAndGetElement(focused(true), null);
             } catch (ClassNotFoundException e) {
                 Logger.debug("Error in finding focused element: " + e);
                 throw new UiAutomator2Exception(e);

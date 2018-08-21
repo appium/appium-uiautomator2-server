@@ -134,12 +134,16 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     }
 
     @Nullable
-    public static UiAutomationElement getElement(AccessibilityNodeInfo rawElement) {
+    public static UiAutomationElement getCachedElement(AccessibilityNodeInfo rawElement,
+                                                       AccessibilityNodeInfo windowRoot) {
+        if (cache.get(rawElement) == null) {
+            rebuildForNewRoot(windowRoot, null);
+        }
         return cache.get(rawElement);
     }
 
-    private static UiAutomationElement getElement(AccessibilityNodeInfo rawElement,
-                                                  UiAutomationElement parent, int index) {
+    private static UiAutomationElement getOrCreateElement(AccessibilityNodeInfo rawElement,
+                                                          UiAutomationElement parent, int index) {
         UiAutomationElement element = cache.get(rawElement);
         if (element == null) {
             element = new UiAutomationElement(rawElement, parent, index);
@@ -182,7 +186,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
                 AccessibilityNodeInfo child = node.getChild(i);
                 //Ignore if element is not visible on the screen
                 if (child != null && (child.isVisibleToUser() || isAllowInvisibleElements)) {
-                    children.add(getElement(child, this, i));
+                    children.add(getOrCreateElement(child, this, i));
                 }
             }
         }

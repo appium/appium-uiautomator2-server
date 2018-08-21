@@ -19,6 +19,7 @@ package io.appium.uiautomator2.utils;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -30,16 +31,21 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
+import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelper;
 import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.model.AndroidElement;
+import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.Session;
 
 import static io.appium.uiautomator2.handler.GetElementAttribute.getElementAttributeValue;
+import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
+import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public abstract class ElementHelpers {
@@ -182,5 +188,14 @@ public abstract class ElementHelpers {
         Bundle args = new Bundle();
         args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, textToSend);
         return nodeInfo.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
+    }
+
+    public static AndroidElement createAndGetElement(final BySelector ui2BySelector, By by)
+            throws UiAutomator2Exception, ClassNotFoundException {
+        Object ui2Object = getInstance().findObject(ui2BySelector);
+        if (ui2Object == null) {
+            throw new ElementNotFoundException();
+        }
+        return getAndroidElement(UUID.randomUUID().toString(), ui2Object, by);
     }
 }
