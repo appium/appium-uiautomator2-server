@@ -21,7 +21,8 @@ public abstract class Device {
         return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
 
-    public static AndroidElement getAndroidElement(String id, Object element, By by) throws UiAutomator2Exception {
+    public static AndroidElement getAndroidElement(String id, Object element, By by)
+            throws UiAutomator2Exception {
         if (element instanceof UiObject2) {
             return new UiObject2Element(id, (UiObject2) element, by);
         } else if (element instanceof UiObject) {

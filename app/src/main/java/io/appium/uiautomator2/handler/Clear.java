@@ -15,7 +15,7 @@ import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
 import static android.support.test.uiautomator.By.focused;
-import static io.appium.uiautomator2.utils.ElementHelpers.createAndGetElement;
+import static io.appium.uiautomator2.utils.ElementHelpers.findElement;
 
 public class Clear extends SafeRequestHandler {
     public Clear(String mappedUri) {
@@ -37,7 +37,7 @@ public class Clear extends SafeRequestHandler {
         } else {
             //perform action on focused element
             try {
-                element = createAndGetElement(focused(true), null);
+                element = findElement(focused(true));
             } catch (ClassNotFoundException e) {
                 throw new UiAutomator2Exception(e);
             }

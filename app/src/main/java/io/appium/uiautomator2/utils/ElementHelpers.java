@@ -190,12 +190,12 @@ public abstract class ElementHelpers {
         return nodeInfo.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
     }
 
-    public static AndroidElement createAndGetElement(final BySelector ui2BySelector, By by)
+    public static AndroidElement findElement(final BySelector ui2BySelector)
             throws UiAutomator2Exception, ClassNotFoundException {
         Object ui2Object = getInstance().findObject(ui2BySelector);
         if (ui2Object == null) {
             throw new ElementNotFoundException();
         }
-        return getAndroidElement(UUID.randomUUID().toString(), ui2Object, by);
+        return getAndroidElement(UUID.randomUUID().toString(), ui2Object, null);
     }
 }
