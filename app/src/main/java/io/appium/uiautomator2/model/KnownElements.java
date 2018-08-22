@@ -46,11 +46,6 @@ public class KnownElements {
     }
 
     @Nullable
-    public static String getIdOfElement(AndroidElement element) {
-        return cache.containsValue(element) ? getCacheKey(element) : null;
-    }
-
-    @Nullable
     public static AndroidElement getElementFromCache(String id) {
         AndroidElement result = cache.get(id);
         if (result != null) {
