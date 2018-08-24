@@ -36,7 +36,7 @@ public class GetName extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("Get Name of element command");
         String id = getElementId(request);
         AndroidElement element = KnownElements.getElementFromCache(id);
@@ -44,14 +44,8 @@ public class GetName extends SafeRequestHandler {
         if (element == null) {
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
         }
-        try {
-            elementName = element.getContentDesc();
-            Logger.info("Element Name ", elementName);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Element not found: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-        }
+        elementName = element.getContentDesc();
+        Logger.info("Element Name ", elementName);
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, elementName);
-
     }
 }

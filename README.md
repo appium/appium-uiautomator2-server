@@ -1,5 +1,6 @@
 
-[![Build Status](https://team-appium.ci.cloudbees.com/view/All/job/appium-uiautomator2-server-e2e/badge/icon)](https://team-appium.ci.cloudbees.com/view/All/job/appium-uiautomator2-server-e2e/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd33cddf5f0b4ae2af8dbced5afe6b49)](https://app.codacy.com/app/dpgraham/appium-uiautomator2-server?utm_source=github.com&utm_medium=referral&utm_content=appium/appium-uiautomator2-server&utm_campaign=badger)
+[![Build Status](https://travis-ci.org/appium/appium-uiautomator2-server.svg?branch=master)](https://travis-ci.org/appium/appium-uiautomator2-server) [![Greenkeeper badge](https://badges.greenkeeper.io/appium/appium-uiautomator2-server.svg)](https://greenkeeper.io/)
 ### appium-uiautomator2-server
 
 A netty server that runs on the device listening for commands and executes using UiAutomator V2.

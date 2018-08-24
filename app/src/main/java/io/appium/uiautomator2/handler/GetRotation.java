@@ -9,7 +9,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.OrientationEnum;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Device;
-import io.appium.uiautomator2.utils.Logger;
 
 public class GetRotation extends SafeRequestHandler {
 
@@ -18,20 +17,15 @@ public class GetRotation extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
-        int rotation = Device.getUiDevice().getDisplayRotation();
-        try {
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, getOrientationMap(rotation));
-        } catch (JSONException e) {
-            Logger.error("Exception while creating Orientation Map: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
-        }
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+       int rotation = Device.getUiDevice().getDisplayRotation();
+       return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, getOrientationMap(rotation));
     }
 
     private JSONObject getOrientationMap(int orientation) throws JSONException {
         JSONObject orientationMap = new JSONObject().put("x", 0).put("y", 0);
         OrientationEnum orientationEnum = OrientationEnum.fromInteger(orientation);
-        switch (orientationEnum){
+        switch (orientationEnum) {
             case ROTATION_0:
                 orientationMap.put("z", 0);
                 break;

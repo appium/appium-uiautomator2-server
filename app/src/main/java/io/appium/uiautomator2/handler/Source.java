@@ -30,7 +30,7 @@ public class Source extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         try {
             ReflectionUtils.clearAccessibilityCache();
 

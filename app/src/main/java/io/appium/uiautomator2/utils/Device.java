@@ -21,7 +21,8 @@ public abstract class Device {
         return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
 
-    public static AndroidElement getAndroidElement(String id, Object element, By by) throws UiAutomator2Exception {
+    public static AndroidElement getAndroidElement(String id, Object element, By by)
+            throws UiAutomator2Exception {
         if (element instanceof UiObject2) {
             return new UiObject2Element(id, (UiObject2) element, by);
         } else if (element instanceof UiObject) {
@@ -56,7 +57,7 @@ public abstract class Device {
     public static void waitForIdle() {
         try {
             getUiDevice().waitForIdle();
-        }catch (Exception e) {
+        } catch (Exception e) {
             Logger.error("Unable wait for AUT to idle");
         }
     }
@@ -64,7 +65,7 @@ public abstract class Device {
     public static void waitForIdle(long timeInMS) {
         try {
             getUiDevice().waitForIdle(timeInMS);
-        }catch (Exception e) {
+        } catch (Exception e) {
             Logger.error(String.format("Unable wait %d for AUT to idle", timeInMS));
         }
     }

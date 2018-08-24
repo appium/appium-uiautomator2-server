@@ -6,4 +6,6 @@
 /build
 /captures
 /node_modules
-npm-debug.log
+*.log
+apks/
+package-lock.json*

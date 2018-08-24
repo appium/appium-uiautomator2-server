@@ -19,7 +19,7 @@ package io.appium.uiautomator2.common.exceptions;
 /**
  * For trying to create a ClassInstancePair and something goes wrong.
  */
-public class PairCreationException extends Throwable {
+public class PairCreationException extends UiAutomator2Exception {
     public PairCreationException(String msg) {
         super(msg);
     }

@@ -4,7 +4,7 @@ public enum NetworkConnectionEnum {
     AIRPLANE(1), WIFI(2), DATA(4), ALL(6), NONE(0), IN_VALID(null);
     private final Integer value;
 
-    private NetworkConnectionEnum(final Integer value) {
+    NetworkConnectionEnum(final Integer value) {
         this.value = value;
     }
 
@@ -19,7 +19,7 @@ public enum NetworkConnectionEnum {
             case 4:
                 return DATA;
             case 6:
-                return  ALL;
+                return ALL;
             default:
                 return IN_VALID;
         }

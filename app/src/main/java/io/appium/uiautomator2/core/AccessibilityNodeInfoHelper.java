@@ -15,8 +15,8 @@
  */
 package io.appium.uiautomator2.core;
 
-import android.os.Bundle;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
@@ -34,7 +34,7 @@ public class AccessibilityNodeInfoHelper {
      * @param height pixel height of the display
      * @return null if node is null, else a Rect containing visible bounds
      */
-    static Rect getVisibleBoundsInScreen(AccessibilityNodeInfo node, int width, int height) {
+    public static Rect getVisibleBoundsInScreen(AccessibilityNodeInfo node, int width, int height) {
         if (node == null) {
             return null;
         }

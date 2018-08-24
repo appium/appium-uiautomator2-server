@@ -1,16 +1,25 @@
 package io.appium.uiautomator2.model;
 
 
-import org.json.JSONException;
-
 import java.util.UUID;
 
 
 public class AppiumUiAutomatorDriver {
 
+    private static AppiumUiAutomatorDriver instance;
     private Session session;
 
-    public String initializeSession() throws JSONException {
+    private AppiumUiAutomatorDriver() {
+    }
+
+    public static synchronized AppiumUiAutomatorDriver getInstance() {
+        if (instance == null) {
+            instance = new AppiumUiAutomatorDriver();
+        }
+        return instance;
+    }
+
+    public String initializeSession() {
 
         if (this.session != null) {
             session.getKnownElements().clear();
@@ -18,6 +27,10 @@ public class AppiumUiAutomatorDriver {
         }
         this.session = new Session(UUID.randomUUID().toString());
         return session.getSessionId();
+    }
+
+    public Session getSession() {
+        return session;
     }
 }
 

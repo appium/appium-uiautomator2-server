@@ -6,14 +6,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.server.WDStatus;
-import io.appium.uiautomator2.utils.API;
-import io.appium.uiautomator2.utils.Logger;
 
 public class MultiPointerGesture extends SafeRequestHandler {
 
@@ -22,35 +19,20 @@ public class MultiPointerGesture extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
-        final PointerCoords[][] pcs;
-        try {
-            pcs = parsePointerCoords(request);
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+        final PointerCoords[][] pcs = parsePointerCoords(request);
 
-            if (API.API_18) {
-                Boolean rt = UiAutomatorBridge.getInstance().getInteractionController().performMultiPointerGesture(pcs);
-                if (rt) {
-                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "OK");
-                } else {
-                    return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Unable to perform multi pointer gesture");
-                }
-            } else {
-                Logger.error("Device does not support API < 18!");
-                return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
-                        "Cannot perform multi pointer gesture on device below API level 18");
-            }
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
-        } catch (UiAutomator2Exception e) {
-            Logger.error("Exception while performing LongPressKeyCode action: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+        Boolean rt = UiAutomatorBridge.getInstance().getInteractionController().performMultiPointerGesture(pcs);
+        if (!rt) {
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
+                    "Unable to perform multi pointer gesture");
         }
+        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "OK");
     }
 
     private PointerCoords[][] parsePointerCoords(final IHttpRequest request)
             throws JSONException {
-        final JSONArray actions = (org.json.JSONArray) getPayload(request).get("actions");
+        final JSONArray actions = (JSONArray) getPayload(request).get("actions");
 
         final double time = computeLongestTime(actions);
 

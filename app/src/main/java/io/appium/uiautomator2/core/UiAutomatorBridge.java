@@ -46,7 +46,6 @@ public class UiAutomatorBridge {
 
     public UiAutomatorBridge() {
         try {
-
             this.uiAutomatorBridge = getField(UiDevice.class, FIELD_UI_AUTOMATOR_BRIDGE, Device.getUiDevice());
         } catch (Error error) {
             Logger.error("ERROR", error);
@@ -70,7 +69,7 @@ public class UiAutomatorBridge {
     }
 
     public UiAutomation getUiAutomation() {
-        return (UiAutomation)getField(CLASS_UI_AUTOMATOR_BRIDGE, FIELD_UI_AUTOMATOR, uiAutomatorBridge);
+        return (UiAutomation) getField(CLASS_UI_AUTOMATOR_BRIDGE, FIELD_UI_AUTOMATOR, uiAutomatorBridge);
     }
 
     public Display getDefaultDisplay() throws UiAutomator2Exception {

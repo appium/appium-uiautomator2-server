@@ -1,15 +1,19 @@
 package io.appium.uiautomator2.handler;
 
+import org.json.JSONException;
+
+import java.util.Map;
+import java.util.Map.Entry;
+
+import io.appium.uiautomator2.common.exceptions.UnsupportedSettingException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.AllowInvisibleElements;
-import io.appium.uiautomator2.model.CompressedLayoutHierarchy;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.model.WaitForIdleTimeout;
+import io.appium.uiautomator2.model.settings.ISetting;
+import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
-import java.util.Map;
 
 public class UpdateSettings extends SafeRequestHandler {
 
@@ -18,30 +22,26 @@ public class UpdateSettings extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
-
-        try {
-            Map<String, Object> settings = getPayload(request, "settings");
-            Session.capabilities.putAll(settings);
-            Logger.debug("Update settings: " + settings.toString());
-
-            if (settings.containsKey(AllowInvisibleElements.SETTING_NAME)) {
-                AllowInvisibleElements.updateSetting((boolean) settings.get(AllowInvisibleElements.SETTING_NAME));
-            }
-
-            if (settings.containsKey(CompressedLayoutHierarchy.SETTING_NAME)) {
-                CompressedLayoutHierarchy.updateSetting((boolean) settings.get(CompressedLayoutHierarchy.SETTING_NAME));
-            }
-
-            if (settings.containsKey(WaitForIdleTimeout.SETTING_NAME)) {
-                WaitForIdleTimeout.updateSetting((int) settings.get(WaitForIdleTimeout.SETTING_NAME));
-            }
-        } catch (Exception e) {
-            Logger.error("error settings " + e.getMessage());
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+        Map<String, Object> settings = getPayload(request, "settings");
+        Logger.debug("Update settings: " + settings.toString());
+        for (Entry<String, Object> entry : settings.entrySet()) {
+            String settingName = entry.getKey();
+            Object settingValue = entry.getValue();
+            ISetting setting = getSetting(settingName);
+            //noinspection unchecked
+            setting.update(settingValue);
+            Session.capabilities.put(settingName, settingValue);
         }
-
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
     }
 
+    public ISetting getSetting(String settingName) throws UnsupportedSettingException {
+        for (final Settings value : Settings.values()) {
+            if (value.toString().equals(settingName)) {
+                return value.getSetting();
+            }
+        }
+        throw new UnsupportedSettingException(settingName);
+    }
 }

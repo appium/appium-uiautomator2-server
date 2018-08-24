@@ -1,5 +1,20 @@
-package io.appium.uiautomator2.server;
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package io.appium.uiautomator2.server;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,22 +25,33 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import io.appium.uiautomator2.handler.AcceptAlert;
 import io.appium.uiautomator2.handler.AppStrings;
 import io.appium.uiautomator2.handler.CaptureScreenshot;
 import io.appium.uiautomator2.handler.Clear;
 import io.appium.uiautomator2.handler.Click;
 import io.appium.uiautomator2.handler.DeleteSession;
+import io.appium.uiautomator2.handler.DismissAlert;
 import io.appium.uiautomator2.handler.Drag;
 import io.appium.uiautomator2.handler.FindElement;
 import io.appium.uiautomator2.handler.FindElements;
+import io.appium.uiautomator2.handler.FirstVisibleView;
 import io.appium.uiautomator2.handler.Flick;
+import io.appium.uiautomator2.handler.GetAlertText;
+import io.appium.uiautomator2.handler.GetBatteryInfo;
+import io.appium.uiautomator2.handler.GetClipboard;
+import io.appium.uiautomator2.handler.GetDevicePixelRatio;
 import io.appium.uiautomator2.handler.GetDeviceSize;
 import io.appium.uiautomator2.handler.GetElementAttribute;
+import io.appium.uiautomator2.handler.GetElementScreenshot;
 import io.appium.uiautomator2.handler.GetName;
 import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.handler.GetRotation;
 import io.appium.uiautomator2.handler.GetScreenOrientation;
+import io.appium.uiautomator2.handler.GetSessionDetails;
+import io.appium.uiautomator2.handler.GetSettings;
 import io.appium.uiautomator2.handler.GetSize;
+import io.appium.uiautomator2.handler.GetSystemBars;
 import io.appium.uiautomator2.handler.GetText;
 import io.appium.uiautomator2.handler.Location;
 import io.appium.uiautomator2.handler.LongPressKeyCode;
@@ -37,7 +63,9 @@ import io.appium.uiautomator2.handler.PressBack;
 import io.appium.uiautomator2.handler.PressKeyCode;
 import io.appium.uiautomator2.handler.RotateScreen;
 import io.appium.uiautomator2.handler.ScrollTo;
+import io.appium.uiautomator2.handler.ScrollToElement;
 import io.appium.uiautomator2.handler.SendKeysToElement;
+import io.appium.uiautomator2.handler.SetClipboard;
 import io.appium.uiautomator2.handler.Source;
 import io.appium.uiautomator2.handler.Status;
 import io.appium.uiautomator2.handler.Swipe;
@@ -45,8 +73,9 @@ import io.appium.uiautomator2.handler.TouchDown;
 import io.appium.uiautomator2.handler.TouchLongClick;
 import io.appium.uiautomator2.handler.TouchMove;
 import io.appium.uiautomator2.handler.TouchUp;
-import io.appium.uiautomator2.handler.request.BaseRequestHandler;
 import io.appium.uiautomator2.handler.UpdateSettings;
+import io.appium.uiautomator2.handler.W3CActions;
+import io.appium.uiautomator2.handler.request.BaseRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.http.IHttpResponse;
@@ -57,11 +86,12 @@ public class AppiumServlet implements IHttpServlet {
     public static final String SESSION_ID_KEY = "SESSION_ID_KEY";
 
     public static final String ELEMENT_ID_KEY = "id";
+    public static final String ELEMENT_ID_NEXT_KEY = "elementId";
     public static final String COMMAND_NAME_KEY = "COMMAND_KEY";
     public static final String NAME_ID_KEY = "NAME_ID_KEY";
-    protected static ConcurrentMap<String, BaseRequestHandler> getHandler = new ConcurrentHashMap<String, BaseRequestHandler>();
-    protected static ConcurrentMap<String, BaseRequestHandler> postHandler = new ConcurrentHashMap<String, BaseRequestHandler>();
-    protected static ConcurrentMap<String, BaseRequestHandler> deleteHandler = new ConcurrentHashMap<String, BaseRequestHandler>();
+    protected static ConcurrentMap<String, BaseRequestHandler> getHandler = new ConcurrentHashMap<>();
+    protected static ConcurrentMap<String, BaseRequestHandler> postHandler = new ConcurrentHashMap<>();
+    protected static ConcurrentMap<String, BaseRequestHandler> deleteHandler = new ConcurrentHashMap<>();
     private ConcurrentMap<String, String[]> mapperUrlSectionsCache = new ConcurrentHashMap<>();
 
 
@@ -101,15 +131,22 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new Flick("/wd/hub/session/:sessionId/touch/flick"));
         register(postHandler, new ScrollTo("/wd/hub/session/:sessionId/touch/scroll"));
         register(postHandler, new MultiPointerGesture("/wd/hub/session/:sessionId/touch/multi/perform"));
+        register(postHandler, new W3CActions("/wd/hub/session/:sessionId/actions"));
         register(postHandler, new TouchDown("/wd/hub/session/:sessionId/touch/down"));
         register(postHandler, new TouchUp("/wd/hub/session/:sessionId/touch/up"));
         register(postHandler, new TouchMove("/wd/hub/session/:sessionId/touch/move"));
         register(postHandler, new UpdateSettings("/wd/hub/session/:sessionId/appium/settings"));
         register(postHandler, new NetworkConnection("/wd/hub/session/:sessionId/network_connection"));
+        register(postHandler, new ScrollToElement("/wd/hub/session/:sessionId/appium/element/:id/scroll_to/:elementId"));
+        register(postHandler, new GetClipboard("/wd/hub/session/:sessionId/appium/device/get_clipboard"));
+        register(postHandler, new SetClipboard("/wd/hub/session/:sessionId/appium/device/set_clipboard"));
+        register(postHandler, new AcceptAlert("/wd/hub/session/:sessionId/alert/accept"));
+        register(postHandler, new DismissAlert("/wd/hub/session/:sessionId/alert/dismiss"));
     }
 
     private void registerGetHandler() {
         register(getHandler, new Status("/wd/hub/status"));
+        register(getHandler, new GetSessionDetails("/wd/hub/session/:sessionId"));
         register(getHandler, new CaptureScreenshot("/wd/hub/session/:sessionId/screenshot"));
         register(getHandler, new GetScreenOrientation("/wd/hub/session/:sessionId/orientation"));
         register(getHandler, new GetRotation("/wd/hub/session/:sessionId/rotation"));
@@ -118,9 +155,19 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetRect("/wd/hub/session/:sessionId/element/:id/rect"));
         register(getHandler, new GetSize("/wd/hub/session/:sessionId/element/:id/size"));
         register(getHandler, new GetName("/wd/hub/session/:sessionId/element/:id/name"));
+        // W3C endpoint
+        register(getHandler, new GetElementScreenshot("/wd/hub/session/:sessionId/element/:id/screenshot"));
+        // JSONWP endpoint
+        register(getHandler, new GetElementScreenshot("/wd/hub/session/:sessionId/screenshot/:id"));
         register(getHandler, new Location("/wd/hub/session/:sessionId/element/:id/location"));
         register(getHandler, new GetDeviceSize("/wd/hub/session/:sessionId/window/:windowHandle/size"));
         register(getHandler, new Source("/wd/hub/session/:sessionId/source"));
+        register(getHandler, new GetSystemBars("/wd/hub/session/:sessionId/appium/device/system_bars"));
+        register(getHandler, new GetBatteryInfo("/wd/hub/session/:sessionId/appium/device/battery_info"));
+        register(getHandler, new GetSettings("/wd/hub/session/:sessionId/appium/settings"));
+        register(getHandler, new GetDevicePixelRatio("/wd/hub/session/:sessionId/appium/device/pixel_ratio"));
+        register(getHandler, new FirstVisibleView("/wd/hub/session/:sessionId/appium/element/:id/first_visible"));
+        register(getHandler, new GetAlertText("/wd/hub/session/:sessionId/alert/text"));
     }
 
     protected void register(Map<String, BaseRequestHandler> registerOn, BaseRequestHandler handler) {
@@ -191,7 +238,6 @@ public class AppiumServlet implements IHttpServlet {
         } else if ("DELETE".equals(request.method())) {
             handler = findMatcher(request, deleteHandler);
         }
-
         handleRequest(request, response, handler);
     }
 
@@ -243,6 +289,10 @@ public class AppiumServlet implements IHttpServlet {
         if (name != null) {
             request.data().put(NAME_ID_KEY, name);
         }
+        String elementId = getParameter(mappedUri, request.uri(), ":elementId");
+        if (elementId != null) {
+            request.data().put(ELEMENT_ID_NEXT_KEY, elementId);
+        }
 
         //request.data().put(DRIVER_KEY, driver);
     }
@@ -255,10 +305,8 @@ public class AppiumServlet implements IHttpServlet {
     protected String getParameter(String configuredUri, String actualUri, String param, boolean sectionLengthValidation) {
         String[] configuredSections = configuredUri.split("/");
         String[] currentSections = actualUri.split("/");
-        if (sectionLengthValidation) {
-            if (configuredSections.length != currentSections.length) {
-                return null;
-            }
+        if (sectionLengthValidation && configuredSections.length != currentSections.length) {
+            return null;
         }
         for (int i = 0; i < currentSections.length; i++) {
             if (configuredSections[i].contains(param)) {

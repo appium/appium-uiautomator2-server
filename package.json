@@ -1,10 +1,10 @@
 {
   "name": "appium-uiautomator2-server",
-  "version": "0.2.0",
+  "version": "1.15.0",
   "description": "A netty server with uiautomator2 handlers",
   "main": "index.js",
-  "windowsBuildDir":"c:/tmp",
-   "repository": {
+  "windowsBuildDir": "c:/tmp",
+  "repository": {
     "type": "git",
     "url": "https://github.com/appium/appium-uiautomator2-server"
   },
@@ -18,5 +18,19 @@
   "bugs": {
     "url": "https://github.com/appium/appium-uiautomator2-server/issues"
   },
-  "homepage": "https://github.com/appium/appium-uiautomator2-server"
+  "homepage": "https://github.com/appium/appium-uiautomator2-server",
+  "scripts": {
+    "clean": "rm -rf node_modules && rm -f package-lock.json && npm install",
+    "bump-gradle-version": "gulp gradle-version-update --package-version=${npm_package_version} && git add app/build.gradle",
+    "build": "./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks",
+    "move-server": "cp app/build/outputs/apk/server/debug/appium-uiautomator2-server-v${npm_package_version}.apk ./apks",
+    "move-test": "cp app/build/outputs/apk/androidTest/server/debug/appium-uiautomator2-server-debug-androidTest.apk ./apks",
+    "move-apks": "rm -rf apks && mkdir -p apks && npm run move-server && npm run move-test",
+    "version": "npm run bump-gradle-version && npm run build",
+    "clean-device": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test"
+  },
+  "devDependencies": {
+    "android-apidemos": "^3.0.0",
+    "appium-gulp-plugins": "^2.4.0"
+  }
 }

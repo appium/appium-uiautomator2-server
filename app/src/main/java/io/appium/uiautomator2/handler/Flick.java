@@ -5,7 +5,6 @@ import android.support.test.uiautomator.UiObjectNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -25,62 +24,51 @@ public class Flick extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
+            JSONException {
         Logger.info("Get Text of element command");
         Point start = new Point(0.5, 0.5);
         Point end = new Point();
         Double steps;
-        try {
-            JSONObject payload = getPayload(request);
-            if (payload.has(ELEMENT_ID_KEY_NAME)) {
-                String id = payload.getString(ELEMENT_ID_KEY_NAME);
-                AndroidElement element = KnownElements.getElementFromCache(id);
-                if (element == null) {
-                    return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-                }
-                start = element.getAbsolutePosition(start);
-                final Integer xoffset = Integer.parseInt(payload.getString("xoffset"));
-                final Integer yoffset = Integer.parseInt(payload.getString("yoffset"));
-                final Integer speed = Integer.parseInt(payload.getString("speed"));
-
-                steps = 1250.0 / speed + 1;
-                end.x = start.x + xoffset;
-                end.y = start.y + yoffset;
-
-            } else {
-                final Integer xSpeed = Integer.parseInt(payload.getString("xSpeed"));
-                final Integer ySpeed = Integer.parseInt(payload.getString("ySpeed"));
-
-                final Double speed = Math.min(1250.0,
-                        Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed));
-                steps = 1250.0 / speed + 1;
-
-                start = PositionHelper.getDeviceAbsPos(start);
-                end = calculateEndPoint(start, xSpeed, ySpeed);
+        JSONObject payload = getPayload(request);
+        if (payload.has(ELEMENT_ID_KEY_NAME)) {
+            String id = payload.getString(ELEMENT_ID_KEY_NAME);
+            AndroidElement element = KnownElements.getElementFromCache(id);
+            if (element == null) {
+                return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
             }
+            start = element.getAbsolutePosition(start);
+            final Integer xoffset = Integer.parseInt(payload.getString("xoffset"));
+            final Integer yoffset = Integer.parseInt(payload.getString("yoffset"));
+            final Integer speed = Integer.parseInt(payload.getString("speed"));
 
-            steps = Math.abs(steps);
-            Logger.debug("Flicking from " + start.toString() + " to " + end.toString()
-                    + " with steps: " + steps.intValue());
-            final boolean res = getUiDevice().swipe(start.x.intValue(), start.y.intValue(),
-                    end.x.intValue(), end.y.intValue(), steps.intValue());
+            steps = 1250.0 / speed + 1;
+            end.x = start.x + xoffset;
+            end.y = start.y + yoffset;
 
-            if (res) {
-                return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, res);
-            } else {
-                return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Flick did not complete successfully");
-            }
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Unable to find the element: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
-        } catch (InvalidCoordinatesException e) {
-            Logger.error("Invalid coordinates: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.INVALID_ELEMENT_COORDINATES, e);
+        } else {
+            final Integer xSpeed = Integer.parseInt(payload.getString("xSpeed"));
+            final Integer ySpeed = Integer.parseInt(payload.getString("ySpeed"));
+
+            final Double speed = Math.min(1250.0,
+                    Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed));
+            steps = 1250.0 / speed + 1;
+
+            start = PositionHelper.getDeviceAbsPos(start);
+            end = calculateEndPoint(start, xSpeed, ySpeed);
         }
 
+        steps = Math.abs(steps);
+        Logger.debug("Flicking from " + start.toString() + " to " + end.toString()
+                + " with steps: " + steps.intValue());
+        final boolean res = getUiDevice().swipe(start.x.intValue(), start.y.intValue(),
+                end.x.intValue(), end.y.intValue(), steps.intValue());
+
+        if (res) {
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
+        }
+        return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
+                "Flick did not complete successfully");
     }
 
     private Point calculateEndPoint(final Point start, final Integer xSpeed,

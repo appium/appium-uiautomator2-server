@@ -25,27 +25,20 @@ public class ScrollTo extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
-        try {
-            String json = getPayload(request).toString();
-            String selector = "$.params.selector", uiSelectorString, scrollToString = "";
-            uiSelectorString = JsonPath.compile(selector).read(json);
-            Device.waitForIdle();
-            // Extracting (\"Radio Group\") text from the String
-            // TODO This logic needs to be changed according to the request body from the Driver
-            Matcher m = Pattern.compile("\\(\"([^)]+)\"\\)").matcher(uiSelectorString);
-            while (m.find()) {
-                scrollToString = m.group(1);
-            }
-            scrollTo(scrollToString);
-            Logger.info("Scrolled to String : ", scrollToString);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (UiObjectNotFoundException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
+            UiObjectNotFoundException {
+        String json = getPayload(request).toString();
+        String selector = "$.params.selector", uiSelectorString, scrollToString = "";
+        uiSelectorString = JsonPath.compile(selector).read(json);
+        Device.waitForIdle();
+        // Extracting (\"Radio Group\") text from the String
+        // TODO This logic needs to be changed according to the request body from the Driver
+        Matcher m = Pattern.compile("\\(\"([^)]+)\"\\)").matcher(uiSelectorString);
+        while (m.find()) {
+            scrollToString = m.group(1);
         }
+        scrollTo(scrollToString);
+        Logger.info("Scrolled to String : ", scrollToString);
         return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, true);
     }
 }

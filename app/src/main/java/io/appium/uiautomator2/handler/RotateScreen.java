@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
+import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -24,54 +25,55 @@ public class RotateScreen extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
-
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+        JSONObject payload = getPayload(request);
         try {
-            JSONObject payload = getPayload(request);
-            if(payload.has("orientation")) {
+            if (payload.has("orientation")) {
                 String orientation = payload.getString("orientation");
                 return handleRotation(request, orientation);
-            } else if (payload.has("x") && payload.has("y") && payload.has("z")){
+            }
+
+            if (payload.has("x") && payload.has("y") && payload.has("z")) {
                 int x = payload.getInt("x");
                 int y = payload.getInt("y");
                 int z = payload.getInt("z");
                 return handleRotation(request, x, y, z);
-            } else {
-                return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, "Unable to Rotate Device, Unsupported arguments");
             }
-        } catch (RemoteException e) {
+
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND,
+                    "Unable to Rotate Device, Unsupported arguments");
+        } catch (RemoteException | InterruptedException e) {
             Logger.error("Exception while rotating Screen ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
-        } catch (InterruptedException e) {
-            Logger.error("Exception while rotating Screen ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (InvalidCoordinatesException e) {
-            Logger.error("Invalid rotation arguments ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, "Unable to Rotate Device");
+            throw new UiAutomator2Exception(e);
         }
     }
 
-    private AppiumResponse handleRotation(IHttpRequest request, int x, int y, int z) throws InvalidCoordinatesException, RemoteException, InterruptedException {
-        if ( x!=0 || y!=0 || !( z==0 || z==90 || z==180 || z==270 )) {
-            throw new InvalidCoordinatesException("Unable to Rotate Device. Invalid rotation, valid params x=0, y=0, z=(0 or 90 or 180 or 270)");
+    private AppiumResponse handleRotation(IHttpRequest request, int x, int y, int z)
+            throws InvalidCoordinatesException, InterruptedException {
+        if (x != 0 || y != 0 || !(z == 0 || z == 90 || z == 180 || z == 270)) {
+            throw new InvalidCoordinatesException(
+                    "Unable to Rotate Device. Invalid rotation, valid params x=0, y=0, z=(0 or 90 or 180 or 270)");
         }
-        OrientationEnum current = OrientationEnum.fromInteger(
-                getUiDevice().getDisplayRotation());
-        OrientationEnum desired = OrientationEnum.fromInteger(z/90);
-        if(current == desired) {
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, String.format("Already in %s mode", current.getOrientation()));
+        OrientationEnum current = OrientationEnum.fromInteger(getUiDevice().getDisplayRotation());
+        OrientationEnum desired = OrientationEnum.fromInteger(z / 90);
+        if (current.equals(desired)) {
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
+                    String.format("Already in %s mode", current.getOrientation()));
         }
 
-        switch(desired) {
+        switch (desired) {
             case ROTATION_0:
             case ROTATION_90:
             case ROTATION_180:
             case ROTATION_270:
-                CustomUiDevice.getInstance().getInstrumentation().getUiAutomation().setRotation(desired.getValue());
+                CustomUiDevice.getInstance()
+                        .getInstrumentation()
+                        .getUiAutomation()
+                        .setRotation(desired.getValue());
                 break;
+            default:
+                throw new InvalidCoordinatesException(String.format(
+                        "Unable to Rotate Device. Invalid desired orientation value '%s'", desired));
         }
 
         return verifyRotation(request, desired);
@@ -104,7 +106,8 @@ public class RotateScreen extends SafeRequestHandler {
                     desired = OrientationEnum.ROTATION_270;
                     break;
                 default:
-                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "Already in landscape mode.");
+                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
+                            "Already in landscape mode.");
             }
         } else {
             switch (current) {
@@ -128,7 +131,7 @@ public class RotateScreen extends SafeRequestHandler {
         final int TIMEOUT = 2000;
         final long then = System.currentTimeMillis();
         long now = then;
-        while (current != desired && now - then < TIMEOUT) {
+        while (!current.equals(desired) && now - then < TIMEOUT) {
             Thread.sleep(100);
             now = System.currentTimeMillis();
             current = OrientationEnum.fromInteger(getUiDevice().getDisplayRotation());

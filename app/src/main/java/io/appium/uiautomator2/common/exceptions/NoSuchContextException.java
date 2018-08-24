@@ -1,6 +1,6 @@
 package io.appium.uiautomator2.common.exceptions;
 
-public class NoSuchContextException extends RuntimeException {
+public class NoSuchContextException extends UiAutomator2Exception {
 
     public NoSuchContextException(String detailMessage) {
         super(detailMessage);

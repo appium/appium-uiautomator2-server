@@ -1,5 +1,6 @@
 package io.appium.uiautomator2.model;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -7,12 +8,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import static io.appium.uiautomator2.model.settings.Settings.ELEMENT_RESPONSE_ATTRIBUTES;
+import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_RESPONSES;
+
 public class Session {
     public static final String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
+    public static Map<String, Object> capabilities = new HashMap<>();
     private String sessionId;
     private ConcurrentMap<String, JSONObject> commandConfiguration;
     private KnownElements knownElements;
-    public static Map<String, Object> capabilities = new HashMap<String, Object>();
+    private AccessibilityScrollData lastScrollData;
 
     public Session(String sessionId) {
         this.sessionId = sessionId;
@@ -21,6 +26,23 @@ public class Session {
         JSONObject configJsonObject = new JSONObject();
         this.commandConfiguration.put(SEND_KEYS_TO_ELEMENT, configJsonObject);
         NotificationListener.getInstance().start();
+    }
+
+    public static boolean shouldUseCompactResponses() {
+        boolean shouldUseCompactResponses = true;
+        if (Session.capabilities.containsKey(SHOULD_USE_COMPACT_RESPONSES.toString())) {
+            shouldUseCompactResponses = BooleanUtils.toBoolean(
+                    Session.capabilities.get(SHOULD_USE_COMPACT_RESPONSES.toString()).toString());
+        }
+        return shouldUseCompactResponses;
+    }
+
+    public static String[] getElementResponseAttributes() {
+        if (Session.capabilities.containsKey(ELEMENT_RESPONSE_ATTRIBUTES.toString())) {
+            return Session.capabilities.get(ELEMENT_RESPONSE_ATTRIBUTES.toString()).toString()
+                    .split(",");
+        }
+        return new String[]{"name", "text"};
     }
 
     public String getSessionId() {
@@ -41,5 +63,11 @@ public class Session {
         return commandConfiguration.get(command);
     }
 
+    public AccessibilityScrollData getLastScrollData() {
+        return lastScrollData;
+    }
 
+    public void setLastScrollData(AccessibilityScrollData scrollData) {
+        lastScrollData = scrollData;
+    }
 }

@@ -12,22 +12,14 @@ import io.appium.uiautomator2.utils.Logger;
 
 public class GetDataDir extends SafeRequestHandler {
 
-    File dataDirectory;
-
     public GetDataDir(String mappedUri) {
         super(mappedUri);
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
-
-        try {
-            dataDirectory = Environment.getDataDirectory();
-            Logger.info("data directory at " + dataDirectory);
-        } catch (Exception e) {
-            Logger.error("Exception while accessing data directory" + e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        }
+    protected AppiumResponse safeHandle(IHttpRequest request) {
+        File dataDirectory = Environment.getDataDirectory();
+        Logger.info("data directory at " + dataDirectory);
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, dataDirectory);
     }
 }

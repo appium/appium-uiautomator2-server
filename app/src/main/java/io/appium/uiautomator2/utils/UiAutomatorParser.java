@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.utils;
 
+import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 
 import java.util.ArrayList;
@@ -29,80 +30,80 @@ import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
  */
 public class UiAutomatorParser {
 
+    private static final String STATEMENT_DELIMITER = ";";
+    private final List<UiSelector> selectors = new ArrayList<>();
     private String text;
-    private List<UiSelector> selectors;
-    private UiScrollableParser scrollableParser = new UiScrollableParser();
-    private UiSelectorParser selectorParser = new UiSelectorParser();
 
-    public List<UiSelector> parse(String textToParse) throws UiSelectorSyntaxException {
+    public List<UiSelector> parse(String textToParse) throws UiSelectorSyntaxException,
+            UiObjectNotFoundException {
+        selectors.clear();
         if (textToParse.isEmpty()) {
-            throw new UiSelectorSyntaxException("Tried to parse an empty string. Expected to see a string consisting of text to be interpreted as UiAutomator java code.");
+            throw new UiSelectorSyntaxException(textToParse, "Tried to parse an empty string. " +
+                    "Expected to see a string consisting of text to be interpreted as " +
+                    "UiAutomator java code.");
         }
-        selectors = new ArrayList<UiSelector>();
         text = textToParse.trim();
         removeTailingSemicolon();
-        trimWhitespace();
 
-        consumeStatement();
         while (text.length() > 0) {
-            trimWhitespace();
-            consumeSemicolon();
-            trimWhitespace();
             consumeStatement();
+            consumeSemicolon();
         }
 
         return selectors;
     }
 
-    private void trimWhitespace() {
-        text = text.trim();
-    }
-
     private void removeTailingSemicolon() {
-        if (text.charAt(text.length() - 1) == ';') {
+        if (text.endsWith(STATEMENT_DELIMITER)) {
             text = text.substring(0, text.length() - 1);
         }
     }
 
-    private void consumeSemicolon() throws UiSelectorSyntaxException {
-        if (text.charAt(0) != ';') {
-            throw new UiSelectorSyntaxException("Expected ';' but saw '" + text.charAt(0) + "'");
+    private void consumeSemicolon() {
+        if (text.startsWith(STATEMENT_DELIMITER)) {
+            text = text.substring(1);
         }
-
-        text = text.substring(1);
     }
 
-    private void consumeStatement() throws UiSelectorSyntaxException {
+    private void consumeStatement() throws UiSelectorSyntaxException, UiObjectNotFoundException {
+        text = text.trim();
         String statement;
         int index = 0;
-        int parenCount = -1; // semicolons could appear inside String arguments, so we make sure we only count occurrences outside of a parenthesis pair
+        boolean isInsideStringLiteral = false;
         while (index < text.length()) {
-            if (text.charAt(index) == ';' && parenCount == 0) {
+            final char currentChar = text.charAt(index);
+
+            if (currentChar == '"') {
+                /* Skip escaped quotes */
+                isInsideStringLiteral = !(isInsideStringLiteral && index > 0
+                        && text.charAt(index - 1) != '\\');
+            }
+
+            if (STATEMENT_DELIMITER.equals(String.valueOf(text.charAt(index)))
+                    && !isInsideStringLiteral) {
                 break;
-            }
-            if (text.charAt(index) == '(') {
-                if (parenCount < 0) {
-                    parenCount = 1;
-                } else {
-                    parenCount++;
-                }
-            }
-            if (text.charAt(index) == ')') {
-                parenCount--;
             }
             index++;
         }
 
-        statement = text.substring(0, index);
-        if (UiScrollableParser.isUiScrollable(statement)) {
+        statement = text.substring(0, index).trim();
+        UiScrollableParser uiScrollableParser = createUiScrollableParser(statement);
+        if (uiScrollableParser.isUiScrollable()) {
             Logger.debug("Parsing scrollable: " + statement);
-            selectors.add(scrollableParser.parse(statement));
+            selectors.add(uiScrollableParser.parse());
         } else {
             Logger.debug("Parsing selector: " + statement);
-            selectors.add(selectorParser.parse(statement));
+            selectors.add(createUiSelectorParser(statement).parse());
         }
 
         text = text.substring(index);
     }
 
+    public UiSelectorParser createUiSelectorParser(String statement) {
+        return new UiSelectorParser(statement);
+    }
+
+    public UiScrollableParser createUiScrollableParser(String statement) {
+        return new UiScrollableParser(statement);
+    }
 }

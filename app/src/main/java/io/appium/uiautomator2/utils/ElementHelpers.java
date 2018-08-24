@@ -17,8 +17,10 @@
 package io.appium.uiautomator2.utils;
 
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -28,23 +30,32 @@ import org.json.JSONObject;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
-import io.appium.uiautomator2.core.AccessibilityNodeInfoHelper;
-import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
+import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
+import io.appium.uiautomator2.core.AccessibilityNodeInfoHelper;
+import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.model.AndroidElement;
-import io.appium.uiautomator2.utils.UnicodeEncoder;
+import io.appium.uiautomator2.model.Session;
 
+import static io.appium.uiautomator2.handler.GetElementAttribute.getElementAttributeValue;
+import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
+import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public abstract class ElementHelpers {
 
+    private static final String ATTRIBUTE_PREFIX = "attribute/";
     private static Method findAccessibilityNodeInfo;
 
     private static AccessibilityNodeInfo elementToNode(Object element) {
         AccessibilityNodeInfo result = null;
         try {
-            result = (AccessibilityNodeInfo) findAccessibilityNodeInfo.invoke((UiObject) element, 5000L);
+            result = (AccessibilityNodeInfo) findAccessibilityNodeInfo.invoke(element, 5000L);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,7 +66,6 @@ public abstract class ElementHelpers {
      * Remove all duplicate elements from the provided list
      *
      * @param elements - elements to remove duplicates from
-     *
      * @return a new list with duplicates removed
      */
     public static List<Object> dedupe(List<Object> elements) {
@@ -65,8 +75,8 @@ public abstract class ElementHelpers {
             e.printStackTrace();
         }
 
-        List<Object> result = new ArrayList<Object>();
-        List<AccessibilityNodeInfo> nodes = new ArrayList<AccessibilityNodeInfo>();
+        List<Object> result = new ArrayList<>();
+        List<AccessibilityNodeInfo> nodes = new ArrayList<>();
 
         for (Object element : elements) {
             AccessibilityNodeInfo node = elementToNode(element);
@@ -81,23 +91,64 @@ public abstract class ElementHelpers {
 
     /**
      * Return the JSONObject which Appium returns for an element
-     *
+     * <p>
      * For example, appium returns elements like [{"ELEMENT":1}, {"ELEMENT":2}]
      */
-    public static JSONObject toJSON(AndroidElement el) throws JSONException {
-        return new JSONObject().put("ELEMENT", el.getId());
+    public static JSONObject toJSON(AndroidElement el) throws JSONException, UiObjectNotFoundException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("ELEMENT", el.getId());
+        if (Session.shouldUseCompactResponses()) {
+            return jsonObject;
+        }
+        for (String field : Session.getElementResponseAttributes()) {
+            try {
+                if (Objects.equals(field, "name")) {
+                    putNullable(jsonObject, field, el.getContentDesc());
+                } else if (Objects.equals(field, "text")) {
+                    putNullable(jsonObject, field, el.getText());
+                } else if (Objects.equals(field, "rect")) {
+                    putNullable(jsonObject, field, GetRect.getElementRectJSON(el));
+                } else if (Objects.equals(field, "enabled")) {
+                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                } else if (Objects.equals(field, "displayed")) {
+                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                } else if (Objects.equals(field, "selected")) {
+                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                } else if (field.startsWith(ATTRIBUTE_PREFIX)) {
+                    String attributeName = field.substring(ATTRIBUTE_PREFIX.length());
+                    putNullable(jsonObject, field, getElementAttributeValue(el, attributeName));
+                }
+            } catch (ReflectiveOperationException | NoAttributeFoundException e) {
+                // ignore field
+            }
+        }
+        return jsonObject;
+    }
+
+    private static void putNullable(JSONObject jsonObject, String fieldName,
+                                    Object objValue) throws JSONException {
+        if (objValue == null) {
+            objValue = JSONObject.NULL;
+        }
+        jsonObject.put(fieldName, objValue);
     }
 
     /**
      * Set text of an element
      *
-     * @param element - target element
-     * @param text - desired text
+     * @param element         - target element
+     * @param text            - desired text
      * @param unicodeKeyboard - true, if text should be encoded to unicode
+     * @return true if the text has been successfully set
      */
-    public static void setText(final Object element, final String text, final boolean unicodeKeyboard) throws UiObjectNotFoundException {
-        String textToSend = text;
+    public static boolean setText(final Object element,
+                                  @Nullable final String text, final boolean unicodeKeyboard) {
+        // Per framework convention, setText(null) means clearing it
+        String textToSend = text == null ? "" : text;
         AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+        if (nodeInfo == null) {
+            throw new ElementNotFoundException();
+        }
 
         /*
          * Execute ACTION_SET_PROGRESS action (introduced in API level 24)
@@ -108,12 +159,13 @@ public abstract class ElementHelpers {
             Logger.debug("Element has range info.");
             try {
                 if (AccessibilityNodeInfoHelper.setProgressValue(nodeInfo, Float.parseFloat(text))) {
-                    return;
+                    return true;
                 }
             } catch (NumberFormatException e) {
                 Logger.debug(String.format("Can not convert \"%s\" to float.", text));
             }
-            Logger.debug("Unable to perform ACTION_SET_PROGRESS action.  Falling back to element.setText()");
+            Logger.debug("Unable to perform ACTION_SET_PROGRESS action. " +
+                    "Falling back to element.setText()");
         }
 
         /*
@@ -130,13 +182,19 @@ public abstract class ElementHelpers {
             textToSend = UnicodeEncoder.encode(textToSend);
             Logger.debug("Encoded text: " + textToSend);
         }
+
         Logger.debug("Sending text to element: " + textToSend);
-        if (element instanceof UiObject2) {
-            UiObject2.class.cast(element).setText(textToSend);
-        } else if (element instanceof UiObject) {
-            UiObject.class.cast(element).setText(textToSend);
-        } else {
-            throw new UiAutomator2Exception("Unknown object type: " + element.getClass().getName());
+        Bundle args = new Bundle();
+        args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, textToSend);
+        return nodeInfo.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
+    }
+
+    public static AndroidElement findElement(final BySelector ui2BySelector)
+            throws UiAutomator2Exception, ClassNotFoundException {
+        Object ui2Object = getInstance().findObject(ui2BySelector);
+        if (ui2Object == null) {
+            throw new ElementNotFoundException();
         }
+        return getAndroidElement(UUID.randomUUID().toString(), ui2Object, null);
     }
 }

@@ -1,5 +1,20 @@
-package io.appium.uiautomator2.model;
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package io.appium.uiautomator2.model;
 
 import android.support.test.uiautomator.UiSelector;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -7,47 +22,49 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import io.appium.uiautomator2.utils.Attribute;
 
 import static io.appium.uiautomator2.model.UiAutomationElement.charSequenceToString;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
 
 public class CustomUiSelector {
+    private UiSelector selector;
 
-    private UiSelector selector = new UiSelector();
-    private UiAutomationElement uiAutomationElement;
-
-    CustomUiSelector(UiSelector selector){
+    CustomUiSelector(UiSelector selector) {
         this.selector = selector;
     }
 
     /**
-     * returns UiSelector object, based on UiAutomationElement attributes
      * @param node
-     * @return
+     * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        XPathFinder.refreshUiElementTree();
-        uiAutomationElement = UiAutomationElement.map.get(node);
+        UiAutomationElement uiAutomationElement = UiAutomationElement.getCachedElement(node,
+                currentActiveWindowRoot());
+        if (uiAutomationElement == null) {
+            throw new IllegalArgumentException(String.format(
+                    "The '%s' node is not found in the cache", node));
+        }
         put(Attribute.PACKAGE, charSequenceToString(uiAutomationElement.getPackageName()));
         put(Attribute.CLASS, charSequenceToString(uiAutomationElement.getClassName()));
-        put( Attribute.TEXT, charSequenceToString(uiAutomationElement.getText()));
-        put( Attribute.CONTENT_DESC, charSequenceToString(uiAutomationElement.getContentDescription()));
-        put( Attribute.RESOURCE_ID, charSequenceToString(uiAutomationElement.getResourceId()));
-        put( Attribute.CHECKABLE, uiAutomationElement.isCheckable());
-        put( Attribute.CHECKED, uiAutomationElement.isChecked());
-        put( Attribute.CLICKABLE, uiAutomationElement.isClickable());
-        put( Attribute.ENABLED, uiAutomationElement.isEnabled());
-        put( Attribute.FOCUSABLE, uiAutomationElement.isFocusable());
-        put( Attribute.FOCUSED, uiAutomationElement.isFocused());
-        put( Attribute.LONG_CLICKABLE, uiAutomationElement.isLongClickable());
-        put( Attribute.PASSWORD, uiAutomationElement.isPassword());
-        put( Attribute.SCROLLABLE, uiAutomationElement.isScrollable());
-        put( Attribute.SELECTED, uiAutomationElement.isSelected());
-        put( Attribute.INDEX, uiAutomationElement.getIndex());
+        put(Attribute.TEXT, charSequenceToString(uiAutomationElement.getText()));
+        put(Attribute.CONTENT_DESC, charSequenceToString(uiAutomationElement.getContentDescription()));
+        put(Attribute.RESOURCE_ID, charSequenceToString(uiAutomationElement.getResourceId()));
+        put(Attribute.CHECKABLE, uiAutomationElement.isCheckable());
+        put(Attribute.CHECKED, uiAutomationElement.isChecked());
+        put(Attribute.CLICKABLE, uiAutomationElement.isClickable());
+        put(Attribute.ENABLED, uiAutomationElement.isEnabled());
+        put(Attribute.FOCUSABLE, uiAutomationElement.isFocusable());
+        put(Attribute.FOCUSED, uiAutomationElement.isFocused());
+        put(Attribute.LONG_CLICKABLE, uiAutomationElement.isLongClickable());
+        put(Attribute.PASSWORD, uiAutomationElement.isPassword());
+        put(Attribute.SCROLLABLE, uiAutomationElement.isScrollable());
+        put(Attribute.SELECTED, uiAutomationElement.isSelected());
+        put(Attribute.INDEX, uiAutomationElement.getIndex());
 
         return selector;
     }
 
-    private void put( Attribute key, Object value) {
+    private void put(Attribute key, Object value) {
         if (value == null) {
-            return ;
+            return;
         }
         switch (key) {
             case PACKAGE:

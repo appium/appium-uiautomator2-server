@@ -1,6 +1,7 @@
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.Configurator;
 import android.support.test.uiautomator.UiObject;
@@ -18,13 +19,11 @@ import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
-import io.appium.uiautomator2.utils.API;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
-import io.appium.uiautomator2.utils.UnicodeEncoder;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
@@ -60,7 +59,7 @@ public class UiObjectElement implements AndroidElement {
     }
 
     public String getClassName() throws UiObjectNotFoundException {
-            return element.getClassName();
+        return element.getClassName();
     }
 
     public String getStringAttribute(final String attr) throws UiObjectNotFoundException, NoAttributeFoundException {
@@ -106,14 +105,14 @@ public class UiObjectElement implements AndroidElement {
             res = element.exists();
         } else if ("password".equals(attr)) {
             res = AccessibilityNodeInfoGetter.fromUiObject(element).isPassword();
-        }  else {
+        } else {
             throw new NoAttributeFoundException(attr);
         }
         return res;
     }
 
-    public void setText(final String text, boolean unicodeKeyboard) throws UiObjectNotFoundException {
-        ElementHelpers.setText(element, text, unicodeKeyboard);
+    public boolean setText(final String text, boolean unicodeKeyboard) {
+        return ElementHelpers.setText(element, text, unicodeKeyboard);
     }
 
     public By getBy() {
@@ -133,32 +132,36 @@ public class UiObjectElement implements AndroidElement {
         return rectangle;
     }
 
-    public Object getChild(final Object selector) throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
+    @Nullable
+    public Object getChild(final Object selector)
+            throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof BySelector) {
-            /**
+            /*
              * We can't find the child element with BySelector on UiObject,
              * as an alternative creating UiObject2 with UiObject's AccessibilityNodeInfo
              * and finding the child element on UiObject2.
              */
             AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-            UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo);
-            return uiObject2.findObject((BySelector) selector);
+            Object uiObject2 = CustomUiDevice.getInstance().findObject(nodeInfo);
+            return (uiObject2 instanceof UiObject2)
+                ? ((UiObject2) uiObject2).findObject((BySelector) selector) : null;
         }
         return element.getChild((UiSelector) selector);
     }
 
-    public List<Object> getChildren(final Object selector, final By by) throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
+    public List<Object> getChildren(final Object selector, final By by)
+            throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof BySelector) {
-            /**
+            /*
              * We can't find the child elements with BySelector on UiObject,
              * as an alternative creating UiObject2 with UiObject's AccessibilityNodeInfo
              * and finding the child elements on UiObject2.
              */
             AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
             UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo);
-            return (List)uiObject2.findObjects((BySelector) selector);
+            return (List) uiObject2.findObjects((BySelector) selector);
         }
-        return (List)this.getChildElements((UiSelector) selector);
+        return (List) this.getChildElements((UiSelector) selector);
     }
 
 
@@ -235,24 +238,19 @@ public class UiObjectElement implements AndroidElement {
         return PositionHelper.getAbsolutePosition(point, rect, new Point(rect.left, rect.top), false);
     }
 
-    public String getResourceId() throws UiObjectNotFoundException {
+    public String getResourceId() {
         String resourceId = "";
 
-        if (!API.API_18) {
-            Logger.error("Device does not support API >= 18!");
-            return resourceId;
-        }
-
         try {
-      /*
-       * Unfortunately UiObject does not implement a getResourceId method.
-       * There is currently no way to determine the resource-id of a given
-       * element represented by UiObject. Until this support is added to
-       * UiAutomater, we try to match the implementation pattern that is
-       * already used by UiObject for getting attributes using reflection.
-       * The returned string matches exactly what is displayed in the
-       * UiAutomater inspector.
-       */
+            /*
+             * Unfortunately UiObject does not implement a getResourceId method.
+             * There is currently no way to determine the resource-id of a given
+             * element represented by UiObject. Until this support is added to
+             * UiAutomater, we try to match the implementation pattern that is
+             * already used by UiObject for getting attributes using reflection.
+             * The returned string matches exactly what is displayed in the
+             * UiAutomater inspector.
+             */
             AccessibilityNodeInfo node = (AccessibilityNodeInfo) invoke(method(element.getClass(), "findAccessibilityNodeInfo", long.class),
                     element, Configurator.getInstance().getWaitForSelectorTimeout());
 
@@ -270,32 +268,23 @@ public class UiObjectElement implements AndroidElement {
 
     public boolean dragTo(final int destX, final int destY, final int steps)
             throws UiObjectNotFoundException, InvalidCoordinatesException {
-        if (API.API_18) {
-            Point coords = new Point(destX, destY);
-            coords = PositionHelper.getDeviceAbsPos(coords);
-            return element.dragTo(coords.x.intValue(), coords.y.intValue(), steps);
-        } else {
-            Logger.error("Device does not support API >= 18!");
-            return false;
-        }
+        Point coords = new Point(destX, destY);
+        coords = PositionHelper.getDeviceAbsPos(coords);
+        return element.dragTo(coords.x.intValue(), coords.y.intValue(), steps);
     }
 
     public boolean dragTo(final Object destObj, final int steps)
             throws UiObjectNotFoundException, InvalidCoordinatesException {
-        if (API.API_18) {
-            if (destObj instanceof UiObject) {
-                return element.dragTo((UiObject) destObj, steps);
-            } else if (destObj instanceof UiObject2) {
-                android.graphics.Point coords = ((UiObject2) destObj).getVisibleCenter();
-                return dragTo(coords.x, coords.y, steps);
-            } else {
-                Logger.error("Destination should be either UiObject or UiObject2");
-                return false;
-            }
-        } else {
-            Logger.error("Device does not support API >= 18!");
-            return false;
+        if (destObj instanceof UiObject) {
+            return element.dragTo((UiObject) destObj, steps);
         }
 
+        if (destObj instanceof UiObject2) {
+            android.graphics.Point coords = ((UiObject2) destObj).getVisibleCenter();
+            return dragTo(coords.x, coords.y, steps);
+        }
+
+        Logger.error("Destination should be either UiObject or UiObject2");
+        return false;
     }
 }

@@ -17,7 +17,7 @@ public class Wake extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         try {
             wake();
         } catch (RemoteException e) {

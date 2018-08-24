@@ -1,21 +1,41 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.uiautomator2.model;
 
-import android.support.test.uiautomator.BySelector;
+import android.support.annotation.Nullable;
+import android.support.test.uiautomator.UiSelector;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.utils.Logger;
+import io.appium.uiautomator2.utils.NodeInfoList;
 
-import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
+import static io.appium.uiautomator2.utils.LocationHelpers.getXPathNodeMatch;
+import static io.appium.uiautomator2.utils.LocationHelpers.rewriteIdLocator;
+import static io.appium.uiautomator2.utils.LocationHelpers.toSelector;
 
 public class KnownElements {
-    private static Map<String, AndroidElement> cache = new HashMap<String, AndroidElement>();
+    private static Map<String, AndroidElement> cache = new HashMap<>();
 
+    @Nullable
     private static String getCacheKey(AndroidElement element) {
         for (Map.Entry<String, AndroidElement> entry : cache.entrySet()) {
             if (entry.getValue().equals(element)) {
@@ -25,32 +45,51 @@ public class KnownElements {
         return null;
     }
 
-    public static String getIdOfElement(AndroidElement element) {
-        if (cache.containsValue(element)) {
-            return getCacheKey(element);
-        }
-        return null;
-    }
-
+    @Nullable
     public static AndroidElement getElementFromCache(String id) {
-        return cache.get(id);
-    }
-
-    /**
-     *
-     * @param ui2BySelector, for finding {@link android.support.test.uiautomator.UiObject2} element derived using {@link By}
-     * @param by, user provided selector criteria from appium client.
-     * @return
-     */
-    public static AndroidElement geElement(final BySelector ui2BySelector, By by) throws ElementNotFoundException, InvalidSelectorException, UiAutomator2Exception, ClassNotFoundException {
-        Object ui2Object = getInstance().findObject(ui2BySelector);
-        if (ui2Object == null) {
-            throw new ElementNotFoundException();
+        AndroidElement result = cache.get(id);
+        if (result != null) {
+            // It might be that cached UI object has been invalidated
+            // after AX cache reset has been performed. So we try to recreate
+            // the cached object automatically
+            // in order to avoid an unexpected StaleElementReferenceException
+            try {
+                result.getName();
+            } catch (Exception e) {
+                final By by = result.getBy();
+                Object ui2Object = null;
+                try {
+                    if (by instanceof By.ById) {
+                        String locator = rewriteIdLocator((By.ById) by);
+                        ui2Object = CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.res(locator));
+                    } else if (by instanceof By.ByAccessibilityId) {
+                        ui2Object = CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.desc(by.getElementLocator()));
+                    } else if (by instanceof By.ByClass) {
+                        ui2Object = CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.clazz(by.getElementLocator()));
+                    } else if (by instanceof By.ByXPath) {
+                        final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null);
+                        if (matchedNodes.size() > 0) {
+                            ui2Object = CustomUiDevice.getInstance().findObject(matchedNodes);
+                        }
+                    } else if (by instanceof By.ByAndroidUiAutomator) {
+                        UiSelector selector = toSelector(by.getElementLocator());
+                        if (selector != null) {
+                            ui2Object = CustomUiDevice.getInstance().findObject(selector);
+                        }
+                    }
+                } catch (Exception e1) {
+                    Logger.info(String.format(
+                            "An exception happened while restoring the cached element '%s'", id), e1);
+                }
+                if (ui2Object == null) {
+                    throw new StaleElementReferenceException(String.format(
+                            "The element '%s' does not exist in DOM anymore", id));
+                }
+                AndroidElement androidElement = getAndroidElement(id, ui2Object, result.getBy());
+                cache.put(androidElement.getId(), androidElement);
+            }
         }
-        String id = UUID.randomUUID().toString();
-        AndroidElement androidElement = getAndroidElement(id, ui2Object, by);
-        cache.put(androidElement.getId(), androidElement);
-        return androidElement;
+        return cache.get(id);
     }
 
     public String add(AndroidElement element) {
@@ -66,6 +105,5 @@ public class KnownElements {
             cache.clear();
             System.gc();
         }
-
     }
 }

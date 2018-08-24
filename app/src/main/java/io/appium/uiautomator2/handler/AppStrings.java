@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -20,36 +21,31 @@ public class AppStrings extends SafeRequestHandler {
     }
 
     @Override
-    public AppiumResponse safeHandle(IHttpRequest request) {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         String msg;
         final String filePath = "/data/local/tmp/strings.json";
-        JSONObject appStrings;
+        final File jsonFile = new File(filePath);
+        Logger.debug("Loading strings.json from file location: " + filePath);
+
+        if (!jsonFile.exists()) {
+            msg = "strings.json doesn't exist";
+            Logger.error(msg);
+            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, msg);
+        }
+
         try {
-            final File jsonFile = new File(filePath);
-            Logger.debug("Loading strings.json from file location: " + filePath);
-
-            if (!jsonFile.exists()) {
-                msg = "strings.json doesn't exist";
-                Logger.error(msg);
-                return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, msg);
-            }
-
             DataInputStream dataInput = new DataInputStream(
                     new FileInputStream(jsonFile));
             byte[] jsonBytes = new byte[(int) jsonFile.length()];
             dataInput.readFully(jsonBytes);
             dataInput.close();
 
-            appStrings = new JSONObject(new String(jsonBytes, "UTF-8"));
+            JSONObject appStrings = new JSONObject(new String(jsonBytes, "UTF-8"));
             Logger.debug("json loading complete ");
-
+            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, appStrings);
         } catch (IOException e) {
             Logger.error("Error loading json from " + filePath + " : " + e);
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-        } catch (JSONException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
+            throw new UiAutomator2Exception(e);
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, appStrings);
     }
 }
