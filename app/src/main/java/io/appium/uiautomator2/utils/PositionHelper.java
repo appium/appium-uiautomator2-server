@@ -17,10 +17,10 @@
 package io.appium.uiautomator2.utils;
 
 import android.graphics.Rect;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObjectNotFoundException;
+import android.view.Display;
 
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
+import io.appium.uiautomator2.core.UiAutomatorBridge;
 
 public abstract class PositionHelper {
 
@@ -31,7 +31,7 @@ public abstract class PositionHelper {
      * @param pointCoord The position to translate.
      * @param length     Length of side to use for percentage positions.
      * @param offset     Position offset.
-     * @return
+     * @return The translated point coordinates
      */
     private static double translateCoordinate(double pointCoord, double length, double offset) {
         double translatedCoord;
@@ -53,8 +53,7 @@ public abstract class PositionHelper {
      * @param offsets           X and Y values by which to offset the point. These are typically the
      *                          absolute coordinates of the display rectangle.
      * @param shouldCheckBounds Throw if the translated point is outside displayRect?
-     * @return
-     * @throws UiObjectNotFoundException
+     * @return The translated point coordinates
      * @throws InvalidCoordinatesException
      */
     public static Point getAbsolutePosition(final Point point, final Rect displayRect,
@@ -75,12 +74,15 @@ public abstract class PositionHelper {
     }
 
     public static Point getDeviceAbsPos(final Point point) throws InvalidCoordinatesException {
-        final UiDevice d = UiDevice.getInstance();
-        final Rect displayRect = new Rect(0, 0, d.getDisplayWidth(), d.getDisplayHeight());
+        return getAbsolutePosition(point, getRealDisplaySize(), new Point(), true);
+    }
 
-        Logger.debug("Display bounds: " + displayRect.toShortString());
-
-        return getAbsolutePosition(point, displayRect, new Point(), true);
+    private static Rect getRealDisplaySize() {
+        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+        android.graphics.Point p = new android.graphics.Point();
+        display.getRealSize(p);
+        Logger.debug(String.format("Real display bounds: [%s, %s]", p.x, p.y));
+        return new Rect(0, 0, p.x, p.y);
     }
 
 }
