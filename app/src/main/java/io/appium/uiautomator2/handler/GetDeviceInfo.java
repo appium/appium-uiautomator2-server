@@ -42,11 +42,11 @@ public class GetDeviceInfo extends SafeRequestHandler {
         final JSONObject response = new JSONObject();
         final DeviceInfoHelper deviceInfoHelper = new DeviceInfoHelper(mInstrumentation
                 .getTargetContext());
-        response.put("android_id", deviceInfoHelper.getAndroidId());
+        response.put("androidId", deviceInfoHelper.getAndroidId());
         response.put("manufacturer", deviceInfoHelper.getManufacturer());
         response.put("model", deviceInfoHelper.getModelName());
         response.put("brand", deviceInfoHelper.getBrand());
-        response.put("api_version", deviceInfoHelper.getApiVersion());
+        response.put("apiVersion", deviceInfoHelper.getApiVersion());
 
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, response);
     }
