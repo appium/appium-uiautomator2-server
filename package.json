@@ -18,6 +18,10 @@
   "bugs": {
     "url": "https://github.com/appium/appium-uiautomator2-server/issues"
   },
+  "files": [
+    "/lib",
+    "/apks"
+  ],
   "homepage": "https://github.com/appium/appium-uiautomator2-server",
   "scripts": {
     "clean": "rm -rf node_modules && rm -f package-lock.json && npm install",
