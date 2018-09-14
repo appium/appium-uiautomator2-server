@@ -35,16 +35,8 @@ public class Drag extends SafeRequestHandler {
     }
 
     private AppiumResponse drag(final DragArguments dragArgs, final IHttpRequest request) {
-        Point absStartPos;
-        Point absEndPos;
-
-        try {
-            absStartPos = PositionHelper.getDeviceAbsPos(dragArgs.start);
-            absEndPos = PositionHelper.getDeviceAbsPos(dragArgs.end);
-        } catch (final InvalidCoordinatesException e) {
-            Logger.error("The coordinates provided to an interactions operation are invalid. ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.INVALID_ELEMENT_COORDINATES, e);
-        }
+        final Point absStartPos = PositionHelper.getDeviceAbsPos(dragArgs.start);
+        final Point absEndPos = PositionHelper.getDeviceAbsPos(dragArgs.end);
 
         Logger.debug("Dragging from " + absStartPos.toString() + " to "
                 + absEndPos.toString() + " with steps: " + dragArgs.steps.toString());
@@ -61,11 +53,7 @@ public class Drag extends SafeRequestHandler {
         Point absEndPos;
 
         if (dragArgs.destEl == null) {
-            try {
-                absEndPos = PositionHelper.getDeviceAbsPos(dragArgs.end);
-            } catch (final InvalidCoordinatesException e) {
-                return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, e);
-            }
+            absEndPos = PositionHelper.getDeviceAbsPos(dragArgs.end);
 
             Logger.debug("Dragging the element with id " + dragArgs.el.getId()
                     + " to " + absEndPos.toString() + " with steps: "
@@ -81,9 +69,6 @@ public class Drag extends SafeRequestHandler {
             } catch (final UiObjectNotFoundException e) {
                 Logger.error("Drag did not complete successfully. Element not found: ", e);
                 return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-            } catch (InvalidCoordinatesException e) {
-                Logger.error("The coordinates provided to an interactions operation are invalid. ", e);
-                return new AppiumResponse(getSessionId(request), WDStatus.INVALID_ELEMENT_COORDINATES, e);
             }
         } else {
 
@@ -101,9 +86,6 @@ public class Drag extends SafeRequestHandler {
             } catch (final UiObjectNotFoundException e) {
                 Logger.error("Drag did not complete successfully. Element not found: ", e);
                 return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
-            } catch (InvalidCoordinatesException e) {
-                Logger.error("The coordinates provided to an interactions operation are invalid. ", e);
-                return new AppiumResponse(getSessionId(request), WDStatus.INVALID_ELEMENT_COORDINATES, e);
             }
         }
 
