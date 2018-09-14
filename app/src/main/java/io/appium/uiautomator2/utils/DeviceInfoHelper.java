@@ -16,9 +16,16 @@
 
 package io.appium.uiautomator2.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Build;
 import android.provider.Settings.Secure;
+import android.support.annotation.Nullable;
+import android.telephony.TelephonyManager;
+import android.view.Display;
+
+import io.appium.uiautomator2.core.UiAutomatorBridge;
 
 
 public class DeviceInfoHelper {
@@ -38,6 +45,7 @@ public class DeviceInfoHelper {
      * first sets up the device and should remain constant for the lifetime of the user's device. The value
      * may change if a factory reset is performed on the device.
      * */
+    @SuppressLint("HardwareIds")
     public String getAndroidId() {
         return Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
     }
@@ -69,5 +77,34 @@ public class DeviceInfoHelper {
      */
     public String getApiVersion() {
         return Integer.toString(Build.VERSION.SDK_INT);
+    }
+
+    /**
+     * Retrievs the name of the current celluar network carrier
+     *
+     * @return carrier name or null if it cannot be retrieved
+     */
+    @Nullable
+    public String getCarrierName() {
+        TelephonyManager telephonyManager = (TelephonyManager) context
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        try {
+            return telephonyManager == null ? null : telephonyManager.getNetworkOperatorName();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves the real size of the default display
+     *
+     * @return The display size in 'WxH' format
+     */
+    public String getRealDisplaySize() {
+        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+        android.graphics.Point p = new android.graphics.Point();
+        display.getRealSize(p);
+        return String.format("%sx%s", p.x, p.y);
     }
 }

@@ -29,6 +29,8 @@ import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.DeviceInfoHelper;
 import io.appium.uiautomator2.utils.Logger;
 
+import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
+
 public class GetDeviceInfo extends SafeRequestHandler {
     private final Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
 
@@ -47,6 +49,8 @@ public class GetDeviceInfo extends SafeRequestHandler {
         response.put("model", deviceInfoHelper.getModelName());
         response.put("brand", deviceInfoHelper.getBrand());
         response.put("apiVersion", deviceInfoHelper.getApiVersion());
+        response.put("carrierName", formatNull(deviceInfoHelper.getCarrierName()));
+        response.put("realDisplaySize", deviceInfoHelper.getRealDisplaySize());
 
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, response);
     }

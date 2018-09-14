@@ -29,6 +29,10 @@ public class JSONUtils {
         return readInteger(payload, name, true);
     }
 
+    public static Object formatNull(Object value) {
+        return value == null ? JSONObject.NULL : value;
+    }
+
     @Nullable
     public static Integer readInteger(JSONObject payload, String name, boolean isRequired)
             throws JSONException {
