@@ -35,6 +35,6 @@
   },
   "devDependencies": {
     "android-apidemos": "^3.0.0",
-    "appium-gulp-plugins": "^2.4.0"
+    "appium-gulp-plugins": "^3.0.0"
   }
 }
