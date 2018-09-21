@@ -41,15 +41,29 @@ public class IMEHelpers {
         ACTION_CODES_MAP.put("done", 6);
         ACTION_CODES_MAP.put("previous", 7);
     }
+
     private final Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
 
     public IMEHelpers() {
     }
 
     private InputConnection getInputConnection() {
+        final InputMethodManager inputMethodManager = (InputMethodManager) mInstrumentation
+                .getTargetContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        final AtomicBoolean isAcceptingText = new AtomicBoolean(false);
+        mInstrumentation.runOnMainSync(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        isAcceptingText.set(inputMethodManager.isAcceptingText());
+                    }
+                }
+        );
+        if (!isAcceptingText.get()) {
+            throw new IllegalStateException("The currently focused element is not an edit element");
+        }
+
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager) mInstrumentation
-                    .getTargetContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             try {
                 Field servedInputConnectionWrapperField = InputMethodManager.class.getDeclaredField("mServedInputConnectionWrapper");
                 servedInputConnectionWrapperField.setAccessible(true);
@@ -76,11 +90,12 @@ public class IMEHelpers {
         }
 
         final AtomicBoolean isSuccessful = new AtomicBoolean(true);
+        final InputConnection ic = getInputConnection();
         mInstrumentation.runOnMainSync(
                 new Runnable() {
                     @Override
                     public void run() {
-                        isSuccessful.set(getInputConnection().performEditorAction(editorAction));
+                        isSuccessful.set(ic.performEditorAction(editorAction));
                     }
                 }
         );
