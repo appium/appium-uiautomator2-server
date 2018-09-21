@@ -21,6 +21,9 @@ import android.support.test.uiautomator.UiObjectNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -29,16 +32,19 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.server.WDStatus;
+import io.appium.uiautomator2.utils.IMEHelpers;
 import io.appium.uiautomator2.utils.Logger;
 
 import static android.support.test.uiautomator.By.focused;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ElementHelpers.findElement;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 /**
  * Send keys to a given element.
  */
 public class SendKeysToElement extends SafeRequestHandler {
+    private static final Pattern IME_SPECIFIER = Pattern.compile("^ime:\\s*(\\w+)$", CASE_INSENSITIVE);
 
     public SendKeysToElement(String mappedUri) {
         super(mappedUri);
@@ -71,6 +77,19 @@ public class SendKeysToElement extends SafeRequestHandler {
         }
         boolean replace = Boolean.parseBoolean(payload.getString("replace"));
         String text = payload.getString("text");
+        if (text == null) {
+            throw new IllegalArgumentException("The 'text' argument must be set");
+        }
+
+        Matcher imeMatcher = IME_SPECIFIER.matcher(text);
+        if (imeMatcher.find()) {
+            if (new IMEHelpers().performEditorAction(imeMatcher.group(1))) {
+                return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS);
+            }
+            return new AppiumResponse(getSessionId(request), WDStatus.INVALID_ELEMENT_STATE,
+                    String.format("Cannot perform editor action '%s' on element %s",
+                            imeMatcher.group(1), element.getId()));
+        }
 
         boolean pressEnter = false;
         if (text.endsWith("\\n")) {
