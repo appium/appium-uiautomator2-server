@@ -49,8 +49,10 @@ public class GetDeviceInfo extends SafeRequestHandler {
         response.put("model", deviceInfoHelper.getModelName());
         response.put("brand", deviceInfoHelper.getBrand());
         response.put("apiVersion", deviceInfoHelper.getApiVersion());
+        response.put("platformVersion", deviceInfoHelper.getPlatformVersion());
         response.put("carrierName", formatNull(deviceInfoHelper.getCarrierName()));
         response.put("realDisplaySize", deviceInfoHelper.getRealDisplaySize());
+        response.put("displayDensity", deviceInfoHelper.getDisplayDensity());
 
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, response);
     }

@@ -23,6 +23,7 @@ import android.os.Build;
 import android.provider.Settings.Secure;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.view.Display;
 
 import io.appium.uiautomator2.core.UiAutomatorBridge;
@@ -44,7 +45,7 @@ public class DeviceInfoHelper {
      * @return ANDROID_ID A 64-bit number (as a hex string) that is uniquely generated when the user
      * first sets up the device and should remain constant for the lifetime of the user's device. The value
      * may change if a factory reset is performed on the device.
-     * */
+     */
     @SuppressLint("HardwareIds")
     public String getAndroidId() {
         return Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
@@ -52,21 +53,21 @@ public class DeviceInfoHelper {
 
     /**
      * @return Build.MANUFACTURER value
-     * */
+     */
     public String getManufacturer() {
         return Build.MANUFACTURER;
     }
 
     /**
      * @return Build.MODEL value
-     * */
+     */
     public String getModelName() {
         return Build.MODEL;
     }
 
     /**
      * @return Build.BRAND value
-     * */
+     */
     public String getBrand() {
         return Build.BRAND;
     }
@@ -77,6 +78,23 @@ public class DeviceInfoHelper {
      */
     public String getApiVersion() {
         return Integer.toString(Build.VERSION.SDK_INT);
+    }
+
+    /**
+     * @return The current version string, for example "1.0" or "3.4b5"
+     */
+    public String getPlatformVersion() {
+        return Build.VERSION.RELEASE;
+    }
+
+    /**
+     * @return The logical density of the display in Density Independent Pixel units.
+     */
+    public String getDisplayDensity() {
+        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getRealMetrics(metrics);
+        return Integer.toString((int)(metrics.density * 160));
     }
 
     /**
