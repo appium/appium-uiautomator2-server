@@ -18,7 +18,6 @@ package io.appium.uiautomator2.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Build;
 import android.provider.Settings.Secure;
 import android.support.annotation.Nullable;
@@ -90,11 +89,11 @@ public class DeviceInfoHelper {
     /**
      * @return The logical density of the display in Density Independent Pixel units.
      */
-    public String getDisplayDensity() {
+    public int getDisplayDensity() {
         Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getRealMetrics(metrics);
-        return Integer.toString((int)(metrics.density * 160));
+        return (int)(metrics.density * 160);
     }
 
     /**
