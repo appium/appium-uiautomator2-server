@@ -294,6 +294,10 @@ abstract class UiExpressionParser<T, U> {
             }
         }
 
+        if (type == double.class) {
+          return Double.parseDouble(argument);
+        }
+
         if ("java.lang.Class<T>".equals(type.toString())) {
             try {
                 return Class.forName(argument);
