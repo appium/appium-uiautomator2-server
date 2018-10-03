@@ -2,6 +2,8 @@ package io.appium.uiautomator2.handler;
 
 import org.json.JSONException;
 
+import java.util.Collections;
+
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -15,6 +17,6 @@ public class AppStrings extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS);
+        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, Collections.emptyMap());
     }
 }
