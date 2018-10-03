@@ -9,7 +9,6 @@ async function main () {
   const adb = await androidHelpers.createADB({});
   const pathToApk = path.resolve('apks', `appium-uiautomator2-server-v${packageJson.version}.apk`);
   await adb.sign(pathToApk);
-  await adb.executeApksigner(['verify', '--print-certs', pathToApk]);
 }
 
 asyncify(main);
