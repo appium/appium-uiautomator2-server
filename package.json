@@ -35,13 +35,11 @@
     "clean-device": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test"
   },
   "devDependencies": {
-    "@babel/preset-es2017": "^7.0.0-beta.53",
     "android-apidemos": "^3.0.0",
     "appium-adb": "^6.21.1",
     "appium-android-driver": "^4.3.1",
     "appium-gulp-plugins": "^3.1.0",
     "asyncbox": "^2.5.0",
-    "babel-cli": "^6.26.0",
     "gulp": "^4.0.0"
   }
 }
