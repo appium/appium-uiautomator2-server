@@ -26,8 +26,8 @@
   "scripts": {
     "clean": "rm -rf node_modules && rm -f package-lock.json && npm install",
     "bump-gradle-version": "gulp gradle-version-update --package-version=${npm_package_version} && git add app/build.gradle",
-    "build": "./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks && npm run sign-apk",
-    "sign-apk": "babel-node ./scripts/sign-apk.js",
+    "build": "./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks && gulp transpile && npm run sign-apk",
+    "sign-apk": "node ./build/lib/scripts/sign-apk.js",
     "move-server": "cp app/build/outputs/apk/server/debug/appium-uiautomator2-server-v${npm_package_version}.apk ./apks",
     "move-test": "cp app/build/outputs/apk/androidTest/server/debug/appium-uiautomator2-server-debug-androidTest.apk ./apks",
     "move-apks": "rm -rf apks && mkdir -p apks && npm run move-server && npm run move-test",
@@ -35,11 +35,13 @@
     "clean-device": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test"
   },
   "devDependencies": {
+    "@babel/preset-es2017": "^7.0.0-beta.53",
     "android-apidemos": "^3.0.0",
     "appium-adb": "^6.21.1",
     "appium-android-driver": "^4.3.1",
     "appium-gulp-plugins": "^3.1.0",
     "asyncbox": "^2.5.0",
+    "babel-cli": "^6.26.0",
     "gulp": "^4.0.0"
   }
 }
