@@ -27,6 +27,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
@@ -58,7 +59,8 @@ public class UiObject2Element implements AndroidElement {
     }
 
     private static boolean isToastElement(AccessibilityNodeInfo nodeInfo) {
-        return nodeInfo.getClassName().toString().equals(Toast.class.getName());
+        // Using Objects.equals to handle the case when class name can be null
+        return Objects.equals(nodeInfo.getClassName(), Toast.class.getName());
     }
 
     public void click() {
