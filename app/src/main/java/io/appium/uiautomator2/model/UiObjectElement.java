@@ -120,7 +120,8 @@ public class UiObjectElement implements AndroidElement {
             case "displayed":
                 return element.exists();
             case "password":
-                return AccessibilityNodeInfoGetter.fromUiObject(element).isPassword();
+                AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+                return nodeInfo != null && nodeInfo.isPassword();
             default:
                 throw new NoAttributeFoundException(attr);
         }

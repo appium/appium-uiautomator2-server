@@ -143,9 +143,10 @@ public class UiObject2Element implements AndroidElement {
             case "selected":
                 return element.isSelected();
             case "displayed":
-                return invoke(method(UiObject2.class, "getAccessibilityNodeInfo"), element) != null;
+                return AccessibilityNodeInfoGetter.fromUiObject(element) != null;
             case "password":
-                return AccessibilityNodeInfoGetter.fromUiObject(element).isPassword();
+                AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+                return nodeInfo != null && nodeInfo.isPassword();
             default:
                 throw new NoAttributeFoundException(attr);
         }
