@@ -192,7 +192,7 @@ public abstract class ElementHelpers {
     }
 
     public static NoAttributeFoundException generateNoAttributeException(String attributeName) {
-        return new NoAttributeFoundException(String.format("'%s' attrbute is unknown for the element." +
+        return new NoAttributeFoundException(String.format("'%s' attribute is unknown for the element." +
                         "Only the following attributes are supported: %s", attributeName,
                 Arrays.toString(SUPPORTED_ATTRIBUTES)), attributeName);
     }
