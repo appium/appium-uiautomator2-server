@@ -1,3 +1,19 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
@@ -63,56 +79,55 @@ public class UiObjectElement implements AndroidElement {
     }
 
     public String getStringAttribute(final String attr) throws UiObjectNotFoundException, NoAttributeFoundException {
-        String res;
         if ("name".equalsIgnoreCase(attr)) {
-            res = getText();
-        } else if ("contentDescription".equalsIgnoreCase(attr)) {
-            res = element.getContentDescription();
-        } else if ("text".equalsIgnoreCase(attr)) {
-            res = getText();
-        } else if ("className".equalsIgnoreCase(attr)) {
-            res = element.getClassName();
-        } else if ("resourceId".equalsIgnoreCase(attr) || "resource-id".equalsIgnoreCase(attr)) {
-            res = getResourceId();
-        } else {
-            throw new NoAttributeFoundException(attr);
+            return getText();
         }
-        return res;
+        if ("contentDescription".equalsIgnoreCase(attr)) {
+            return element.getContentDescription();
+        }
+        if ("text".equalsIgnoreCase(attr)) {
+            return getText();
+        }
+        if ("className".equalsIgnoreCase(attr)) {
+            return element.getClassName();
+        }
+        if ("resourceId".equalsIgnoreCase(attr) || "resource-id".equalsIgnoreCase(attr)) {
+            return getResourceId();
+        }
+        throw new NoAttributeFoundException(attr);
     }
 
-    public boolean getBoolAttribute(final String attr)
-            throws UiObjectNotFoundException, NoAttributeFoundException {
-        boolean res;
-        if ("enabled".equals(attr)) {
-            res = element.isEnabled();
-        } else if ("checkable".equals(attr)) {
-            res = element.isCheckable();
-        } else if ("checked".equals(attr)) {
-            res = element.isChecked();
-        } else if ("clickable".equals(attr)) {
-            res = element.isClickable();
-        } else if ("focusable".equals(attr)) {
-            res = element.isFocusable();
-        } else if ("focused".equals(attr)) {
-            res = element.isFocused();
-        } else if ("longClickable".equals(attr)) {
-            res = element.isLongClickable();
-        } else if ("scrollable".equals(attr)) {
-            res = element.isScrollable();
-        } else if ("selected".equals(attr)) {
-            res = element.isSelected();
-        } else if ("displayed".equals(attr)) {
-            res = element.exists();
-        } else if ("password".equals(attr)) {
-            res = AccessibilityNodeInfoGetter.fromUiObject(element).isPassword();
-        } else {
-            throw new NoAttributeFoundException(attr);
+    public boolean getBoolAttribute(final String attr) throws UiObjectNotFoundException, NoAttributeFoundException {
+        switch (attr) {
+            case "enabled":
+                return element.isEnabled();
+            case "checkable":
+                return element.isCheckable();
+            case "checked":
+                return element.isChecked();
+            case "clickable":
+                return element.isClickable();
+            case "focusable":
+                return element.isFocusable();
+            case "focused":
+                return element.isFocused();
+            case "longClickable":
+                return element.isLongClickable();
+            case "scrollable":
+                return element.isScrollable();
+            case "selected":
+                return element.isSelected();
+            case "displayed":
+                return element.exists();
+            case "password":
+                return AccessibilityNodeInfoGetter.fromUiObject(element).isPassword();
+            default:
+                throw new NoAttributeFoundException(attr);
         }
-        return res;
     }
 
-    public boolean setText(final String text, boolean unicodeKeyboard) {
-        return ElementHelpers.setText(element, text, unicodeKeyboard);
+    public boolean setText(final String text) {
+        return ElementHelpers.setText(element, text);
     }
 
     public By getBy() {
@@ -128,8 +143,7 @@ public class UiObjectElement implements AndroidElement {
     }
 
     public Rect getBounds() throws UiObjectNotFoundException {
-        Rect rectangle = element.getVisibleBounds();
-        return rectangle;
+        return element.getVisibleBounds();
     }
 
     @Nullable
@@ -144,11 +158,12 @@ public class UiObjectElement implements AndroidElement {
             AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
             Object uiObject2 = CustomUiDevice.getInstance().findObject(nodeInfo);
             return (uiObject2 instanceof UiObject2)
-                ? ((UiObject2) uiObject2).findObject((BySelector) selector) : null;
+                    ? ((UiObject2) uiObject2).findObject((BySelector) selector) : null;
         }
         return element.getChild((UiSelector) selector);
     }
 
+    @SuppressWarnings({"ConstantConditions", "unchecked"})
     public List<Object> getChildren(final Object selector, final By by)
             throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof BySelector) {
@@ -171,7 +186,7 @@ public class UiObjectElement implements AndroidElement {
         final boolean useIndex = selectorString.contains("CLASS_REGEX=");
         final boolean endsWithInstance = endsWithInstancePattern.matcher(selectorString).matches();
         Logger.debug("getElements selector:" + selectorString);
-        final ArrayList<UiObject> elements = new ArrayList<UiObject>();
+        final ArrayList<UiObject> elements = new ArrayList<>();
 
         // If sel is UiSelector[CLASS=android.widget.Button, INSTANCE=0]
         // then invoking instance with a non-0 argument will corrupt the selector.
@@ -229,12 +244,9 @@ public class UiObjectElement implements AndroidElement {
         return element;
     }
 
-    public Point getAbsolutePosition(final Point point)
-            throws UiObjectNotFoundException, InvalidCoordinatesException {
+    public Point getAbsolutePosition(final Point point) throws UiObjectNotFoundException, InvalidCoordinatesException {
         final Rect rect = this.getBounds();
-
         Logger.debug("Element bounds: " + rect.toShortString());
-
         return PositionHelper.getAbsolutePosition(point, rect, new Point(rect.left, rect.top), false);
     }
 

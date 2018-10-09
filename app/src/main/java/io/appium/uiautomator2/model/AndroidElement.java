@@ -47,7 +47,7 @@ public interface AndroidElement {
     boolean getBoolAttribute(final String attr)
             throws UiObjectNotFoundException, UiAutomator2Exception;
 
-    boolean setText(final String text, boolean unicodeKeyboard);
+    boolean setText(final String text);
 
     String getId();
 

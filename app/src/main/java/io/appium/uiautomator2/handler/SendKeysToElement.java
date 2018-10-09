@@ -49,8 +49,7 @@ public class SendKeysToElement extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
-            UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         Logger.info("send keys to element command");
         JSONObject payload = getPayload(request);
         AndroidElement element;
@@ -79,9 +78,6 @@ public class SendKeysToElement extends SafeRequestHandler {
             Logger.debug("Will press enter after setting text");
         }
 
-        boolean unicodeKeyboard = payload.has("unicodeKeyboard") &&
-                Boolean.parseBoolean(payload.getString("unicodeKeyboard"));
-
         String currText = element.getText();
         if (!isTextFieldClear(element)) {
             new Clear("/wd/hub/session/:sessionId/element/:id/clear").handle(request);
@@ -95,7 +91,7 @@ public class SendKeysToElement extends SafeRequestHandler {
         if (!replace && currText != null) {
             text = currText + text;
         }
-        if (!element.setText(text, unicodeKeyboard)) {
+        if (!element.setText(text)) {
             throw new InvalidElementStateException(String.format("Cannot set the element to '%s'. " +
                     "Did you interact with the correct element?", text));
         }

@@ -75,6 +75,10 @@ public class UiObject2Element implements AndroidElement {
     public String getText() {
         AccessibilityNodeInfo nodeInfo = (AccessibilityNodeInfo) getField(UiObject2.class,
                 "mCachedNode", element);
+        if (nodeInfo == null) {
+            return "";
+        }
+
         /*
          * If the given element is TOAST element, we can't perform any operation on {@link UiObject2} as it
          * not formed with valid AccessibilityNodeInfo, Instead we are using custom created AccessibilityNodeInfo of
@@ -87,7 +91,9 @@ public class UiObject2Element implements AndroidElement {
         if (nodeInfo.getRangeInfo() != null) {
             /* Refresh accessibility node info to get actual state of element */
             nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-            return Float.toString(nodeInfo.getRangeInfo().getCurrent());
+            if (nodeInfo != null && nodeInfo.getRangeInfo() != null) {
+                return Float.toString(nodeInfo.getRangeInfo().getCurrent());
+            }
         }
         // on null returning empty string
         return element.getText() != null ? element.getText() : "";
@@ -98,55 +104,55 @@ public class UiObject2Element implements AndroidElement {
     }
 
     public String getStringAttribute(final String attr) throws NoAttributeFoundException {
-        String res;
         if ("name".equalsIgnoreCase(attr)) {
-            res = getText();
-        } else if ("contentDescription".equalsIgnoreCase(attr)) {
-            res = element.getContentDescription();
-        } else if ("text".equalsIgnoreCase(attr)) {
-            res = getText();
-        } else if ("className".equalsIgnoreCase(attr)) {
-            res = element.getClassName();
-        } else if ("resourceId".equalsIgnoreCase(attr) || "resource-id".equalsIgnoreCase(attr)) {
-            res = element.getResourceName();
-        } else {
-            throw new NoAttributeFoundException(attr);
+            return getText();
         }
-        return res;
+        if ("contentDescription".equalsIgnoreCase(attr)) {
+            return element.getContentDescription();
+        }
+        if ("text".equalsIgnoreCase(attr)) {
+            return getText();
+        }
+        if ("className".equalsIgnoreCase(attr)) {
+            return element.getClassName();
+        }
+        if ("resourceId".equalsIgnoreCase(attr) || "resource-id".equalsIgnoreCase(attr)) {
+            return element.getResourceName();
+        }
+        throw new NoAttributeFoundException(attr);
     }
 
     public boolean getBoolAttribute(final String attr) throws UiAutomator2Exception {
-        boolean res;
-        if ("enabled".equals(attr)) {
-            res = element.isEnabled();
-        } else if ("checkable".equals(attr)) {
-            res = element.isCheckable();
-        } else if ("checked".equals(attr)) {
-            res = element.isChecked();
-        } else if ("clickable".equals(attr)) {
-            res = element.isClickable();
-        } else if ("focusable".equals(attr)) {
-            res = element.isFocusable();
-        } else if ("focused".equals(attr)) {
-            res = element.isFocused();
-        } else if ("longClickable".equals(attr)) {
-            res = element.isLongClickable();
-        } else if ("scrollable".equals(attr)) {
-            res = element.isScrollable();
-        } else if ("selected".equals(attr)) {
-            res = element.isSelected();
-        } else if ("displayed".equals(attr)) {
-            res = invoke(method(UiObject2.class, "getAccessibilityNodeInfo"), element) != null;
-        } else if ("password".equals(attr)) {
-            res = AccessibilityNodeInfoGetter.fromUiObject(element).isPassword();
-        } else {
-            throw new NoAttributeFoundException(attr);
+        switch (attr) {
+            case "enabled":
+                return element.isEnabled();
+            case "checkable":
+                return element.isCheckable();
+            case "checked":
+                return element.isChecked();
+            case "clickable":
+                return element.isClickable();
+            case "focusable":
+                return element.isFocusable();
+            case "focused":
+                return element.isFocused();
+            case "longClickable":
+                return element.isLongClickable();
+            case "scrollable":
+                return element.isScrollable();
+            case "selected":
+                return element.isSelected();
+            case "displayed":
+                return invoke(method(UiObject2.class, "getAccessibilityNodeInfo"), element) != null;
+            case "password":
+                return AccessibilityNodeInfoGetter.fromUiObject(element).isPassword();
+            default:
+                throw new NoAttributeFoundException(attr);
         }
-        return res;
     }
 
-    public boolean setText(final String text, boolean unicodeKeyboard) {
-        return ElementHelpers.setText(element, text, unicodeKeyboard);
+    public boolean setText(final String text) {
+        return ElementHelpers.setText(element, text);
     }
 
     public By getBy() {
@@ -235,14 +241,14 @@ public class UiObject2Element implements AndroidElement {
             int destY = ((UiObject) destObj).getBounds().centerY();
             element.drag(new android.graphics.Point(destX, destY), steps);
             return true;
-        } else if (destObj instanceof UiObject2) {
+        }
+        if (destObj instanceof UiObject2) {
             android.graphics.Point coord = ((UiObject2) destObj).getVisibleCenter();
             element.drag(coord, steps);
             return true;
-        } else {
-            Logger.error("Destination should be either UiObject or UiObject2");
-            return false;
         }
+        Logger.error("Destination should be either UiObject or UiObject2");
+        return false;
     }
 
     @Override

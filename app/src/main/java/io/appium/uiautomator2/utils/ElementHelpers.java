@@ -45,6 +45,7 @@ import io.appium.uiautomator2.model.Session;
 import static io.appium.uiautomator2.handler.GetElementAttribute.getElementAttributeValue;
 import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
+import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public abstract class ElementHelpers {
@@ -103,20 +104,20 @@ public abstract class ElementHelpers {
         for (String field : Session.getElementResponseAttributes()) {
             try {
                 if (Objects.equals(field, "name")) {
-                    putNullable(jsonObject, field, el.getContentDesc());
+                    jsonObject.put(field, formatNull(el.getContentDesc()));
                 } else if (Objects.equals(field, "text")) {
-                    putNullable(jsonObject, field, el.getText());
+                    jsonObject.put(field, formatNull(el.getText()));
                 } else if (Objects.equals(field, "rect")) {
-                    putNullable(jsonObject, field, GetRect.getElementRectJSON(el));
+                    jsonObject.put(field, formatNull(GetRect.getElementRectJSON(el)));
                 } else if (Objects.equals(field, "enabled")) {
-                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                    jsonObject.put(field, formatNull(getElementAttributeValue(el, field)));
                 } else if (Objects.equals(field, "displayed")) {
-                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                    jsonObject.put(field, formatNull(getElementAttributeValue(el, field)));
                 } else if (Objects.equals(field, "selected")) {
-                    putNullable(jsonObject, field, getElementAttributeValue(el, field));
+                    jsonObject.put(field, formatNull(getElementAttributeValue(el, field)));
                 } else if (field.startsWith(ATTRIBUTE_PREFIX)) {
                     String attributeName = field.substring(ATTRIBUTE_PREFIX.length());
-                    putNullable(jsonObject, field, getElementAttributeValue(el, attributeName));
+                    jsonObject.put(field, formatNull(getElementAttributeValue(el, attributeName)));
                 }
             } catch (ReflectiveOperationException | NoAttributeFoundException e) {
                 // ignore field
@@ -125,24 +126,14 @@ public abstract class ElementHelpers {
         return jsonObject;
     }
 
-    private static void putNullable(JSONObject jsonObject, String fieldName,
-                                    Object objValue) throws JSONException {
-        if (objValue == null) {
-            objValue = JSONObject.NULL;
-        }
-        jsonObject.put(fieldName, objValue);
-    }
-
     /**
      * Set text of an element
      *
-     * @param element         - target element
-     * @param text            - desired text
-     * @param unicodeKeyboard - true, if text should be encoded to unicode
+     * @param element - target element
+     * @param text    - desired text
      * @return true if the text has been successfully set
      */
-    public static boolean setText(final Object element,
-                                  @Nullable final String text, final boolean unicodeKeyboard) {
+    public static boolean setText(final Object element, @Nullable final String text) {
         // Per framework convention, setText(null) means clearing it
         String textToSend = text == null ? "" : text;
         AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
@@ -175,12 +166,6 @@ public abstract class ElementHelpers {
          */
         if (Build.VERSION.SDK_INT < 24) {
             textToSend = AccessibilityNodeInfoHelper.truncateTextToMaxLength(nodeInfo, textToSend);
-        }
-
-        if (unicodeKeyboard && UnicodeEncoder.needsEncoding(textToSend)) {
-            Logger.debug("Sending Unicode text to element: " + textToSend);
-            textToSend = UnicodeEncoder.encode(textToSend);
-            Logger.debug("Encoded text: " + textToSend);
         }
 
         Logger.debug("Sending text to element: " + textToSend);
