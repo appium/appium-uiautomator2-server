@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -52,6 +53,13 @@ public abstract class ElementHelpers {
 
     private static final String ATTRIBUTE_PREFIX = "attribute/";
     private static Method findAccessibilityNodeInfo;
+    private static final String[] SUPPORTED_ATTRIBUTES = {
+            // string attributes
+            "name", "text", "contentDescription", "className", "resourceId", "resource-id",
+            // boolean attributes
+            "enabled", "checkable", "checked", "clickable", "focusable", "focused",
+            "longClickable", "scrollable", "selected", "displayed", "password"
+    };
 
     private static AccessibilityNodeInfo elementToNode(Object element) {
         AccessibilityNodeInfo result = null;
@@ -181,5 +189,11 @@ public abstract class ElementHelpers {
             throw new ElementNotFoundException();
         }
         return getAndroidElement(UUID.randomUUID().toString(), ui2Object, null);
+    }
+
+    public static NoAttributeFoundException generateNoAttributeException(String attributeName) {
+        return new NoAttributeFoundException(String.format("'%s' attrbute is unknown for the element." +
+                        "Only the following attributes are supported: %s", attributeName,
+                Arrays.toString(SUPPORTED_ATTRIBUTES)), attributeName);
     }
 }

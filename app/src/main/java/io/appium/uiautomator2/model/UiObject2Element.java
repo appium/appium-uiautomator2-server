@@ -42,9 +42,8 @@ import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
+import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
-import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
-import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public class UiObject2Element implements AndroidElement {
 
@@ -116,7 +115,7 @@ public class UiObject2Element implements AndroidElement {
         if ("resourceId".equalsIgnoreCase(attr) || "resource-id".equalsIgnoreCase(attr)) {
             return element.getResourceName();
         }
-        throw new NoAttributeFoundException(attr);
+        throw generateNoAttributeException(attr);
     }
 
     public boolean getBoolAttribute(final String attr) throws UiAutomator2Exception {
@@ -145,7 +144,7 @@ public class UiObject2Element implements AndroidElement {
                 AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
                 return nodeInfo != null && nodeInfo.isPassword();
             default:
-                throw new NoAttributeFoundException(attr);
+                throw generateNoAttributeException(attr);
         }
     }
 
