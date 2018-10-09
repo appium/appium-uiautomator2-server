@@ -104,14 +104,11 @@ public class UiObject2Element implements AndroidElement {
     }
 
     public String getStringAttribute(final String attr) throws NoAttributeFoundException {
-        if ("name".equalsIgnoreCase(attr)) {
+        if ("name".equalsIgnoreCase(attr) || "text".equalsIgnoreCase(attr)) {
             return getText();
         }
         if ("contentDescription".equalsIgnoreCase(attr)) {
             return element.getContentDescription();
-        }
-        if ("text".equalsIgnoreCase(attr)) {
-            return getText();
         }
         if ("className".equalsIgnoreCase(attr)) {
             return element.getClassName();
