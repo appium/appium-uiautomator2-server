@@ -34,8 +34,7 @@ public class JSONUtils {
     }
 
     @Nullable
-    public static Integer readInteger(JSONObject payload, String name, boolean isRequired)
-            throws JSONException {
+    public static Integer readInteger(JSONObject payload, String name, boolean isRequired) throws JSONException {
         if (!payload.has(name)) {
             if (isRequired) {
                 throw new IllegalArgumentException(String.format("'%s' parameter is mandatory", name));

@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
+import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
+
 public class AppiumResponse {
     private final int status;
     private final Object value;
@@ -41,9 +43,9 @@ public class AppiumResponse {
     public String render() {
         JSONObject o = new JSONObject();
         try {
-            o.put("sessionId", sessionId == null ? JSONObject.NULL : sessionId);
+            o.put("sessionId", formatNull(sessionId));
             o.put("status", status);
-            o.put("value", value == null ? JSONObject.NULL : value);
+            o.put("value", formatNull(value));
         } catch (JSONException e) {
             Logger.error("Unable to create JSON Object:", e);
         }
