@@ -33,7 +33,6 @@ import java.util.UUID;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.ElementHelpers;
@@ -62,15 +61,18 @@ public class UiObject2Element implements AndroidElement {
         return Objects.equals(nodeInfo.getClassName(), Toast.class.getName());
     }
 
+    @Override
     public void click() {
         element.click();
     }
 
+    @Override
     public boolean longClick() {
         element.longClick();
         return true;
     }
 
+    @Override
     public String getText() {
         AccessibilityNodeInfo nodeInfo = (AccessibilityNodeInfo) getField(UiObject2.class,
                 "mCachedNode", element);
@@ -98,77 +100,110 @@ public class UiObject2Element implements AndroidElement {
         return element.getText() != null ? element.getText() : "";
     }
 
+    @Override
     public String getName() {
         return element.getContentDescription();
     }
 
-    public String getStringAttribute(final String attr) throws NoAttributeFoundException {
-        if ("name".equalsIgnoreCase(attr) || "text".equalsIgnoreCase(attr)) {
-            return getText();
+    @Nullable
+    @Override
+    public <T> T getAttribute(String attr, Class<T> type) throws NoAttributeFoundException, UiObjectNotFoundException {
+        if (attr == null) {
+            throw generateNoAttributeException("null", type.getSimpleName());
         }
-        if ("contentDescription".equalsIgnoreCase(attr)) {
-            return element.getContentDescription();
-        }
-        if ("className".equalsIgnoreCase(attr)) {
-            return element.getClassName();
-        }
-        if ("resourceId".equalsIgnoreCase(attr) || "resource-id".equalsIgnoreCase(attr)) {
-            return element.getResourceName();
-        }
-        throw generateNoAttributeException(attr);
-    }
 
-    public boolean getBoolAttribute(final String attr) throws UiAutomator2Exception {
-        switch (attr) {
+        final Object result;
+        switch (attr.toLowerCase()) {
+            case "name":
+            case "text":
+                result = getText();
+                break;
+            case "contentdescription":
+                result = element.getContentDescription();
+                break;
+            case "classname":
+                result = element.getClassName();
+                break;
+            case "resourceid":
+            case "resource-id":
+                result = element.getResourceName();
+                break;
+            case "contentsize":
+                result = ElementHelpers.getContentSize(this);
+                break;
             case "enabled":
-                return element.isEnabled();
+                result = element.isEnabled();
+                break;
             case "checkable":
-                return element.isCheckable();
+                result = element.isCheckable();
+                break;
             case "checked":
-                return element.isChecked();
+                result = element.isChecked();
+                break;
             case "clickable":
-                return element.isClickable();
+                result = element.isClickable();
+                break;
             case "focusable":
-                return element.isFocusable();
+                result = element.isFocusable();
+                break;
             case "focused":
-                return element.isFocused();
-            case "longClickable":
-                return element.isLongClickable();
+                result = element.isFocused();
+                break;
+            case "longclickable":
+                result = element.isLongClickable();
+                break;
             case "scrollable":
-                return element.isScrollable();
+                result = element.isScrollable();
+                break;
             case "selected":
-                return element.isSelected();
+                result = element.isSelected();
+                break;
             case "displayed":
-                return AccessibilityNodeInfoGetter.fromUiObject(element) != null;
+                result = AccessibilityNodeInfoGetter.fromUiObject(element) != null;
+                break;
             case "password":
                 AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-                return nodeInfo != null && nodeInfo.isPassword();
+                result = nodeInfo != null && nodeInfo.isPassword();
+                break;
             default:
-                throw generateNoAttributeException(attr);
+                throw generateNoAttributeException(attr, type.getSimpleName());
         }
+        if (result == null) {
+            return null;
+        }
+        if (type.isInstance(result)) {
+            return type.cast(result);
+        }
+        throw generateNoAttributeException(attr, type.getSimpleName());
     }
 
+    @Override
     public boolean setText(final String text) {
         return ElementHelpers.setText(element, text);
     }
 
+    @Override
     public By getBy() {
         return by;
     }
 
+    @Override
     public void clear() {
         element.clear();
     }
 
+    @Override
     public String getId() {
         return this.id;
     }
 
+    @Override
     public Rect getBounds() {
         return element.getVisibleBounds();
     }
 
     @Nullable
+    @Override
     public Object getChild(final Object selector)
             throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof UiSelector) {
@@ -192,6 +227,7 @@ public class UiObject2Element implements AndroidElement {
         return element.findObject((BySelector) selector);
     }
 
+    @Override
     public List<Object> getChildren(final Object selector, final By by)
             throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
         if (selector instanceof UiSelector) {
@@ -214,14 +250,17 @@ public class UiObject2Element implements AndroidElement {
         return (List) element.findObjects((BySelector) selector);
     }
 
+    @Override
     public String getContentDesc() {
         return element.getContentDescription();
     }
 
+    @Override
     public UiObject2 getUiObject() {
         return element;
     }
 
+    @Override
     public Point getAbsolutePosition(final Point point)
             throws InvalidCoordinatesException {
         final Rect rect = this.getBounds();

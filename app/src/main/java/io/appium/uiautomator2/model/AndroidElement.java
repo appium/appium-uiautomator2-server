@@ -41,11 +41,7 @@ public interface AndroidElement {
 
     String getName() throws UiObjectNotFoundException;
 
-    String getStringAttribute(final String attr) throws UiObjectNotFoundException,
-            NoAttributeFoundException;
-
-    boolean getBoolAttribute(final String attr)
-            throws UiObjectNotFoundException, UiAutomator2Exception;
+    <T> T getAttribute(String attr, Class<T> type) throws UiObjectNotFoundException, NoAttributeFoundException;
 
     boolean setText(final String text);
 
