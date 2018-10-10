@@ -85,9 +85,9 @@ public class UiObjectElement implements AndroidElement {
 
     @Nullable
     @Override
-    public <T> T getAttribute(String attr, Class<T> type) throws UiObjectNotFoundException, NoAttributeFoundException {
+    public String getAttribute(String attr) throws UiObjectNotFoundException, NoAttributeFoundException {
         if (attr == null) {
-            throw generateNoAttributeException("null", type.getSimpleName());
+            throw generateNoAttributeException("null");
         }
 
         final Object result;
@@ -144,15 +144,15 @@ public class UiObjectElement implements AndroidElement {
                 result = nodeInfo != null && nodeInfo.isPassword();
                 break;
             default:
-                throw generateNoAttributeException(attr, type.getSimpleName());
+                throw generateNoAttributeException(attr);
         }
         if (result == null) {
             return null;
         }
-        if (type.isInstance(result)) {
-            return type.cast(result);
+        if (!(result instanceof String)) {
+            return String.valueOf(result);
         }
-        throw generateNoAttributeException(attr, type.getSimpleName());
+        return (String) result;
     }
 
     @Override

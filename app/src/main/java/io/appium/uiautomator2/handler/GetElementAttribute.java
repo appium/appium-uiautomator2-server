@@ -8,7 +8,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.server.WDStatus;
-import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 
 public class GetElementAttribute extends SafeRequestHandler {
@@ -26,9 +25,7 @@ public class GetElementAttribute extends SafeRequestHandler {
         if (element == null) {
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
         }
-        String attribute = ElementHelpers.isStringAttribute(attributeName)
-            ? element.getAttribute(attributeName, String.class)
-            : String.valueOf(element.getAttribute(attributeName, Boolean.class));
+        String attribute = element.getAttribute(attributeName);
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, attribute);
     }
 

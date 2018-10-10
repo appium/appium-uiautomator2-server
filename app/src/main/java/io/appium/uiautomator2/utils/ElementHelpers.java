@@ -27,7 +27,6 @@ import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,7 +54,6 @@ import io.appium.uiautomator2.model.AppiumUiAutomatorDriver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.UiObject2Element;
 
-import static io.appium.uiautomator2.handler.GetElementAttribute.getElementAttributeValue;
 import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -66,11 +64,8 @@ public abstract class ElementHelpers {
 
     private static final String ATTRIBUTE_PREFIX = "attribute/";
     private static Method findAccessibilityNodeInfo;
-    public static final String[] SUPPORTED_STRING_ATTRIBUTES = {
-            "name", "text", "contentDescription", "className", "resourceId", "resource-id",
-            "contentSize"
-    };
-    public static final String[] SUPPORTED_BOOLEAN_ATTRIBUTES = {
+    public static final String[] SUPPORTED_ATTRIBUTES = {
+            "name", "text", "contentDescription", "className", "resourceId", "resource-id", "contentSize",
             "enabled", "checkable", "checked", "clickable", "focusable", "focused",
             "longClickable", "scrollable", "selected", "displayed", "password"
     };
@@ -81,15 +76,6 @@ public abstract class ElementHelpers {
     private static final int MINI_SWIPE_PIXELS = 200;
     // https://android.googlesource.com/platform/frameworks/testing/+/master/uiautomator/library/core-src/com/android/uiautomator/core/UiScrollable.java#635
     private static final double SWIPE_DEAD_ZONE_PCT = 0.1;
-
-    public static boolean isStringAttribute(String attr) {
-        for (String attrName : SUPPORTED_STRING_ATTRIBUTES) {
-            if (attrName.equalsIgnoreCase(attr)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private static AccessibilityNodeInfo elementToNode(Object element) {
         AccessibilityNodeInfo result = null;
@@ -147,15 +133,11 @@ public abstract class ElementHelpers {
                     jsonObject.put(field, formatNull(el.getText()));
                 } else if (Objects.equals(field, "rect")) {
                     jsonObject.put(field, formatNull(GetRect.getElementRectJSON(el)));
-                } else if (Objects.equals(field, "enabled")) {
-                    jsonObject.put(field, formatNull(getElementAttributeValue(el, field)));
-                } else if (Objects.equals(field, "displayed")) {
-                    jsonObject.put(field, formatNull(getElementAttributeValue(el, field)));
-                } else if (Objects.equals(field, "selected")) {
-                    jsonObject.put(field, formatNull(getElementAttributeValue(el, field)));
+                } else if (Objects.equals(field, "enabled") || Objects.equals(field, "displayed") || Objects.equals(field, "selected")) {
+                    jsonObject.put(field, formatNull(el.getAttribute(field)));
                 } else if (field.startsWith(ATTRIBUTE_PREFIX)) {
                     String attributeName = field.substring(ATTRIBUTE_PREFIX.length());
-                    jsonObject.put(field, formatNull(getElementAttributeValue(el, attributeName)));
+                    jsonObject.put(field, formatNull(el.getAttribute(attributeName)));
                 }
             } catch (NoAttributeFoundException e) {
                 // ignore field
@@ -221,10 +203,10 @@ public abstract class ElementHelpers {
         return getAndroidElement(UUID.randomUUID().toString(), ui2Object, null);
     }
 
-    public static NoAttributeFoundException generateNoAttributeException(@Nullable String attributeName, String expectedType) {
-        return new NoAttributeFoundException(String.format("'%s' attribute of '%s' type is unknown for the element. " +
-                        "Only the following attributes are supported: %s", attributeName, expectedType,
-                Arrays.toString(ArrayUtils.addAll(SUPPORTED_STRING_ATTRIBUTES, SUPPORTED_BOOLEAN_ATTRIBUTES))), attributeName);
+    public static NoAttributeFoundException generateNoAttributeException(@Nullable String attributeName) {
+        return new NoAttributeFoundException(String.format("'%s' attribute is unknown for the element. " +
+                        "Only the following attributes are supported: %s", attributeName,
+                Arrays.toString(SUPPORTED_ATTRIBUTES)), attributeName);
     }
 
     public static String getContentSize(AndroidElement element) throws UiObjectNotFoundException {
