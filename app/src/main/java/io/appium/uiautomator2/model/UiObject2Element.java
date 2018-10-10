@@ -171,10 +171,7 @@ public class UiObject2Element implements AndroidElement {
         if (result == null) {
             return null;
         }
-        if (!(result instanceof String)) {
-            return String.valueOf(result);
-        }
-        return (String) result;
+        return (result instanceof String) ? (String) result : String.valueOf(result);
     }
 
     @Override
