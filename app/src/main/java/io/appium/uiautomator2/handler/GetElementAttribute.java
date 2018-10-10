@@ -2,7 +2,6 @@ package io.appium.uiautomator2.handler;
 
 import android.support.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -18,13 +17,6 @@ public class GetElementAttribute extends SafeRequestHandler {
         super(mappedUri);
     }
 
-    public static String getElementAttributeValue(AndroidElement element, String attributeName)
-            throws NoAttributeFoundException, UiObjectNotFoundException {
-        return ElementHelpers.isStringAttribute(attributeName)
-            ? element.getAttribute(attributeName, String.class)
-            : String.valueOf(element.getAttribute(attributeName, Boolean.class));
-    }
-
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("get attribute of element command");
@@ -34,9 +26,10 @@ public class GetElementAttribute extends SafeRequestHandler {
         if (element == null) {
             return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
         }
-        String attribute = getElementAttributeValue(element, attributeName);
+        String attribute = ElementHelpers.isStringAttribute(attributeName)
+            ? element.getAttribute(attributeName, String.class)
+            : String.valueOf(element.getAttribute(attributeName, Boolean.class));
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, attribute);
     }
-
 
 }
