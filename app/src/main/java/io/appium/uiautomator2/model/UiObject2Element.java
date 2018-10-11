@@ -23,6 +23,7 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
+import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
@@ -108,63 +110,84 @@ public class UiObject2Element implements AndroidElement {
     @Nullable
     @Override
     public String getAttribute(String attr) throws NoAttributeFoundException, UiObjectNotFoundException {
-        if (attr == null) {
-            throw generateNoAttributeException("null");
+        final Attribute dstAttribute = Attribute.fromString(attr);
+        if (dstAttribute == null) {
+            throw generateNoAttributeException(attr);
         }
 
         final Object result;
-        switch (attr.toLowerCase()) {
-            case "name":
-            case "text":
+        switch (dstAttribute) {
+            case TEXT:
                 result = getText();
                 break;
-            case "contentdescription":
+            case CONTENT_DESC:
                 result = element.getContentDescription();
                 break;
-            case "classname":
+            case CLASS:
                 result = element.getClassName();
                 break;
-            case "resourceid":
-            case "resource-id":
+            case RESOURCE_ID:
                 result = element.getResourceName();
                 break;
-            case "contentsize":
+            case CONTENT_SIZE:
                 result = ElementHelpers.getContentSize(this);
                 break;
-            case "enabled":
+            case ENABLED:
                 result = element.isEnabled();
                 break;
-            case "checkable":
+            case CHECKABLE:
                 result = element.isCheckable();
                 break;
-            case "checked":
+            case CHECKED:
                 result = element.isChecked();
                 break;
-            case "clickable":
+            case CLICKABLE:
                 result = element.isClickable();
                 break;
-            case "focusable":
+            case FOCUSABLE:
                 result = element.isFocusable();
                 break;
-            case "focused":
+            case FOCUSED:
                 result = element.isFocused();
                 break;
-            case "longclickable":
+            case LONG_CLICKABLE:
                 result = element.isLongClickable();
                 break;
-            case "scrollable":
+            case SCROLLABLE:
                 result = element.isScrollable();
                 break;
-            case "selected":
+            case SELECTED:
                 result = element.isSelected();
                 break;
-            case "displayed":
+            case DISPLAYED:
                 result = AccessibilityNodeInfoGetter.fromUiObject(element) != null;
                 break;
-            case "password":
+            case PASSWORD: {
                 AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-                result = nodeInfo != null && nodeInfo.isPassword();
+                result = nodeInfo == null ? null : nodeInfo.isPassword();
                 break;
+            }
+            case BOUNDS:
+                result = element.getVisibleBounds().toShortString();
+                break;
+            case PACKAGE: {
+                AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+                result = nodeInfo == null ? null : nodeInfo.getPackageName();
+                break;
+            }
+            case SELECTION_END:
+            case SELECTION_START: {
+                AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+                Range<Integer> selectionRange = ElementHelpers.getSelectionRange(nodeInfo);
+                if (selectionRange == null) {
+                    result = null;
+                } else {
+                    result = dstAttribute == Attribute.SELECTION_END
+                            ? selectionRange.getUpper()
+                            : selectionRange.getLower();
+                }
+                break;
+            }
             default:
                 throw generateNoAttributeException(attr);
         }

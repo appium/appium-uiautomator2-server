@@ -25,6 +25,7 @@ import android.support.test.uiautomator.BySelector;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
+import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import org.json.JSONException;
@@ -64,11 +65,6 @@ public abstract class ElementHelpers {
 
     private static final String ATTRIBUTE_PREFIX = "attribute/";
     private static Method findAccessibilityNodeInfo;
-    public static final String[] SUPPORTED_ATTRIBUTES = {
-            "name", "text", "contentDescription", "className", "resourceId", "resource-id", "contentSize",
-            "enabled", "checkable", "checked", "clickable", "focusable", "focused",
-            "longClickable", "scrollable", "selected", "displayed", "password"
-    };
     // these constants are magic numbers experimentally determined to minimize flakiness in generating
     // last scroll data used in getting the 'contentSize' attribute.
     // TODO see whether anchoring these to time and screen size is more reliable across devices
@@ -85,6 +81,18 @@ public abstract class ElementHelpers {
             e.printStackTrace();
         }
         return result;
+    }
+
+    @Nullable
+    public static Range<Integer> getSelectionRange(AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null) {
+            return null;
+        }
+
+        if (nodeInfo.getTextSelectionStart() >= 0 && nodeInfo.getTextSelectionStart() != nodeInfo.getTextSelectionEnd()) {
+            return new Range<>(nodeInfo.getTextSelectionStart(), nodeInfo.getTextSelectionEnd());
+        }
+        return null;
     }
 
     /**
@@ -206,7 +214,7 @@ public abstract class ElementHelpers {
     public static NoAttributeFoundException generateNoAttributeException(@Nullable String attributeName) {
         return new NoAttributeFoundException(String.format("'%s' attribute is unknown for the element. " +
                         "Only the following attributes are supported: %s", attributeName,
-                Arrays.toString(SUPPORTED_ATTRIBUTES)), attributeName);
+                Arrays.toString(Attribute.exposableAliases())), attributeName);
     }
 
     public static String getContentSize(AndroidElement element) throws UiObjectNotFoundException {

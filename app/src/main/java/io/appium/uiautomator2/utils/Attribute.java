@@ -16,39 +16,86 @@
 
 package io.appium.uiautomator2.utils;
 
+import android.support.annotation.Nullable;
+
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Attribute {
-    CHECKABLE("checkable"),
-    CHECKED("checked"),
-    CLASS("class"),
-    CLICKABLE("clickable"),
-    CONTENT_DESC("content-desc"),
-    ENABLED("enabled"),
-    FOCUSABLE("focusable"),
-    FOCUSED("focused"),
-    LONG_CLICKABLE("long-clickable"),
-    PACKAGE("package"),
-    PASSWORD("password"),
-    RESOURCE_ID("resource-id"),
-    SCROLLABLE("scrollable"),
-    SELECTION_START("selection-start"),
-    SELECTION_END("selection-end"),
-    SELECTED("selected"),
-    TEXT("text"),
-    BOUNDS("bounds"),
-    INDEX("index");
+    CHECKABLE(new String[]{"checkable"}),
+    CHECKED(new String[]{"checked"}),
+    CLASS(new String[]{"class", "className"}),
+    CLICKABLE(new String[]{"clickable"}),
+    CONTENT_DESC(new String[]{"content-desc", "contentDescription"}),
+    ENABLED(new String[]{"enabled"}),
+    FOCUSABLE(new String[]{"focusable"}),
+    FOCUSED(new String[]{"focused"}),
+    LONG_CLICKABLE(new String[]{"long-clickable", "longClickable"}),
+    PACKAGE(new String[]{"package"}),
+    PASSWORD(new String[]{"password"}),
+    RESOURCE_ID(new String[]{"resource-id", "resourceId"}),
+    SCROLLABLE(new String[]{"scrollable"}),
+    SELECTION_START(new String[]{"selection-start"}),
+    SELECTION_END(new String[]{"selection-end"}),
+    SELECTED(new String[]{"selected"}),
+    TEXT(new String[]{"text", "name"}),
+    BOUNDS(new String[]{"bounds"}),
+    INDEX(new String[]{"index"}, false),
+    DISPLAYED(new String[]{"displayed"}),
+    CONTENT_SIZE(new String[]{"contentSize"});
 
-    private final String name;
+    private final String[] aliases;
+    private boolean isExposable = true;
 
-    Attribute(String name) {
-        this.name = name;
+    Attribute(String[] aliases) {
+        this.aliases = aliases;
+    }
+
+    Attribute(String[] aliases, boolean isExposable) {
+        this(aliases);
+        this.isExposable = isExposable;
     }
 
     public String getName() {
-        return name;
+        return aliases[0];
     }
 
     @Override
     public String toString() {
-        return name;
+        return aliases[0];
+    }
+
+    public static String[] exposableAliases() {
+        final List<String> result = new ArrayList<>();
+        for (Attribute attribute : Attribute.values()) {
+            if (!attribute.isExposable) {
+                continue;
+            }
+
+            if (attribute.aliases.length > 1) {
+                result.add(String.format("{%s}", StringUtils.join(attribute.aliases, ",")));
+            } else {
+                result.add(attribute.aliases[0]);
+            }
+        }
+        return result.toArray(new String[0]);
+    }
+
+    @Nullable
+    public static Attribute fromString(String alias) {
+        if (alias == null) {
+            return null;
+        }
+
+        for (Attribute attribute : Attribute.values()) {
+            for (String attrAlias : attribute.aliases) {
+                if (attrAlias.equalsIgnoreCase(alias)) {
+                    return attribute;
+                }
+            }
+        }
+        return null;
     }
 }

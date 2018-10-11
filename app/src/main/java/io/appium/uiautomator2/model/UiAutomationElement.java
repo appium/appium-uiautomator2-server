@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
+import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import io.appium.uiautomator2.utils.Attribute;
+import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 
 import static android.support.test.internal.util.Checks.checkNotNull;
@@ -77,10 +79,10 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         put(attribs, Attribute.LONG_CLICKABLE, node.isLongClickable());
         put(attribs, Attribute.PASSWORD, node.isPassword());
         put(attribs, Attribute.SCROLLABLE, node.isScrollable());
-        if (node.getTextSelectionStart() >= 0
-                && node.getTextSelectionStart() != node.getTextSelectionEnd()) {
-            attribs.put(Attribute.SELECTION_START, node.getTextSelectionStart());
-            attribs.put(Attribute.SELECTION_END, node.getTextSelectionEnd());
+        Range<Integer> selectionRange = ElementHelpers.getSelectionRange(node);
+        if (selectionRange != null) {
+            attribs.put(Attribute.SELECTION_START, selectionRange.getLower());
+            attribs.put(Attribute.SELECTION_END, selectionRange.getUpper());
         }
         put(attribs, Attribute.SELECTED, node.isSelected());
         put(attribs, Attribute.BOUNDS, getBounds(node));
