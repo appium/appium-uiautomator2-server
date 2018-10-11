@@ -115,12 +115,10 @@ public class CustomUiDevice {
                 return null;
             }
             node = nodesList.get(0);
-            CharSequence className = node.getClassName();
-            selector = className == null ? null : By.clazz(className.toString());
+            selector = toSelector(node);
         } else if (selector instanceof AccessibilityNodeInfo) {
             node = (AccessibilityNodeInfo) selector;
-            CharSequence className = node.getClassName();
-            selector = className == null ? null : By.clazz(className.toString());
+            selector = toSelector(node);
         } else if (selector instanceof UiSelector) {
             UiObject uiObject = getUiDevice().findObject((UiSelector) selector);
             return uiObject.exists() ? uiObject : null;
@@ -182,9 +180,7 @@ public class CustomUiDevice {
                 Class uiObject2 = Class.forName("android.support.test.uiautomator.UiObject2");
                 Constructor cons = uiObject2.getDeclaredConstructors()[0];
                 cons.setAccessible(true);
-                final CharSequence className = node.getClassName();
-                selector = className == null ? null : By.clazz(className.toString());
-                Object[] constructorParams = {getUiDevice(), selector, node};
+                Object[] constructorParams = {getUiDevice(), toSelector(node), node};
                 ret.add(cons.newInstance(constructorParams));
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 final String msg = "Error while creating UiObject2 object";
@@ -194,5 +190,11 @@ public class CustomUiDevice {
         }
 
         return ret;
+    }
+
+    @Nullable
+    private static BySelector toSelector(AccessibilityNodeInfo nodeInfo) {
+        final CharSequence className = nodeInfo.getClassName();
+        return className == null ? null : By.clazz(className.toString());
     }
 }
