@@ -89,8 +89,10 @@ public abstract class ElementHelpers {
             return null;
         }
 
-        if (nodeInfo.getTextSelectionStart() >= 0 && nodeInfo.getTextSelectionStart() != nodeInfo.getTextSelectionEnd()) {
-            return new Range<>(nodeInfo.getTextSelectionStart(), nodeInfo.getTextSelectionEnd());
+        int selectionStart = nodeInfo.getTextSelectionStart();
+        int selectionEnd = nodeInfo.getTextSelectionEnd();
+        if (selectionStart >= 0 && selectionStart != selectionEnd) {
+            return new Range<>(selectionStart, selectionEnd);
         }
         return null;
     }
