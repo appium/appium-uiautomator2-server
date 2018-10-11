@@ -81,10 +81,6 @@ public class UiObjectElement implements AndroidElement {
         return element.getContentDescription();
     }
 
-    public String getClassName() throws UiObjectNotFoundException {
-        return element.getClassName();
-    }
-
     @Nullable
     @Override
     public String getAttribute(String attr) throws UiObjectNotFoundException, NoAttributeFoundException {
