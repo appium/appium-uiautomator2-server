@@ -115,10 +115,12 @@ public class CustomUiDevice {
                 return null;
             }
             node = nodesList.get(0);
-            selector = By.clazz(node.getClassName().toString());
+            CharSequence className = node.getClassName();
+            selector = className == null ? null : By.clazz(className.toString());
         } else if (selector instanceof AccessibilityNodeInfo) {
             node = (AccessibilityNodeInfo) selector;
-            selector = By.clazz(node.getClassName().toString());
+            CharSequence className = node.getClassName();
+            selector = className == null ? null : By.clazz(className.toString());
         } else if (selector instanceof UiSelector) {
             UiObject uiObject = getUiDevice().findObject((UiSelector) selector);
             return uiObject.exists() ? uiObject : null;
@@ -180,7 +182,8 @@ public class CustomUiDevice {
                 Class uiObject2 = Class.forName("android.support.test.uiautomator.UiObject2");
                 Constructor cons = uiObject2.getDeclaredConstructors()[0];
                 cons.setAccessible(true);
-                selector = By.clazz(node.getClassName().toString());
+                final CharSequence className = node.getClassName();
+                selector = className == null ? null : By.clazz(className.toString());
                 Object[] constructorParams = {getUiDevice(), selector, node};
                 ret.add(cons.newInstance(constructorParams));
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {

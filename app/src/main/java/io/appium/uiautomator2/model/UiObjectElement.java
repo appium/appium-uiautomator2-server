@@ -75,10 +75,6 @@ public class UiObjectElement implements AndroidElement {
         return element.getContentDescription();
     }
 
-    public String getClassName() throws UiObjectNotFoundException {
-        return element.getClassName();
-    }
-
     public String getStringAttribute(final String attr) throws UiObjectNotFoundException, NoAttributeFoundException {
         if ("name".equalsIgnoreCase(attr) || "text".equalsIgnoreCase(attr)) {
             return getText();
