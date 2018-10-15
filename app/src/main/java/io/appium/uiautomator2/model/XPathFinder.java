@@ -15,9 +15,7 @@
  */
 package io.appium.uiautomator2.model;
 
-import android.support.annotation.Nullable;
 import android.util.SparseArray;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,6 +24,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -189,7 +188,7 @@ public class XPathFinder implements Finder {
             }
             final UiElement uiElement = uiElementsMapping
                     .get(Integer.parseInt(uiElementIndexAttribute.getNodeValue()));
-            if (uiElement == null || uiElement.getClassName().equals("hierarchy")) {
+            if (uiElement == null || Objects.equals(uiElement.getClassName(), "hierarchy")) {
                 continue;
             }
 
