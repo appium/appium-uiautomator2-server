@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.handler;
 
 import android.os.SystemClock;
-import android.util.Log;
 import android.util.LongSparseArray;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -54,7 +53,6 @@ import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.metaKeysToState;
 import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.toolTypeToInputSource;
 
 public class W3CActions extends SafeRequestHandler {
-    private static final String TAG = W3CActions.class.getSimpleName();
     private static final KeyCharacterMap kcm = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
 
     private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
@@ -154,12 +152,13 @@ public class W3CActions extends SafeRequestHandler {
             boolean result = true;
             for (KeyEvent event : events) {
                 if (event.getAction() == keyAction) {
-                    Logger.debug(String.format("Generating KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
-                            keyAction, keyCode, metaKeysToState(depressedMetaKeys)));
-                    result &= injectEventSync(new KeyEvent(startTimestamp + eventParam.startDelta,
+                    final KeyEvent keyEvent = new KeyEvent(startTimestamp + eventParam.startDelta,
                             SystemClock.uptimeMillis(), keyAction, event.getKeyCode(), 0,
                             event.getMetaState() | metaKeysToState(depressedMetaKeys),
-                            KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0));
+                            KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0);
+                    result &= injectEventSync(keyEvent);
+                    Logger.debug(String.format("[%s (%s)] Synthesized: %s", startTimestamp, result ? "success" : "fail",
+                            keyEvent.toString()));
                 }
             }
             return result;
@@ -220,48 +219,53 @@ public class W3CActions extends SafeRequestHandler {
 
                 for (final MotionInputEventParams motionEventParams : motionEventsParams) {
                     final int actionCode = motionEventParams.actionCode;
+                    MotionEvent synthesizedEvent = null;
                     switch (actionCode) {
                         case MotionEvent.ACTION_DOWN: {
                             final int action = nonHoveringProps.length <= 1
                                     ? MotionEvent.ACTION_DOWN
                                     : getPointerAction(MotionEvent.ACTION_POINTER_DOWN, nonHoveringProps.length - 1);
-                            result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
+                            synthesizedEvent = MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), action, nonHoveringProps.length, nonHoveringProps, nonHoveringCoords,
                                     metaKeysToState(depressedMetaKeys), motionEventParams.button,
-                                    1, 1, 0, 0, inputSource, 0));
-                            Log.d(TAG, String.format("Generated MotionEvent for action '%s'", action));
+                                    1, 1, 0, 0, inputSource, 0);
+                            result &= injectEventSync(synthesizedEvent);
                         }
                         break;
                         case MotionEvent.ACTION_UP: {
                             final int action = nonHoveringProps.length <= 1
                                     ? MotionEvent.ACTION_UP
                                     : getPointerAction(MotionEvent.ACTION_POINTER_UP, nonHoveringProps.length - 1);
-                            result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
+                            synthesizedEvent = MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), action, nonHoveringProps.length,
                                     nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys), motionEventParams.button,
-                                    1, 1, 0, 0, inputSource, 0));
-                            Log.d(TAG, String.format("Generated MotionEvent for action '%s'", action));
+                                    1, 1, 0, 0, inputSource, 0);
+                            result &= injectEventSync(synthesizedEvent);
                         }
                         break;
                         case MotionEvent.ACTION_MOVE: {
-                            result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
+                            synthesizedEvent = MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), actionCode, nonHoveringProps.length,
                                     nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys),
-                                    motionEventParams.button, 1, 1, 0, 0, inputSource, 0)
-                            );
+                                    motionEventParams.button, 1, 1, 0, 0, inputSource, 0);
+                            result &= injectEventSync(synthesizedEvent);
                         }
                         break;
                         case MotionEvent.ACTION_HOVER_ENTER:
                         case MotionEvent.ACTION_HOVER_EXIT:
                         case MotionEvent.ACTION_HOVER_MOVE: {
-                            result &= injectEventSync(MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
+                            synthesizedEvent = MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
                                     SystemClock.uptimeMillis(), actionCode, hoveringProps.length,
                                     hoveringProps, hoveringCoords, metaKeysToState(depressedMetaKeys),
-                                    0, 1, 1, 0, 0, inputSource, 0)
-                            );
+                                    0, 1, 1, 0, 0, inputSource, 0);
+                            result &= injectEventSync(synthesizedEvent);
                         }
                         break;
                     } // switch
+                    if (synthesizedEvent != null) {
+                        Logger.debug(String.format("[%s (%s)] Synthesized %s", currentTimeDelta, result ? "success" : "fail",
+                                synthesizedEvent.toString()));
+                    }
                 } // motionEventParams : motionEventsParams
             } // for i < motionParamsByInputSource.size()
             SystemClock.sleep(currentTimeDelta - recentTimeDelta);
