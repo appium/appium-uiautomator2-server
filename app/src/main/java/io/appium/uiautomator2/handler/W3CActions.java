@@ -229,7 +229,6 @@ public class W3CActions extends SafeRequestHandler {
                                     SystemClock.uptimeMillis(), action, nonHoveringProps.length, nonHoveringProps, nonHoveringCoords,
                                     metaKeysToState(depressedMetaKeys), motionEventParams.button,
                                     1, 1, 0, 0, inputSource, 0);
-                            result &= injectEventSync(synthesizedEvent);
                         }
                         break;
                         case MotionEvent.ACTION_UP: {
@@ -240,7 +239,6 @@ public class W3CActions extends SafeRequestHandler {
                                     SystemClock.uptimeMillis(), action, nonHoveringProps.length,
                                     nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys), motionEventParams.button,
                                     1, 1, 0, 0, inputSource, 0);
-                            result &= injectEventSync(synthesizedEvent);
                         }
                         break;
                         case MotionEvent.ACTION_MOVE: {
@@ -248,7 +246,6 @@ public class W3CActions extends SafeRequestHandler {
                                     SystemClock.uptimeMillis(), actionCode, nonHoveringProps.length,
                                     nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys),
                                     motionEventParams.button, 1, 1, 0, 0, inputSource, 0);
-                            result &= injectEventSync(synthesizedEvent);
                         }
                         break;
                         case MotionEvent.ACTION_HOVER_ENTER:
@@ -258,11 +255,11 @@ public class W3CActions extends SafeRequestHandler {
                                     SystemClock.uptimeMillis(), actionCode, hoveringProps.length,
                                     hoveringProps, hoveringCoords, metaKeysToState(depressedMetaKeys),
                                     0, 1, 1, 0, 0, inputSource, 0);
-                            result &= injectEventSync(synthesizedEvent);
                         }
                         break;
                     } // switch
                     if (synthesizedEvent != null) {
+                        result &= injectEventSync(synthesizedEvent);
                         Logger.debug(String.format("[%s (%s)] Synthesized %s", currentTimeDelta, result ? "success" : "fail",
                                 synthesizedEvent.toString()));
                     }
