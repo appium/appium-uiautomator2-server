@@ -16,6 +16,9 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum Settings {
     ACTION_ACKNOWLEDGMENT_TIMEOUT(new ActionAcknowledgmentTimeout()),
     ALLOW_INVISIBLE_ELEMENTS(new AllowInvisibleElements()),
@@ -42,5 +45,13 @@ public enum Settings {
     @Override
     public String toString() {
         return setting.getName();
+    }
+
+    public static String[] names() {
+        final List<String> result = new ArrayList<>();
+        for (Settings item : Settings.values()) {
+            result.add(item.getSetting().getName());
+        }
+        return result.toArray(new String[0]);
     }
 }

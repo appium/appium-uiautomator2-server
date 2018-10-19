@@ -16,10 +16,14 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
+import java.util.Arrays;
+
 public class UnsupportedSettingException extends UiAutomator2Exception {
 
-    public UnsupportedSettingException(String settingName) {
-        super(String.format("Setting '%s' is not supported.", settingName));
+    public UnsupportedSettingException(String settingName, String[] supportedSettingNames) {
+        super(String.format("Setting '%s' is not supported. " +
+                "Only the following settings are supported: %s", settingName,
+                Arrays.toString(supportedSettingNames)));
     }
 
 }
