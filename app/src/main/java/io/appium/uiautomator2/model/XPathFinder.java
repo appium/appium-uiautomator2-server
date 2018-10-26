@@ -24,8 +24,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.Objects;
-
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -36,7 +34,6 @@ import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
 import static android.support.test.internal.util.Checks.checkNotNull;
-import static io.appium.uiautomator2.utils.XMLHelpers.ROOT_NODE_NAME;
 
 /**
  * Find matching UiElement by XPath.
@@ -77,9 +74,9 @@ public class XPathFinder {
             if (uiElementIndexAttribute == null) {
                 continue;
             }
-            final UiElement uiElement = uiElementsMapping
-                    .get(Integer.parseInt(uiElementIndexAttribute.getNodeValue()));
-            if (uiElement == null || Objects.equals(uiElement.getClassName(), ROOT_NODE_NAME)) {
+            final UiElement uiElement = uiElementsMapping.get(
+                    Integer.parseInt(uiElementIndexAttribute.getNodeValue()));
+            if (uiElement == null || uiElement.getNode() == null) {
                 continue;
             }
 

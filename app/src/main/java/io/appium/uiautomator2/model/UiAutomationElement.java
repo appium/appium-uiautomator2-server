@@ -36,13 +36,14 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static android.support.test.internal.util.Checks.checkNotNull;
 import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
-import static io.appium.uiautomator2.utils.XMLHelpers.ROOT_NODE_NAME;
 
 /**
  * A UiElement that gets attributes via the Accessibility API.
  */
 @TargetApi(18)
 public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAutomationElement> {
+    private final static String ROOT_NODE_NAME = "hierarchy";
+
     private final static Map<AccessibilityNodeInfo, UiAutomationElement> cache = new WeakHashMap<>();
     private final Map<Attribute, Object> attributes;
     private final List<UiAutomationElement> children;

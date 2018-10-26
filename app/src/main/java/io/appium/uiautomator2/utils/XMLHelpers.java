@@ -29,7 +29,6 @@ public abstract class XMLHelpers {
     private final static Pattern XML10_PATTERN = Pattern.compile("[^" + "\u0009\r\n" +
             "\u0020-\uD7FF" + "\uE000-\uFFFD" + "\ud800\udc00-\udbff\udfff" + "]");
     public final static String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
-    public final static String ROOT_NODE_NAME = "hierarchy";
 
     public static String toNodeName(String className) {
         if (StringUtils.isBlank(className)) {
