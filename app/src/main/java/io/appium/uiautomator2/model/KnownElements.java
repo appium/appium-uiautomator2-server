@@ -28,9 +28,9 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
-import static io.appium.uiautomator2.utils.LocationHelpers.getXPathNodeMatch;
-import static io.appium.uiautomator2.utils.LocationHelpers.rewriteIdLocator;
-import static io.appium.uiautomator2.utils.LocationHelpers.toSelector;
+import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
+import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
+import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 
 public class KnownElements {
     private static Map<String, AndroidElement> cache = new HashMap<>();

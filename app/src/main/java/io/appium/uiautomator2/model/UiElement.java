@@ -17,10 +17,12 @@
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import io.appium.uiautomator2.utils.Attribute;
 
@@ -36,99 +38,107 @@ public abstract class UiElement<R, E extends UiElement<R, E>> {
     // The two constants are used internally and must match to-uiautomator.xsl.
     public static final String ATTRIB_VISIBLE_BOUNDS = "VisibleBounds";
     public static final String ATTRIB_NOT_VISIBLE = "NotVisible";
-    public AccessibilityNodeInfo node;
+    private final AccessibilityNodeInfo node;
 
+    public UiElement(AccessibilityNodeInfo node) {
+        this.node = node;
+    }
 
+    @Nullable
+    public AccessibilityNodeInfo getNode() {
+        return this.node;
+    }
+
+    @Nullable
     @SuppressWarnings("unchecked")
     public <T> T get(Attribute attribute) {
+        if (!getAttributes().containsKey(attribute)) {
+            return null;
+        }
         return (T) getAttributes().get(attribute);
     }
 
+    @SuppressWarnings("unchecked")
+    private  <T> T get(Attribute attribute, T defaultValue) {
+        if (!getAttributes().containsKey(attribute)) {
+            return defaultValue;
+        }
+        return (T) getAttributes().get(attribute);
+    }
+
+    @Nullable
     public String getText() {
         return get(Attribute.TEXT);
     }
 
+    @Nullable
     public String getContentDescription() {
         return get(Attribute.CONTENT_DESC);
     }
 
+    @Nullable
     public String getClassName() {
         return get(Attribute.CLASS);
     }
 
+    @Nullable
     public String getResourceId() {
         return get(Attribute.RESOURCE_ID);
     }
 
+    @Nullable
     public String getPackageName() {
         return get(Attribute.PACKAGE);
     }
 
     public boolean isCheckable() {
-        return (Boolean) get(Attribute.CHECKABLE);
+        return get(Attribute.CHECKABLE, false);
     }
 
     public boolean isChecked() {
-        return (Boolean) get(Attribute.CHECKED);
+        return get(Attribute.CHECKED, false);
     }
 
     public boolean isClickable() {
-        return (Boolean) get(Attribute.CLICKABLE);
+        return get(Attribute.CLICKABLE, false);
     }
 
     public boolean isEnabled() {
-        return (Boolean) get(Attribute.ENABLED);
+        return get(Attribute.ENABLED, false);
     }
 
     public boolean isFocusable() {
-        return (Boolean) get(Attribute.FOCUSABLE);
+        return get(Attribute.FOCUSABLE, false);
     }
 
     public boolean isFocused() {
-        return (Boolean) get(Attribute.FOCUSED);
+        return get(Attribute.FOCUSED, false);
     }
 
     public boolean isScrollable() {
-        return (Boolean) get(Attribute.SCROLLABLE);
+        return get(Attribute.SCROLLABLE, false);
     }
 
     public boolean isLongClickable() {
-        return (Boolean) get(Attribute.LONG_CLICKABLE);
+        return get(Attribute.LONG_CLICKABLE, false);
     }
 
     public boolean isPassword() {
-        return (Boolean) get(Attribute.PASSWORD);
+        return get(Attribute.PASSWORD, false);
     }
 
     public boolean isSelected() {
-        return (Boolean) get(Attribute.SELECTED);
+        return  get(Attribute.SELECTED, false);
     }
 
     public int getIndex() {
-        return (Integer) get(Attribute.INDEX);
+        return get(Attribute.INDEX, -1);
     }
 
-    protected abstract List<E> getChildren();
+    public abstract List<E> getChildren();
 
-    public Rect getBounds() {
+    public String getBounds() {
         return get(Attribute.BOUNDS);
-    }
-
-    public int getSelectionStart() {
-        Integer value = get(Attribute.SELECTION_START);
-        return value == null ? 0 : value;
-    }
-
-    public int getSelectionEnd() {
-        Integer value = get(Attribute.SELECTION_END);
-        return value == null ? 0 : value;
-    }
-
-    public boolean hasSelection() {
-        final int selectionStart = getSelectionStart();
-        final int selectionEnd = getSelectionEnd();
-
-        return selectionStart >= 0 && selectionStart != selectionEnd;
     }
 
     protected abstract Map<Attribute, Object> getAttributes();

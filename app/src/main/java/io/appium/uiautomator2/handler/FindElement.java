@@ -46,9 +46,9 @@ import io.appium.uiautomator2.utils.NodeInfoList;
 
 import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshRootAXNode;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
-import static io.appium.uiautomator2.utils.LocationHelpers.getXPathNodeMatch;
-import static io.appium.uiautomator2.utils.LocationHelpers.rewriteIdLocator;
-import static io.appium.uiautomator2.utils.LocationHelpers.toSelector;
+import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
+import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
+import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 
 public class FindElement extends SafeRequestHandler {
 

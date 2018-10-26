@@ -13,213 +13,147 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.appium.uiautomator2.core;
 
 import android.graphics.Point;
 import android.os.SystemClock;
-import android.util.Xml;
+import android.support.annotation.Nullable;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import org.xmlpull.v1.XmlSerializer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-import java.io.IOException;
-import java.io.StringWriter;
+import java.lang.reflect.Field;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.model.NotificationListener;
+import io.appium.uiautomator2.model.UiAutomationElement;
+import io.appium.uiautomator2.model.UiElement;
+import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 
-import static io.appium.uiautomator2.utils.XMLHierarchy.safeCharSeqToString;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
+import static io.appium.uiautomator2.utils.XMLHelpers.DEFAULT_VIEW_CLASS_NAME;
+import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
+import static io.appium.uiautomator2.utils.XMLHelpers.toSafeXmlString;
 
-
-/**
- * The AccessibilityNodeInfoDumper in Android Open Source Project contains a lot of bugs which will
- * stay in old android versions forever. By coping the code of the latest version it is ensured that
- * all patches become available on old android versions. <p/> down ported bugs are e.g. { @link
- * https://code.google.com/p/android/issues/detail?id=62906 } { @link
- * https://code.google.com/p/android/issues/detail?id=58733 }
- */
 public class AccessibilityNodeInfoDumper {
-    private static final String[] NAF_EXCLUDED_CLASSES = new String[]{
-            android.widget.GridView.class.getName(),
-            android.widget.GridLayout.class.getName(),
-            android.widget.ListView.class.getName(),
-            android.widget.TableLayout.class.getName()};
     // https://github.com/appium/appium/issues/10204
     private static final int MAX_DEPTH = 70;
+    private static final String UI_ELEMENT_INDEX = "uiElementIndex";
 
-    /**
-     * Using {@link AccessibilityNodeInfo} this method will walk the layout hierarchy and return
-     * String object of xml hierarchy
-     *
-     * @param root The root accessibility node.
-     */
-    public static String getWindowXMLHierarchy(AccessibilityNodeInfo root) {
-        final long startTime = SystemClock.uptimeMillis();
-        StringWriter xmlDump = new StringWriter();
+    private static void setNodeLocalName(Element element, String className) {
         try {
-            XmlSerializer serializer = Xml.newSerializer();
-            serializer.setOutput(xmlDump);
-            serializer.startDocument("UTF-8", true);
-            serializer.startTag("", "hierarchy");
-
-            if (root != null) {
-                Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                final int width = size.x;
-                final int height = size.y;
-
-                serializer.attribute("", "rotation", Integer.toString(display.getRotation()));
-
-                dumpNodeRec(root, serializer, 0, width, height, 0);
-            }
-
-            serializer.endTag("", "hierarchy");
-            serializer.endDocument();
-
-            /*FileWriter writer = new FileWriter(dumpFile);
-            writer.write(stringWriter.toString());
-            writer.close();*/
-        } catch (IOException e) {
-            throw new UiAutomator2Exception("Cannot dump views hierarchy to XML format", e);
+            Field localName = element.getClass().getDeclaredField("localName");
+            localName.setAccessible(true);
+            localName.set(element, tag(className));
+        } catch (Exception e) {
+            Logger.error(String.format("Unable to set field's localName to '%s'", className), e);
         }
-        final long endTime = SystemClock.uptimeMillis();
-        Logger.info("Fetch time: " + (endTime - startTime) + "ms");
-        return xmlDump.toString();
     }
-    
-    private static void dumpNodeRec(AccessibilityNodeInfo node, XmlSerializer serializer,
-                                    int index, int width, int height, final int depth)
-            throws IOException {
-        // Some views might have unlimited number of children:
-        // https://bugs.chromium.org/p/chromium/issues/detail?id=805014
+
+    private static Element toDOMElement(UiElement<?, ?> uiElement, final Document document,
+                                        final SparseArray<UiElement<?, ?>> uiElementsMapping,
+                                        final int depth) {
+        String className = uiElement.getClassName();
+        if (className == null) {
+            className = DEFAULT_VIEW_CLASS_NAME;
+        }
+        Element element = document.createElement(toNodeName(className));
+        final int uiElementIndex = uiElementsMapping.size();
+        uiElementsMapping.put(uiElementIndex, uiElement);
+
+        /*
+         * Setting the Element's className field.
+         * Reason for setting className field in Element object explicitly,
+         * className property might contain special characters like '$' if it is a Inner class and
+         * just not possible to create Element object with special characters.
+         * But Appium should consider Inner classes i.e special characters should be included.
+         */
+        setNodeLocalName(element, className);
+
+        for (Attribute attr : Attribute.values()) {
+            setAttribute(element, attr, toSafeXmlString(uiElement.get(attr), "?"));
+        }
+        element.setAttribute(UI_ELEMENT_INDEX, Integer.toString(uiElementIndex));
+
         if (depth >= MAX_DEPTH) {
             Logger.error(String.format("The xml tree dump has reached its maximum depth of %s at " +
-                            "%s. The recursion is stopped to avoid StackOverflowError", MAX_DEPTH,
-                    node.toString()));
-            return;
-        }
-
-        serializer.startTag("", "node");
-        if (!isOfNafExcludedClass(node) && !isAccessibilityFriendly(node))
-            serializer.attribute("", "NAF", Boolean.toString(true));
-        serializer.attribute("", "index", Integer.toString(index));
-        final String text;
-        if (node.getRangeInfo() == null) {
-            text = safeCharSeqToString(node.getText());
+                    "'%s'. The recursion is stopped to avoid StackOverflowError", MAX_DEPTH, className));
         } else {
-            text = Float.toString(node.getRangeInfo().getCurrent());
-        }
-        serializer.attribute("", "text", text);
-        serializer.attribute("", "class", safeCharSeqToString(node.getClassName()));
-        serializer.attribute("", "package", safeCharSeqToString(node.getPackageName()));
-        serializer.attribute("", "content-desc", safeCharSeqToString(node.getContentDescription()));
-        serializer.attribute("", "checkable", Boolean.toString(node.isCheckable()));
-        serializer.attribute("", "checked", Boolean.toString(node.isChecked()));
-        serializer.attribute("", "clickable", Boolean.toString(node.isClickable()));
-        serializer.attribute("", "enabled", Boolean.toString(node.isEnabled()));
-        serializer.attribute("", "focusable", Boolean.toString(node.isFocusable()));
-        serializer.attribute("", "focused", Boolean.toString(node.isFocused()));
-        serializer.attribute("", "scrollable", Boolean.toString(node.isScrollable()));
-        serializer.attribute("", "long-clickable", Boolean.toString(node.isLongClickable()));
-        serializer.attribute("", "password", Boolean.toString(node.isPassword()));
-        serializer.attribute("", "selected", Boolean.toString(node.isSelected()));
-        serializer.attribute("", "bounds",
-                AccessibilityNodeInfoHelper.getVisibleBoundsInScreen(node, width, height).toShortString());
-        serializer.attribute("", "resource-id", safeCharSeqToString(node.getViewIdResourceName()));
-
-        int count = node.getChildCount();
-        for (int i = 0; i < count; i++) {
-            AccessibilityNodeInfo child = node.getChild(i);
-            if (child != null) {
-                if (child.isVisibleToUser()) {
-                    dumpNodeRec(child, serializer, i, width, height, depth + 1);
-                    child.recycle();
-                } else {
-                    Logger.info(String.format("Skipping invisible child: %s", child.toString()));
-                }
-            } else {
-                Logger.info(String.format("Null child %s/%s, parent: %s", i, count, node.toString()));
+            for (UiElement<?, ?> child : uiElement.getChildren()) {
+                element.appendChild(toDOMElement(child, document, uiElementsMapping, depth + 1));
             }
         }
-        serializer.endTag("", "node");
+        return element;
+    }
+
+    private static void setAttribute(Element element, Attribute attr, Object value) {
+        if (value != null) {
+            element.setAttribute(attr.getName(), String.valueOf(value));
+        }
+    }
+
+    public static Document asXmlDocument() {
+        return asXmlDocument(null, null);
+    }
+
+    public static Document asXmlDocument(@Nullable Object root,
+                                         @Nullable SparseArray<UiElement<?, ?>> uiElementsMapping) {
+        final long startTime = SystemClock.uptimeMillis();
+        final Document document;
+        try {
+            document = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder()
+                    .newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new UiAutomator2Exception(e);
+        }
+        if (uiElementsMapping == null) {
+            uiElementsMapping = new SparseArray<>();
+        }
+
+        final UiElement<?, ?> xpathRoot;
+        if (root instanceof UiElement) {
+            xpathRoot = (UiElement<?, ?>) root;
+        } else if (root instanceof AccessibilityNodeInfo) {
+            xpathRoot = UiAutomationElement.rebuildForNewRoot((AccessibilityNodeInfo) root, null);
+        } else {
+            xpathRoot = UiAutomationElement.rebuildForNewRoot(currentActiveWindowRoot(),
+                    NotificationListener.getInstance().getToastMessage());
+        }
+        final Element domNode = toDOMElement(xpathRoot, document, uiElementsMapping, 0);
+        document.appendChild(domNode);
+        alterDisplayInfo(domNode);
+        Logger.info(String.format("XML tree fetch time: %sms", SystemClock.uptimeMillis() - startTime));
+        return document;
+    }
+
+    private static void alterDisplayInfo(Element node) {
+        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        node.setAttribute("rotation", Integer.toString(display.getRotation()));
+        node.setAttribute("width", Integer.toString(size.x));
+        node.setAttribute("height", Integer.toString(size.y));
     }
 
     /**
-     * The list of classes to exclude may not be complete. We're attempting to only reduce noise from
-     * standard layout classes that may be falsely configured to accept clicks and are also
-     * enabled.
-     *
-     * @return true if node is excluded.
+     * @param clsName the original class name
+     * @return The tag name used to build UiElement DOM. It is preferable to use
+     * this to build XPath instead of String literals.
      */
-    private static boolean isOfNafExcludedClass(AccessibilityNodeInfo node) {
-        String className = safeCharSeqToString(node.getClassName());
-        for (String excludedClassName : NAF_EXCLUDED_CLASSES) {
-            if (className.endsWith(excludedClassName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * We're looking for UI controls that are enabled, clickable but have no text nor
-     * content-description. Such controls configuration indicate an interactive control is present
-     * in the UI and is most likely not accessibility friendly. We refer to such controls here as
-     * NAF controls (Not Accessibility Friendly)
-     *
-     * @return false if a node fails the check, true if all is OK
-     */
-    private static boolean isAccessibilityFriendly(AccessibilityNodeInfo node) {
-        boolean isNaf = node.isClickable() && node.isEnabled() &&
-                safeCharSeqToString(node.getContentDescription()).isEmpty() &&
-                safeCharSeqToString(node.getText()).isEmpty();
-        if (!isNaf) {
-            return true;
-        }
-        // check children since sometimes the containing element is clickable
-        // and NAF but a child's text or description is available. Will assume
-        // such layout as fine.
-        return isAnyDescendantAccessibilityFriendly(node, 0);
-    }
-
-    /**
-     * This should be used when it's already determined that the node is NAF and a further check of
-     * its children is in order. A node maybe a container such as LinerLayout and may be set to be
-     * clickable but have no text or content description but it is counting on one of its children
-     * to fulfill the requirement for being accessibility friendly by having one or more of its
-     * children fill the text or content-description. Such a combination is considered by this
-     * dumper as acceptable for accessibility.
-     *
-     * @return false if node fails the check.
-     */
-    private static boolean isAnyDescendantAccessibilityFriendly(AccessibilityNodeInfo node,
-                                                                final int depth) {
-        // Some views might have unlimited number of children:
-        // https://bugs.chromium.org/p/chromium/issues/detail?id=805014
-        if (depth >= MAX_DEPTH) {
-            Logger.error(String.format("The NAF verification has reached its maximum depth of %s at " +
-                            "%s. The recursion is stopped to avoid StackOverflowError", MAX_DEPTH,
-                    node.toString()));
-            return false;
-        }
-
-        int childCount = node.getChildCount();
-        for (int x = 0; x < childCount; x++) {
-            AccessibilityNodeInfo childNode = node.getChild(x);
-            if (childNode == null) {
-                Logger.info(String.format("Null child %s/%s, parent: %s", x, childCount, node.toString()));
-                continue;
-            }
-            if (!safeCharSeqToString(childNode.getContentDescription()).isEmpty()
-                    || !safeCharSeqToString(childNode.getText()).isEmpty()) {
-                return true;
-            }
-            if (isAnyDescendantAccessibilityFriendly(childNode, depth + 1)) {
-                return true;
-            }
-        }
-        return false;
+    private static String tag(String clsName) {
+        // the nth anonymous class has a class name ending in "Outer$n"
+        // and local inner classes have names ending in "Outer.$1Inner"
+        return clsName
+                .replaceAll("\\?+", "_")
+                .replaceAll("\\$[0-9]+", "\\$");
     }
 }

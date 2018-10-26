@@ -28,14 +28,10 @@ import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.By;
-import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.model.UiAutomationElement;
 import io.appium.uiautomator2.model.XPathFinder;
 
-import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
-
-public class LocationHelpers {
+public class ElementLocationHelpers {
     /**
      * java_package : type / name
      * <p>
@@ -74,12 +70,9 @@ public class LocationHelpers {
      */
     public static NodeInfoList getXPathNodeMatch(final String expression, @Nullable AndroidElement element)
             throws UiAutomator2Exception {
-        final UiAutomationElement xpathRoot = element == null
-                ? UiAutomationElement.rebuildForNewRoot(currentActiveWindowRoot(),
-                NotificationListener.getInstance().getToastMessage())
-                : UiAutomationElement.rebuildForNewRoot(
-                AccessibilityNodeInfoGetter.fromUiObject(element.getUiObject()), null);
-        return new XPathFinder(expression).find(xpathRoot);
+        return new XPathFinder(expression).find(element == null
+                ? null
+                : AccessibilityNodeInfoGetter.fromUiObject(element.getUiObject()));
     }
 
     @Nullable

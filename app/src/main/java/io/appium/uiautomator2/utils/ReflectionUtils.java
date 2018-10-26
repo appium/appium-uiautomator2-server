@@ -17,11 +17,11 @@
 package io.appium.uiautomator2.utils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.core.UiAutomatorBridge;
 
 public class ReflectionUtils {
 
@@ -32,26 +32,14 @@ public class ReflectionUtils {
      * the android.view.accessibility AIC and ANI source code for more information.
      */
     public static boolean clearAccessibilityCache() throws UiAutomator2Exception {
-        boolean success = false;
-
         try {
-            final Class c = Class
-                    .forName("android.view.accessibility.AccessibilityInteractionClient");
-            final Method getInstance = ReflectionUtils.method(c, "getInstance");
-            final Object instance = getInstance.invoke(null);
-            final Method clearCache = ReflectionUtils.method(instance.getClass(),
-                    "clearCache");
-            clearCache.invoke(instance);
-
-            success = true;
-        } catch (IllegalAccessException e) {
-            Logger.error("Failed to clear Accessibility Node cache. ", e);
-        } catch (InvocationTargetException e) {
-            Logger.error("Failed to clear Accessibility Node cache. ", e);
-        } catch (ClassNotFoundException e) {
-            Logger.error("Failed to clear Accessibility Node cache. ", e);
+            // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
+            UiAutomatorBridge.getInstance().getUiAutomation().setServiceInfo(null);
+            return true;
+        } catch (Exception e) {
+            Logger.error("Failed to clear Accessibility Node cache.", e);
+            return false;
         }
-        return success;
     }
 
     public static Class getClass(final String name) throws UiAutomator2Exception {

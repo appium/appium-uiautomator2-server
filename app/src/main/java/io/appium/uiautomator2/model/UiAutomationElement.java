@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.model;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
@@ -37,6 +36,7 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static android.support.test.internal.util.Checks.checkNotNull;
 import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
+import static io.appium.uiautomator2.utils.XMLHelpers.ROOT_NODE_NAME;
 
 /**
  * A UiElement that gets attributes via the Accessibility API.
@@ -45,10 +45,6 @@ import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELE
 public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAutomationElement> {
     private final static Map<AccessibilityNodeInfo, UiAutomationElement> cache = new WeakHashMap<>();
     private final Map<Attribute, Object> attributes;
-    private final boolean visible;
-    @SuppressWarnings("unused")
-    private final Rect visibleBounds;
-    private final UiAutomationElement parent;
     private final List<UiAutomationElement> children;
 
     /**
@@ -57,67 +53,45 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
      * {@link AccessibilityNodeInfo} is updated, a new {@code UiAutomationElement}
      * instance will be created in
      */
-    protected UiAutomationElement(AccessibilityNodeInfo node,
-                                  UiAutomationElement parent, int index) {
-        this.node = checkNotNull(node);
-        this.parent = parent;
+    protected UiAutomationElement(AccessibilityNodeInfo node, int index) {
+        super(checkNotNull(node));
 
-        Map<Attribute, Object> attribs = new EnumMap<>(Attribute.class);
-
-        put(attribs, Attribute.INDEX, index);
-        put(attribs, Attribute.PACKAGE, charSequenceToString(node.getPackageName()));
-        put(attribs, Attribute.CLASS, charSequenceToString(node.getClassName()));
-        put(attribs, Attribute.TEXT, charSequenceToString(node.getText()));
-        put(attribs, Attribute.CONTENT_DESC, charSequenceToString(node.getContentDescription()));
-        put(attribs, Attribute.RESOURCE_ID, charSequenceToString(node.getViewIdResourceName()));
-        put(attribs, Attribute.CHECKABLE, node.isCheckable());
-        put(attribs, Attribute.CHECKED, node.isChecked());
-        put(attribs, Attribute.CLICKABLE, node.isClickable());
-        put(attribs, Attribute.ENABLED, node.isEnabled());
-        put(attribs, Attribute.FOCUSABLE, node.isFocusable());
-        put(attribs, Attribute.FOCUSED, node.isFocused());
-        put(attribs, Attribute.LONG_CLICKABLE, node.isLongClickable());
-        put(attribs, Attribute.PASSWORD, node.isPassword());
-        put(attribs, Attribute.SCROLLABLE, node.isScrollable());
+        Map<Attribute, Object> attributes = new EnumMap<>(Attribute.class);
+        put(attributes, Attribute.INDEX, index);
+        put(attributes, Attribute.PACKAGE, charSequenceToString(node.getPackageName()));
+        put(attributes, Attribute.CLASS, charSequenceToString(node.getClassName()));
+        put(attributes, Attribute.TEXT, charSequenceToString(node.getText()));
+        put(attributes, Attribute.CONTENT_DESC, charSequenceToString(node.getContentDescription()));
+        put(attributes, Attribute.RESOURCE_ID, charSequenceToString(node.getViewIdResourceName()));
+        put(attributes, Attribute.CHECKABLE, node.isCheckable());
+        put(attributes, Attribute.CHECKED, node.isChecked());
+        put(attributes, Attribute.CLICKABLE, node.isClickable());
+        put(attributes, Attribute.ENABLED, node.isEnabled());
+        put(attributes, Attribute.FOCUSABLE, node.isFocusable());
+        put(attributes, Attribute.FOCUSED, node.isFocused());
+        put(attributes, Attribute.LONG_CLICKABLE, node.isLongClickable());
+        put(attributes, Attribute.PASSWORD, node.isPassword());
+        put(attributes, Attribute.SCROLLABLE, node.isScrollable());
         Range<Integer> selectionRange = ElementHelpers.getSelectionRange(node);
         if (selectionRange != null) {
-            attribs.put(Attribute.SELECTION_START, selectionRange.getLower());
-            attribs.put(Attribute.SELECTION_END, selectionRange.getUpper());
+            attributes.put(Attribute.SELECTION_START, selectionRange.getLower());
+            attributes.put(Attribute.SELECTION_END, selectionRange.getUpper());
         }
-        put(attribs, Attribute.SELECTED, node.isSelected());
-        put(attribs, Attribute.BOUNDS, getBounds(node));
-        attributes = Collections.unmodifiableMap(attribs);
-
-        // Order matters as getVisibleBounds depends on visible
-        visible = node.isVisibleToUser();
-        visibleBounds = getVisibleBounds();
-        List<UiAutomationElement> mutableChildren = buildChildren(node);
-        this.children = mutableChildren == null ? null : Collections.unmodifiableList(mutableChildren);
+        put(attributes, Attribute.SELECTED, node.isSelected());
+        put(attributes, Attribute.BOUNDS, getBounds(node));
+        // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
+        this.attributes = Collections.unmodifiableMap(attributes);
+        this.children = buildChildren(node);
     }
 
-    protected UiAutomationElement(String hierarchyClassName,
-                                  AccessibilityNodeInfo childNode, int index) {
-        this.parent = null;
+    protected UiAutomationElement(String hierarchyClassName, AccessibilityNodeInfo childNode, int index) {
+        super(null);
         Map<Attribute, Object> attribs = new EnumMap<>(Attribute.class);
-
         put(attribs, Attribute.INDEX, index);
         put(attribs, Attribute.CLASS, charSequenceToString(hierarchyClassName));
-        put(attribs, Attribute.CHECKABLE, false);
-        put(attribs, Attribute.CHECKED, false);
-        put(attribs, Attribute.CLICKABLE, false);
-        put(attribs, Attribute.ENABLED, false);
-        put(attribs, Attribute.FOCUSABLE, false);
-        put(attribs, Attribute.FOCUSED, false);
-        put(attribs, Attribute.LONG_CLICKABLE, false);
-        put(attribs, Attribute.PASSWORD, false);
-        put(attribs, Attribute.SCROLLABLE, false);
-        put(attribs, Attribute.SELECTED, false);
-
         this.attributes = Collections.unmodifiableMap(attribs);
-        this.visible = true;
-        this.visibleBounds = null;
         List<UiAutomationElement> mutableChildren = new ArrayList<>();
-        mutableChildren.add(new UiAutomationElement(childNode, this /* parent UiAutomationElement*/, 0/* index */));
+        mutableChildren.add(new UiAutomationElement(childNode, 0));
         this.children = mutableChildren;
     }
 
@@ -125,7 +99,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
                                                         @Nullable List<CharSequence> toastMSGs) {
         cache.clear();
 
-        UiAutomationElement rootElement = new UiAutomationElement("hierarchy", rawElement, 0);
+        UiAutomationElement rootElement = new UiAutomationElement(ROOT_NODE_NAME, rawElement, 0);
         if (toastMSGs != null && !toastMSGs.isEmpty()) {
             for (CharSequence toastMSG : toastMSGs) {
                 Logger.debug("Adding toastMSG to root:" + toastMSG);
@@ -144,11 +118,10 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         return cache.get(rawElement);
     }
 
-    private static UiAutomationElement getOrCreateElement(AccessibilityNodeInfo rawElement,
-                                                          UiAutomationElement parent, int index) {
+    private static UiAutomationElement getOrCreateElement(AccessibilityNodeInfo rawElement, int index) {
         UiAutomationElement element = cache.get(rawElement);
         if (element == null) {
-            element = new UiAutomationElement(rawElement, parent, index);
+            element = new UiAutomationElement(rawElement, index);
             cache.put(rawElement, element);
         }
         return element;
@@ -171,61 +144,36 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         node.setClassName(Toast.class.getName());
         node.setPackageName("com.android.settings");
 
-        this.children.add(new UiAutomationElement(node, this, 0));
+        this.children.add(new UiAutomationElement(node, 0));
     }
 
     private List<UiAutomationElement> buildChildren(AccessibilityNodeInfo node) {
-        List<UiAutomationElement> children;
         int childCount = node.getChildCount();
         if (childCount == 0) {
-            children = null;
-        } else {
-            children = new ArrayList<>(childCount);
-            Object allowInvisibleElements = Session.capabilities.get(ALLOW_INVISIBLE_ELEMENTS.toString());
-            boolean isAllowInvisibleElements = allowInvisibleElements != null && (boolean) allowInvisibleElements;
+            return Collections.emptyList();
+        }
 
-            for (int i = 0; i < childCount; i++) {
-                AccessibilityNodeInfo child = node.getChild(i);
-                //Ignore if element is not visible on the screen
-                if (child != null && (child.isVisibleToUser() || isAllowInvisibleElements)) {
-                    children.add(getOrCreateElement(child, this, i));
-                }
+        List<UiAutomationElement> children = new ArrayList<>(childCount);
+        Object allowInvisibleElements = Session.capabilities.get(ALLOW_INVISIBLE_ELEMENTS.toString());
+        boolean isAllowInvisibleElements = allowInvisibleElements != null && (boolean) allowInvisibleElements;
+        for (int i = 0; i < childCount; i++) {
+            AccessibilityNodeInfo child = node.getChild(i);
+            //Ignore if element is not visible on the screen
+            if (child != null && (child.isVisibleToUser() || isAllowInvisibleElements)) {
+                children.add(getOrCreateElement(child, i));
             }
         }
         return children;
     }
 
-    private Rect getBounds(AccessibilityNodeInfo node) {
+    private String getBounds(AccessibilityNodeInfo node) {
         Rect rect = new Rect();
         node.getBoundsInScreen(rect);
-        return rect;
-    }
-
-    @SuppressLint("CheckResult")
-    private Rect getVisibleBounds() {
-        if (!visible) {
-            return new Rect();
-        }
-        Rect visibleBounds = getBounds(this.node);
-        UiAutomationElement parent = getParent();
-        Rect parentBounds;
-        while (parent != null && parent.node != null) {
-            parentBounds = parent.getBounds(this.parent.node);
-            visibleBounds.intersect(parentBounds);
-            parent = parent.getParent();
-        }
-        return visibleBounds;
-    }
-
-    public UiAutomationElement getParent() {
-        return parent;
+        return rect.toShortString();
     }
 
     @Override
-    protected List<UiAutomationElement> getChildren() {
-        if (children == null) {
-            return Collections.emptyList();
-        }
+    public List<UiAutomationElement> getChildren() {
         return children;
     }
 

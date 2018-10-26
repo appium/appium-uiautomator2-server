@@ -30,6 +30,8 @@ import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.UiAutomationElement;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
+import static io.appium.uiautomator2.utils.ReflectionUtils.clearAccessibilityCache;
+
 public class AXWindowHelpers {
     public static final long AX_ROOT_RETRIEVAL_TIMEOUT = 10000;
     private static final boolean MULTI_WINDOW = false;
@@ -37,12 +39,7 @@ public class AXWindowHelpers {
 
     public static void refreshRootAXNode() throws UiAutomator2Exception {
         Device.waitForIdle();
-        // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
-        // which resets the internal accessibility cache
-        //noinspection EmptyCatchBlock
-        try {
-            UiAutomatorBridge.getInstance().getUiAutomation().setServiceInfo(null);
-        } catch (Exception ign) {}
+        clearAccessibilityCache();
 
         long end = SystemClock.uptimeMillis() + AX_ROOT_RETRIEVAL_TIMEOUT;
         while (end > SystemClock.uptimeMillis()) {
