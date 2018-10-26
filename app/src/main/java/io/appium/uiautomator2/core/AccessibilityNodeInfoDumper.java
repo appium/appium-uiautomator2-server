@@ -129,8 +129,10 @@ public class AccessibilityNodeInfoDumper {
                     NotificationListener.getInstance().getToastMessage());
         }
         final Element domNode = toDOMElement(xpathRoot, document, uiElementsMapping, 0);
+        if (root == null) {
+            alterDisplayInfo(domNode);
+        }
         document.appendChild(domNode);
-        alterDisplayInfo(domNode);
         Logger.info(String.format("XML tree fetch time: %sms", SystemClock.uptimeMillis() - startTime));
         return document;
     }
