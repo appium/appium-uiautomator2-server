@@ -60,7 +60,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         put(attributes, Attribute.INDEX, index);
         put(attributes, Attribute.PACKAGE, charSequenceToString(node.getPackageName()));
         put(attributes, Attribute.CLASS, charSequenceToString(node.getClassName()));
-        put(attributes, Attribute.TEXT, charSequenceToString(node.getText()));
+        put(attributes, Attribute.TEXT, ElementHelpers.getText(node));
         put(attributes, Attribute.CONTENT_DESC, charSequenceToString(node.getContentDescription()));
         put(attributes, Attribute.RESOURCE_ID, charSequenceToString(node.getViewIdResourceName()));
         put(attributes, Attribute.CHECKABLE, node.isCheckable());

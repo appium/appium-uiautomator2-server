@@ -42,7 +42,6 @@ import io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices;
 import io.appium.uiautomator2.utils.Device;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static io.appium.uiautomator2.model.settings.Settings.ENABLE_NOTIFICATION_LISTENER;
 import static io.appium.uiautomator2.unittest.test.internal.Client.waitForNettyStatus;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.getJsonObjectCountInJsonArray;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElement;

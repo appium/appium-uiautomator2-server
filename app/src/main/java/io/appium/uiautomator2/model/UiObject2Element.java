@@ -58,11 +58,6 @@ public class UiObject2Element implements AndroidElement {
         this.by = by;
     }
 
-    private static boolean isToastElement(AccessibilityNodeInfo nodeInfo) {
-        // Using Objects.equals to handle the case when class name can be null
-        return Objects.equals(nodeInfo.getClassName(), Toast.class.getName());
-    }
-
     @Override
     public void click() {
         element.click();
@@ -75,31 +70,8 @@ public class UiObject2Element implements AndroidElement {
     }
 
     @Override
-    public String getText() {
-        AccessibilityNodeInfo nodeInfo = (AccessibilityNodeInfo) getField(UiObject2.class,
-                "mCachedNode", element);
-        if (nodeInfo == null) {
-            return "";
-        }
-
-        /*
-         * If the given element is TOAST element, we can't perform any operation on {@link UiObject2} as it
-         * not formed with valid AccessibilityNodeInfo, Instead we are using custom created AccessibilityNodeInfo of
-         * TOAST Element to retrieve the Text.
-         */
-        if (isToastElement(nodeInfo)) {
-            return nodeInfo.getText().toString();
-        }
-
-        if (nodeInfo.getRangeInfo() != null) {
-            /* Refresh accessibility node info to get actual state of element */
-            nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-            if (nodeInfo != null && nodeInfo.getRangeInfo() != null) {
-                return Float.toString(nodeInfo.getRangeInfo().getCurrent());
-            }
-        }
-        // on null returning empty string
-        return element.getText() != null ? element.getText() : "";
+    public String getText() throws UiObjectNotFoundException {
+        return ElementHelpers.getText(element);
     }
 
     @Override

@@ -16,13 +16,11 @@
 
 package io.appium.uiautomator2.model;
 
-import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import io.appium.uiautomator2.utils.Attribute;
 

@@ -27,6 +27,7 @@ import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +60,7 @@ import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public abstract class ElementHelpers {
@@ -217,6 +219,41 @@ public abstract class ElementHelpers {
         return new NoAttributeFoundException(String.format("'%s' attribute is unknown for the element. " +
                         "Only the following attributes are supported: %s", attributeName,
                 Arrays.toString(Attribute.exposableAliases())), attributeName);
+    }
+
+    private static boolean isToastElement(AccessibilityNodeInfo nodeInfo) {
+        // Using Objects.equals to handle the case when class name can be null
+        return Objects.equals(nodeInfo.getClassName(), Toast.class.getName());
+    }
+
+    @Nullable
+    public static String getText(@Nullable AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null) {
+            return null;
+        }
+
+        /*
+         * If the given element is TOAST element, we can't perform any operation on {@link UiObject2} as it
+         * not formed with valid AccessibilityNodeInfo, Instead we are using custom created AccessibilityNodeInfo of
+         * TOAST Element to retrieve the Text.
+         */
+        if (isToastElement(nodeInfo)) {
+            return nodeInfo.getText().toString();
+        }
+        if (nodeInfo.getRangeInfo() != null) {
+            return Float.toString(nodeInfo.getRangeInfo().getCurrent());
+        }
+        CharSequence text = nodeInfo.getText();
+        return text == null ? null : text.toString();
+    }
+
+    @Nullable
+    public static String getText(Object element) throws UiObjectNotFoundException {
+        if (element instanceof UiObject2) {
+            AccessibilityNodeInfo nodeInfo =  AccessibilityNodeInfoGetter.fromUiObject(element);
+            return getText(nodeInfo);
+        }
+        return ((UiObject) element).getText();
     }
 
     public static String getContentSize(AndroidElement element) throws UiObjectNotFoundException {

@@ -77,7 +77,7 @@ public final class NotificationListener implements OnAccessibilityEventListener 
             Logger.debug("Catch toast message: " + event);
             List<CharSequence> text = event.getText();
             if (text != null && !text.isEmpty()) {
-                setToastMessage(event.getText());
+                setToastMessage(text);
             }
         }
 

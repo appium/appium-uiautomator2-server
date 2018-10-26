@@ -72,8 +72,7 @@ public class UiObjectElement implements AndroidElement {
 
     @Override
     public String getText() throws UiObjectNotFoundException {
-        // on null returning empty string
-        return element.getText() != null ? element.getText() : "";
+        return ElementHelpers.getText(element);
     }
 
     @Override
