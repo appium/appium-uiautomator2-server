@@ -221,25 +221,12 @@ public abstract class ElementHelpers {
                 Arrays.toString(Attribute.exposableAliases())), attributeName);
     }
 
-    private static boolean isToastElement(AccessibilityNodeInfo nodeInfo) {
-        // Using Objects.equals to handle the case when class name can be null
-        return Objects.equals(nodeInfo.getClassName(), Toast.class.getName());
-    }
-
     @Nullable
     public static String getText(@Nullable AccessibilityNodeInfo nodeInfo) {
         if (nodeInfo == null) {
             return null;
         }
 
-        /*
-         * If the given element is TOAST element, we can't perform any operation on {@link UiObject2} as it
-         * not formed with valid AccessibilityNodeInfo, Instead we are using custom created AccessibilityNodeInfo of
-         * TOAST Element to retrieve the Text.
-         */
-        if (isToastElement(nodeInfo)) {
-            return nodeInfo.getText().toString();
-        }
         if (nodeInfo.getRangeInfo() != null) {
             return Float.toString(nodeInfo.getRangeInfo().getCurrent());
         }
@@ -250,8 +237,19 @@ public abstract class ElementHelpers {
     @Nullable
     public static String getText(Object element) throws UiObjectNotFoundException {
         if (element instanceof UiObject2) {
-            AccessibilityNodeInfo nodeInfo =  AccessibilityNodeInfoGetter.fromUiObject(element);
-            return getText(nodeInfo);
+            /*
+             * If the given element is TOAST element, we can't perform any operation on {@link UiObject2} as it
+             * not formed with valid AccessibilityNodeInfo, Instead we are using custom created AccessibilityNodeInfo of
+             * TOAST Element to retrieve the Text.
+             */
+            AccessibilityNodeInfo nodeInfo = (AccessibilityNodeInfo) getField(UiObject2.class,
+                    "mCachedNode", element);
+            if (nodeInfo != null && Objects.equals(nodeInfo.getClassName(), Toast.class.getName())) {
+                CharSequence text = nodeInfo.getText();
+                return text == null ? null : text.toString();
+            }
+
+            return getText(AccessibilityNodeInfoGetter.fromUiObject(element));
         }
         return ((UiObject) element).getText();
     }
