@@ -104,7 +104,7 @@ public class AccessibilityNodeInfoDumper {
         return asXmlDocument(null, null);
     }
 
-    public static Document asXmlDocument(@Nullable Object root,
+    public static Document asXmlDocument(@Nullable AccessibilityNodeInfo root,
                                          @Nullable SparseArray<UiElement<?, ?>> uiElementsMapping) {
         final long startTime = SystemClock.uptimeMillis();
         final Document document;
@@ -118,16 +118,10 @@ public class AccessibilityNodeInfoDumper {
         if (uiElementsMapping == null) {
             uiElementsMapping = new SparseArray<>();
         }
-
-        final UiElement<?, ?> xpathRoot;
-        if (root instanceof UiElement) {
-            xpathRoot = (UiElement<?, ?>) root;
-        } else if (root instanceof AccessibilityNodeInfo) {
-            xpathRoot = UiAutomationElement.rebuildForNewRoot((AccessibilityNodeInfo) root, null);
-        } else {
-            xpathRoot = UiAutomationElement.rebuildForNewRoot(currentActiveWindowRoot(),
-                    NotificationListener.getInstance().getToastMessage());
-        }
+        final UiElement<?, ?> xpathRoot = root == null
+                ? UiAutomationElement.rebuildForNewRoot(currentActiveWindowRoot(), NotificationListener
+                .getInstance().getToastMessage())
+                : UiAutomationElement.rebuildForNewRoot(root, null);
         final Element domNode = toDOMElement(xpathRoot, document, uiElementsMapping, 0);
         if (root == null) {
             alterDisplayInfo(domNode);
