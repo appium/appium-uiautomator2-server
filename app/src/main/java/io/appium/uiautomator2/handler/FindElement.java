@@ -93,7 +93,10 @@ public class FindElement extends SafeRequestHandler {
     @Nullable
     private Object findElement(By by) throws ClassNotFoundException, UiAutomator2Exception,
             UiObjectNotFoundException {
-        refreshRootAXNode();
+        if (!(by instanceof By.ByXPath)) {
+            // The accessibility is refreshed when xml page source is built
+            refreshRootAXNode();
+        }
 
         if (by instanceof ById) {
             String locator = rewriteIdLocator((ById) by);

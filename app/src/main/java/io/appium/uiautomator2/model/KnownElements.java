@@ -83,7 +83,7 @@ public class KnownElements {
                 }
                 if (ui2Object == null) {
                     throw new StaleElementReferenceException(String.format(
-                            "The element '%s' does not exist in DOM anymore", id));
+                            "The element '%s' does not exist in DOM anymore", by));
                 }
                 AndroidElement androidElement = getAndroidElement(id, ui2Object, result.getBy());
                 cache.put(androidElement.getId(), androidElement);

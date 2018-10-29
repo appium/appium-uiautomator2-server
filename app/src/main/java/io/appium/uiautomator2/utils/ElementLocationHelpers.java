@@ -84,7 +84,6 @@ public class ElementLocationHelpers {
 
     public static List<UiSelector> toSelectors(String uiaExpression) throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
-        UiAutomatorParser uiAutomatorParser = new UiAutomatorParser();
-        return uiAutomatorParser.parse(uiaExpression);
+        return new UiAutomatorParser().parse(uiaExpression);
     }
 }
