@@ -73,5 +73,5 @@ public class ActionsConstants {
     public static final String ACTION_ITEM_X_KEY = "x";
     public static final String ACTION_ITEM_Y_KEY = "y";
 
-    public static final int MOTION_EVENT_INJECTION_DELAY_MS = 5;
+    public static final int EVENT_INJECTION_DELAY_MS = 5;
 }

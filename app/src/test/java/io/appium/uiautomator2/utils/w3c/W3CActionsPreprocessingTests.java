@@ -23,13 +23,14 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.preprocessActions;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class W3CActionsPreprocessingTests {
+    private static final ActionsPreprocessor actionsPreprocessor = new ActionsPreprocessor();
+
     @Test
     public void verifyInvalidActionChainsPreprocessing() throws JSONException {
         final List<String> invalidActions = Arrays.asList(
@@ -129,7 +130,7 @@ public class W3CActionsPreprocessingTests {
         for (final String invalidAction : invalidActions) {
             final JSONArray invalidActionJson = new JSONArray(invalidAction);
             try {
-                preprocessActions(invalidActionJson);
+                actionsPreprocessor.preprocess(invalidActionJson);
                 fail(String.format("'%s' should throw an exception", invalidAction));
             } catch (JSONException | ActionsParseException e) {
                 // expected
@@ -150,7 +151,7 @@ public class W3CActionsPreprocessingTests {
                 "{\"type\": \"pointerMove\", \"duration\": 1000, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 0}]" +
                 "} ]");
-        assertThat(preprocessActions(actionJson).toString(), is(equalTo(actionJson.toString())));
+        assertThat(actionsPreprocessor.preprocess(actionJson).toString(), is(equalTo(actionJson.toString())));
     }
 
     @Test
@@ -175,7 +176,29 @@ public class W3CActionsPreprocessingTests {
                 "{\"type\": \"pointerMove\", \"duration\": 1000, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 0}]" +
                 "} ]");
-        assertThat(preprocessActions(actionJson).toString(), is(equalTo(processedJson.toString())));
+        assertThat(actionsPreprocessor.preprocess(actionJson).toString(), is(equalTo(processedJson.toString())));
+    }
+
+    @Test(expected = ActionsParseException.class)
+    public void verifyChainPreprocessingFailsIfMultiplePointerTypesArePresent() throws JSONException {
+        final JSONArray actionJson = new JSONArray("[ {" +
+                "\"type\": \"pointer\"," +
+                "\"id\": \"finger1\"," +
+                "\"parameters\": {\"pointerType\": \"touch\"}," +
+                "\"actions\": [" +
+                "{\"type\": \"pause\", \"duration\": 500}," +
+                "{\"type\": \"pointerMove\", \"duration\": 1000, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
+                "{\"type\": \"pointerUp\", \"button\": 0}]" +
+                "}, {" +
+                "\"type\": \"pointer\"," +
+                "\"id\": \"finger2\"," +
+                "\"parameters\": {\"pointerType\": \"mouse\"}," +
+                "\"actions\": [" +
+                "{\"type\": \"pause\", \"duration\": 500}," +
+                "{\"type\": \"pointerMove\", \"duration\": 1000, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
+                "{\"type\": \"pointerUp\", \"button\": 0}]" +
+                "} ]");
+        actionsPreprocessor.preprocess(actionJson);
     }
 
 }

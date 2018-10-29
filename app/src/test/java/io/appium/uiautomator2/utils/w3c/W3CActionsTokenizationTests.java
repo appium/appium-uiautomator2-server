@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.utils.w3c;
 
-import android.util.LongSparseArray;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -26,19 +25,16 @@ import org.junit.Test;
 
 import java.util.List;
 
-import io.appium.uiautomator2.utils.w3c.ActionsHelpers.InputEventParams;
-import io.appium.uiautomator2.utils.w3c.ActionsHelpers.KeyInputEventParams;
-import io.appium.uiautomator2.utils.w3c.ActionsHelpers.MotionInputEventParams;
-
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.actionsToInputEventsMapping;
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.preprocessActions;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class W3CActionsTransformationTests {
+@SuppressWarnings("ConstantConditions")
+public class W3CActionsTokenizationTests {
+    private static final ActionsPreprocessor actionsPreprocessor = new ActionsPreprocessor();
+    private static final ActionsTokenizer actionsTokenizer = new ActionsTokenizer();
 
     @Test
     public void verifyValidInputEventsChainIsCompiledForNoneAction() throws JSONException {
@@ -49,16 +45,16 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pause\", \"duration\": 200}," +
                 "{\"type\": \"pause\", \"duration\": 20}]" +
                 "} ]");
-        final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
-                preprocessActions(actionJson)
+        final ActionTokens eventsChain = actionsTokenizer.tokenize(
+                actionsPreprocessor.preprocess(actionJson)
         );
         assertThat(eventsChain.size(), equalTo(2));
 
-        assertThat(eventsChain.keyAt(0), equalTo(200L));
-        assertThat(eventsChain.valueAt(0).size(), equalTo(0));
+        assertThat(eventsChain.timeDeltaAt(0), equalTo(200L));
+        assertThat(eventsChain.eventsAtIndex(0).size(), equalTo(0));
 
-        assertThat(eventsChain.keyAt(1), equalTo(220L));
-        assertThat(eventsChain.valueAt(1).size(), equalTo(0));
+        assertThat(eventsChain.timeDeltaAt(1), equalTo(220L));
+        assertThat(eventsChain.eventsAtIndex(1).size(), equalTo(0));
     }
 
     @Test
@@ -74,11 +70,11 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"keyUp\", \"value\": \"\uE019\"}," +
                 "{\"type\": \"keyUp\", \"value\": \"\uE009\"}]" +
                 "} ]");
-        final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
-                preprocessActions(actionJson)
+        final ActionTokens eventsChain = actionsTokenizer.tokenize(
+                actionsPreprocessor.preprocess(actionJson)
         );
         assertThat(eventsChain.size(), equalTo(1));
-        final List<InputEventParams> generatedParams = eventsChain.valueAt(0);
+        final List<InputEventParams> generatedParams = eventsChain.eventsAtIndex(0);
         assertThat(generatedParams.size(), equalTo(4));
 
         for (final InputEventParams params : generatedParams) {
@@ -113,12 +109,12 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pause\", \"duration\": 500}," +
                 "{\"type\": \"keyUp\", \"value\": \"A\"}]" +
                 "} ]");
-        final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
-                preprocessActions(actionJson)
+        final ActionTokens eventsChain = actionsTokenizer.tokenize(
+                actionsPreprocessor.preprocess(actionJson)
         );
         assertThat(eventsChain.size(), equalTo(2));
 
-        final List<InputEventParams> paramSet1 = eventsChain.valueAt(0);
+        final List<InputEventParams> paramSet1 = eventsChain.eventsAtIndex(0);
         assertThat(paramSet1.size(), equalTo(1));
         final KeyInputEventParams downParams = (KeyInputEventParams) paramSet1.get(0);
         assertThat(downParams.startDelta, equalTo(0L));
@@ -126,8 +122,8 @@ public class W3CActionsTransformationTests {
         assertThat(downParams.keyCode, equalTo(65));
 
 
-        assertThat(eventsChain.keyAt(1), equalTo(500L));
-        final List<InputEventParams> paramSet2 = eventsChain.valueAt(1);
+        assertThat(eventsChain.timeDeltaAt(1), equalTo(500L));
+        final List<InputEventParams> paramSet2 = eventsChain.eventsAtIndex(1);
         assertThat(paramSet2.size(), equalTo(1));
         final KeyInputEventParams upParams = (KeyInputEventParams) paramSet2.get(0);
         assertThat(upParams.startDelta, equalTo(0L));
@@ -156,13 +152,13 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pause\", \"duration\": 20}," +
                 "{\"type\": \"keyUp\", \"value\": \"\u2000\"}]" +
                 "} ]");
-        final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
-                preprocessActions(actionJson)
+        final ActionTokens eventsChain = actionsTokenizer.tokenize(
+                actionsPreprocessor.preprocess(actionJson)
         );
         assertThat(eventsChain.size(), equalTo(5));
 
-        final List<InputEventParams> paramSet1 = eventsChain.valueAt(0);
-        assertThat(eventsChain.keyAt(0), equalTo(0L));
+        final List<InputEventParams> paramSet1 = eventsChain.eventsAtIndex(0);
+        assertThat(eventsChain.timeDeltaAt(0), equalTo(0L));
         assertThat(paramSet1.size(), equalTo(1));
 
         final MotionInputEventParams downParams = (MotionInputEventParams) paramSet1.get(0);
@@ -174,11 +170,16 @@ public class W3CActionsTransformationTests {
         assertThat(downParams.properties.id, is(equalTo(0)));
         assertThat(downParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet2 = eventsChain.valueAt(1);
-        assertThat(eventsChain.keyAt(1), equalTo(10L));
+        final List<InputEventParams> paramSet2 = eventsChain.eventsAtIndex(1);
+        assertThat(eventsChain.timeDeltaAt(1), equalTo(10L));
         assertThat(paramSet2.size(), equalTo(2));
 
-        final MotionInputEventParams move1Params = (MotionInputEventParams) paramSet2.get(0);
+        final KeyInputEventParams keyDownParams = (KeyInputEventParams) paramSet2.get(0);
+        assertThat(keyDownParams.startDelta, equalTo(10L));
+        assertThat(keyDownParams.keyAction, equalTo(KeyEvent.ACTION_DOWN));
+        assertThat(keyDownParams.keyCode, equalTo(0x2000));
+
+        final MotionInputEventParams move1Params = (MotionInputEventParams) paramSet2.get(1);
         assertThat(move1Params.startDelta, equalTo(0L));
         assertThat(move1Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
         assertThat(move1Params.button, equalTo(0));
@@ -187,26 +188,21 @@ public class W3CActionsTransformationTests {
         assertThat(move1Params.properties.id, is(equalTo(0)));
         assertThat(move1Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final KeyInputEventParams keyDownParams = (KeyInputEventParams) paramSet2.get(1);
-        assertThat(keyDownParams.startDelta, equalTo(10L));
-        assertThat(keyDownParams.keyAction, equalTo(KeyEvent.ACTION_DOWN));
-        assertThat(keyDownParams.keyCode, equalTo(0x2000));
-
-        final List<InputEventParams> paramSet3 = eventsChain.valueAt(2);
-        assertThat(eventsChain.keyAt(2), equalTo(15L));
+        final List<InputEventParams> paramSet3 = eventsChain.eventsAtIndex(2);
+        assertThat(eventsChain.timeDeltaAt(2), equalTo(15L));
         assertThat(paramSet3.size(), equalTo(1));
 
         final MotionInputEventParams move2Params = (MotionInputEventParams) paramSet3.get(0);
         assertThat(move2Params.startDelta, equalTo(0L));
         assertThat(move2Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
         assertThat(move2Params.button, equalTo(0));
-        assertEquals(move2Params.coordinates.x, 75.0, Math.ulp(1.0));
+        assertEquals(move2Params.coordinates.x, 50.0, Math.ulp(1.0));
         assertEquals(move2Params.coordinates.y, 100.0, Math.ulp(1.0));
         assertThat(move2Params.properties.id, is(equalTo(0)));
         assertThat(move2Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet4 = eventsChain.valueAt(3);
-        assertThat(eventsChain.keyAt(3), equalTo(20L));
+        final List<InputEventParams> paramSet4 = eventsChain.eventsAtIndex(3);
+        assertThat(eventsChain.timeDeltaAt(3), equalTo(20L));
         assertThat(paramSet4.size(), equalTo(1));
 
         final MotionInputEventParams upParams = (MotionInputEventParams) paramSet4.get(0);
@@ -218,8 +214,8 @@ public class W3CActionsTransformationTests {
         assertThat(upParams.properties.id, is(equalTo(0)));
         assertThat(upParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet5 = eventsChain.valueAt(4);
-        assertThat(eventsChain.keyAt(4), equalTo(30L));
+        final List<InputEventParams> paramSet5 = eventsChain.eventsAtIndex(4);
+        assertThat(eventsChain.timeDeltaAt(4), equalTo(30L));
         assertThat(paramSet5.size(), equalTo(1));
 
         final KeyInputEventParams keyUpParams = (KeyInputEventParams) paramSet5.get(0);
@@ -237,17 +233,17 @@ public class W3CActionsTransformationTests {
                 "\"actions\": [" +
                 "{\"type\": \"pointerMove\", \"duration\": 0, \"x\": 100, \"y\": 100}," +
                 "{\"type\": \"pointerDown\"}," +
-                "{\"type\": \"pause\", \"duration\": 10}," +
+                "{\"type\": \"pause\", \"duration\": 7}," +
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\"}]" +
                 "} ]");
-        final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
-                preprocessActions(actionJson)
+        final ActionTokens eventsChain = actionsTokenizer.tokenize(
+                actionsPreprocessor.preprocess(actionJson)
         );
         assertThat(eventsChain.size(), equalTo(4));
 
-        final List<InputEventParams> paramSet1 = eventsChain.valueAt(0);
-        assertThat(eventsChain.keyAt(0), equalTo(0L));
+        final List<InputEventParams> paramSet1 = eventsChain.eventsAtIndex(0);
+        assertThat(eventsChain.timeDeltaAt(0), equalTo(0L));
         assertThat(paramSet1.size(), equalTo(1));
 
         final MotionInputEventParams downParams = (MotionInputEventParams) paramSet1.get(0);
@@ -259,8 +255,8 @@ public class W3CActionsTransformationTests {
         assertThat(downParams.properties.id, is(equalTo(0)));
         assertThat(downParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet2 = eventsChain.valueAt(1);
-        assertThat(eventsChain.keyAt(1), equalTo(10L));
+        final List<InputEventParams> paramSet2 = eventsChain.eventsAtIndex(1);
+        assertThat(eventsChain.timeDeltaAt(1), equalTo(10L));
         assertThat(paramSet2.size(), equalTo(1));
 
         final MotionInputEventParams move1Params = (MotionInputEventParams) paramSet2.get(0);
@@ -272,21 +268,21 @@ public class W3CActionsTransformationTests {
         assertThat(move1Params.properties.id, is(equalTo(0)));
         assertThat(move1Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet3 = eventsChain.valueAt(2);
-        assertThat(eventsChain.keyAt(2), equalTo(15L));
+        final List<InputEventParams> paramSet3 = eventsChain.eventsAtIndex(2);
+        assertThat(eventsChain.timeDeltaAt(2), equalTo(15L));
         assertThat(paramSet3.size(), equalTo(1));
 
         final MotionInputEventParams move2Params = (MotionInputEventParams) paramSet3.get(0);
         assertThat(move2Params.startDelta, equalTo(0L));
         assertThat(move2Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
         assertThat(move2Params.button, equalTo(0));
-        assertEquals(move2Params.coordinates.x, 75.0, Math.ulp(1.0));
+        assertEquals(move2Params.coordinates.x, 50.0, Math.ulp(1.0));
         assertEquals(move2Params.coordinates.y, 100.0, Math.ulp(1.0));
         assertThat(move2Params.properties.id, is(equalTo(0)));
         assertThat(move2Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet4 = eventsChain.valueAt(3);
-        assertThat(eventsChain.keyAt(3), equalTo(20L));
+        final List<InputEventParams> paramSet4 = eventsChain.eventsAtIndex(3);
+        assertThat(eventsChain.timeDeltaAt(3), equalTo(20L));
         assertThat(paramSet4.size(), equalTo(1));
 
         final MotionInputEventParams upParams = (MotionInputEventParams) paramSet4.get(0);
@@ -297,6 +293,80 @@ public class W3CActionsTransformationTests {
         assertEquals(upParams.coordinates.y, 100.0, Math.ulp(1.0));
         assertThat(upParams.properties.id, is(equalTo(0)));
         assertThat(upParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
+    }
+
+    @Test
+    public void verifyValidInputEventsChainIsCompiledForDoubleTapGesture() throws JSONException {
+        final JSONArray actionJson = new JSONArray("[ {" +
+                "\"type\": \"pointer\"," +
+                "\"id\": \"finger1\"," +
+                "\"parameters\": {\"pointerType\": \"touch\"}," +
+                "\"actions\": [" +
+                "{\"type\": \"pointerMove\", \"duration\": 0, \"x\": 100, \"y\": 100}," +
+                "{\"type\": \"pointerDown\"}," +
+                "{\"type\": \"pause\", \"duration\": 100}," +
+                "{\"type\": \"pointerUp\"}," +
+                "{\"type\": \"pause\", \"duration\": 40}," +
+                "{\"type\": \"pointerDown\"}," +
+                "{\"type\": \"pause\", \"duration\": 100}," +
+                "{\"type\": \"pointerUp\"}]" +
+                "} ]");
+        final ActionTokens eventsChain = actionsTokenizer.tokenize(
+                actionsPreprocessor.preprocess(actionJson)
+        );
+        assertThat(eventsChain.size(), equalTo(4));
+
+        final List<InputEventParams> paramSet1 = eventsChain.eventsAtIndex(0);
+        assertThat(eventsChain.timeDeltaAt(0), equalTo(0L));
+        assertThat(paramSet1.size(), equalTo(1));
+
+        final MotionInputEventParams down1Params = (MotionInputEventParams) paramSet1.get(0);
+        assertThat(down1Params.startDelta, equalTo(0L));
+        assertThat(down1Params.actionCode, equalTo(MotionEvent.ACTION_DOWN));
+        assertThat(down1Params.button, equalTo(0));
+        assertEquals(down1Params.coordinates.x, 100.0, Math.ulp(1.0));
+        assertEquals(down1Params.coordinates.y, 100.0, Math.ulp(1.0));
+        assertThat(down1Params.properties.id, is(equalTo(0)));
+        assertThat(down1Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
+
+        final List<InputEventParams> paramSet2 = eventsChain.eventsAtIndex(1);
+        assertThat(eventsChain.timeDeltaAt(1), equalTo(100L));
+        assertThat(paramSet2.size(), equalTo(1));
+
+        final MotionInputEventParams up1Params = (MotionInputEventParams) paramSet2.get(0);
+        assertThat(up1Params.startDelta, equalTo(0L));
+        assertThat(up1Params.actionCode, equalTo(MotionEvent.ACTION_UP));
+        assertThat(up1Params.button, equalTo(0));
+        assertEquals(up1Params.coordinates.x, 100.0, Math.ulp(1.0));
+        assertEquals(up1Params.coordinates.y, 100.0, Math.ulp(1.0));
+        assertThat(up1Params.properties.id, is(equalTo(0)));
+        assertThat(up1Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
+
+        final List<InputEventParams> paramSet3 = eventsChain.eventsAtIndex(2);
+        assertThat(eventsChain.timeDeltaAt(2), equalTo(140L));
+        assertThat(paramSet3.size(), equalTo(1));
+
+        final MotionInputEventParams down2Params = (MotionInputEventParams) paramSet3.get(0);
+        assertThat(down2Params.startDelta, equalTo(140L));
+        assertThat(down2Params.actionCode, equalTo(MotionEvent.ACTION_DOWN));
+        assertThat(down2Params.button, equalTo(0));
+        assertEquals(down2Params.coordinates.x, 100.0, Math.ulp(1.0));
+        assertEquals(down2Params.coordinates.y, 100.0, Math.ulp(1.0));
+        assertThat(down2Params.properties.id, is(equalTo(0)));
+        assertThat(down2Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
+
+        final List<InputEventParams> paramSet4 = eventsChain.eventsAtIndex(3);
+        assertThat(eventsChain.timeDeltaAt(3), equalTo(240L));
+        assertThat(paramSet4.size(), equalTo(1));
+
+        final MotionInputEventParams up2Params = (MotionInputEventParams) paramSet4.get(0);
+        assertThat(up2Params.startDelta, equalTo(140L));
+        assertThat(up2Params.actionCode, equalTo(MotionEvent.ACTION_UP));
+        assertThat(up2Params.button, equalTo(0));
+        assertEquals(up2Params.coordinates.x, 100.0, Math.ulp(1.0));
+        assertEquals(up2Params.coordinates.y, 100.0, Math.ulp(1.0));
+        assertThat(up2Params.properties.id, is(equalTo(0)));
+        assertThat(up2Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
     }
 
     @Test
@@ -313,14 +383,14 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"x\": 0, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 2}]" +
                 "} ]");
-        final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
-                preprocessActions(actionJson)
+        final ActionTokens eventsChain = actionsTokenizer.tokenize(
+                actionsPreprocessor.preprocess(actionJson)
         );
         assertThat(eventsChain.size(), equalTo(7));
 
-        final List<InputEventParams> paramSet1 = eventsChain.valueAt(0);
-        assertThat(eventsChain.keyAt(0), equalTo(0L));
-        assertThat(paramSet1.size(), equalTo(2));
+        final List<InputEventParams> paramSet1 = eventsChain.eventsAtIndex(0);
+        assertThat(eventsChain.timeDeltaAt(0), equalTo(0L));
+        assertThat(paramSet1.size(), equalTo(1));
 
         final MotionInputEventParams downParams = (MotionInputEventParams) paramSet1.get(0);
         assertThat(downParams.startDelta, equalTo(0L));
@@ -329,85 +399,75 @@ public class W3CActionsTransformationTests {
         assertEquals(downParams.coordinates.x, 100.0, Math.ulp(1.0));
         assertEquals(downParams.coordinates.y, 100.0, Math.ulp(1.0));
         assertThat(downParams.properties.id, is(equalTo(0)));
-        assertThat(downParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
+        assertThat(downParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final MotionInputEventParams move1Params = (MotionInputEventParams) paramSet1.get(1);
+        final List<InputEventParams> paramSet2 = eventsChain.eventsAtIndex(1);
+        assertThat(eventsChain.timeDeltaAt(1), equalTo(5L));
+        assertThat(paramSet2.size(), equalTo(1));
+
+        final MotionInputEventParams move1Params = (MotionInputEventParams) paramSet2.get(0);
         assertThat(move1Params.startDelta, equalTo(0L));
         assertThat(move1Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
         assertThat(move1Params.button, equalTo(MotionEvent.BUTTON_SECONDARY));
-        assertEquals(move1Params.coordinates.x, 100.0, Math.ulp(1.0));
+        assertEquals(move1Params.coordinates.x, 50.0, Math.ulp(1.0));
         assertEquals(move1Params.coordinates.y, 100.0, Math.ulp(1.0));
         assertThat(move1Params.properties.id, is(equalTo(0)));
-        assertThat(move1Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
+        assertThat(move1Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet2 = eventsChain.valueAt(1);
-        assertThat(eventsChain.keyAt(1), equalTo(5L));
-        assertThat(paramSet2.size(), equalTo(1));
+        final List<InputEventParams> paramSet3 = eventsChain.eventsAtIndex(2);
+        assertThat(eventsChain.timeDeltaAt(2), equalTo(10L));
 
-        final MotionInputEventParams move2Params = (MotionInputEventParams) paramSet2.get(0);
+        final MotionInputEventParams move2Params = (MotionInputEventParams) paramSet3.get(0);
         assertThat(move2Params.startDelta, equalTo(0L));
         assertThat(move2Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
         assertThat(move2Params.button, equalTo(MotionEvent.BUTTON_SECONDARY));
-        assertEquals(move2Params.coordinates.x, 75.0, Math.ulp(1.0));
+        assertEquals(move2Params.coordinates.x, 50.0, Math.ulp(1.0));
         assertEquals(move2Params.coordinates.y, 100.0, Math.ulp(1.0));
         assertThat(move2Params.properties.id, is(equalTo(0)));
-        assertThat(move2Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
+        assertThat(move2Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet3 = eventsChain.valueAt(2);
-        assertThat(eventsChain.keyAt(2), equalTo(10L));
+        final List<InputEventParams> paramSet4 = eventsChain.eventsAtIndex(3);
+        assertThat(eventsChain.timeDeltaAt(3), equalTo(15L));
         assertThat(paramSet3.size(), equalTo(1));
 
-        final MotionInputEventParams move3Params = (MotionInputEventParams) paramSet3.get(0);
+        final MotionInputEventParams move3Params = (MotionInputEventParams) paramSet4.get(0);
         assertThat(move3Params.startDelta, equalTo(0L));
         assertThat(move3Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
         assertThat(move3Params.button, equalTo(MotionEvent.BUTTON_SECONDARY));
-        assertEquals(move3Params.coordinates.x, 50.0, Math.ulp(1.0));
+        assertEquals(move3Params.coordinates.x, 150.0, Math.ulp(1.0));
         assertEquals(move3Params.coordinates.y, 100.0, Math.ulp(1.0));
         assertThat(move3Params.properties.id, is(equalTo(0)));
-        assertThat(move3Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
+        assertThat(move3Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet4 = eventsChain.valueAt(3);
-        assertThat(eventsChain.keyAt(3), equalTo(15L));
+        final List<InputEventParams> paramSet5 = eventsChain.eventsAtIndex(4);
+        assertThat(eventsChain.timeDeltaAt(4), equalTo(20L));
         assertThat(paramSet4.size(), equalTo(1));
 
-        final MotionInputEventParams move4Params = (MotionInputEventParams) paramSet4.get(0);
+        final MotionInputEventParams move4Params = (MotionInputEventParams) paramSet5.get(0);
         assertThat(move4Params.startDelta, equalTo(0L));
         assertThat(move4Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
         assertThat(move4Params.button, equalTo(MotionEvent.BUTTON_SECONDARY));
-        assertEquals(move4Params.coordinates.x, 100.0, Math.ulp(1.0));
+        assertEquals(move4Params.coordinates.x, 150.0, Math.ulp(1.0));
         assertEquals(move4Params.coordinates.y, 100.0, Math.ulp(1.0));
         assertThat(move4Params.properties.id, is(equalTo(0)));
-        assertThat(move4Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
+        assertThat(move4Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet5 = eventsChain.valueAt(4);
-        assertThat(eventsChain.keyAt(4), equalTo(20L));
+        final List<InputEventParams> paramSet6 = eventsChain.eventsAtIndex(5);
+        assertThat(eventsChain.timeDeltaAt(5), equalTo(25L));
         assertThat(paramSet5.size(), equalTo(1));
 
-        final MotionInputEventParams move5Params = (MotionInputEventParams) paramSet5.get(0);
+        final MotionInputEventParams move5Params = (MotionInputEventParams) paramSet6.get(0);
         assertThat(move5Params.startDelta, equalTo(0L));
         assertThat(move5Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
         assertThat(move5Params.button, equalTo(MotionEvent.BUTTON_SECONDARY));
-        assertEquals(move5Params.coordinates.x, 150.0, Math.ulp(1.0));
-        assertEquals(move5Params.coordinates.y, 100.0, Math.ulp(1.0));
+        assertEquals(move5Params.coordinates.x, 0.0, Math.ulp(1.0));
+        assertEquals(move5Params.coordinates.y, 0.0, Math.ulp(1.0));
         assertThat(move5Params.properties.id, is(equalTo(0)));
-        assertThat(move5Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
+        assertThat(move5Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet6 = eventsChain.valueAt(5);
-        assertThat(eventsChain.keyAt(5), equalTo(25L));
+        final List<InputEventParams> paramSet7 = eventsChain.eventsAtIndex(6);
+        assertThat(eventsChain.timeDeltaAt(6), equalTo(30L));
         assertThat(paramSet6.size(), equalTo(1));
-
-        final MotionInputEventParams move6Params = (MotionInputEventParams) paramSet6.get(0);
-        assertThat(move6Params.startDelta, equalTo(0L));
-        assertThat(move6Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
-        assertThat(move6Params.button, equalTo(MotionEvent.BUTTON_SECONDARY));
-        assertEquals(move6Params.coordinates.x, 75.0, Math.ulp(1.0));
-        assertEquals(move6Params.coordinates.y, 50.0, Math.ulp(1.0));
-        assertThat(move6Params.properties.id, is(equalTo(0)));
-        assertThat(move6Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
-
-        final List<InputEventParams> paramSet7 = eventsChain.valueAt(6);
-        assertThat(eventsChain.keyAt(6), equalTo(30L));
-        assertThat(paramSet7.size(), equalTo(1));
 
         final MotionInputEventParams upParams = (MotionInputEventParams) paramSet7.get(0);
         assertThat(upParams.startDelta, equalTo(0L));
@@ -416,7 +476,7 @@ public class W3CActionsTransformationTests {
         assertEquals(upParams.coordinates.x, 0.0, Math.ulp(1.0));
         assertEquals(upParams.coordinates.y, 0.0, Math.ulp(1.0));
         assertThat(upParams.properties.id, is(equalTo(0)));
-        assertThat(upParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
+        assertThat(upParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
     }
 
     @Test
@@ -424,19 +484,20 @@ public class W3CActionsTransformationTests {
             throws JSONException {
         final JSONArray actionJson = new JSONArray("[ {" +
                 "\"type\": \"pointer\"," +
+                "\"parameters\": {\"pointerType\": \"mouse\"}," +
                 "\"id\": \"mouse1\"," +
                 "\"actions\": [" +
                 "{\"type\": \"pointerMove\", \"duration\": 0, \"x\": 100, \"y\": 100}," +
-                "{\"type\": \"pointerMove\", \"duration\": 10, \"x\": 0, \"y\": 0}]" +
+                "{\"type\": \"pointerMove\", \"duration\": 20, \"x\": 0, \"y\": 0}]" +
                 "} ]");
-        final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
-                preprocessActions(actionJson)
+        final ActionTokens eventsChain = actionsTokenizer.tokenize(
+                actionsPreprocessor.preprocess(actionJson)
         );
-        assertThat(eventsChain.size(), equalTo(3));
+        assertThat(eventsChain.size(), equalTo(4));
 
-        final List<InputEventParams> paramSet1 = eventsChain.valueAt(0);
-        assertThat(eventsChain.keyAt(0), equalTo(0L));
-        assertThat(paramSet1.size(), equalTo(2));
+        final List<InputEventParams> paramSet1 = eventsChain.eventsAtIndex(0);
+        assertThat(eventsChain.timeDeltaAt(0), equalTo(0L));
+        assertThat(paramSet1.size(), equalTo(1));
 
         final MotionInputEventParams enterParams = (MotionInputEventParams) paramSet1.get(0);
         assertThat(enterParams.startDelta, equalTo(0L));
@@ -447,33 +508,37 @@ public class W3CActionsTransformationTests {
         assertThat(enterParams.properties.id, is(equalTo(0)));
         assertThat(enterParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
 
-        final MotionInputEventParams move1Params = (MotionInputEventParams) paramSet1.get(1);
+        final List<InputEventParams> paramSet2 = eventsChain.eventsAtIndex(1);
+        assertThat(eventsChain.timeDeltaAt(1), equalTo(5L));
+        assertThat(paramSet2.size(), equalTo(1));
+
+        final MotionInputEventParams move1Params = (MotionInputEventParams) paramSet2.get(0);
         assertThat(move1Params.startDelta, equalTo(0L));
         assertThat(move1Params.actionCode, equalTo(MotionEvent.ACTION_HOVER_MOVE));
         assertThat(move1Params.button, equalTo(0));
-        assertEquals(move1Params.coordinates.x, 100.0, Math.ulp(1.0));
-        assertEquals(move1Params.coordinates.y, 100.0, Math.ulp(1.0));
+        assertEquals(move1Params.coordinates.x, 50.0, Math.ulp(1.0));
+        assertEquals(move1Params.coordinates.y, 50.0, Math.ulp(1.0));
         assertThat(move1Params.properties.id, is(equalTo(0)));
         assertThat(move1Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
 
-        final List<InputEventParams> paramSet2 = eventsChain.valueAt(1);
-        assertThat(eventsChain.keyAt(1), equalTo(5L));
-        assertThat(paramSet2.size(), equalTo(1));
+        final List<InputEventParams> paramSet3 = eventsChain.eventsAtIndex(2);
+        assertThat(eventsChain.timeDeltaAt(2), equalTo(10L));
+        assertThat(paramSet3.size(), equalTo(1));
 
-        final MotionInputEventParams move2Params = (MotionInputEventParams) paramSet2.get(0);
+        final MotionInputEventParams move2Params = (MotionInputEventParams) paramSet3.get(0);
         assertThat(move2Params.startDelta, equalTo(0L));
         assertThat(move2Params.actionCode, equalTo(MotionEvent.ACTION_HOVER_MOVE));
         assertThat(move2Params.button, equalTo(0));
-        assertEquals(move2Params.coordinates.x, 50.0, Math.ulp(1.0));
-        assertEquals(move2Params.coordinates.y, 50.0, Math.ulp(1.0));
+        assertEquals(move2Params.coordinates.x, 25.0, Math.ulp(1.0));
+        assertEquals(move2Params.coordinates.y, 25.0, Math.ulp(1.0));
         assertThat(move2Params.properties.id, is(equalTo(0)));
         assertThat(move2Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_MOUSE));
 
-        final List<InputEventParams> paramSet3 = eventsChain.valueAt(2);
-        assertThat(eventsChain.keyAt(2), equalTo(10L));
-        assertThat(paramSet3.size(), equalTo(1));
+        final List<InputEventParams> paramSet4 = eventsChain.eventsAtIndex(3);
+        assertThat(eventsChain.timeDeltaAt(3), equalTo(15L));
+        assertThat(paramSet4.size(), equalTo(1));
 
-        final MotionInputEventParams exitParams = (MotionInputEventParams) paramSet3.get(0);
+        final MotionInputEventParams exitParams = (MotionInputEventParams) paramSet4.get(0);
         assertThat(exitParams.startDelta, equalTo(0L));
         assertThat(exitParams.actionCode, equalTo(MotionEvent.ACTION_HOVER_EXIT));
         assertThat(exitParams.button, equalTo(0));
@@ -506,13 +571,13 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"origin\": \"pointer\", \"x\": -50, \"y\": -50}," +
                 "{\"type\": \"pointerUp\"}]" +
                 "} ]");
-        final LongSparseArray<List<InputEventParams>> eventsChain = actionsToInputEventsMapping(
-                preprocessActions(actionJson)
+        final ActionTokens eventsChain = actionsTokenizer.tokenize(
+                actionsPreprocessor.preprocess(actionJson)
         );
         assertThat(eventsChain.size(), equalTo(4));
 
-        final List<InputEventParams> paramSet1 = eventsChain.valueAt(0);
-        assertThat(eventsChain.keyAt(0), equalTo(0L));
+        final List<InputEventParams> paramSet1 = eventsChain.eventsAtIndex(0);
+        assertThat(eventsChain.timeDeltaAt(0), equalTo(0L));
         assertThat(paramSet1.size(), equalTo(2));
 
         final MotionInputEventParams down1Params = (MotionInputEventParams) paramSet1.get(0);
@@ -533,8 +598,8 @@ public class W3CActionsTransformationTests {
         assertThat(down2Params.properties.id, is(equalTo(1)));
         assertThat(down2Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet2 = eventsChain.valueAt(1);
-        assertThat(eventsChain.keyAt(1), equalTo(10L));
+        final List<InputEventParams> paramSet2 = eventsChain.eventsAtIndex(1);
+        assertThat(eventsChain.timeDeltaAt(1), equalTo(10L));
         assertThat(paramSet2.size(), equalTo(2));
 
         final MotionInputEventParams move11Params = (MotionInputEventParams) paramSet2.get(0);
@@ -555,16 +620,16 @@ public class W3CActionsTransformationTests {
         assertThat(move12Params.properties.id, is(equalTo(1)));
         assertThat(move12Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet3 = eventsChain.valueAt(2);
-        assertThat(eventsChain.keyAt(2), equalTo(15L));
+        final List<InputEventParams> paramSet3 = eventsChain.eventsAtIndex(2);
+        assertThat(eventsChain.timeDeltaAt(2), equalTo(15L));
         assertThat(paramSet3.size(), equalTo(2));
 
         final MotionInputEventParams move21Params = (MotionInputEventParams) paramSet3.get(0);
         assertThat(move21Params.startDelta, equalTo(0L));
         assertThat(move21Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
         assertThat(move21Params.button, equalTo(0));
-        assertEquals(move21Params.coordinates.x, 25.0, Math.ulp(1.0));
-        assertEquals(move21Params.coordinates.y, 25.0, Math.ulp(1.0));
+        assertEquals(move21Params.coordinates.x, 50.0, Math.ulp(1.0));
+        assertEquals(move21Params.coordinates.y, 50.0, Math.ulp(1.0));
         assertThat(move21Params.properties.id, is(equalTo(0)));
         assertThat(move21Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
@@ -572,13 +637,13 @@ public class W3CActionsTransformationTests {
         assertThat(move22Params.startDelta, equalTo(0L));
         assertThat(move22Params.actionCode, equalTo(MotionEvent.ACTION_MOVE));
         assertThat(move22Params.button, equalTo(0));
-        assertEquals(move22Params.coordinates.x, 75.0, Math.ulp(1.0));
-        assertEquals(move22Params.coordinates.y, 75.0, Math.ulp(1.0));
+        assertEquals(move22Params.coordinates.x, 50.0, Math.ulp(1.0));
+        assertEquals(move22Params.coordinates.y, 50.0, Math.ulp(1.0));
         assertThat(move22Params.properties.id, is(equalTo(1)));
         assertThat(move22Params.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
 
-        final List<InputEventParams> paramSet4 = eventsChain.valueAt(3);
-        assertThat(eventsChain.keyAt(3), equalTo(20L));
+        final List<InputEventParams> paramSet4 = eventsChain.eventsAtIndex(3);
+        assertThat(eventsChain.timeDeltaAt(3), equalTo(20L));
         assertThat(paramSet4.size(), equalTo(2));
 
         final MotionInputEventParams up1Params = (MotionInputEventParams) paramSet4.get(0);
@@ -611,7 +676,7 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pointerMove\", \"duration\": -1, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsToInputEventsMapping(preprocessActions(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -624,7 +689,7 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsToInputEventsMapping(preprocessActions(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -639,7 +704,7 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsToInputEventsMapping(preprocessActions(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -654,7 +719,7 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"keyUp\", \"value\": \"A\"}," +
                 "{\"type\": \"keyUp\", \"value\": \"\u2000\"}]" +
                 "} ]");
-        actionsToInputEventsMapping(preprocessActions(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -668,7 +733,7 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"keyUp\", \"value\": \"A\"}," +
                 "{\"type\": \"keyUp\", \"value\": \"\u2000\"}]" +
                 "} ]");
-        actionsToInputEventsMapping(preprocessActions(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -682,7 +747,7 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"keyUp\", \"value\": \"A\"}," +
                 "{\"type\": \"keyUp\", \"value\": \"\u2000\"}]" +
                 "} ]");
-        actionsToInputEventsMapping(preprocessActions(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -695,7 +760,7 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pause\", \"duration\": 200}," +
                 "{\"type\": \"bla\", \"duration\": 20}]" +
                 "} ]");
-        actionsToInputEventsMapping(preprocessActions(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -709,7 +774,7 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsToInputEventsMapping(preprocessActions(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -723,6 +788,6 @@ public class W3CActionsTransformationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsToInputEventsMapping(preprocessActions(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
     }
 }

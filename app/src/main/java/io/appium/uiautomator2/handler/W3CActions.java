@@ -16,77 +16,28 @@
 
 package io.appium.uiautomator2.handler;
 
-import android.os.SystemClock;
-import android.util.LongSparseArray;
-import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.MotionEvent.PointerCoords;
-import android.view.MotionEvent.PointerProperties;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
-import io.appium.uiautomator2.utils.w3c.ActionsHelpers;
-import io.appium.uiautomator2.utils.w3c.ActionsHelpers.InputEventParams;
-import io.appium.uiautomator2.utils.w3c.ActionsHelpers.KeyInputEventParams;
-import io.appium.uiautomator2.utils.w3c.ActionsHelpers.MotionInputEventParams;
+import io.appium.uiautomator2.utils.w3c.ActionTokens;
+import io.appium.uiautomator2.utils.w3c.ActionsExecutor;
 import io.appium.uiautomator2.utils.w3c.ActionsParseException;
-import io.appium.uiautomator2.utils.w3c.W3CKeyCode;
-
-import static io.appium.uiautomator2.utils.InteractionUtils.injectEventSync;
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.actionsToInputEventsMapping;
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.getPointerAction;
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.metaKeysToState;
-import static io.appium.uiautomator2.utils.w3c.ActionsHelpers.toolTypeToInputSource;
+import io.appium.uiautomator2.utils.w3c.ActionsPreprocessor;
+import io.appium.uiautomator2.utils.w3c.ActionsTokenizer;
 
 public class W3CActions extends SafeRequestHandler {
-    private static final KeyCharacterMap kcm = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
-
-    private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
-            MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
-    );
+    private static final ActionsPreprocessor actionsPreprocessor = new ActionsPreprocessor();
+    private static final ActionsTokenizer actionsTokenizer = new ActionsTokenizer();
 
     public W3CActions(String mappedUri) {
         super(mappedUri);
-    }
-
-    private static PointerProperties[] filterPointerProperties(
-            final List<MotionInputEventParams> motionEventsParams, final boolean shouldHovering) {
-        final List<PointerProperties> result = new ArrayList<>();
-        for (final MotionInputEventParams eventParams : motionEventsParams) {
-            if (shouldHovering && HOVERING_ACTIONS.contains(eventParams.actionCode)) {
-                result.add(eventParams.properties);
-            } else if (!shouldHovering && !HOVERING_ACTIONS.contains(eventParams.actionCode)) {
-                result.add(eventParams.properties);
-            }
-        }
-        return result.toArray(new PointerProperties[0]);
-    }
-
-    private static PointerCoords[] filterPointerCoordinates(
-            final List<MotionInputEventParams> motionEventsParams, final boolean shouldHovering) {
-        final List<PointerCoords> result = new ArrayList<>();
-        for (final MotionInputEventParams eventParams : motionEventsParams) {
-            if (shouldHovering && HOVERING_ACTIONS.contains(eventParams.actionCode)) {
-                result.add(eventParams.coordinates);
-            } else if (!shouldHovering && !HOVERING_ACTIONS.contains(eventParams.actionCode)) {
-                result.add(eventParams.coordinates);
-            }
-        }
-        return result.toArray(new PointerCoords[0]);
     }
 
     /**
@@ -121,11 +72,12 @@ public class W3CActions extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         try {
-            final JSONArray actions = ActionsHelpers.preprocessActions(
+            final JSONArray actions = actionsPreprocessor.preprocess(
                     (JSONArray) getPayload(request).get("actions")
             );
 
-            if (executeActions(actions)) {
+            final ActionTokens actionTokens = actionsTokenizer.tokenize(actions);
+            if (new ActionsExecutor(actionTokens).execute()) {
                 return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "OK");
             }
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
@@ -135,139 +87,5 @@ public class W3CActions extends SafeRequestHandler {
             Logger.error("Exception while reading JSON: ", e);
             return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
         }
-    }
-
-    private boolean injectKeyEvent(KeyInputEventParams eventParam, long startTimestamp,
-                                   Set<Integer> depressedMetaKeys) {
-        final int keyCode = eventParam.keyCode;
-        if (keyCode <= 0) {
-            depressedMetaKeys.clear();
-            return true;
-        }
-        final int keyAction = eventParam.keyAction;
-
-        final W3CKeyCode w3CKeyCode = W3CKeyCode.fromCodePoint(keyCode);
-        if (w3CKeyCode == null) {
-            final KeyEvent[] events = kcm.getEvents(Character.toChars(keyCode));
-            boolean result = true;
-            for (KeyEvent event : events) {
-                if (event.getAction() == keyAction) {
-                    final KeyEvent keyEvent = new KeyEvent(startTimestamp + eventParam.startDelta,
-                            SystemClock.uptimeMillis(), keyAction, event.getKeyCode(), 0,
-                            event.getMetaState() | metaKeysToState(depressedMetaKeys),
-                            KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0);
-                    result &= injectEventSync(keyEvent);
-                    Logger.debug(String.format("[%s (%s)] Synthesized: %s", startTimestamp, result ? "success" : "fail",
-                            keyEvent.toString()));
-                }
-            }
-            return result;
-        }
-
-        final Integer metaCode = w3CKeyCode.toAndroidMetaKeyCode();
-        if (metaCode != null) {
-            if (keyAction == KeyEvent.ACTION_DOWN) {
-                depressedMetaKeys.add(metaCode);
-            } else {
-                depressedMetaKeys.remove(metaCode);
-            }
-            return true;
-        }
-
-        Logger.debug(String.format("Generating KeyEvent for keyAction '%s', keyCode: '%s', metaState: '%s'",
-                keyAction, keyCode, metaKeysToState(depressedMetaKeys)));
-        return injectEventSync(new KeyEvent(startTimestamp + eventParam.startDelta,
-                SystemClock.uptimeMillis(), keyAction, w3CKeyCode.getAndroidCodePoint(), 0,
-                metaKeysToState(depressedMetaKeys), KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0));
-    }
-
-    private boolean executeActions(final JSONArray actions) throws JSONException {
-        final LongSparseArray<List<InputEventParams>> inputEventsMapping = actionsToInputEventsMapping(actions);
-        final List<Long> allDeltas = new ArrayList<>();
-        for (int i = 0; i < inputEventsMapping.size(); i++) {
-            allDeltas.add(inputEventsMapping.keyAt(i));
-        }
-        Collections.sort(allDeltas);
-
-        long recentTimeDelta = 0;
-        boolean result = true;
-        final Set<Integer> depressedMetaKeys = new HashSet<>();
-        final long startTimestamp = SystemClock.uptimeMillis();
-        for (final Long currentTimeDelta : allDeltas) {
-            final List<InputEventParams> eventParams = inputEventsMapping.get(currentTimeDelta);
-            final LongSparseArray<List<MotionInputEventParams>> motionParamsByInputSource = new LongSparseArray<>();
-            for (final InputEventParams eventParam : eventParams) {
-                if (eventParam instanceof KeyInputEventParams) {
-                    result &= injectKeyEvent((KeyInputEventParams) eventParam, startTimestamp, depressedMetaKeys);
-                } else if (eventParam instanceof MotionInputEventParams) {
-                    final int inputSource = toolTypeToInputSource(((MotionInputEventParams) eventParam).properties.toolType);
-                    final List<MotionInputEventParams> events = (motionParamsByInputSource.get(inputSource) == null)
-                            ? new ArrayList<MotionInputEventParams>()
-                            : motionParamsByInputSource.get(inputSource);
-                    events.add((MotionInputEventParams) eventParam);
-                    motionParamsByInputSource.put(inputSource, events);
-                }
-            }
-
-            for (int i = 0; i < motionParamsByInputSource.size(); i++) {
-                final int inputSource = (int) motionParamsByInputSource.keyAt(i);
-                final List<MotionInputEventParams> motionEventsParams = motionParamsByInputSource.valueAt(i);
-                final PointerProperties[] nonHoveringProps = filterPointerProperties(motionEventsParams, false);
-                final PointerProperties[] hoveringProps = filterPointerProperties(motionEventsParams, true);
-                final PointerCoords[] nonHoveringCoords = filterPointerCoordinates(motionEventsParams, false);
-                final PointerCoords[] hoveringCoords = filterPointerCoordinates(motionEventsParams, true);
-
-                for (final MotionInputEventParams motionEventParams : motionEventsParams) {
-                    final int actionCode = motionEventParams.actionCode;
-                    MotionEvent synthesizedEvent = null;
-                    switch (actionCode) {
-                        case MotionEvent.ACTION_DOWN: {
-                            final int action = nonHoveringProps.length <= 1
-                                    ? MotionEvent.ACTION_DOWN
-                                    : getPointerAction(MotionEvent.ACTION_POINTER_DOWN, nonHoveringProps.length - 1);
-                            synthesizedEvent = MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
-                                    SystemClock.uptimeMillis(), action, nonHoveringProps.length, nonHoveringProps, nonHoveringCoords,
-                                    metaKeysToState(depressedMetaKeys), motionEventParams.button,
-                                    1, 1, 0, 0, inputSource, 0);
-                        }
-                        break;
-                        case MotionEvent.ACTION_UP: {
-                            final int action = nonHoveringProps.length <= 1
-                                    ? MotionEvent.ACTION_UP
-                                    : getPointerAction(MotionEvent.ACTION_POINTER_UP, nonHoveringProps.length - 1);
-                            synthesizedEvent = MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
-                                    SystemClock.uptimeMillis(), action, nonHoveringProps.length,
-                                    nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys), motionEventParams.button,
-                                    1, 1, 0, 0, inputSource, 0);
-                        }
-                        break;
-                        case MotionEvent.ACTION_MOVE: {
-                            synthesizedEvent = MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
-                                    SystemClock.uptimeMillis(), actionCode, nonHoveringProps.length,
-                                    nonHoveringProps, nonHoveringCoords, metaKeysToState(depressedMetaKeys),
-                                    motionEventParams.button, 1, 1, 0, 0, inputSource, 0);
-                        }
-                        break;
-                        case MotionEvent.ACTION_HOVER_ENTER:
-                        case MotionEvent.ACTION_HOVER_EXIT:
-                        case MotionEvent.ACTION_HOVER_MOVE: {
-                            synthesizedEvent = MotionEvent.obtain(startTimestamp + motionEventParams.startDelta,
-                                    SystemClock.uptimeMillis(), actionCode, hoveringProps.length,
-                                    hoveringProps, hoveringCoords, metaKeysToState(depressedMetaKeys),
-                                    0, 1, 1, 0, 0, inputSource, 0);
-                        }
-                        break;
-                    } // switch
-                    if (synthesizedEvent != null) {
-                        result &= injectEventSync(synthesizedEvent);
-                        Logger.debug(String.format("[%s (%s)] Synthesized %s", currentTimeDelta, result ? "success" : "fail",
-                                synthesizedEvent.toString()));
-                    }
-                } // motionEventParams : motionEventsParams
-            } // for i < motionParamsByInputSource.size()
-            SystemClock.sleep(currentTimeDelta - recentTimeDelta);
-            recentTimeDelta = currentTimeDelta;
-        } // currentTimeDelta : allDeltas
-        return result;
     }
 }
