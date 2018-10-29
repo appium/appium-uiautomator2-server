@@ -21,27 +21,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
-import io.appium.uiautomator2.core.UiAutomatorBridge;
 
 public class ReflectionUtils {
-
-    /**
-     * Clears the in-process Accessibility cache, removing any stale references. Because the
-     * AccessibilityInteractionClient singleton stores copies of AccessibilityNodeInfo instances,
-     * calls to public APIs such as `recycle` do not guarantee cached references get updated. See
-     * the android.view.accessibility AIC and ANI source code for more information.
-     */
-    public static boolean clearAccessibilityCache() throws UiAutomator2Exception {
-        try {
-            // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
-            UiAutomatorBridge.getInstance().getUiAutomation().setServiceInfo(null);
-            return true;
-        } catch (Exception e) {
-            Logger.error("Failed to clear Accessibility Node cache.", e);
-            return false;
-        }
-    }
-
     public static Class getClass(final String name) throws UiAutomator2Exception {
         try {
             return Class.forName(name);

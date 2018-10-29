@@ -59,15 +59,13 @@ public class AccessibilityNodeInfoDumper {
     }
 
     private static Element toDOMElement(UiElement<?, ?> uiElement, final Document document,
-                                        final SparseArray<UiElement<?, ?>> uiElementsMapping,
+                                        @Nullable final SparseArray<UiElement<?, ?>> uiElementsMapping,
                                         final int depth) {
         String className = uiElement.getClassName();
         if (className == null) {
             className = DEFAULT_VIEW_CLASS_NAME;
         }
         Element element = document.createElement(toNodeName(className));
-        final int uiElementIndex = uiElementsMapping.size();
-        uiElementsMapping.put(uiElementIndex, uiElement);
 
         /*
          * Setting the Element's className field.
@@ -81,7 +79,12 @@ public class AccessibilityNodeInfoDumper {
         for (Attribute attr : Attribute.values()) {
             setAttribute(element, attr, toSafeXmlString(uiElement.get(attr), "?"));
         }
-        element.setAttribute(UI_ELEMENT_INDEX, Integer.toString(uiElementIndex));
+
+        if (uiElementsMapping != null) {
+            final int uiElementIndex = uiElementsMapping.size();
+            uiElementsMapping.put(uiElementIndex, uiElement);
+            element.setAttribute(UI_ELEMENT_INDEX, Integer.toString(uiElementIndex));
+        }
 
         if (depth >= MAX_DEPTH) {
             Logger.error(String.format("The xml tree dump has reached its maximum depth of %s at " +
@@ -114,9 +117,6 @@ public class AccessibilityNodeInfoDumper {
                     .newDocument();
         } catch (ParserConfigurationException e) {
             throw new UiAutomator2Exception(e);
-        }
-        if (uiElementsMapping == null) {
-            uiElementsMapping = new SparseArray<>();
         }
         final UiElement<?, ?> xpathRoot = root == null
                 ? UiAutomationElement.rebuildForNewRoot(currentActiveWindowRoot(), NotificationListener

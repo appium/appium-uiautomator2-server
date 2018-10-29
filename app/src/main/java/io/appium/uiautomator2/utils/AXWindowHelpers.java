@@ -30,14 +30,30 @@ import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.UiAutomationElement;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
-import static io.appium.uiautomator2.utils.ReflectionUtils.clearAccessibilityCache;
-
 public class AXWindowHelpers {
     public static final long AX_ROOT_RETRIEVAL_TIMEOUT = 10000;
     private static final boolean MULTI_WINDOW = false;
     private static AccessibilityNodeInfo currentActiveWindowRoot = null;
 
-    public static void refreshRootAXNode() throws UiAutomator2Exception {
+    /**
+     * Clears the in-process Accessibility cache, removing any stale references. Because the
+     * AccessibilityInteractionClient singleton stores copies of AccessibilityNodeInfo instances,
+     * calls to public APIs such as `recycle` do not guarantee cached references get updated. See
+     * the android.view.accessibility AIC and ANI source code for more information.
+     */
+    private static void clearAccessibilityCache() {
+        try {
+            // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
+            UiAutomatorBridge.getInstance().getUiAutomation().setServiceInfo(null);
+        } catch (NullPointerException npe) {
+            // it is fine
+            // ignore
+        } catch (Exception e) {
+            Logger.error("Failed to clear Accessibility Node cache.", e);
+        }
+    }
+
+    public static void refreshRootAXNode() {
         Device.waitForIdle();
         clearAccessibilityCache();
 
@@ -70,7 +86,7 @@ public class AXWindowHelpers {
     /**
      * Returns a list containing the root {@link AccessibilityNodeInfo}s for each active window
      */
-    public static AccessibilityNodeInfo[] getWindowRoots() throws UiAutomator2Exception {
+    public static AccessibilityNodeInfo[] getWindowRoots() {
         List<AccessibilityNodeInfo> ret = new ArrayList<>();
         /*
          * TODO: MULTI_WINDOW is disabled, UIAutomatorViewer captures active window properties and
@@ -82,7 +98,7 @@ public class AXWindowHelpers {
             // Support multi-window searches for API level 21 and up
             for (AccessibilityWindowInfo window : CustomUiDevice.getInstance().getInstrumentation()
                     .getUiAutomation().getWindows()) {
-                AccessibilityNodeInfo root = window.getRoot();
+                @SuppressWarnings("UnusedAssignment") AccessibilityNodeInfo root = window.getRoot();
 
                 if (root == null) {
                     Logger.debug(String.format("Skipping null root node for window: %s", window.toString()));
@@ -99,7 +115,7 @@ public class AXWindowHelpers {
             }
             ret.add(node);
         }
-        return ret.toArray(new AccessibilityNodeInfo[ret.size()]);
+        return ret.toArray(new AccessibilityNodeInfo[0]);
     }
 
     public static synchronized AccessibilityNodeInfo currentActiveWindowRoot() {
