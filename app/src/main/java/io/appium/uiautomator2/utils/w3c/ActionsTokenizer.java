@@ -490,7 +490,7 @@ public class ActionsTokenizer {
                         recordEventParams(firstActionDelta, new MotionInputEventParams(chainEntryPointDelta, MotionEvent.ACTION_MOVE,
                                 stepsCount <= 1 ? endCoordinates : startCoordinates, recentButton, props));
                     }
-                    timeDelta += EVENT_INJECTION_DELAY_MS;
+                    timeDelta = firstActionDelta + EVENT_INJECTION_DELAY_MS;
 
                     for (long step = 2; step <= stepsCount; step++) {
                         final MotionEvent.PointerCoords currentCoordinates = new MotionEvent.PointerCoords();

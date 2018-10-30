@@ -296,6 +296,45 @@ public class W3CActionsTokenizationTests {
     }
 
     @Test
+    public void verifyValidInputEventsChainIsCompiledForSingleFingerTapGesture() throws JSONException {
+        final JSONArray actionJson = new JSONArray("[ {" +
+                "\"type\": \"pointer\"," +
+                "\"id\": \"finger1\"," +
+                "\"parameters\": {\"pointerType\": \"touch\"}," +
+                "\"actions\": [" +
+                "{\"type\": \"pointerMove\", \"duration\": 0, \"x\": 100, \"y\": 100}," +
+                "{\"type\": \"pointerDown\"}," +
+                "{\"type\": \"pointerUp\"}]" +
+                "} ]");
+        final ActionTokens eventsChain = actionsTokenizer.tokenize(
+                actionsPreprocessor.preprocess(actionJson)
+        );
+        assertThat(eventsChain.size(), equalTo(1));
+
+        final List<InputEventParams> paramSet1 = eventsChain.eventsAtIndex(0);
+        assertThat(eventsChain.timeDeltaAt(0), equalTo(0L));
+        assertThat(paramSet1.size(), equalTo(2));
+
+        final MotionInputEventParams downParams = (MotionInputEventParams) paramSet1.get(0);
+        assertThat(downParams.startDelta, equalTo(0L));
+        assertThat(downParams.actionCode, equalTo(MotionEvent.ACTION_DOWN));
+        assertThat(downParams.button, equalTo(0));
+        assertEquals(downParams.coordinates.x, 100.0, Math.ulp(1.0));
+        assertEquals(downParams.coordinates.y, 100.0, Math.ulp(1.0));
+        assertThat(downParams.properties.id, is(equalTo(0)));
+        assertThat(downParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
+
+        final MotionInputEventParams upParams = (MotionInputEventParams) paramSet1.get(1);
+        assertThat(upParams.startDelta, equalTo(0L));
+        assertThat(upParams.actionCode, equalTo(MotionEvent.ACTION_UP));
+        assertThat(upParams.button, equalTo(0));
+        assertEquals(upParams.coordinates.x, 100.0, Math.ulp(1.0));
+        assertEquals(upParams.coordinates.y, 100.0, Math.ulp(1.0));
+        assertThat(upParams.properties.id, is(equalTo(0)));
+        assertThat(upParams.properties.toolType, equalTo(MotionEvent.TOOL_TYPE_FINGER));
+    }
+
+    @Test
     public void verifyValidInputEventsChainIsCompiledForDoubleTapGesture() throws JSONException {
         final JSONArray actionJson = new JSONArray("[ {" +
                 "\"type\": \"pointer\"," +
