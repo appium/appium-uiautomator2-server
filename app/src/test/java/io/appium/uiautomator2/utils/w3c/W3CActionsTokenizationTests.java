@@ -829,4 +829,45 @@ public class W3CActionsTokenizationTests {
                 "} ]");
         actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
     }
+
+    @Test(expected = ActionsParseException.class)
+    public void verifyChainCompilationFailsIfTwoOrMoreDownActionsExistAtTheSameTime() throws JSONException {
+        final JSONArray actionJson = new JSONArray("[ {" +
+                "\"type\": \"pointer\"," +
+                "\"id\": \"mouse1\"," +
+                "\"actions\": [" +
+                "{\"type\": \"pointerMove\", \"duration\": 0, \"y\": 100}," +
+                "{\"type\": \"pointerDown\", \"button\": 1}," +
+                "{\"type\": \"pointerDown\", \"button\": 1}," +
+                "{\"type\": \"pointerUp\", \"button\": 1}]" +
+                "} ]");
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+    }
+
+    @Test(expected = ActionsParseException.class)
+    public void verifyChainCompilationFailsIfTwoOrMoreUpActionsExistAtTheSameTime() throws JSONException {
+        final JSONArray actionJson = new JSONArray("[ {" +
+                "\"type\": \"pointer\"," +
+                "\"id\": \"mouse1\"," +
+                "\"actions\": [" +
+                "{\"type\": \"pointerMove\", \"duration\": 0, \"y\": 100}," +
+                "{\"type\": \"pointerUp\", \"button\": 1}," +
+                "{\"type\": \"pointerUp\", \"button\": 1}]" +
+                "} ]");
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+    }
+
+    @Test(expected = ActionsParseException.class)
+    public void verifyChainCompilationFailsIfUpActionPreceedsDownAtTheSameTime() throws JSONException {
+        final JSONArray actionJson = new JSONArray("[ {" +
+                "\"type\": \"pointer\"," +
+                "\"id\": \"mouse1\"," +
+                "\"actions\": [" +
+                "{\"type\": \"pointerMove\", \"duration\": 0, \"y\": 100}," +
+                "{\"type\": \"pointerUp\", \"button\": 1}," +
+                "{\"type\": \"pointerDown\", \"button\": 1}]" +
+                "} ]");
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+    }
 }
+

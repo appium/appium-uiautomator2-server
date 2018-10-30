@@ -33,7 +33,6 @@ import java.util.List;
 
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.KnownElements;
-import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_BUTTON_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_DURATION_KEY;
@@ -409,7 +408,8 @@ public class ActionsTokenizer {
         final boolean isToolTypeMouse = props.toolType == MotionEvent.TOOL_TYPE_MOUSE;
         long timeDelta = 0;
         long chainEntryPointDelta = 0;
-        long recentUpDownDelta = -1;
+        long recentUpDelta = -1;
+        long recentDownDelta = -1;
         boolean isPointerDown = false;
         int recentButton = 0;
         final JSONArray actionItems = action.getJSONArray(ACTION_KEY_ACTIONS);
@@ -423,10 +423,10 @@ public class ActionsTokenizer {
                 }
                 break;
                 case ACTION_ITEM_TYPE_POINTER_DOWN: {
-                    if (isPointerDown) {
-                        Logger.info(String.format("Ignoring a redundant ACTION_ITEM_TYPE_POINTER_DOWN at " +
-                                "%sms in '%s' actions chain", timeDelta, actionId));
-                        break;
+                    if (isPointerDown || recentDownDelta == timeDelta) {
+                        throw new ActionsParseException(String.format(
+                                "You cannot perform two or more '%s' actions without a pause between them at " +
+                                        "%sms in '%s' chain", ACTION_ITEM_TYPE_POINTER_DOWN, timeDelta, actionId));
                     }
 
                     chainEntryPointDelta = timeDelta;
@@ -434,14 +434,20 @@ public class ActionsTokenizer {
                     recordEventParams(timeDelta, new MotionInputEventParams(chainEntryPointDelta, MotionEvent.ACTION_DOWN,
                             extractCoordinates(actionId, actionItems, actionItemIdx), recentButton, props));
                     isPointerDown = true;
-                    recentUpDownDelta = timeDelta;
+                    recentDownDelta = timeDelta;
                 }
                 break;
                 case ACTION_ITEM_TYPE_POINTER_UP: {
                     if (!isPointerDown) {
-                        Logger.info(String.format("Ignoring a redundant ACTION_ITEM_TYPE_POINTER_UP at " +
-                                "%sms in '%s' actions chain", timeDelta, actionId));
-                        break;
+                        throw new ActionsParseException(String.format(
+                                "You cannot perform '%s' action without performing '%s' first at " +
+                                        "%sms in '%s' chain", ACTION_ITEM_TYPE_POINTER_DOWN,
+                                ACTION_ITEM_TYPE_POINTER_DOWN, timeDelta, actionId));
+                    }
+                    if (recentUpDelta == timeDelta) {
+                        throw new ActionsParseException(String.format(
+                                "You cannot perform two or more '%s' actions without a pause between them at " +
+                                        "%sms in '%s' chain", ACTION_ITEM_TYPE_POINTER_DOWN, timeDelta, actionId));
                     }
 
                     recentButton = extractButton(actionItem, props.toolType);
@@ -450,7 +456,7 @@ public class ActionsTokenizer {
                     isPointerDown = false;
                     recentButton = 0;
                     chainEntryPointDelta = timeDelta;
-                    recentUpDownDelta = timeDelta;
+                    recentUpDelta = timeDelta;
                 }
                 break;
                 case ACTION_ITEM_TYPE_POINTER_MOVE: {
@@ -472,7 +478,7 @@ public class ActionsTokenizer {
                     final MotionEvent.PointerCoords endCoordinates = extractCoordinates(actionId, actionItems, actionItemIdx);
 
                     final long startDelta = timeDelta;
-                    final long firstActionDelta = recentUpDownDelta == startDelta
+                    final long firstActionDelta = recentDownDelta == startDelta || recentUpDelta == startDelta
                             ? startDelta + EVENT_INJECTION_DELAY_MS : startDelta;
                     final long stepsCount = (startDelta + duration - firstActionDelta) / EVENT_INJECTION_DELAY_MS;
                     if (!isPointerDown && isToolTypeMouse) {
@@ -525,7 +531,7 @@ public class ActionsTokenizer {
      *
      * @param preprocessedActions a valid W3C actions chain
      * @return tokenized chain of events
-     * @throws JSONException if the given json has invalid format
+     * @throws JSONException         if the given json has invalid format
      * @throws ActionsParseException if the given actions chain cannot be tokenized properly
      */
     public ActionTokens tokenize(JSONArray preprocessedActions) throws JSONException {
