@@ -80,12 +80,20 @@ public class TestUtils {
     }
 
     public static Response waitForElement(By by) {
+        return waitForElement(by, null);
+    }
+
+    public static Response waitForElement(By by, String context) {
         final long start = elapsedRealtime();
         Response response;
         do {
-            response = findElement(by);
-            if (response.isSuccessful()) {
-                return response;
+            try {
+              response = (context == null) ? findElement(by) : findElement(by, context);
+              if (response.isSuccessful()) {
+                  return response;
+              }
+            } catch (Exception e) {
+              //
             }
             waitForMillis(DEFAULT_POLLING_INTERVAL);
         } while (elapsedRealtime() - start < Config.EXPLICIT_TIMEOUT);

@@ -244,7 +244,7 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    public void findElementWithContextId() throws JSONException {
+    public void findElementWithContextId1() throws JSONException {
         //parent element - By.androidUiAutomator (UiObject)
         Response response = findElement(By.androidUiAutomator("new UiSelector().resourceId" +
                 "(\"android:id/list\")"));
@@ -254,67 +254,104 @@ public class DeviceCommandsTest extends BaseTest {
         response = findElement(By.className("android.widget.TextView"), contextId);
         response = getText(response.getElementId());
         assertEquals("Access'ibility", response.getValue());
+    }
 
+    @Test
+    public void findElementWithContextId2() throws JSONException {
         //parent element - By.className  (UiObject2)
-        response = findElement(By.className("android.widget.ListView"));
-        contextId = response.getElementId();
+        Response response = findElement(By.className("android.widget.ListView"));
+        String contextId = response.getElementId();
 
         //child  element - By.className (UiObject2)
         response = findElement(By.className("android.widget.TextView"), contextId);
         response = getText(response.getElementId());
         assertEquals("Access'ibility", response.getValue());
+    }
+
+    @Test
+    public void findElementWithContextId3() throws JSONException {
+        //parent element - By.className  (UiObject2)
+        Response response = findElement(By.className("android.widget.ListView"));
+        String contextId = response.getElementId();
 
         //child element - By.xpath  (UiObject2)
         response = findElement(By.xpath("//*[@class='android.widget.TextView'][2]"), contextId);
         response = getText(response.getElementId());
         assertEquals("Accessibility", response.getValue());
+    }
+
+    @Test
+    public void findElementWithContextId4() throws JSONException {
+        //parent element - By.className  (UiObject2)
+        Response response = findElement(By.className("android.widget.ListView"));
+        String contextId = response.getElementId();
 
         //child element - By.xpath  (UiObject2)
         response = findElement(By.xpath("//hierarchy//*[@class='android.widget.TextView'][2]"),
                 contextId);
         response = getText(response.getElementId());
         assertEquals("Accessibility", response.getValue());
+    }
+
+    @Test
+    public void findElementWithContextId5() throws JSONException {
+        //parent element - By.className  (UiObject2)
+        Response response = waitForElement(By.className("android.widget.ListView"));
+        String contextId = response.getElementId();
 
         //child  element - By.androidUiAutomator (UiObject)
-        response = findElement(By.androidUiAutomator("new UiSelector().text(\"Animation\");"),
+        response = waitForElement(By.androidUiAutomator("new UiSelector().text(\"Animation\");"),
                 contextId);
         response = getText(response.getElementId());
         assertEquals("Animation", response.getValue());
+    }
 
+    @Test
+    public void findElementWithContextId6() throws JSONException {
         //parent element - By.xpath
-        response = findElement(By.xpath("//hierarchy//*[@class='android.widget.FrameLayout'][2]"));
-        contextId = response.getElementId();
+        Response response = findElement(By.xpath("//hierarchy//*[@class='android.widget.FrameLayout'][2]"));
+        String contextId = response.getElementId();
 
         //child element - By.xpath  (UiObject2)
         response = findElement(By.xpath("//*[@class='android.widget.TextView'][2]"), contextId);
         response = getText(response.getElementId());
         assertEquals("Accessibility", response.getValue());
+    }
 
+    @Test
+    public void findElementWithContextId7() throws JSONException {
         //parent element - By.androidUiAutomator (UiObject)
-        response = findElement(By.androidUiAutomator("new UiSelector()"
+        Response response = findElement(By.androidUiAutomator("new UiSelector()"
                 + ".resourceId(\"android:id/list\");"));
-        contextId = response.getElementId();
+        String contextId = response.getElementId();
 
         //child element - By.xpath  (UiObject2)
         response = findElement(By.xpath("//*[@class='android.widget.TextView'][2]"), contextId);
         response = getText(response.getElementId());
         assertEquals("Accessibility", response.getValue());
+    }
 
-        response = findElement(By.accessibilityId("Animation"));
+    @Test
+    public void findElementWithContextId8() throws JSONException {
+        Response response = findElement(By.accessibilityId("Animation"));
         clickAndWaitForStaleness(response.getElementId());
         response = findElement(By.accessibilityId("Events"));
         clickAndWaitForStaleness(response.getElementId());
+    }
 
+    @Test
+    public void findElementWithContextId9() throws JSONException {
         //parent element - By.xpath (UiObject2)
-        response = findElement(By.xpath("//*[@class='android.widget.LinearLayout'][3]"));
-        contextId = response.getElementId();
+        Response response = waitForElement(By.xpath("//*[@class='android.widget.ListView']"));
+        String contextId = response.getElementId();
 
         //child  element - By.androidUiAutomator (UiObject)
-        response = findElement(By.androidUiAutomator("new UiSelector().className(\"android.widget" +
+        response = waitForElement(By.androidUiAutomator("new UiSelector().className(\"android.widget" +
                 ".TextView\")"), contextId);
         response = getText(response.getElementId());
-        assertEquals("Animator Events:   ", response.getValue());
+        assertEquals("Access'ibility", response.getValue());
     }
+
 
     @Test
     public void findElementWithAttributes() throws JSONException {
@@ -362,11 +399,12 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    public void toastVerificationTest() throws JSONException {
+    public void toastVerificationTest1() throws JSONException {
         startActivity(".view.PopupMenu1");
-        Response response = findElement(By.accessibilityId("Make a Popup!"));
+
+        Response response = waitForElement(By.accessibilityId("Make a Popup!"));
         click(response.getElementId());
-        response = findElement(By.xpath(".//*[@text='Search']"));
+        response = waitForElement(By.xpath(".//*[@text='Search']"));
         click(response.getElementId());
 
         By by = By.xpath("//*[@text='Clicked popup menu item Search']");
@@ -374,30 +412,53 @@ public class DeviceCommandsTest extends BaseTest {
         response = getText(response.getElementId());
         assertEquals("Clicked popup menu item Search", response.getValue());
         assertEquals(by + "should be found", WDStatus.SUCCESS.code(), response.getStatus());
+    }
 
-        response = findElement(By.accessibilityId("Make a Popup!"));
+    @Test
+    public void toastVerificationTest2() throws JSONException {
+        startActivity(".view.PopupMenu1");
+
+        Response response = waitForElement(By.accessibilityId("Make a Popup!"));
         click(response.getElementId());
-        response = findElement(By.xpath(".//*[@text='Add']"));
+        response = waitForElement(By.xpath(".//*[@text='Add']"));
         click(response.getElementId());
 
-        by = By.xpath("//*[contains(@text,'Clicked popup menu item Add')]");
+        By by = By.xpath("//*[contains(@text,'Clicked popup menu item Add')]");
         response = waitForElement(by);
         assertEquals(by + " should be found", WDStatus.SUCCESS.code(), response.getStatus());
         response = getText(response.getElementId());
         assertEquals("Clicked popup menu item Add", response.getValue());
+    }
 
-        response = findElement(By.accessibilityId("Make a Popup!"));
+    @Test
+    public void toastVerificationTest3() throws JSONException {
+        startActivity(".view.PopupMenu1");
+
+        Response response = waitForElement(By.accessibilityId("Make a Popup!"));
         click(response.getElementId());
-        response = findElement(By.xpath(".//*[@text='Edit']"));
+        response = waitForElement(By.xpath(".//*[@text='Edit']"));
         click(response.getElementId());
 
-        by = By.xpath("//*[@text='Clicked popup menu item Edit']");
+        By by = By.xpath("//*[@text='Clicked popup menu item Edit']");
         response = waitForElement(by);
         assertEquals(by + " should be found", WDStatus.SUCCESS.code(), response.getStatus());
         response = getText(response.getElementId());
         assertEquals("Clicked popup menu item Edit", response.getValue());
+    }
 
-        response = findElement(By.xpath(".//*[@text='Share']"));
+    @Test
+    public void toastVerificationTest4() throws JSONException {
+        startActivity(".view.PopupMenu1");
+
+        Response response = waitForElement(By.accessibilityId("Make a Popup!"));
+        click(response.getElementId());
+        response = waitForElement(By.xpath(".//*[@text='Edit']"));
+        click(response.getElementId());
+
+        By by = By.xpath("//*[@text='Clicked popup menu item Edit']");
+        response = waitForElement(by);
+
+        response = waitForElement(By.xpath(".//*[@text='Share']"));
         click(response.getElementId());
 
         by = By.xpath("//*[@text='Clicked popup menu item Share']");
