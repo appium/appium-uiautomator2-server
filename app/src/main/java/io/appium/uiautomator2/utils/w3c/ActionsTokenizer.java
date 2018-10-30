@@ -426,7 +426,7 @@ public class ActionsTokenizer {
                     if (isPointerDown || recentDownDelta == timeDelta) {
                         throw new ActionsParseException(String.format(
                                 "You cannot perform two or more '%s' actions without a pause between them at " +
-                                        "%sms in '%s' chain", ACTION_ITEM_TYPE_POINTER_DOWN, timeDelta, actionId));
+                                        "%sms in '%s' chain", itemType, timeDelta, actionId));
                     }
 
                     chainEntryPointDelta = timeDelta;
@@ -441,13 +441,12 @@ public class ActionsTokenizer {
                     if (!isPointerDown) {
                         throw new ActionsParseException(String.format(
                                 "You cannot perform '%s' action without performing '%s' first at " +
-                                        "%sms in '%s' chain", ACTION_ITEM_TYPE_POINTER_DOWN,
-                                ACTION_ITEM_TYPE_POINTER_DOWN, timeDelta, actionId));
+                                        "%sms in '%s' chain", itemType, ACTION_ITEM_TYPE_POINTER_DOWN, timeDelta, actionId));
                     }
                     if (recentUpDelta == timeDelta) {
                         throw new ActionsParseException(String.format(
                                 "You cannot perform two or more '%s' actions without a pause between them at " +
-                                        "%sms in '%s' chain", ACTION_ITEM_TYPE_POINTER_DOWN, timeDelta, actionId));
+                                        "%sms in '%s' chain", itemType, timeDelta, actionId));
                     }
 
                     recentButton = extractButton(actionItem, props.toolType);
