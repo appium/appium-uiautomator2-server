@@ -57,6 +57,7 @@ public class KnownElements {
                 result.getName();
             } catch (Exception e) {
                 final By by = result.getBy();
+                Logger.debug(String.format("Trying to restore the cached element '%s'", by));
                 Object ui2Object = null;
                 try {
                     if (by instanceof By.ById) {

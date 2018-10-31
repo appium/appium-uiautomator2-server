@@ -57,8 +57,7 @@ public class FindElement extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
-            UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         Logger.info("Find element command");
         KnownElements ke = new KnownElements();
         final JSONObject payload = getPayload(request);
@@ -91,12 +90,8 @@ public class FindElement extends SafeRequestHandler {
     }
 
     @Nullable
-    private Object findElement(By by) throws ClassNotFoundException, UiAutomator2Exception,
-            UiObjectNotFoundException {
-        if (!(by instanceof By.ByXPath)) {
-            // The accessibility is refreshed when xml page source is built
-            refreshRootAXNode();
-        }
+    private Object findElement(By by) throws ClassNotFoundException, UiAutomator2Exception, UiObjectNotFoundException {
+        refreshRootAXNode();
 
         if (by instanceof ById) {
             String locator = rewriteIdLocator((ById) by);

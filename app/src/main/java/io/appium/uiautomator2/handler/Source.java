@@ -36,6 +36,8 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
+import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshRootAXNode;
+
 /**
  * Get page source. Return as string of XML doc
  */
@@ -47,6 +49,7 @@ public class Source extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
+        refreshRootAXNode();
         try {
             final Document doc = AccessibilityNodeInfoDumper.asXmlDocument();
             final TransformerFactory tf = TransformerFactory.newInstance();
