@@ -89,20 +89,6 @@ public abstract class ElementHelpers {
         return result;
     }
 
-    @Nullable
-    public static Range<Integer> getSelectionRange(AccessibilityNodeInfo nodeInfo) {
-        if (nodeInfo == null) {
-            return null;
-        }
-
-        int selectionStart = nodeInfo.getTextSelectionStart();
-        int selectionEnd = nodeInfo.getTextSelectionEnd();
-        if (selectionStart >= 0 && selectionStart != selectionEnd) {
-            return new Range<>(selectionStart, selectionEnd);
-        }
-        return null;
-    }
-
     /**
      * Remove all duplicate elements from the provided list
      *

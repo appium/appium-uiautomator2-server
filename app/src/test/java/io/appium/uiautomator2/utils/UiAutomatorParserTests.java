@@ -29,7 +29,7 @@ import java.util.List;
 
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;

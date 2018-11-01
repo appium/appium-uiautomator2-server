@@ -22,18 +22,47 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.test.uiautomator.UiDevice;
+import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
 
 /**
  * This class contains static helper methods to work with {@link AccessibilityNodeInfo}
  */
 public class AccessibilityNodeInfoHelpers {
+
+    @Nullable
+    public static Range<Integer> getSelectionRange(@Nullable AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null) {
+            return null;
+        }
+
+        int selectionStart = nodeInfo.getTextSelectionStart();
+        int selectionEnd = nodeInfo.getTextSelectionEnd();
+        if (selectionStart >= 0 && selectionStart != selectionEnd) {
+            return new Range<>(selectionStart, selectionEnd);
+        }
+        return null;
+    }
+
+    @Nullable
+    public static String getPackageName(@Nullable AccessibilityNodeInfo nodeInfo) {
+        return nodeInfo == null ? null : charSequenceToNullableString(nodeInfo.getPackageName());
+    }
+
+    public static boolean isPassword(@Nullable AccessibilityNodeInfo nodeInfo) {
+        return nodeInfo != null && nodeInfo.isPassword();
+    }
+
+    public static boolean isVisible(@Nullable AccessibilityNodeInfo nodeInfo) {
+        return nodeInfo != null && nodeInfo.isVisibleToUser();
+    }
 
     @Nullable
     public static String getText(@Nullable AccessibilityNodeInfo nodeInfo, boolean replaceNull) {

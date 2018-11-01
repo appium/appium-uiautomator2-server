@@ -25,6 +25,7 @@ import org.mockito.Spy;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.appium.uiautomator2.http.IHttpRequest;
+
 import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)

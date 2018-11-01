@@ -1,7 +1,6 @@
 package io.appium.uiautomator2.utils;
 
 import android.graphics.Rect;
-import android.support.test.uiautomator.UiObjectNotFoundException;
 
 import org.junit.Test;
 import org.mockito.Mockito;

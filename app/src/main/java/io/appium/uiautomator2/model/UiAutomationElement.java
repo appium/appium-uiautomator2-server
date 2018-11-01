@@ -31,11 +31,9 @@ import java.util.WeakHashMap;
 
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.utils.Attribute;
-import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 
 import static android.support.test.internal.util.Checks.checkNotNull;
-import static io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers.getVisibleBounds;
 import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
@@ -61,6 +59,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         super(checkNotNull(node));
 
         Map<Attribute, Object> attributes = new LinkedHashMap<>();
+        // The same sequence will be used for node attributes in xml page source
         put(attributes, Attribute.INDEX, index);
         put(attributes, Attribute.PACKAGE, charSequenceToNullableString(node.getPackageName()));
         put(attributes, Attribute.CLASS, charSequenceToNullableString(node.getClassName()));
@@ -77,13 +76,13 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         put(attributes, Attribute.LONG_CLICKABLE, node.isLongClickable());
         put(attributes, Attribute.PASSWORD, node.isPassword());
         put(attributes, Attribute.SCROLLABLE, node.isScrollable());
-        Range<Integer> selectionRange = ElementHelpers.getSelectionRange(node);
+        Range<Integer> selectionRange = AccessibilityNodeInfoHelpers.getSelectionRange(node);
         if (selectionRange != null) {
             attributes.put(Attribute.SELECTION_START, selectionRange.getLower());
             attributes.put(Attribute.SELECTION_END, selectionRange.getUpper());
         }
         put(attributes, Attribute.SELECTED, node.isSelected());
-        put(attributes, Attribute.BOUNDS, getVisibleBounds(node).toShortString());
+        put(attributes, Attribute.BOUNDS, AccessibilityNodeInfoHelpers.getVisibleBounds(node).toShortString());
         put(attributes, Attribute.DISPLAYED, node.isVisibleToUser());
         // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
         this.attributes = Collections.unmodifiableMap(attributes);
