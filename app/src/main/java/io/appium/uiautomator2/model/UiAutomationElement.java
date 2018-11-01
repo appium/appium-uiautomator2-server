@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.model;
 
 import android.annotation.TargetApi;
-import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -25,17 +24,21 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 
 import static android.support.test.internal.util.Checks.checkNotNull;
+import static io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers.getVisibleBounds;
 import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
+import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
+import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
 /**
  * A UiElement that gets attributes via the Accessibility API.
@@ -57,13 +60,14 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     protected UiAutomationElement(AccessibilityNodeInfo node, int index) {
         super(checkNotNull(node));
 
-        Map<Attribute, Object> attributes = new EnumMap<>(Attribute.class);
+        Map<Attribute, Object> attributes = new LinkedHashMap<>();
         put(attributes, Attribute.INDEX, index);
-        put(attributes, Attribute.PACKAGE, charSequenceToString(node.getPackageName()));
-        put(attributes, Attribute.CLASS, charSequenceToString(node.getClassName()));
-        put(attributes, Attribute.TEXT, ElementHelpers.getText(node));
-        put(attributes, Attribute.CONTENT_DESC, charSequenceToString(node.getContentDescription()));
-        put(attributes, Attribute.RESOURCE_ID, charSequenceToString(node.getViewIdResourceName()));
+        put(attributes, Attribute.PACKAGE, charSequenceToNullableString(node.getPackageName()));
+        put(attributes, Attribute.CLASS, charSequenceToNullableString(node.getClassName()));
+        put(attributes, Attribute.TEXT, AccessibilityNodeInfoHelpers.getText(node, true));
+        put(attributes, Attribute.ORIGINAL_TEXT, AccessibilityNodeInfoHelpers.getText(node, false));
+        put(attributes, Attribute.CONTENT_DESC, charSequenceToNullableString(node.getContentDescription()));
+        put(attributes, Attribute.RESOURCE_ID, node.getViewIdResourceName());
         put(attributes, Attribute.CHECKABLE, node.isCheckable());
         put(attributes, Attribute.CHECKED, node.isChecked());
         put(attributes, Attribute.CLICKABLE, node.isClickable());
@@ -79,7 +83,8 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
             attributes.put(Attribute.SELECTION_END, selectionRange.getUpper());
         }
         put(attributes, Attribute.SELECTED, node.isSelected());
-        put(attributes, Attribute.BOUNDS, getBounds(node));
+        put(attributes, Attribute.BOUNDS, getVisibleBounds(node).toShortString());
+        put(attributes, Attribute.DISPLAYED, node.isVisibleToUser());
         // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
         this.attributes = Collections.unmodifiableMap(attributes);
         this.children = buildChildren(node);
@@ -87,9 +92,9 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
 
     protected UiAutomationElement(String hierarchyClassName, AccessibilityNodeInfo childNode, int index) {
         super(null);
-        Map<Attribute, Object> attribs = new EnumMap<>(Attribute.class);
+        Map<Attribute, Object> attribs = new LinkedHashMap<>();
         put(attribs, Attribute.INDEX, index);
-        put(attribs, Attribute.CLASS, charSequenceToString(hierarchyClassName));
+        put(attribs, Attribute.CLASS, hierarchyClassName);
         this.attributes = Collections.unmodifiableMap(attribs);
         List<UiAutomationElement> mutableChildren = new ArrayList<>();
         mutableChildren.add(new UiAutomationElement(childNode, 0));
@@ -128,11 +133,6 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         return element;
     }
 
-    @Nullable
-    public static String charSequenceToString(CharSequence input) {
-        return input == null ? null : input.toString();
-    }
-
     private void put(Map<Attribute, Object> attribs, Attribute key, Object value) {
         if (value != null) {
             attribs.put(key, value);
@@ -144,6 +144,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         node.setText(tokenMSG);
         node.setClassName(Toast.class.getName());
         node.setPackageName("com.android.settings");
+        setField("mSealed", true, node);
 
         this.children.add(new UiAutomationElement(node, 0));
     }
@@ -165,12 +166,6 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
             }
         }
         return children;
-    }
-
-    private String getBounds(AccessibilityNodeInfo node) {
-        Rect rect = new Rect();
-        node.getBoundsInScreen(rect);
-        return rect.toShortString();
     }
 
     @Override

@@ -21,7 +21,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import io.appium.uiautomator2.utils.Attribute;
 
-import static io.appium.uiautomator2.model.UiAutomationElement.charSequenceToString;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
 
 public class CustomUiSelector {
@@ -36,17 +35,16 @@ public class CustomUiSelector {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        UiAutomationElement uiAutomationElement = UiAutomationElement.getCachedElement(node,
-                currentActiveWindowRoot());
+        UiAutomationElement uiAutomationElement = UiAutomationElement.getCachedElement(node, currentActiveWindowRoot());
         if (uiAutomationElement == null) {
-            throw new IllegalArgumentException(String.format(
-                    "The '%s' node is not found in the cache", node));
+            throw new IllegalArgumentException(String.format("The '%s' node is not found in the cache", node));
         }
-        put(Attribute.PACKAGE, charSequenceToString(uiAutomationElement.getPackageName()));
-        put(Attribute.CLASS, charSequenceToString(uiAutomationElement.getClassName()));
-        put(Attribute.TEXT, charSequenceToString(uiAutomationElement.getText()));
-        put(Attribute.CONTENT_DESC, charSequenceToString(uiAutomationElement.getContentDescription()));
-        put(Attribute.RESOURCE_ID, charSequenceToString(uiAutomationElement.getResourceId()));
+        put(Attribute.PACKAGE, uiAutomationElement.getPackageName());
+        put(Attribute.CLASS, uiAutomationElement.getClassName());
+        // For proper selector matching it is important to not replace nulls with empty strings
+        put(Attribute.TEXT, uiAutomationElement.getOriginalText());
+        put(Attribute.CONTENT_DESC, uiAutomationElement.getContentDescription());
+        put(Attribute.RESOURCE_ID, uiAutomationElement.getResourceId());
         put(Attribute.CHECKABLE, uiAutomationElement.isCheckable());
         put(Attribute.CHECKED, uiAutomationElement.isChecked());
         put(Attribute.CLICKABLE, uiAutomationElement.isClickable());

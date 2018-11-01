@@ -19,6 +19,7 @@ package io.appium.uiautomator2.utils;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.BySelector;
@@ -45,7 +46,7 @@ import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
-import io.appium.uiautomator2.core.AccessibilityNodeInfoHelper;
+import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.core.EventRegister;
 import io.appium.uiautomator2.core.ReturningRunnable;
 import io.appium.uiautomator2.core.UiObjectChildGenerator;
@@ -62,6 +63,9 @@ import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
+import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
+import static io.appium.uiautomator2.utils.StringHelpers.toNullableString;
+import static io.appium.uiautomator2.utils.StringHelpers.toNonNullString;
 
 public abstract class ElementHelpers {
 
@@ -167,7 +171,7 @@ public abstract class ElementHelpers {
      */
     public static boolean setText(final Object element, @Nullable final String text) {
         // Per framework convention, setText(null) means clearing it
-        String textToSend = text == null ? "" : text;
+        String textToSend = toNonNullString(text);
         AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
         if (nodeInfo == null) {
             throw new ElementNotFoundException();
@@ -181,7 +185,7 @@ public abstract class ElementHelpers {
         if (nodeInfo.getRangeInfo() != null && Build.VERSION.SDK_INT >= 24) {
             Logger.debug("Element has range info.");
             try {
-                if (AccessibilityNodeInfoHelper.setProgressValue(nodeInfo, Float.parseFloat(text))) {
+                if (AccessibilityNodeInfoHelpers.setProgressValue(nodeInfo, Float.parseFloat(text))) {
                     return true;
                 }
             } catch (NumberFormatException e) {
@@ -197,7 +201,7 @@ public abstract class ElementHelpers {
          * if text length is greater than getMaxTextLength()
          */
         if (Build.VERSION.SDK_INT < 24) {
-            textToSend = AccessibilityNodeInfoHelper.truncateTextToMaxLength(nodeInfo, textToSend);
+            textToSend = AccessibilityNodeInfoHelpers.truncateTextToMaxLength(nodeInfo, textToSend);
         }
 
         Logger.debug("Sending text to element: " + textToSend);
@@ -221,21 +225,14 @@ public abstract class ElementHelpers {
                 Arrays.toString(Attribute.exposableAliases())), attributeName);
     }
 
-    @Nullable
-    public static String getText(@Nullable AccessibilityNodeInfo nodeInfo) {
-        if (nodeInfo == null) {
-            return null;
-        }
-
-        if (nodeInfo.getRangeInfo() != null) {
-            return Float.toString(nodeInfo.getRangeInfo().getCurrent());
-        }
-        CharSequence text = nodeInfo.getText();
-        return text == null ? null : text.toString();
+    @NonNull
+    public static String getText(Object element) throws UiObjectNotFoundException {
+        //noinspection ConstantConditions
+        return getText(element, true);
     }
 
     @Nullable
-    public static String getText(Object element) throws UiObjectNotFoundException {
+    public static String getText(Object element, boolean replaceNull) throws UiObjectNotFoundException {
         if (element instanceof UiObject2) {
             /*
              * If the given element is TOAST element, we can't perform any operation on {@link UiObject2} as it
@@ -245,13 +242,12 @@ public abstract class ElementHelpers {
             AccessibilityNodeInfo nodeInfo = (AccessibilityNodeInfo) getField(UiObject2.class,
                     "mCachedNode", element);
             if (nodeInfo != null && Objects.equals(nodeInfo.getClassName(), Toast.class.getName())) {
-                CharSequence text = nodeInfo.getText();
-                return text == null ? null : text.toString();
+                return charSequenceToString(nodeInfo.getText(), replaceNull);
             }
 
-            return getText(AccessibilityNodeInfoGetter.fromUiObject(element));
+            return AccessibilityNodeInfoHelpers.getText(AccessibilityNodeInfoGetter.fromUiObject(element), replaceNull);
         }
-        return ((UiObject) element).getText();
+        return toNullableString(((UiObject) element).getText(), replaceNull);
     }
 
     public static String getContentSize(AndroidElement element) throws UiObjectNotFoundException {

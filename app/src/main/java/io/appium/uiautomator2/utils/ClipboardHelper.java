@@ -23,6 +23,8 @@ import android.support.annotation.Nullable;
 
 import java.util.Arrays;
 
+import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNonNullString;
+
 public class ClipboardHelper {
     private static final int DEFAULT_LABEL_LEN = 10;
 
@@ -50,8 +52,7 @@ public class ClipboardHelper {
         if (cd == null || cd.getItemCount() == 0) {
             return "";
         }
-        final CharSequence text = cd.getItemAt(0).coerceToText(context);
-        return text == null ? "" : text.toString();
+        return charSequenceToNonNullString(cd.getItemAt(0).coerceToText(context));
     }
 
     public void setTextData(@Nullable String label, String data) {

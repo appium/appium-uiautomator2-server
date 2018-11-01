@@ -41,25 +41,36 @@ public enum Attribute {
     SELECTION_END(new String[]{"selection-end"}),
     SELECTED(new String[]{"selected"}),
     TEXT(new String[]{"text", "name"}),
+    // The main difference of this attribute from the preceding one is that
+    // it does not replace null values with empty strings
+    ORIGINAL_TEXT(new String[]{"original-text"}, false, false),
     BOUNDS(new String[]{"bounds"}),
-    INDEX(new String[]{"index"}, false),
+    INDEX(new String[]{"index"}, false, true),
     DISPLAYED(new String[]{"displayed"}),
-    CONTENT_SIZE(new String[]{"contentSize"});
+    CONTENT_SIZE(new String[]{"contentSize"}, true, false);
 
     private final String[] aliases;
+    // Defines if the attribute is visible to the user from getAttribute call
     private boolean isExposable = true;
+    // Defines if the attribute is visible to the user in the xml tree/xpath search
+    private boolean isExposableToXml = true;
 
     Attribute(String[] aliases) {
         this.aliases = aliases;
     }
 
-    Attribute(String[] aliases, boolean isExposable) {
+    Attribute(String[] aliases, boolean isExposable, boolean isExposableToXml) {
         this(aliases);
         this.isExposable = isExposable;
+        this.isExposableToXml = isExposableToXml;
     }
 
     public String getName() {
         return aliases[0];
+    }
+
+    public boolean isExposableToXml() {
+        return isExposableToXml;
     }
 
     @Override

@@ -15,39 +15,71 @@
  */
 package io.appium.uiautomator2.core;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.test.uiautomator.UiDevice;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
 import io.appium.uiautomator2.utils.Logger;
 
+import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
+
 /**
  * This class contains static helper methods to work with {@link AccessibilityNodeInfo}
  */
-public class AccessibilityNodeInfoHelper {
+public class AccessibilityNodeInfoHelpers {
+
+    @Nullable
+    public static String getText(@Nullable AccessibilityNodeInfo nodeInfo, boolean replaceNull) {
+        if (nodeInfo == null) {
+            return replaceNull ? "" : null;
+        }
+
+        if (nodeInfo.getRangeInfo() != null) {
+            return Float.toString(nodeInfo.getRangeInfo().getCurrent());
+        }
+        return charSequenceToString(nodeInfo.getText(), replaceNull);
+    }
 
     /**
      * Returns the node's bounds clipped to the size of the display
      *
-     * @param width  pixel width of the display
-     * @param height pixel height of the display
      * @return null if node is null, else a Rect containing visible bounds
      */
-    public static Rect getVisibleBoundsInScreen(AccessibilityNodeInfo node, int width, int height) {
+    @SuppressLint("CheckResult")
+    public static Rect getVisibleBounds(@Nullable AccessibilityNodeInfo node) {
         if (node == null) {
             return null;
         }
-        // targeted node's bounds
-        Rect nodeRect = new Rect();
-        node.getBoundsInScreen(nodeRect);
-        Rect displayRect = new Rect();
-        displayRect.top = 0;
-        displayRect.left = 0;
-        displayRect.right = width;
-        displayRect.bottom = height;
-        nodeRect.intersect(displayRect);
-        return nodeRect;
+
+        // Get the object bounds in screen coordinates
+        Rect ret = new Rect();
+        node.getBoundsInScreen(ret);
+        UiDevice uiDevice = getUiDevice();
+
+        // Trim any portion of the bounds that are not on the screen
+        Rect screen = new Rect(0, 0, uiDevice.getDisplayWidth(), uiDevice.getDisplayHeight());
+        ret.intersect(screen);
+
+        // Find the visible bounds of our first scrollable ancestor
+        for (AccessibilityNodeInfo ancestor = node.getParent(); ancestor != null; ancestor = ancestor.getParent()) {
+            // If this ancestor is scrollable
+            if (ancestor.isScrollable()) {
+                // Trim any portion of the bounds that are hidden by the non-visible portion of our
+                // ancestor
+                Rect ancestorRect = getVisibleBounds(ancestor);
+                ret.intersect(ancestorRect);
+                break;
+            }
+        }
+
+        return ret;
     }
 
     /**
@@ -56,6 +88,7 @@ public class AccessibilityNodeInfoHelper {
      * @param value desired progress value
      * @return true if action performed successfully
      */
+    @TargetApi(Build.VERSION_CODES.N)
     public static boolean setProgressValue(final AccessibilityNodeInfo node, final float value) {
         if (!node.getActionList().contains(AccessibilityAction.ACTION_SET_PROGRESS)) {
             Logger.debug("The element does not support ACTION_SET_PROGRESS action.");

@@ -16,11 +16,13 @@
 
 package io.appium.uiautomator2.model;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.appium.uiautomator2.utils.Attribute;
 
@@ -47,6 +49,10 @@ public abstract class UiElement<R, E extends UiElement<R, E>> {
         return this.node;
     }
 
+    public Set<Attribute> attributeKeys() {
+        return getAttributes().keySet();
+    }
+
     @Nullable
     @SuppressWarnings("unchecked")
     public <T> T get(Attribute attribute) {
@@ -64,9 +70,15 @@ public abstract class UiElement<R, E extends UiElement<R, E>> {
         return (T) getAttributes().get(attribute);
     }
 
-    @Nullable
+    @NonNull
     public String getText() {
+        //noinspection ConstantConditions
         return get(Attribute.TEXT);
+    }
+
+    @Nullable
+    public String getOriginalText() {
+        return get(Attribute.ORIGINAL_TEXT);
     }
 
     @Nullable

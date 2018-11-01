@@ -25,10 +25,8 @@ import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.Toast;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
@@ -44,7 +42,6 @@ import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
-import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 
 public class UiObject2Element implements AndroidElement {
 
@@ -71,6 +68,7 @@ public class UiObject2Element implements AndroidElement {
 
     @Override
     public String getText() throws UiObjectNotFoundException {
+        // By convention the text is replaced with an empty string if it equals to null
         return ElementHelpers.getText(element);
     }
 
@@ -131,9 +129,11 @@ public class UiObject2Element implements AndroidElement {
             case SELECTED:
                 result = element.isSelected();
                 break;
-            case DISPLAYED:
-                result = AccessibilityNodeInfoGetter.fromUiObject(element) != null;
+            case DISPLAYED: {
+                AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+                result = nodeInfo != null && nodeInfo.isVisibleToUser();
                 break;
+            }
             case PASSWORD: {
                 AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
                 result = nodeInfo == null ? null : nodeInfo.isPassword();

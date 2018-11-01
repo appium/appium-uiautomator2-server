@@ -44,8 +44,9 @@ public class SendKeysToElement extends SafeRequestHandler {
         super(mappedUri);
     }
 
-    private static boolean isTextFieldClear(AndroidElement element) throws UiObjectNotFoundException {
-        return element.getText() == null || element.getText().isEmpty();
+    private static boolean isTextFieldNotClear(AndroidElement element) throws UiObjectNotFoundException {
+        String text = element.getText();
+        return text != null && !text.isEmpty();
     }
 
     @Override
@@ -79,10 +80,10 @@ public class SendKeysToElement extends SafeRequestHandler {
         }
 
         String currText = element.getText();
-        if (!isTextFieldClear(element)) {
+        if (isTextFieldNotClear(element)) {
             new Clear("/wd/hub/session/:sessionId/element/:id/clear").handle(request);
         }
-        if (!isTextFieldClear(element)) {
+        if (isTextFieldNotClear(element)) {
             // clear could have failed, or we could have a hint in the field
             // we'll assume it is the latter
             Logger.debug("Text not cleared. Assuming remainder is hint text.");

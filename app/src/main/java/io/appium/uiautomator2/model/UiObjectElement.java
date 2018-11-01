@@ -72,6 +72,7 @@ public class UiObjectElement implements AndroidElement {
 
     @Override
     public String getText() throws UiObjectNotFoundException {
+        // By convention the text is replaced with an empty string if it equals to null
         return ElementHelpers.getText(element);
     }
 
@@ -132,9 +133,15 @@ public class UiObjectElement implements AndroidElement {
             case SELECTED:
                 result = element.isSelected();
                 break;
-            case DISPLAYED:
-                result = element.exists();
+            case DISPLAYED: {
+                if (element.exists()) {
+                    AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+                    result = nodeInfo != null && nodeInfo.isVisibleToUser();
+                } else {
+                    result = false;
+                }
                 break;
+            }
             case PASSWORD: {
                 AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
                 result = nodeInfo == null ? null : nodeInfo.isPassword();

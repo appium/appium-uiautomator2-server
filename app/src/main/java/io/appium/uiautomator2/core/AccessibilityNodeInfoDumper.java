@@ -26,8 +26,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import java.lang.reflect.Field;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -39,6 +37,7 @@ import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
+import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.XMLHelpers.DEFAULT_VIEW_CLASS_NAME;
 import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
 import static io.appium.uiautomator2.utils.XMLHelpers.toSafeXmlString;
@@ -50,11 +49,9 @@ public class AccessibilityNodeInfoDumper {
 
     private static void setNodeLocalName(Element element, String className) {
         try {
-            Field localName = element.getClass().getDeclaredField("localName");
-            localName.setAccessible(true);
-            localName.set(element, tag(className));
-        } catch (Exception e) {
-            Logger.error(String.format("Unable to set field's localName to '%s'", className), e);
+            setField("localName", tag(className), element);
+        } catch (UiAutomator2Exception e) {
+            Logger.error(e);
         }
     }
 
@@ -76,8 +73,10 @@ public class AccessibilityNodeInfoDumper {
          */
         setNodeLocalName(element, className);
 
-        for (Attribute attr : Attribute.values()) {
-            setAttribute(element, attr, toSafeXmlString(uiElement.get(attr), "?"));
+        for (Attribute attr : uiElement.attributeKeys()) {
+            if (attr.isExposableToXml()) {
+                setAttribute(element, attr, toSafeXmlString(uiElement.get(attr), "?"));
+            }
         }
 
         if (uiElementsMapping != null) {
