@@ -22,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.regex.Pattern;
 
-
 public abstract class XMLHelpers {
     // XML 1.0 Legal Characters (http://stackoverflow.com/a/4237934/347155)
     // #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
@@ -37,22 +36,29 @@ public abstract class XMLHelpers {
 
         String fixedName = className
                 .replaceAll("[$@#&]", ".")
-                // https://github.com/appium/appium/issues/9934
-                .replaceAll("[ˋˊ\\s]", ""); // "ˋ" is \xCB\x8B in UTF-8
-        // https://github.com/appium/appium/issues/9934
-        //noinspection ConstantConditions
-        fixedName = toSafeXmlString(fixedName, "?")
-                .replaceAll("\\?", "")
                 .replaceAll("\\.+", ".")
                 .replaceAll("(^\\.|\\.$)", "");
+        //noinspection ConstantConditions
+        fixedName = toSafeXmlString(fixedName, "");
+        // Workaround for https://issuetracker.google.com/issues/37008591
+        fixedName = toAndroidXmlCompatibleNodeName(fixedName);
         if (!fixedName.equals(className)) {
-            Logger.info(String.format("Rewrote XML tag name '%s' to '%s'", className, fixedName));
+            Logger.info(String.format("Rewrote XML node name '%s' to '%s'", className, fixedName));
         }
         return StringUtils.isBlank(fixedName) ? DEFAULT_VIEW_CLASS_NAME : fixedName;
     }
 
+    private static String toAndroidXmlCompatibleNodeName(String sourceStr) {
+        return Pattern.compile("[^A-Za-z\\-._]")
+                .matcher(sourceStr)
+                .replaceAll("_")
+                .replaceAll("^-+", "");
+    }
+
     @Nullable
     public static String toSafeXmlString(Object source, String replacement) {
-        return source == null ? null : XML10_PATTERN.matcher(String.valueOf(source)).replaceAll(replacement);
+        return source == null ? null : XML10_PATTERN
+                .matcher(String.valueOf(source))
+                .replaceAll(replacement);
     }
 }
