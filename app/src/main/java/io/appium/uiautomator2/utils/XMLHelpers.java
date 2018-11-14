@@ -18,8 +18,6 @@ package io.appium.uiautomator2.utils;
 
 import android.support.annotation.Nullable;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.regex.Pattern;
 
 public abstract class XMLHelpers {
@@ -39,31 +37,18 @@ public abstract class XMLHelpers {
             "\u200C-\u200D" + "\u2070-\u218F" + "\u2C00-\u2FEF" +
             "\u3001-\uD7FF" + "\uF900-\uFDCF" + "\uFDF0-\uFFFD" +
             "\ud800\udc00-\udbff\udfff" + "]");
-    public final static String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
 
-    public static String toNodeName(String className) {
-        if (StringUtils.isBlank(className)) {
-            return DEFAULT_VIEW_CLASS_NAME;
-        }
-
-        String fixedName = className
-                .replaceAll("[$@#&]", ".")
-                .replaceAll("\\.+", ".")
-                .replaceAll("(^\\.|\\.$)", "");
-        fixedName = XML10_START_TAG_PATTERN
-                .matcher(fixedName)
+    public static String toNodeName(String str) {
+        String nodeName = XML10_START_TAG_PATTERN
+                .matcher(str)
                 .replaceAll("");
-        fixedName = XML10_TAG_PATTERN
-                .matcher(fixedName)
+        return XML10_TAG_PATTERN
+                .matcher(nodeName)
                 .replaceAll("_");
-        if (!fixedName.equals(className)) {
-            Logger.info(String.format("Rewrote XML node name '%s' to '%s'", className, fixedName));
-        }
-        return StringUtils.isBlank(fixedName) ? DEFAULT_VIEW_CLASS_NAME : fixedName;
     }
 
     @Nullable
-    public static String toSafeString(Object source, String replacement) {
+    public static String toSafeString(@Nullable Object source, String replacement) {
         return source == null ? null : XML10_PATTERN
                 .matcher(String.valueOf(source))
                 .replaceAll(replacement);

@@ -36,19 +36,7 @@ public class XMLHelpersTests {
 
     @Test
     public void replacesInvalidCharsInNodeName() {
-        assertEquals(toNodeName("bl\na"), "bl_a");
-    }
-
-    @Test
-    public void handlesDotsInNodeName() {
-        assertEquals(toNodeName("`?bl.a.$.."), "bl.a");
-    }
-
-    @Test
-    public void handlesEmptyNodeName() {
-        assertEquals(toNodeName(".$"), XMLHelpers.DEFAULT_VIEW_CLASS_NAME);
-        assertEquals(toNodeName(""), XMLHelpers.DEFAULT_VIEW_CLASS_NAME);
-        assertEquals(toNodeName(null), XMLHelpers.DEFAULT_VIEW_CLASS_NAME);
+        assertEquals(toNodeName("1_bl\n1a"), "_bl_1a");
     }
 
     @Test

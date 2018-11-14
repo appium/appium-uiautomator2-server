@@ -24,6 +24,7 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.IOException;
@@ -37,7 +38,6 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.model.UiAutomationElement.rebuildForNewRoot;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
-import static io.appium.uiautomator2.utils.XMLHelpers.DEFAULT_VIEW_CLASS_NAME;
 import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
 import static io.appium.uiautomator2.utils.XMLHelpers.toSafeString;
 
@@ -47,6 +47,7 @@ public class AccessibilityNodeInfoDumper {
     private static final String UI_ELEMENT_INDEX = "uiElementIndex";
     private static final String NON_XML_CHAR_REPLACEMENT = "?";
     private static final String NAMESPACE = "";
+    private final static String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
 
     @Nullable
     private final AccessibilityNodeInfo root;
@@ -74,12 +75,28 @@ public class AccessibilityNodeInfoDumper {
         serializer.attribute(NAMESPACE, "height", Integer.toString(size.y));
     }
 
-    private void serializeUiElement(UiElement<?, ?> uiElement, final int depth) throws IOException {
-        String className = uiElement.getClassName();
-        if (className == null) {
-            className = DEFAULT_VIEW_CLASS_NAME;
+    private static String toXmlNodeName(@Nullable String className) {
+        if (StringUtils.isBlank(className)) {
+            return DEFAULT_VIEW_CLASS_NAME;
         }
-        final String nodeName = toNodeName(className);
+
+        String fixedName = className
+                .replaceAll("[$@#&]", ".")
+                .replaceAll("\\.+", ".")
+                .replaceAll("(^\\.|\\.$)", "");
+        fixedName = toNodeName(fixedName);
+        if (StringUtils.isBlank(fixedName)) {
+            fixedName = DEFAULT_VIEW_CLASS_NAME;
+        }
+        if (!fixedName.equals(className)) {
+            Logger.info(String.format("Rewrote class name '%s' to XML node name '%s'", className, fixedName));
+        }
+        return fixedName;
+    }
+
+    private void serializeUiElement(UiElement<?, ?> uiElement, final int depth) throws IOException {
+        final String className = uiElement.getClassName();
+        final String nodeName = toXmlNodeName(className);
         serializer.startTag(NAMESPACE, nodeName);
 
         for (Attribute attr : uiElement.attributeKeys()) {
