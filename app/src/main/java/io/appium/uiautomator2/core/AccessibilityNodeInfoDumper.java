@@ -20,69 +20,88 @@ import android.graphics.Point;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.SparseArray;
+import android.util.Xml;
 import android.view.Display;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.xmlpull.v1.XmlSerializer;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.StringWriter;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
-import io.appium.uiautomator2.model.UiAutomationElement;
 import io.appium.uiautomator2.model.UiElement;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 
+import static io.appium.uiautomator2.model.UiAutomationElement.rebuildForNewRoot;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
-import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.XMLHelpers.DEFAULT_VIEW_CLASS_NAME;
 import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
-import static io.appium.uiautomator2.utils.XMLHelpers.toSafeXmlString;
+import static io.appium.uiautomator2.utils.XMLHelpers.toSafeString;
 
 public class AccessibilityNodeInfoDumper {
     // https://github.com/appium/appium/issues/10204
     private static final int MAX_DEPTH = 70;
     private static final String UI_ELEMENT_INDEX = "uiElementIndex";
+    private static final String NON_XML_CHAR_REPLACEMENT = "?";
+    private static final String NAMESPACE = "";
 
-    private static void setNodeLocalName(Element element, String className) {
-        try {
-            setField("localName", tag(className), element);
-        } catch (UiAutomator2Exception e) {
-            Logger.error(e);
-        }
+    @Nullable
+    private final AccessibilityNodeInfo root;
+    @Nullable
+    private final SparseArray<UiElement<?, ?>> uiElementsMapping;
+    private boolean shouldAddDisplayInfo;
+    private XmlSerializer serializer;
+
+    public AccessibilityNodeInfoDumper() {
+        this(null, null);
     }
 
-    private static Element toDOMElement(UiElement<?, ?> uiElement, final Document document,
-                                        @Nullable final SparseArray<UiElement<?, ?>> uiElementsMapping,
-                                        final int depth) {
+    public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root,
+                                       @Nullable SparseArray<UiElement<?, ?>> uiElementsMapping) {
+        this.root = root;
+        this.uiElementsMapping = uiElementsMapping;
+    }
+
+    private void addDisplayInfo() throws IOException {
+        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        serializer.attribute(NAMESPACE, "rotation", Integer.toString(display.getRotation()));
+        serializer.attribute(NAMESPACE, "width", Integer.toString(size.x));
+        serializer.attribute(NAMESPACE, "height", Integer.toString(size.y));
+    }
+
+    private void serializeUiElement(UiElement<?, ?> uiElement, final int depth) throws IOException {
         String className = uiElement.getClassName();
         if (className == null) {
             className = DEFAULT_VIEW_CLASS_NAME;
         }
-        Element element = document.createElement(toNodeName(className));
-
-        /*
-         * Setting the Element's className field.
-         * Reason for setting className field in Element object explicitly,
-         * className property might contain special characters like '$' if it is a Inner class and
-         * just not possible to create Element object with special characters.
-         * But Appium should consider Inner classes i.e special characters should be included.
-         */
-        setNodeLocalName(element, className);
+        final String nodeName = toNodeName(className);
+        serializer.startTag(NAMESPACE, nodeName);
 
         for (Attribute attr : uiElement.attributeKeys()) {
-            if (attr.isExposableToXml()) {
-                setAttribute(element, attr, toSafeXmlString(uiElement.get(attr), "?"));
+            if (!attr.isExposableToXml()) {
+                continue;
             }
+            Object value = uiElement.get(attr);
+            if (value == null) {
+                continue;
+            }
+            serializer.attribute(NAMESPACE, attr.getName(), toSafeString(String.valueOf(value), NON_XML_CHAR_REPLACEMENT));
+        }
+        if (shouldAddDisplayInfo) {
+            addDisplayInfo();
+            // Display info is only added once to the root node
+            shouldAddDisplayInfo = false;
         }
 
         if (uiElementsMapping != null) {
             final int uiElementIndex = uiElementsMapping.size();
             uiElementsMapping.put(uiElementIndex, uiElement);
-            element.setAttribute(UI_ELEMENT_INDEX, Integer.toString(uiElementIndex));
+            serializer.attribute(NAMESPACE, UI_ELEMENT_INDEX, Integer.toString(uiElementIndex));
         }
 
         if (depth >= MAX_DEPTH) {
@@ -90,65 +109,34 @@ public class AccessibilityNodeInfoDumper {
                     "'%s'. The recursion is stopped to avoid StackOverflowError", MAX_DEPTH, className));
         } else {
             for (UiElement<?, ?> child : uiElement.getChildren()) {
-                element.appendChild(toDOMElement(child, document, uiElementsMapping, depth + 1));
+                serializeUiElement(child, depth + 1);
             }
         }
-        return element;
+        serializer.endTag(NAMESPACE, nodeName);
     }
 
-    private static void setAttribute(Element element, Attribute attr, Object value) {
-        if (value != null) {
-            element.setAttribute(attr.getName(), String.valueOf(value));
+    public synchronized String dumpToXml() {
+        serializer = Xml.newSerializer();
+        if (uiElementsMapping != null) {
+            uiElementsMapping.clear();
         }
-    }
+        shouldAddDisplayInfo = root == null;
 
-    public static Document asXmlDocument() {
-        return asXmlDocument(null, null);
-    }
-
-    public static Document asXmlDocument(@Nullable AccessibilityNodeInfo root,
-                                         @Nullable SparseArray<UiElement<?, ?>> uiElementsMapping) {
-        final long startTime = SystemClock.uptimeMillis();
-        final Document document;
+        final StringWriter writer = new StringWriter();
         try {
-            document = DocumentBuilderFactory.newInstance()
-                    .newDocumentBuilder()
-                    .newDocument();
-        } catch (ParserConfigurationException e) {
+            serializer.setOutput(writer);
+            serializer.startDocument("UTF-8", true);
+            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+            final long startTime = SystemClock.uptimeMillis();
+            final UiElement<?, ?> xpathRoot = root == null
+                    ? rebuildForNewRoot(currentActiveWindowRoot(), NotificationListener.getInstance().getToastMessage())
+                    : rebuildForNewRoot(root, null);
+            serializeUiElement(xpathRoot, 0);
+            serializer.endDocument();
+            Logger.info(String.format("The source XML tree has been fetched in %sms", SystemClock.uptimeMillis() - startTime));
+            return writer.toString();
+        } catch (Exception e) {
             throw new UiAutomator2Exception(e);
         }
-        final UiElement<?, ?> xpathRoot = root == null
-                ? UiAutomationElement.rebuildForNewRoot(currentActiveWindowRoot(), NotificationListener
-                .getInstance().getToastMessage())
-                : UiAutomationElement.rebuildForNewRoot(root, null);
-        final Element domNode = toDOMElement(xpathRoot, document, uiElementsMapping, 0);
-        if (root == null) {
-            alterDisplayInfo(domNode);
-        }
-        document.appendChild(domNode);
-        Logger.info(String.format("XML tree fetch time: %sms", SystemClock.uptimeMillis() - startTime));
-        return document;
-    }
-
-    private static void alterDisplayInfo(Element node) {
-        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        node.setAttribute("rotation", Integer.toString(display.getRotation()));
-        node.setAttribute("width", Integer.toString(size.x));
-        node.setAttribute("height", Integer.toString(size.y));
-    }
-
-    /**
-     * @param clsName the original class name
-     * @return The tag name used to build UiElement DOM. It is preferable to use
-     * this to build XPath instead of String literals.
-     */
-    private static String tag(String clsName) {
-        // the nth anonymous class has a class name ending in "Outer$n"
-        // and local inner classes have names ending in "Outer.$1Inner"
-        return clsName
-                .replaceAll("\\?+", "_")
-                .replaceAll("\\$[0-9]+", "\\$");
     }
 }

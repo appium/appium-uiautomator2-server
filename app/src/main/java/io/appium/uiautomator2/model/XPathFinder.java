@@ -19,10 +19,12 @@ import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -54,13 +56,13 @@ public class XPathFinder {
 
     public NodeInfoList find(@Nullable AccessibilityNodeInfo context) {
         final SparseArray<UiElement<?, ?>> uiElementsMapping = new SparseArray<>();
-        final Document document = AccessibilityNodeInfoDumper.asXmlDocument(context, uiElementsMapping);
+        final String documentStr = new AccessibilityNodeInfoDumper(context, uiElementsMapping).dumpToXml();
         final NodeList nodes;
         final NodeInfoList matchesList = new NodeInfoList();
         try {
             nodes = (NodeList) XPATH_COMPILER
                     .compile(xPathString)
-                    .evaluate(document, XPathConstants.NODESET);
+                    .evaluate(new InputSource(new StringReader(documentStr)), XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             throw new InvalidSelectorException(e);
         }
