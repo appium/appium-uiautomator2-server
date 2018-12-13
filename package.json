@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "android-apidemos": "^3.0.0",
-    "appium-adb": "^6.21.1",
+    "appium-adb": "^7.0.0",
     "appium-android-driver": "^4.3.1",
     "appium-gulp-plugins": "^3.1.0",
     "asyncbox": "^2.5.0",
