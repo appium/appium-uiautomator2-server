@@ -51,7 +51,7 @@ public class CustomUiDevice {
     private static final String FIELD_M_INSTRUMENTATION = "mInstrumentation";
     private static final String FIELD_API_LEVEL_ACTUAL = "API_LEVEL_ACTUAL";
 
-    private static CustomUiDevice INSTANCE = new CustomUiDevice();
+    private static final CustomUiDevice INSTANCE = new CustomUiDevice();
     private final Method METHOD_FIND_MATCH;
     private final Method METHOD_FIND_MATCHS;
     private final Class ByMatcher;
@@ -69,7 +69,7 @@ public class CustomUiDevice {
      * with UiAutomatorViewer customizing getWindowRoots() method to skip the multi-window search
      * based user passed property
      */
-    public CustomUiDevice() {
+    private CustomUiDevice() {
         try {
 
             this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
@@ -87,7 +87,7 @@ public class CustomUiDevice {
         }
     }
 
-    public static CustomUiDevice getInstance() {
+    public static synchronized CustomUiDevice getInstance() {
         return INSTANCE;
     }
 
