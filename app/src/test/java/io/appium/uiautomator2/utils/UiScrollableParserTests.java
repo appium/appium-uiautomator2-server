@@ -16,12 +16,6 @@
 
 package io.appium.uiautomator2.utils;
 
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiScrollable;
-import android.support.test.uiautomator.UiSelector;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,6 +29,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiScrollable;
+import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 
 import static org.junit.Assert.assertFalse;
@@ -223,7 +222,7 @@ public class UiScrollableParserTests {
 
     /**
      * We can't mock all dependencies of UiScrollable due to package private modifier
-     * of {@link android.support.test.uiautomator.QueryController}.
+     * of {@link androidx.test.uiautomator.QueryController}.
      * But we can stub methods with these unmockable deps.
      */
     private class UiScrollableParserSpy extends UiScrollableParser {

@@ -15,7 +15,6 @@
  */
 package io.appium.uiautomator2.model;
 
-import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -31,11 +30,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import androidx.annotation.Nullable;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
-import static android.support.test.internal.util.Checks.checkNotNull;
+import static androidx.test.internal.util.Checks.checkNotNull;
 
 /**
  * Find matching UiElement by XPath.

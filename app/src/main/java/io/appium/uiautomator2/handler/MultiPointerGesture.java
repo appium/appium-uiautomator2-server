@@ -21,17 +21,14 @@ public class MultiPointerGesture extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         final PointerCoords[][] pcs = parsePointerCoords(request);
-
-        Boolean rt = UiAutomatorBridge.getInstance().getInteractionController().performMultiPointerGesture(pcs);
-        if (!rt) {
+        if (!UiAutomatorBridge.getInstance().getInteractionController().performMultiPointerGesture(pcs)) {
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
                     "Unable to perform multi pointer gesture");
         }
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "OK");
     }
 
-    private PointerCoords[][] parsePointerCoords(final IHttpRequest request)
-            throws JSONException {
+    private PointerCoords[][] parsePointerCoords(final IHttpRequest request) throws JSONException {
         final JSONArray actions = (JSONArray) getPayload(request).get("actions");
 
         final double time = computeLongestTime(actions);

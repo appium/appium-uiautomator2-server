@@ -16,12 +16,11 @@
 
 package io.appium.uiautomator2.model;
 
-import android.support.annotation.Nullable;
-import android.support.test.uiautomator.UiSelector;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
+import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Logger;
@@ -62,11 +61,11 @@ public class KnownElements {
                 try {
                     if (by instanceof By.ById) {
                         String locator = rewriteIdLocator((By.ById) by);
-                        ui2Object = CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.res(locator));
+                        ui2Object = CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator));
                     } else if (by instanceof By.ByAccessibilityId) {
-                        ui2Object = CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.desc(by.getElementLocator()));
+                        ui2Object = CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.desc(by.getElementLocator()));
                     } else if (by instanceof By.ByClass) {
-                        ui2Object = CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.clazz(by.getElementLocator()));
+                        ui2Object = CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.clazz(by.getElementLocator()));
                     } else if (by instanceof By.ByXPath) {
                         final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null);
                         if (matchedNodes.size() > 0) {

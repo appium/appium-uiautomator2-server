@@ -61,7 +61,7 @@ public class AXWindowHelpers {
         while (end > SystemClock.uptimeMillis()) {
             AccessibilityNodeInfo root = null;
             try {
-                root = UiAutomatorBridge.getInstance().getQueryController().getAccessibilityRootNode();
+                root = UiAutomatorBridge.getInstance().getAccessibilityRootNode();
             } catch (Exception e) {
                 /*
                  * Sometimes getAccessibilityRootNode() throws

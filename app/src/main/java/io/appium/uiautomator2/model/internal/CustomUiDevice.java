@@ -18,13 +18,6 @@ package io.appium.uiautomator2.model.internal;
 
 import android.app.Instrumentation;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.BySelector;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.UiSelector;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.lang.reflect.Constructor;
@@ -33,6 +26,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.utils.Device;
@@ -74,10 +74,10 @@ public class CustomUiDevice {
 
             this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
             this.API_LEVEL_ACTUAL = getField(UiDevice.class, FIELD_API_LEVEL_ACTUAL, Device.getUiDevice());
-            METHOD_FIND_MATCH = method("android.support.test.uiautomator.ByMatcher", "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
-            METHOD_FIND_MATCHS = method("android.support.test.uiautomator.ByMatcher", "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
+            METHOD_FIND_MATCH = method("androidx.test.uiautomator.ByMatcher", "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
+            METHOD_FIND_MATCHS = method("androidx.test.uiautomator.ByMatcher", "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
 
-            ByMatcher = ReflectionUtils.getClass("android.support.test.uiautomator" + ".ByMatcher");
+            ByMatcher = ReflectionUtils.getClass("androidx.test.uiautomator" + ".ByMatcher");
         } catch (Error error) {
             Logger.error("ERROR", "error", error);
             throw error;
@@ -129,7 +129,7 @@ public class CustomUiDevice {
             if (node == null) {
                 return null;
             }
-            Class uiObject2 = Class.forName("android.support.test.uiautomator.UiObject2");
+            Class uiObject2 = Class.forName("androidx.test.uiautomator.UiObject2");
             Constructor cons = uiObject2.getDeclaredConstructors()[0];
             cons.setAccessible(true);
             Object[] constructorParams = {getUiDevice(), selector, node};
@@ -165,7 +165,7 @@ public class CustomUiDevice {
 
         List<AccessibilityNodeInfo> axNodesList;
         if (selector instanceof BySelector) {
-            ReflectionUtils.getClass("android.support.test.uiautomator.ByMatcher");
+            ReflectionUtils.getClass("androidx.test.uiautomator.ByMatcher");
             Object nodes = invoke(METHOD_FIND_MATCHS, ByMatcher, getUiDevice(), selector,
                     getWindowRoots());
             //noinspection unchecked
@@ -177,7 +177,7 @@ public class CustomUiDevice {
         }
         for (AccessibilityNodeInfo node : axNodesList) {
             try {
-                Class uiObject2 = Class.forName("android.support.test.uiautomator.UiObject2");
+                Class uiObject2 = Class.forName("androidx.test.uiautomator.UiObject2");
                 Constructor cons = uiObject2.getDeclaredConstructors()[0];
                 cons.setAccessible(true);
                 Object[] constructorParams = {getUiDevice(), toSelector(node), node};

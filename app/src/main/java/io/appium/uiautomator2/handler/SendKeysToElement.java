@@ -16,11 +16,10 @@
 
 package io.appium.uiautomator2.handler;
 
-import android.support.test.uiautomator.UiObjectNotFoundException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -31,7 +30,7 @@ import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
-import static android.support.test.uiautomator.By.focused;
+import static androidx.test.uiautomator.By.focused;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ElementHelpers.findElement;
 

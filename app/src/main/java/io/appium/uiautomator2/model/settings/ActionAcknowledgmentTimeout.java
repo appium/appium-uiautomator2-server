@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model.settings;
 
-import android.support.test.uiautomator.Configurator;
+import androidx.test.uiautomator.Configurator;
 
 public class ActionAcknowledgmentTimeout extends AbstractSetting<Long> {
 

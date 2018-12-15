@@ -16,11 +16,11 @@
 
 package io.appium.uiautomator2.utils;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class JSONUtils {
     @NonNull

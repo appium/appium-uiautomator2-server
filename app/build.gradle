@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.github.JakeWharton:sdk-manager-plugin:0ce4cdf08009d79223850a59959d9d6e774d0f77'
         classpath 'de.mobilej.unmock:UnMockPlugin:0.6.4'
     }
@@ -15,19 +15,19 @@ apply plugin: 'com.android.application'
 apply plugin: 'de.mobilej.unmock'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId 'io.appium.uiautomator2'
         minSdkVersion 21
-        targetSdkVersion 24
+        targetSdkVersion 28
         versionCode 22
         archivesBaseName = 'appium-uiautomator2'
         /**
          * versionName should be updated and inline with version in package.json for every npm release.
          */
         versionName '2.8.0'
-        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         debug {
@@ -71,25 +71,24 @@ unMock {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'io.netty:netty-all:4.0.41.Final'
-    compile 'com.jayway.jsonpath:json-path:0.8.1'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.android.support.test:runner:0.5'
-    compile 'com.android.support:support-annotations:23.1.1'
-    compile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'io.netty:netty-all:4.0.41.Final'
+    implementation 'com.jayway.jsonpath:json-path:0.8.1'
+    implementation 'com.squareup.okhttp:okhttp:2.5.0'
+    implementation 'androidx.test:runner:1.1.1'
+    implementation 'androidx.test:core:1.1.0'
+    implementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     unmock 'org.robolectric:android-all:7.1.0_r7-robolectric-0'
-    testCompile 'org.json:json:20160810'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.powermock:powermock-module-junit4:1.7.4'
-    testCompile 'org.powermock:powermock-module-junit4-rule:1.7.4'
-    testCompile 'org.powermock:powermock-api-mockito2:1.7.4'
-    testCompile 'org.powermock:powermock-classloading-xstream:1.7.4'
-    testCompile 'org.robolectric:robolectric:3.3.2'
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'com.android.support:support-annotations:23.1.1'
-    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2.2'
+    testImplementation 'org.json:json:20160810'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
+    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
+    testImplementation 'org.powermock:powermock-api-mockito2:1.7.4'
+    testImplementation 'org.powermock:powermock-classloading-xstream:1.7.4'
+    testImplementation 'org.robolectric:robolectric:4.0.2'
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-web:3.1.1'
 }
 
 task installAUT(type: Exec) {
@@ -97,12 +96,12 @@ task installAUT(type: Exec) {
     description = 'Install app under test'
     doFirst {
         println('Install AUT')
-        def adb = android.getAdbExecutable().toString()
+        def adb = "$System.env.ANDROID_HOME/platform-tools/adb"
         def apk = file('../node_modules/android-apidemos/apks/ApiDemos-debug.apk')
         def sdkVersion = "$adb shell getprop ro.build.version.sdk".execute().text.trim()
         println "Device SDK version: $sdkVersion"
         /* This seems weird but it is what it is: https://github.com/wix/detox/issues/274 */
-        def command = sdkVersion.toInteger() < 24 ? "$adb install -rg $apk" : "$adb install -r -g $apk"
+        def command = sdkVersion.toInteger() < 23 ? "$adb install -r $apk" : "$adb install -r -g $apk"
         println "Execute command: $command"
         commandLine command.split(' ')
     }

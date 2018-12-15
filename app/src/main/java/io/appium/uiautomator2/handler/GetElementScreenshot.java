@@ -1,8 +1,8 @@
 package io.appium.uiautomator2.handler;
 
 import android.graphics.Rect;
-import android.support.test.uiautomator.UiObjectNotFoundException;
 
+import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;

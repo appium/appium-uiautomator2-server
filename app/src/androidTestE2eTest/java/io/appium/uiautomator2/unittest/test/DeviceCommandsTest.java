@@ -17,7 +17,6 @@ package io.appium.uiautomator2.unittest.test;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.test.uiautomator.UiDevice;
 import android.util.Base64;
 
 import org.json.JSONArray;
@@ -31,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import androidx.test.uiautomator.UiDevice;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.server.WDStatus;
@@ -41,7 +41,7 @@ import io.appium.uiautomator2.unittest.test.internal.RootRequired;
 import io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices;
 import io.appium.uiautomator2.utils.Device;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static io.appium.uiautomator2.unittest.test.internal.Client.waitForNettyStatus;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.getJsonObjectCountInJsonArray;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElement;

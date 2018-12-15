@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.handler;
 
 import android.app.Instrumentation;
-import android.support.test.InstrumentationRegistry;
 import android.util.Base64;
 
 import org.json.JSONException;
@@ -33,8 +32,10 @@ import io.appium.uiautomator2.utils.ClipboardHelper;
 import io.appium.uiautomator2.utils.ClipboardHelper.ClipDataType;
 import io.appium.uiautomator2.utils.Logger;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 public class SetClipboard extends SafeRequestHandler {
-    private final Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
+    private final Instrumentation mInstrumentation = getInstrumentation();
 
     public SetClipboard(String mappedUri) {
         super(mappedUri);

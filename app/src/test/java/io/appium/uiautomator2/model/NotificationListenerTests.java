@@ -17,8 +17,6 @@
 package io.appium.uiautomator2.model;
 
 import android.app.UiAutomation.OnAccessibilityEventListener;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.UiDevice;
 import android.view.accessibility.AccessibilityEvent;
 
 import org.junit.Before;
@@ -32,6 +30,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
 import io.appium.uiautomator2.core.UiAutomation;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 

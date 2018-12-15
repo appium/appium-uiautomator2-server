@@ -15,12 +15,11 @@
  */
 package io.appium.uiautomator2.unittest.test.internal.commands;
 
-import android.support.annotation.Nullable;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import androidx.annotation.Nullable;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.unittest.test.Config;
 import io.appium.uiautomator2.unittest.test.internal.Client;

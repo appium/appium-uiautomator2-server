@@ -18,7 +18,6 @@ package io.appium.uiautomator2.core;
 
 import android.graphics.Point;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.util.SparseArray;
 import android.util.Xml;
 import android.view.Display;
@@ -30,6 +29,7 @@ import org.xmlpull.v1.XmlSerializer;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import androidx.annotation.Nullable;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.UiElement;

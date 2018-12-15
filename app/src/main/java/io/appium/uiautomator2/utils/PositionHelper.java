@@ -17,9 +17,9 @@
 package io.appium.uiautomator2.utils;
 
 import android.graphics.Rect;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObjectNotFoundException;
 
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 
 public abstract class PositionHelper {

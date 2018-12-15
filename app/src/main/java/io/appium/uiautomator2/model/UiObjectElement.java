@@ -17,13 +17,6 @@
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
-import android.support.annotation.Nullable;
-import android.support.test.uiautomator.BySelector;
-import android.support.test.uiautomator.Configurator;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -31,6 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import androidx.annotation.Nullable;
+import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.Configurator;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;

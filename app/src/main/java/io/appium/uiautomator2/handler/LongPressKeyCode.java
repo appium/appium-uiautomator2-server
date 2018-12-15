@@ -23,12 +23,13 @@ import android.view.KeyEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.appium.uiautomator2.core.InteractionController;
+import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.server.WDStatus;
 
-import static io.appium.uiautomator2.utils.InteractionUtils.injectEventSync;
 import static io.appium.uiautomator2.utils.JSONUtils.readInteger;
 
 public class LongPressKeyCode extends SafeRequestHandler {
@@ -47,16 +48,17 @@ public class LongPressKeyCode extends SafeRequestHandler {
         flags = flags == null ? 0 : flags;
 
         final long downTime = SystemClock.uptimeMillis();
-        boolean isSuccessful = injectEventSync(new KeyEvent(downTime, downTime,
-                KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
-                0, flags));
+        final InteractionController interactionController = UiAutomatorBridge.getInstance().getInteractionController();
+        boolean isSuccessful = interactionController.injectEventSync(new KeyEvent(downTime, downTime,
+                        KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
+                        0, flags));
         // https://android.googlesource.com/platform/frameworks/base.git/+/9d83b4783c33f1fafc43f367503e129e5a5047fa%5E%21/#F0
-        isSuccessful &= injectEventSync(new KeyEvent(downTime, SystemClock.uptimeMillis(),
-                KeyEvent.ACTION_DOWN, keyCode, 1, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
-                0, flags | KeyEvent.FLAG_LONG_PRESS));
-        isSuccessful &= injectEventSync(new KeyEvent(downTime, SystemClock.uptimeMillis(),
-                KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
-                0, flags));
+        isSuccessful &= interactionController.injectEventSync(new KeyEvent(downTime, SystemClock.uptimeMillis(),
+                        KeyEvent.ACTION_DOWN, keyCode, 1, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
+                        0, flags | KeyEvent.FLAG_LONG_PRESS));
+        isSuccessful &= interactionController.injectEventSync(new KeyEvent(downTime, SystemClock.uptimeMillis(),
+                        KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
+                        0, flags));
         if (!isSuccessful) {
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
                     "Cannot inject long press event for key code " + keyCode);

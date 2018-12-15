@@ -1,9 +1,8 @@
 package io.appium.uiautomator2.handler;
 
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
-
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -69,7 +68,7 @@ public class ScrollToElement extends SafeRequestHandler {
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, elementIsFound);
     }
 
-    private class UiScrollable extends android.support.test.uiautomator.UiScrollable {
+    private class UiScrollable extends androidx.test.uiautomator.UiScrollable {
 
         /**
          * Constructor.

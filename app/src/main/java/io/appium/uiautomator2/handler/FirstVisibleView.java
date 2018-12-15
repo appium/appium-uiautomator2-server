@@ -1,16 +1,15 @@
 package io.appium.uiautomator2.handler;
 
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 import java.util.UUID;
 
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;

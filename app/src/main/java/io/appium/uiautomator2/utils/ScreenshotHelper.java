@@ -19,11 +19,11 @@ package io.appium.uiautomator2.utils;
 import android.app.UiAutomation;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.support.annotation.Nullable;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 
+import androidx.annotation.Nullable;
 import io.appium.uiautomator2.common.exceptions.CompressScreenshotException;
 import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
 import io.appium.uiautomator2.common.exceptions.TakeScreenshotException;

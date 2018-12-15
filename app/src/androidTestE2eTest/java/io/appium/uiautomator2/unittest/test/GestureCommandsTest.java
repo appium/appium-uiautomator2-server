@@ -36,11 +36,9 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.ElementComm
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.GestureCommands.drag;
 import static io.appium.uiautomator2.unittest.test.internal.commands.GestureCommands.flickOnElement;
-import static io.appium.uiautomator2.unittest.test.internal.commands.GestureCommands
-        .flickOnPosition;
+import static io.appium.uiautomator2.unittest.test.internal.commands.GestureCommands.flickOnPosition;
 import static io.appium.uiautomator2.unittest.test.internal.commands.GestureCommands.longClick;
-import static io.appium.uiautomator2.unittest.test.internal.commands.GestureCommands
-        .multiPointerGesture;
+import static io.appium.uiautomator2.unittest.test.internal.commands.GestureCommands.multiPointerGesture;
 import static io.appium.uiautomator2.unittest.test.internal.commands.GestureCommands.swipe;
 import static io.appium.uiautomator2.unittest.test.internal.commands.GestureCommands.tap;
 import static io.appium.uiautomator2.unittest.test.internal.commands.GestureCommands.touchDown;

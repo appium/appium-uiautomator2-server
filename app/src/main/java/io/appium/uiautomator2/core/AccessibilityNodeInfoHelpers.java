@@ -20,12 +20,12 @@ import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.test.uiautomator.UiDevice;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
+import androidx.annotation.Nullable;
+import androidx.test.uiautomator.UiDevice;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;

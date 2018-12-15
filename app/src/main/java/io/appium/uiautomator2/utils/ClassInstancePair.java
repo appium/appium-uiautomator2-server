@@ -16,8 +16,8 @@
 
 package io.appium.uiautomator2.utils;
 
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.BySelector;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 
 /**
  * Simple class for holding a String 2-tuple. An android class, and instance number, used for

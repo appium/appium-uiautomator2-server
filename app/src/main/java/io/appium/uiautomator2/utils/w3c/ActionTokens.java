@@ -16,11 +16,12 @@
 
 package io.appium.uiautomator2.utils.w3c;
 
-import android.support.annotation.Nullable;
 import android.util.LongSparseArray;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 public class ActionTokens {
     private final LongSparseArray<List<InputEventParams>> tokenizedActions = new LongSparseArray<>();

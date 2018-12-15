@@ -16,9 +16,6 @@
 
 package io.appium.uiautomator2.utils;
 
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
-
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 
@@ -187,7 +186,7 @@ public class UiSelectorParserTests {
     public void shouldThrowExceptionIfArgTypeIsNotSupported() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         expectedException.expect(UiSelectorSyntaxException.class);
-        expectedException.expectMessage("Type `class java.lang.Object` is not supported.");
+        expectedException.expectMessage("Could not parse");
         new UiSelectorParser("new UiSelector().equals(test)").parse();
     }
 

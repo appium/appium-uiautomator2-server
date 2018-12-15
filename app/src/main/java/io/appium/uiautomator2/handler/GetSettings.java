@@ -1,10 +1,9 @@
 package io.appium.uiautomator2.handler;
 
-import android.support.annotation.VisibleForTesting;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import androidx.annotation.VisibleForTesting;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;

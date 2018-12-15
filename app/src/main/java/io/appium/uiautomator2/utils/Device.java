@@ -1,14 +1,14 @@
 package io.appium.uiautomator2.utils;
 
 import android.os.RemoteException;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiScrollable;
-import android.support.test.uiautomator.UiSelector;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiScrollable;
+import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.By;
@@ -17,7 +17,7 @@ import io.appium.uiautomator2.model.UiObjectElement;
 
 public abstract class Device {
 
-    public static final UiDevice getUiDevice() {
+    public static UiDevice getUiDevice() {
         return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
 
@@ -66,7 +66,7 @@ public abstract class Device {
         try {
             getUiDevice().waitForIdle(timeInMS);
         } catch (Exception e) {
-            Logger.error(String.format("Unable wait %d for AUT to idle", timeInMS));
+            Logger.error(String.format("Unable wait %s for AUT to idle", timeInMS));
         }
     }
 

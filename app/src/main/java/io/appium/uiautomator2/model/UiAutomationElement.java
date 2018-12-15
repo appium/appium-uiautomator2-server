@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.model;
 
 import android.annotation.TargetApi;
-import android.support.annotation.Nullable;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
@@ -29,11 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import androidx.annotation.Nullable;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 
-import static android.support.test.internal.util.Checks.checkNotNull;
+import static androidx.test.internal.util.Checks.checkNotNull;
 import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;

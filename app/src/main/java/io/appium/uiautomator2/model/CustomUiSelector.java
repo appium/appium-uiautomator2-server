@@ -16,9 +16,9 @@
 
 package io.appium.uiautomator2.model;
 
-import android.support.test.uiautomator.UiSelector;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.utils.Attribute;
 
 import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;

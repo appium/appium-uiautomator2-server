@@ -16,9 +16,6 @@
 
 package io.appium.uiautomator2.model.settings;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.UiDevice;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +23,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
 import io.appium.uiautomator2.core.UiAutomation;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.NotificationListener;

@@ -19,23 +19,17 @@ package io.appium.uiautomator2.utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowApplication;
 
-import io.appium.uiautomator2.test.BuildConfig;
-
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class)
 public class ClipboardHelperTests {
 
     @Test
     public void verifySettingAndGettingClipboardContent() {
         final String text = "Appium is the best of the best";
-        final ClipboardHelper clipboardHelper = new ClipboardHelper(ShadowApplication
-                .getInstance()
-                .getApplicationContext());
+        final ClipboardHelper clipboardHelper = new ClipboardHelper(getApplicationContext());
         clipboardHelper.setTextData(null, text);
         assertEquals(clipboardHelper.getTextData(), text);
     }

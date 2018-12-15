@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.server;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +31,7 @@ import io.appium.uiautomator2.model.settings.ShutdownOnPowerDisconnect;
 import io.appium.uiautomator2.utils.Logger;
 
 import static android.content.Intent.ACTION_POWER_DISCONNECTED;
-import static android.support.test.InstrumentationRegistry.getContext;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.uiautomator2.server.ServerConfig.getServerPort;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 
@@ -57,7 +58,7 @@ public class ServerInstrumentation {
 
     public static synchronized ServerInstrumentation getInstance() {
         if (instance == null) {
-            instance = new ServerInstrumentation(getContext(), getServerPort());
+            instance = new ServerInstrumentation(getApplicationContext(), getServerPort());
         }
         return instance;
     }
@@ -181,6 +182,7 @@ public class ServerInstrumentation {
             return server;
         }
 
+        @SuppressLint("InvalidWakeLockTag")
         private void startServer() {
             // Get a wake lock to stop the cpu going to sleep
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);

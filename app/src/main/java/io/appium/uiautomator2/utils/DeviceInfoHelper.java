@@ -20,11 +20,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings.Secure;
-import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.Display;
 
+import androidx.annotation.Nullable;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 
 

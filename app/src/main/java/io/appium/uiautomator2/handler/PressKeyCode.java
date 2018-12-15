@@ -23,6 +23,8 @@ import android.view.KeyEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.appium.uiautomator2.core.InteractionController;
+import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -30,7 +32,6 @@ import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
-import static io.appium.uiautomator2.utils.InteractionUtils.injectEventSync;
 import static io.appium.uiautomator2.utils.JSONUtils.readInteger;
 
 public class PressKeyCode extends SafeRequestHandler {
@@ -54,14 +55,15 @@ public class PressKeyCode extends SafeRequestHandler {
                 isSuccessful = getUiDevice().pressKeyCode(keyCode, metaState);
             }
         } else {
+            final InteractionController interactionController = UiAutomatorBridge.getInstance().getInteractionController();
             metaState = metaState == null ? 0 : metaState;
             long downTime = SystemClock.uptimeMillis();
-            isSuccessful = injectEventSync(new KeyEvent(downTime, downTime,
-                    KeyEvent.ACTION_DOWN, keyCode, 0, metaState,
-                    KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
-            isSuccessful &= injectEventSync(new KeyEvent(downTime, SystemClock.uptimeMillis(),
-                    KeyEvent.ACTION_UP, keyCode, 0, metaState,
-                    KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
+            isSuccessful = interactionController.injectEventSync(new KeyEvent(downTime, downTime,
+                            KeyEvent.ACTION_DOWN, keyCode, 0, metaState,
+                            KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
+            isSuccessful &= interactionController.injectEventSync(new KeyEvent(downTime, SystemClock.uptimeMillis(),
+                            KeyEvent.ACTION_UP, keyCode, 0, metaState,
+                            KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
         }
         if (!isSuccessful) {
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, String.format(

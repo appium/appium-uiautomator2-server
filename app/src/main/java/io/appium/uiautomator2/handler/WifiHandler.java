@@ -3,7 +3,6 @@ package io.appium.uiautomator2.handler;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.SystemClock;
-import android.support.test.InstrumentationRegistry;
 
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.server.WDStatus;
@@ -12,6 +11,7 @@ import static android.net.wifi.WifiManager.WIFI_STATE_DISABLED;
 import static android.net.wifi.WifiManager.WIFI_STATE_DISABLING;
 import static android.net.wifi.WifiManager.WIFI_STATE_ENABLED;
 import static android.net.wifi.WifiManager.WIFI_STATE_ENABLING;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 public class WifiHandler {
 
@@ -19,8 +19,7 @@ public class WifiHandler {
 
 
     public static AppiumResponse toggle(final boolean setTo, final String sessionId) {
-        wfm = (WifiManager) InstrumentationRegistry
-                .getInstrumentation().getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wfm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         boolean status = wfm.setWifiEnabled(setTo);
         if (!status) {

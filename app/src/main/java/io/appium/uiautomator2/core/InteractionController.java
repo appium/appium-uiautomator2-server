@@ -26,7 +26,7 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 public class InteractionController {
 
     public static final String METHOD_PERFORM_MULTI_POINTER_GESTURE = "performMultiPointerGesture";
-    private static final String CLASS_INTERACTION_CONTROLLER = "android.support.test.uiautomator.InteractionController";
+    private static final String CLASS_INTERACTION_CONTROLLER = "androidx.test.uiautomator.InteractionController";
     private static final String METHOD_SEND_KEY = "sendKey";
     private static final String METHOD_INJECT_EVENT_SYNC = "injectEventSync";
     private static final String METHOD_TOUCH_DOWN = "touchDown";
@@ -39,10 +39,15 @@ public class InteractionController {
     }
 
     public boolean sendKey(int keyCode, int metaState) throws UiAutomator2Exception {
-        return (Boolean) invoke(method(CLASS_INTERACTION_CONTROLLER, METHOD_SEND_KEY, int.class, int.class), interactionController, keyCode, metaState);
+        return (Boolean) invoke(method(CLASS_INTERACTION_CONTROLLER, METHOD_SEND_KEY, int.class, int.class),
+                interactionController, keyCode, metaState);
     }
 
-    public boolean injectEventSync(final InputEvent event) throws UiAutomator2Exception {
+    public boolean injectEventSync(final InputEvent event, boolean shouldRegister) throws UiAutomator2Exception {
+        if (!shouldRegister) {
+            return (Boolean) invoke(method(CLASS_INTERACTION_CONTROLLER,
+                    METHOD_INJECT_EVENT_SYNC, InputEvent.class), interactionController, event);
+        }
         return EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
             @Override
             public void run() {
@@ -51,6 +56,10 @@ public class InteractionController {
                 setResult(result);
             }
         });
+    }
+
+    public boolean injectEventSync(final InputEvent event) throws UiAutomator2Exception {
+        return injectEventSync(event, true);
     }
 
     public boolean touchDown(final int x, final int y) throws UiAutomator2Exception {

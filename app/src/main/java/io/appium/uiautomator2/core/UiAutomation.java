@@ -16,7 +16,8 @@
 package io.appium.uiautomator2.core;
 
 import android.app.UiAutomation.OnAccessibilityEventListener;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 

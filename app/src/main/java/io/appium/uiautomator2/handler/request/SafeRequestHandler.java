@@ -1,12 +1,11 @@
 package io.appium.uiautomator2.handler.request;
 
-import android.support.test.uiautomator.StaleObjectException;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-
 import org.json.JSONException;
 
 import java.text.MessageFormat;
 
+import androidx.test.uiautomator.StaleObjectException;
+import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;

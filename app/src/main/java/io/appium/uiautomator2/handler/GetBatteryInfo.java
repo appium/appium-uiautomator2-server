@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.handler;
 
 import android.app.Instrumentation;
-import android.support.test.InstrumentationRegistry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,8 +28,10 @@ import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.BatteryHelper;
 import io.appium.uiautomator2.utils.Logger;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 public class GetBatteryInfo extends SafeRequestHandler {
-    private final Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
+    private final Instrumentation mInstrumentation = getInstrumentation();
 
     public GetBatteryInfo(String mappedUri) {
         super(mappedUri);

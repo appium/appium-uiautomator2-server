@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.handler;
 
 import android.app.Instrumentation;
-import android.support.test.InstrumentationRegistry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,10 +28,11 @@ import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.DeviceInfoHelper;
 import io.appium.uiautomator2.utils.Logger;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
 
 public class GetDeviceInfo extends SafeRequestHandler {
-    private final Instrumentation mInstrumentation = InstrumentationRegistry.getInstrumentation();
+    private final Instrumentation mInstrumentation = getInstrumentation();
 
     public GetDeviceInfo(String mappedUri) {
         super(mappedUri);

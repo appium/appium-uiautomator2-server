@@ -14,8 +14,7 @@ public class TouchDown extends TouchEvent {
     public boolean executeTouchEvent() throws UiAutomator2Exception {
         printEventDebugLine("TouchDown");
         try {
-            boolean isTouchDownPerformed = UiAutomatorBridge.getInstance().getInteractionController().touchDown(clickX, clickY);
-            return isTouchDownPerformed;
+            return UiAutomatorBridge.getInstance().getInteractionController().touchDown(clickX, clickY);
         } catch (Exception e) {
             Logger.error("Problem invoking touchDown: " + e);
             return false;

@@ -16,12 +16,12 @@
 
 package io.appium.uiautomator2.model;
 
-import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityEvent;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import androidx.annotation.NonNull;
 import io.appium.uiautomator2.core.UiAutomation;
 import io.appium.uiautomator2.utils.Logger;
 

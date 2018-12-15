@@ -1,7 +1,5 @@
 package io.appium.uiautomator2.handler.request;
 
-import android.support.test.uiautomator.UiObjectNotFoundException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.server.AppiumServlet;

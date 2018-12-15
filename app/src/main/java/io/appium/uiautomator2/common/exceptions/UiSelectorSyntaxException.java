@@ -16,8 +16,7 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
-import android.support.annotation.Nullable;
-
+import androidx.annotation.Nullable;
 import io.appium.uiautomator2.utils.UiSelectorParser;
 
 @SuppressWarnings("serial")

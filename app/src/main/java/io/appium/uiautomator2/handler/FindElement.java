@@ -16,15 +16,14 @@
 
 package io.appium.uiautomator2.handler;
 
-import android.support.annotation.Nullable;
-import android.support.test.uiautomator.UiObjectNotFoundException;
-import android.support.test.uiautomator.UiSelector;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.UUID;
 
+import androidx.annotation.Nullable;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
@@ -95,11 +94,11 @@ public class FindElement extends SafeRequestHandler {
 
         if (by instanceof ById) {
             String locator = rewriteIdLocator((ById) by);
-            return CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.res(locator));
+            return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {
-            return CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.desc(by.getElementLocator()));
+            return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.desc(by.getElementLocator()));
         } else if (by instanceof ByClass) {
-            return CustomUiDevice.getInstance().findObject(android.support.test.uiautomator.By.clazz(by.getElementLocator()));
+            return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.clazz(by.getElementLocator()));
         } else if (by instanceof By.ByXPath) {
             final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null);
             if (matchedNodes.size() == 0) {
@@ -127,11 +126,11 @@ public class FindElement extends SafeRequestHandler {
 
         if (by instanceof ById) {
             String locator = rewriteIdLocator((ById) by);
-            return element.getChild(android.support.test.uiautomator.By.res(locator));
+            return element.getChild(androidx.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {
-            return element.getChild(android.support.test.uiautomator.By.desc(by.getElementLocator()));
+            return element.getChild(androidx.test.uiautomator.By.desc(by.getElementLocator()));
         } else if (by instanceof ByClass) {
-            return element.getChild(android.support.test.uiautomator.By.clazz(by.getElementLocator()));
+            return element.getChild(androidx.test.uiautomator.By.clazz(by.getElementLocator()));
         } else if (by instanceof By.ByXPath) {
             final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), element);
             if (matchedNodes.size() == 0) {

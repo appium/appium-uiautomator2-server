@@ -28,9 +28,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.appium.uiautomator2.core.InteractionController;
+import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.utils.Logger;
 
-import static io.appium.uiautomator2.utils.InteractionUtils.injectEventSync;
 import static io.appium.uiautomator2.utils.w3c.ActionHelpers.normalizeSequence;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.EVENT_INJECTION_DELAY_MS;
 
@@ -40,10 +41,12 @@ public class ActionsExecutor {
             MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
     );
     private final ActionTokens actionTokens;
+    private final InteractionController interactionController;
 
     public ActionsExecutor(ActionTokens actionTokens) {
         this.actionTokens = actionTokens;
         this.keyCharacterMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
+        this.interactionController = UiAutomatorBridge.getInstance().getInteractionController();
     }
 
     private static MotionEvent.PointerProperties[] filterPointerProperties(
@@ -106,7 +109,7 @@ public class ActionsExecutor {
                             eventTime, keyAction, event.getKeyCode(), 0,
                             event.getMetaState() | metaKeysToState(depressedMetaKeys),
                             KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0);
-                    result &= injectEventSync(keyEvent);
+                    result &= interactionController.injectEventSync(keyEvent, false);
                     logEvent(keyEvent, eventTime, result);
                 }
             }
@@ -127,7 +130,7 @@ public class ActionsExecutor {
         final KeyEvent keyEvent = new KeyEvent(startTimestamp + eventParam.startDelta,
                 eventTime, keyAction, w3CKeyCode.getAndroidCodePoint(), 0,
                 metaKeysToState(depressedMetaKeys), KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0);
-        result = injectEventSync(keyEvent);
+        result = interactionController.injectEventSync(keyEvent, false);
         logEvent(keyEvent, eventTime, result);
         return result;
     }
@@ -238,7 +241,7 @@ public class ActionsExecutor {
                     break;
             } // switch
             if (synthesizedEvent != null) {
-                result &= injectEventSync(synthesizedEvent);
+                result &= interactionController.injectEventSync(synthesizedEvent, false);
                 logEvent(synthesizedEvent, eventTime, result);
             }
         }

@@ -18,8 +18,6 @@ package io.appium.uiautomator2.utils.w3c;
 
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -31,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.KnownElements;
 

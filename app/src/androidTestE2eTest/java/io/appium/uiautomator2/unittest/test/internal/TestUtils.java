@@ -17,9 +17,6 @@ package io.appium.uiautomator2.unittest.test.internal;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.Until;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +24,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.Until;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.unittest.test.Config;
 import io.appium.uiautomator2.utils.Device;
@@ -62,7 +62,7 @@ public class TestUtils {
         do {
             Device.waitForIdle();
             waitStatus = getUiDevice().wait(Until.hasObject(
-                    android.support.test.uiautomator.By.pkg(appPackage).depth(0)),
+                    androidx.test.uiautomator.By.pkg(appPackage).depth(0)),
                     IMPLICIT_TIMEOUT);
             if (waitStatus) {
                 return;

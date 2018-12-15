@@ -16,8 +16,9 @@
 
 package io.appium.uiautomator2.utils.w3c;
 
-import android.support.annotation.Nullable;
 import android.view.KeyEvent;
+
+import androidx.annotation.Nullable;
 
 /**
  * Representations of pressable keys that aren't text.  These are stored in the Unicode PUA (Private

@@ -16,12 +16,12 @@
 
 package io.appium.uiautomator2.utils;
 
-import android.support.annotation.Nullable;
-
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 public enum Attribute {
     CHECKABLE(new String[]{"checkable"}),
