@@ -29,7 +29,7 @@ import static android.app.UiAutomation.OnAccessibilityEventListener;
 import static java.lang.System.currentTimeMillis;
 
 public final class NotificationListener implements OnAccessibilityEventListener {
-    private static final NotificationListener INSTANCE = new NotificationListener();
+    private static NotificationListener INSTANCE;
     private static final int TOAST_CLEAR_TIMEOUT = 3500;
 
     private final UiAutomation uiAutomation;
@@ -43,6 +43,9 @@ public final class NotificationListener implements OnAccessibilityEventListener 
     }
 
     public static NotificationListener getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new NotificationListener();
+        }
         return INSTANCE;
     }
 

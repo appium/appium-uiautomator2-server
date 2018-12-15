@@ -27,11 +27,14 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public class UiAutomatorBridge {
-    private static final UiAutomatorBridge INSTANCE = new UiAutomatorBridge();
+    private static UiAutomatorBridge INSTANCE = null;
 
     private UiAutomatorBridge() { }
 
     public static synchronized UiAutomatorBridge getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new UiAutomatorBridge();
+        }
         return INSTANCE;
     }
 

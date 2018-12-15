@@ -52,7 +52,7 @@ public class CustomUiDevice {
     private static final String FIELD_API_LEVEL_ACTUAL = "API_LEVEL_ACTUAL";
     private static final long UIOBJECT2_CREATION_TIMEOUT = 1000; // ms
 
-    private static final CustomUiDevice INSTANCE = new CustomUiDevice();
+    private static CustomUiDevice INSTANCE = null;
     private final Method METHOD_FIND_MATCH;
     private final Method METHOD_FIND_MATCHES;
     private final Class ByMatcherClass;
@@ -85,6 +85,9 @@ public class CustomUiDevice {
     }
 
     public static synchronized CustomUiDevice getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new CustomUiDevice();
+        }
         return INSTANCE;
     }
 
