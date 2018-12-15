@@ -50,17 +50,14 @@ public class CustomUiDevice {
 
     private static final String FIELD_M_INSTRUMENTATION = "mInstrumentation";
     private static final String FIELD_API_LEVEL_ACTUAL = "API_LEVEL_ACTUAL";
+    private static final long UIOBJECT2_CREATION_TIMEOUT = 1000; // ms
 
     private static final CustomUiDevice INSTANCE = new CustomUiDevice();
     private final Method METHOD_FIND_MATCH;
-    private final Method METHOD_FIND_MATCHS;
+    private final Method METHOD_FIND_MATCHES;
     private final Class ByMatcherClass;
+    private final Constructor uiObject2Constructor;
     private final Instrumentation mInstrumentation;
-
-    public Integer getApiLevelActual() {
-        return (Integer) API_LEVEL_ACTUAL;
-    }
-
     private final Object API_LEVEL_ACTUAL;
 
     /**
@@ -75,7 +72,9 @@ public class CustomUiDevice {
             this.API_LEVEL_ACTUAL = getField(UiDevice.class, FIELD_API_LEVEL_ACTUAL, Device.getUiDevice());
             this.ByMatcherClass = ReflectionUtils.getClass("androidx.test.uiautomator.ByMatcher");
             this.METHOD_FIND_MATCH = method(ByMatcherClass, "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
-            this.METHOD_FIND_MATCHS = method(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
+            this.METHOD_FIND_MATCHES = method(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
+            this.uiObject2Constructor = UiObject2.class.getDeclaredConstructors()[0];
+            this.uiObject2Constructor.setAccessible(true);
         } catch (Error error) {
             Logger.error("ERROR", "error", error);
             throw error;
@@ -91,6 +90,28 @@ public class CustomUiDevice {
 
     public Instrumentation getInstrumentation() {
         return mInstrumentation;
+    }
+
+    public int getApiLevelActual() {
+        return (Integer) API_LEVEL_ACTUAL;
+    }
+
+    @Nullable
+    private UiObject2 toUiObject2(Object selector, AccessibilityNodeInfo node)
+            throws IllegalAccessException, InvocationTargetException, InstantiationException {
+        Object[] constructorParams = {getUiDevice(), selector, node};
+        long end = SystemClock.uptimeMillis() + UIOBJECT2_CREATION_TIMEOUT;
+        while (true) {
+            Object object2 = uiObject2Constructor.newInstance(constructorParams);
+            if (object2 instanceof UiObject2) {
+                return (UiObject2) object2;
+            }
+            long remainingMillis = end - SystemClock.uptimeMillis();
+            if (remainingMillis < 0) {
+                return null;
+            }
+            SystemClock.sleep(Math.min(200, remainingMillis));
+        }
     }
 
     /**
@@ -122,26 +143,7 @@ public class CustomUiDevice {
             throw new InvalidSelectorException("Selector of type " + selector.getClass().getName() + " not supported");
         }
         try {
-            if (node == null) {
-                return null;
-            }
-            Constructor cons = UiObject2.class.getDeclaredConstructors()[0];
-            cons.setAccessible(true);
-            Object[] constructorParams = {getUiDevice(), selector, node};
-
-            final long timeoutMillis = 1000;
-            long end = SystemClock.uptimeMillis() + timeoutMillis;
-            while (true) {
-                Object object2 = cons.newInstance(constructorParams);
-                if (object2 != null) {
-                    return object2;
-                }
-                long remainingMillis = end - SystemClock.uptimeMillis();
-                if (remainingMillis < 0) {
-                    return null;
-                }
-                SystemClock.sleep(Math.min(200, remainingMillis));
-            }
+            return node == null ? null : toUiObject2(selector, node);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             final String msg = "Error while creating UiObject2 object";
             Logger.error(String.format("%s: %s", msg, e.getMessage()));
@@ -157,7 +159,7 @@ public class CustomUiDevice {
 
         List<AccessibilityNodeInfo> axNodesList;
         if (selector instanceof BySelector) {
-            Object nodes = invoke(METHOD_FIND_MATCHS, ByMatcherClass, getUiDevice(), selector, getWindowRoots());
+            Object nodes = invoke(METHOD_FIND_MATCHES, ByMatcherClass, getUiDevice(), selector, getWindowRoots());
             //noinspection unchecked
             axNodesList = (List) nodes;
         } else if (selector instanceof NodeInfoList) {
@@ -167,10 +169,10 @@ public class CustomUiDevice {
         }
         for (AccessibilityNodeInfo node : axNodesList) {
             try {
-                Constructor cons = UiObject2.class.getDeclaredConstructors()[0];
-                cons.setAccessible(true);
-                Object[] constructorParams = {getUiDevice(), toSelector(node), node};
-                ret.add(cons.newInstance(constructorParams));
+                UiObject2 uiObject2 = toUiObject2(toSelector(node), node);
+                if (uiObject2 != null) {
+                    ret.add(uiObject2);
+                }
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 final String msg = "Error while creating UiObject2 object";
                 Logger.error(String.format("%s: %s", msg, e.getMessage()));
