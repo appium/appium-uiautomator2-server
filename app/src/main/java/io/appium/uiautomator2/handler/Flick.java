@@ -47,8 +47,8 @@ public class Flick extends SafeRequestHandler {
             end.y = start.y + yoffset;
 
         } else {
-            final Integer xSpeed = Integer.parseInt(payload.getString("xSpeed"));
-            final Integer ySpeed = Integer.parseInt(payload.getString("ySpeed"));
+            final Integer xSpeed = Integer.parseInt(payload.getString("xspeed"));
+            final Integer ySpeed = Integer.parseInt(payload.getString("yspeed"));
 
             final Double speed = Math.min(1250.0,
                     Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed));
