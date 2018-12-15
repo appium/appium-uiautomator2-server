@@ -32,8 +32,8 @@ public class GestureCommands {
      */
     public static Response flickOnPosition() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("xSpeed", 50);
-        jsonObject.put("ySpeed", -180);
+        jsonObject.put("xspeed", 50);
+        jsonObject.put("yspeed", -180);
 
         Response response = Client.post("/touch/flick", jsonObject);
         Logger.info("Flick response:" + response);
