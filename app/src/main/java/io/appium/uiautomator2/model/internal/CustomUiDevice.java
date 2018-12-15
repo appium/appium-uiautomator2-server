@@ -54,7 +54,7 @@ public class CustomUiDevice {
     private static final CustomUiDevice INSTANCE = new CustomUiDevice();
     private final Method METHOD_FIND_MATCH;
     private final Method METHOD_FIND_MATCHS;
-    private final Class ByMatcher;
+    private final Class ByMatcherClass;
     private final Instrumentation mInstrumentation;
 
     public Integer getApiLevelActual() {
@@ -71,13 +71,11 @@ public class CustomUiDevice {
      */
     private CustomUiDevice() {
         try {
-
             this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
             this.API_LEVEL_ACTUAL = getField(UiDevice.class, FIELD_API_LEVEL_ACTUAL, Device.getUiDevice());
-            METHOD_FIND_MATCH = method("androidx.test.uiautomator.ByMatcher", "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
-            METHOD_FIND_MATCHS = method("androidx.test.uiautomator.ByMatcher", "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
-
-            ByMatcher = ReflectionUtils.getClass("androidx.test.uiautomator" + ".ByMatcher");
+            this.ByMatcherClass = ReflectionUtils.getClass("androidx.test.uiautomator.ByMatcher");
+            this.METHOD_FIND_MATCH = method(ByMatcherClass, "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
+            this.METHOD_FIND_MATCHS = method(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
         } catch (Error error) {
             Logger.error("ERROR", "error", error);
             throw error;
@@ -101,13 +99,11 @@ public class CustomUiDevice {
      * @throws InvalidSelectorException if given selector is unsupported/unknown
      */
     @Nullable
-    public Object findObject(Object selector)
-            throws ClassNotFoundException, UiAutomator2Exception {
-
+    public Object findObject(Object selector) throws UiAutomator2Exception {
         AccessibilityNodeInfo node;
         Device.waitForIdle();
         if (selector instanceof BySelector) {
-            node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcher,
+            node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcherClass,
                     Device.getUiDevice(), selector, getWindowRoots());
         } else if (selector instanceof NodeInfoList) {
             List<AccessibilityNodeInfo> nodesList = ((NodeInfoList) selector).getNodeList();
@@ -129,8 +125,7 @@ public class CustomUiDevice {
             if (node == null) {
                 return null;
             }
-            Class uiObject2 = Class.forName("androidx.test.uiautomator.UiObject2");
-            Constructor cons = uiObject2.getDeclaredConstructors()[0];
+            Constructor cons = UiObject2.class.getDeclaredConstructors()[0];
             cons.setAccessible(true);
             Object[] constructorParams = {getUiDevice(), selector, node};
 
@@ -138,8 +133,7 @@ public class CustomUiDevice {
             long end = SystemClock.uptimeMillis() + timeoutMillis;
             while (true) {
                 Object object2 = cons.newInstance(constructorParams);
-
-                if (object2 instanceof UiObject2) {
+                if (object2 != null) {
                     return object2;
                 }
                 long remainingMillis = end - SystemClock.uptimeMillis();
@@ -148,7 +142,6 @@ public class CustomUiDevice {
                 }
                 SystemClock.sleep(Math.min(200, remainingMillis));
             }
-
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             final String msg = "Error while creating UiObject2 object";
             Logger.error(String.format("%s: %s", msg, e.getMessage()));
@@ -159,15 +152,12 @@ public class CustomUiDevice {
     /**
      * Returns List<object> to match the {@code selector} criteria.
      */
-    public List<Object> findObjects(Object selector)
-            throws ClassNotFoundException, UiAutomator2Exception {
+    public List<Object> findObjects(Object selector) throws UiAutomator2Exception {
         List<Object> ret = new ArrayList<>();
 
         List<AccessibilityNodeInfo> axNodesList;
         if (selector instanceof BySelector) {
-            ReflectionUtils.getClass("androidx.test.uiautomator.ByMatcher");
-            Object nodes = invoke(METHOD_FIND_MATCHS, ByMatcher, getUiDevice(), selector,
-                    getWindowRoots());
+            Object nodes = invoke(METHOD_FIND_MATCHS, ByMatcherClass, getUiDevice(), selector, getWindowRoots());
             //noinspection unchecked
             axNodesList = (List) nodes;
         } else if (selector instanceof NodeInfoList) {
@@ -177,8 +167,7 @@ public class CustomUiDevice {
         }
         for (AccessibilityNodeInfo node : axNodesList) {
             try {
-                Class uiObject2 = Class.forName("androidx.test.uiautomator.UiObject2");
-                Constructor cons = uiObject2.getDeclaredConstructors()[0];
+                Constructor cons = UiObject2.class.getDeclaredConstructors()[0];
                 cons.setAccessible(true);
                 Object[] constructorParams = {getUiDevice(), toSelector(node), node};
                 ret.add(cons.newInstance(constructorParams));
