@@ -244,7 +244,7 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    public void findElementWithContextId1() throws JSONException {
+    public void findElementWithContextId1() {
         //parent element - By.androidUiAutomator (UiObject)
         Response response = findElement(By.androidUiAutomator("new UiSelector().resourceId" +
                 "(\"android:id/list\")"));
@@ -257,7 +257,7 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    public void findElementWithContextId2() throws JSONException {
+    public void findElementWithContextId2() {
         //parent element - By.className  (UiObject2)
         Response response = findElement(By.className("android.widget.ListView"));
         String contextId = response.getElementId();
@@ -269,7 +269,7 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    public void findElementWithContextId3() throws JSONException {
+    public void findElementWithContextId3() {
         //parent element - By.className  (UiObject2)
         Response response = findElement(By.className("android.widget.ListView"));
         String contextId = response.getElementId();
@@ -281,7 +281,7 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    public void findElementWithContextId4() throws JSONException {
+    public void findElementWithContextId4() {
         //parent element - By.className  (UiObject2)
         Response response = findElement(By.className("android.widget.ListView"));
         String contextId = response.getElementId();
@@ -294,7 +294,7 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    public void findElementWithContextId5() throws JSONException {
+    public void findElementWithContextId5() {
         //parent element - By.className  (UiObject2)
         Response response = waitForElement(By.className("android.widget.ListView"));
         String contextId = response.getElementId();
@@ -307,19 +307,19 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    public void findElementWithContextId6() throws JSONException {
+    public void findElementWithContextId6() {
         //parent element - By.xpath
-        Response response = findElement(By.xpath("//hierarchy//*[@class='android.widget.FrameLayout'][2]"));
+        Response response = findElement(By.xpath("(//hierarchy//*[@class='android.widget.FrameLayout'])[3]"));
         String contextId = response.getElementId();
 
         //child element - By.xpath  (UiObject2)
-        response = findElement(By.xpath("//*[@class='android.widget.TextView'][2]"), contextId);
+        response = findElement(By.xpath("(//*[@class='android.widget.TextView'])[2]"), contextId);
         response = getText(response.getElementId());
         assertEquals("Accessibility", response.getValue());
     }
 
     @Test
-    public void findElementWithContextId7() throws JSONException {
+    public void findElementWithContextId7() {
         //parent element - By.androidUiAutomator (UiObject)
         Response response = findElement(By.androidUiAutomator("new UiSelector()"
                 + ".resourceId(\"android:id/list\");"));
@@ -340,7 +340,7 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    public void findElementWithContextId9() throws JSONException {
+    public void findElementWithContextId9() {
         //parent element - By.xpath (UiObject2)
         Response response = waitForElement(By.xpath("//*[@class='android.widget.ListView']"));
         String contextId = response.getElementId();

@@ -148,22 +148,23 @@ public class AccessibilityNodeInfoDumper {
 
     private File toFile() throws IOException {
         tmpXmlName = String.format("%s.xml", UUID.randomUUID().toString());
+        final long startTime = SystemClock.uptimeMillis();
         try (OutputStream outputStream = getApplicationContext().openFileOutput(tmpXmlName, Context.MODE_PRIVATE)) {
             serializer = Xml.newSerializer();
             shouldAddDisplayInfo = root == null;
-
             serializer.setOutput(outputStream, XML_ENCODING);
             serializer.startDocument(XML_ENCODING, true);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-            final long startTime = SystemClock.uptimeMillis();
             final UiElement<?, ?> xpathRoot = root == null
                     ? rebuildForNewRoot(currentActiveWindowRoot(), NotificationListener.getInstance().getToastMessage())
                     : rebuildForNewRoot(root, null);
             serializeUiElement(xpathRoot, 0);
             serializer.endDocument();
-            Logger.info(String.format("The source XML tree has been fetched in %sms", SystemClock.uptimeMillis() - startTime));
         }
-        return getApplicationContext().getFileStreamPath(tmpXmlName);
+        File resultXml = getApplicationContext().getFileStreamPath(tmpXmlName);
+        Logger.info(String.format("The source XML tree (%s bytes) has been fetched in %sms", resultXml.length(),
+                SystemClock.uptimeMillis() - startTime));
+        return resultXml;
     }
 
     private void performCleanup() {
@@ -182,12 +183,12 @@ public class AccessibilityNodeInfoDumper {
         }
         try {
             StringBuilder sb = new StringBuilder();
-            String line;
-            BufferedReader reader = new BufferedReader(new FileReader(toFile()));
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
+            try (BufferedReader reader = new BufferedReader(new FileReader(toFile()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
             }
-            reader.close();
             return sb.toString();
         } catch (IOException e) {
             throw new UiAutomator2Exception(e);
