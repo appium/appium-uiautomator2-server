@@ -211,12 +211,12 @@ public class AccessibilityNodeInfoDumper {
         }
         try {
             uiElementsMapping = new SparseArray<>();
-            DocumentContainer documentContainer = new DocumentContainer(toFile().toURI().toURL());
-            JXPathContext ctx = JXPathContext.newContext(documentContainer);
-            Iterator iter = ctx.iterate(String.format("%s/@%s", xpathSelector, UI_ELEMENT_INDEX));
+            final DocumentContainer documentContainer = new DocumentContainer(toFile().toURI().toURL());
+            final JXPathContext ctx = JXPathContext.newContext(documentContainer);
+            final Iterator matchedElementIndexes = ctx.iterate(String.format("(%s)/@%s", xpathSelector, UI_ELEMENT_INDEX));
             final NodeInfoList matchesList = new NodeInfoList();
-            while (iter.hasNext()) {
-                final UiElement uiElement = uiElementsMapping.get(Integer.parseInt((String) iter.next()));
+            while (matchedElementIndexes.hasNext()) {
+                final UiElement uiElement = uiElementsMapping.get(Integer.parseInt((String) matchedElementIndexes.next()));
                 if (uiElement == null || uiElement.getNode() == null) {
                     continue;
                 }
