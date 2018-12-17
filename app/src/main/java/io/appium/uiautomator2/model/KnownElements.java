@@ -67,8 +67,8 @@ public class KnownElements {
                     } else if (by instanceof By.ByClass) {
                         ui2Object = CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.clazz(by.getElementLocator()));
                     } else if (by instanceof By.ByXPath) {
-                        final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null);
-                        if (matchedNodes.size() > 0) {
+                        final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null, false);
+                        if (!matchedNodes.isEmpty()) {
                             ui2Object = CustomUiDevice.getInstance().findObject(matchedNodes);
                         }
                     } else if (by instanceof By.ByAndroidUiAutomator) {

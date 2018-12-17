@@ -100,8 +100,8 @@ public class FindElement extends SafeRequestHandler {
         } else if (by instanceof ByClass) {
             return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.clazz(by.getElementLocator()));
         } else if (by instanceof By.ByXPath) {
-            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null);
-            if (matchedNodes.size() == 0) {
+            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null, false);
+            if (matchedNodes.isEmpty()) {
                 throw new ElementNotFoundException();
             }
             return CustomUiDevice.getInstance().findObject(matchedNodes);
@@ -132,8 +132,8 @@ public class FindElement extends SafeRequestHandler {
         } else if (by instanceof ByClass) {
             return element.getChild(androidx.test.uiautomator.By.clazz(by.getElementLocator()));
         } else if (by instanceof By.ByXPath) {
-            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), element);
-            if (matchedNodes.size() == 0) {
+            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), element, false);
+            if (matchedNodes.isEmpty()) {
                 throw new ElementNotFoundException();
             }
             return CustomUiDevice.getInstance().findObject(matchedNodes);

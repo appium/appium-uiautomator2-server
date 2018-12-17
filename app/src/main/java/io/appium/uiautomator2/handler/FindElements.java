@@ -114,8 +114,8 @@ public class FindElements extends SafeRequestHandler {
             return CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.clazz(by.getElementLocator()));
         } else if (by instanceof By.ByXPath) {
             //TODO: need to handle the context parameter in a smart way
-            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null);
-            if (matchedNodes.size() == 0) {
+            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null, true);
+            if (matchedNodes.isEmpty()) {
                 return Collections.emptyList();
             }
             return CustomUiDevice.getInstance().findObjects(matchedNodes);
@@ -143,8 +143,8 @@ public class FindElements extends SafeRequestHandler {
         } else if (by instanceof By.ByClass) {
             return element.getChildren(androidx.test.uiautomator.By.clazz(by.getElementLocator()), by);
         } else if (by instanceof By.ByXPath) {
-            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), element);
-            if (matchedNodes.size() == 0) {
+            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), element, true);
+            if (matchedNodes.isEmpty()) {
                 return Collections.emptyList();
             }
             return CustomUiDevice.getInstance().findObjects(matchedNodes);

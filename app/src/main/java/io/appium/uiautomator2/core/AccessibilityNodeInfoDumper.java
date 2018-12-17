@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.core;
 
+import android.content.Context;
 import android.graphics.Point;
 import android.os.SystemClock;
 import android.util.SparseArray;
@@ -23,19 +24,31 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import org.apache.commons.jxpath.JXPathContext;
+import org.apache.commons.jxpath.JXPathException;
+import org.apache.commons.jxpath.xml.DocumentContainer;
 import org.apache.commons.lang.StringUtils;
 import org.xmlpull.v1.XmlSerializer;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 import androidx.annotation.Nullable;
+import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.UiElement;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
+import io.appium.uiautomator2.utils.NodeInfoList;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.uiautomator2.model.UiAutomationElement.rebuildForNewRoot;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
 import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
@@ -48,22 +61,23 @@ public class AccessibilityNodeInfoDumper {
     private static final String NON_XML_CHAR_REPLACEMENT = "?";
     private static final String NAMESPACE = "";
     private final static String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
+    private static final String XML_ENCODING = "UTF-8";
+    private final Semaphore RESOURCES_GUARD = new Semaphore(1);
+    private String tmpXmlName;
 
     @Nullable
     private final AccessibilityNodeInfo root;
     @Nullable
-    private final SparseArray<UiElement<?, ?>> uiElementsMapping;
+    private SparseArray<UiElement<?, ?>> uiElementsMapping = null;
     private boolean shouldAddDisplayInfo;
     private XmlSerializer serializer;
 
     public AccessibilityNodeInfoDumper() {
-        this(null, null);
+        this(null);
     }
 
-    public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root,
-                                       @Nullable SparseArray<UiElement<?, ?>> uiElementsMapping) {
+    public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root) {
         this.root = root;
-        this.uiElementsMapping = uiElementsMapping;
     }
 
     private void addDisplayInfo() throws IOException {
@@ -132,17 +146,14 @@ public class AccessibilityNodeInfoDumper {
         serializer.endTag(NAMESPACE, nodeName);
     }
 
-    public synchronized String dumpToXml() {
-        serializer = Xml.newSerializer();
-        if (uiElementsMapping != null) {
-            uiElementsMapping.clear();
-        }
-        shouldAddDisplayInfo = root == null;
+    private File toFile() throws IOException {
+        tmpXmlName = String.format("%s.xml", UUID.randomUUID().toString());
+        try (OutputStream outputStream = getApplicationContext().openFileOutput(tmpXmlName, Context.MODE_PRIVATE)) {
+            serializer = Xml.newSerializer();
+            shouldAddDisplayInfo = root == null;
 
-        final StringWriter writer = new StringWriter();
-        try {
-            serializer.setOutput(writer);
-            serializer.startDocument("UTF-8", true);
+            serializer.setOutput(outputStream, XML_ENCODING);
+            serializer.startDocument(XML_ENCODING, true);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             final long startTime = SystemClock.uptimeMillis();
             final UiElement<?, ?> xpathRoot = root == null
@@ -151,9 +162,76 @@ public class AccessibilityNodeInfoDumper {
             serializeUiElement(xpathRoot, 0);
             serializer.endDocument();
             Logger.info(String.format("The source XML tree has been fetched in %sms", SystemClock.uptimeMillis() - startTime));
-            return writer.toString();
-        } catch (Exception e) {
+        }
+        return getApplicationContext().getFileStreamPath(tmpXmlName);
+    }
+
+    private void performCleanup() {
+        uiElementsMapping = null;
+        if (tmpXmlName != null) {
+            getApplicationContext().deleteFile(tmpXmlName);
+            tmpXmlName = null;
+        }
+    }
+
+    public String dumpToXml() {
+        try {
+            RESOURCES_GUARD.acquire();
+        } catch (InterruptedException e) {
             throw new UiAutomator2Exception(e);
+        }
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            BufferedReader reader = new BufferedReader(new FileReader(toFile()));
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            reader.close();
+            return sb.toString();
+        } catch (IOException e) {
+            throw new UiAutomator2Exception(e);
+        } finally {
+            performCleanup();
+            RESOURCES_GUARD.release();
+        }
+    }
+
+    public NodeInfoList findNodes(String xpathSelector, boolean multiple) {
+        try {
+             JXPathContext.compile(xpathSelector);
+        } catch (JXPathException e) {
+            throw new InvalidSelectorException(e);
+        }
+
+        try {
+            RESOURCES_GUARD.acquire();
+        } catch (InterruptedException e) {
+            throw new UiAutomator2Exception(e);
+        }
+        try {
+            uiElementsMapping = new SparseArray<>();
+            DocumentContainer documentContainer = new DocumentContainer(toFile().toURI().toURL());
+            JXPathContext ctx = JXPathContext.newContext(documentContainer);
+            Iterator iter = ctx.iterate(String.format("%s/@%s", xpathSelector, UI_ELEMENT_INDEX));
+            final NodeInfoList matchesList = new NodeInfoList();
+            while (iter.hasNext()) {
+                final UiElement uiElement = uiElementsMapping.get(Integer.parseInt((String) iter.next()));
+                if (uiElement == null || uiElement.getNode() == null) {
+                    continue;
+                }
+
+                matchesList.addToList(uiElement.getNode());
+                if (!multiple) {
+                    break;
+                }
+            }
+            return matchesList;
+        } catch (IOException e) {
+            throw new UiAutomator2Exception(e);
+        } finally {
+            performCleanup();
+            RESOURCES_GUARD.release();
         }
     }
 }
