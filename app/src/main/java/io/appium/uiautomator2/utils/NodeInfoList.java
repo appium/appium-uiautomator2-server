@@ -36,4 +36,8 @@ public class NodeInfoList {
     public boolean isEmpty() {
         return nodeList.isEmpty();
     }
+
+    public int size() {
+        return nodeList.size();
+    }
 }

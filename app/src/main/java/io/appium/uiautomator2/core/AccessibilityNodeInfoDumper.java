@@ -204,6 +204,7 @@ public class AccessibilityNodeInfoDumper {
     }
 
     public NodeInfoList findNodes(String xpathSelector, boolean multiple) {
+        final long timeStarted = SystemClock.uptimeMillis();
         try {
             XPATH.compile(xpathSelector, Filters.element());
         } catch (IllegalArgumentException e) {
@@ -238,6 +239,8 @@ public class AccessibilityNodeInfoDumper {
 
                 matchedNodes.add(uiElement.getNode());
             }
+            Logger.debug(String.format("Took %sms to retrieve %s matches for '%s' XPath query",
+                    SystemClock.uptimeMillis() - timeStarted, matchedNodes.size(), xpathSelector));
             return matchedNodes;
         } catch (Exception e) {
             throw new UiAutomator2Exception(e);
