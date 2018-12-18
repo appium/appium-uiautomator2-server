@@ -72,25 +72,26 @@ unMock {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'io.netty:netty-all:4.0.41.Final'
+    implementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    implementation 'androidx.test:core:1.1.0'
+    implementation 'androidx.test:runner:1.1.1'
     implementation 'com.jayway.jsonpath:json-path:0.8.1'
     implementation 'com.squareup.okhttp:okhttp:2.5.0'
-    implementation 'androidx.test:runner:1.1.1'
-    implementation 'androidx.test:core:1.1.0'
-    implementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    implementation 'org.jdom:jdom2:2.0.6'
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'io.netty:netty-all:4.0.41.Final'
     implementation 'jaxen:jaxen:1.1.6'
+    implementation 'org.jdom:jdom2:2.0.6'
     unmock 'org.robolectric:android-all:7.1.0_r7-robolectric-0'
-    testImplementation 'org.json:json:20160810'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
-    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
+    testImplementation 'org.json:json:20160810'
     testImplementation 'org.powermock:powermock-api-mockito2:1.7.4'
     testImplementation 'org.powermock:powermock-classloading-xstream:1.7.4'
+    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
+    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
     testImplementation 'org.robolectric:robolectric:4.0.2'
-    androidTestImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-web:3.1.1'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    androidTestImplementation 'junit:junit:4.12'
 }
 
 task installAUT(type: Exec) {

@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.core;
 
-import android.content.Context;
 import android.graphics.Point;
 import android.os.SystemClock;
 import android.util.SparseArray;
@@ -25,6 +24,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom2.Document;
 import org.jdom2.filter.Filters;
@@ -33,15 +33,12 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.xmlpull.v1.XmlSerializer;
 
-import java.io.BufferedReader;
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.Semaphore;
 
 import androidx.annotation.Nullable;
@@ -53,7 +50,6 @@ import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.uiautomator2.model.UiAutomationElement.rebuildForNewRoot;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
 import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
@@ -71,7 +67,6 @@ public class AccessibilityNodeInfoDumper {
     private static final SAXBuilder SAX_BUILDER = new SAXBuilder();
     private final Semaphore RESOURCES_GUARD = new Semaphore(1);
 
-    private String tmpXmlName;
     @Nullable
     private final AccessibilityNodeInfo root;
     @Nullable
@@ -154,9 +149,8 @@ public class AccessibilityNodeInfoDumper {
     }
 
     private InputStream toStream() throws IOException {
-        tmpXmlName = String.format("%s.xml", UUID.randomUUID().toString());
         final long startTime = SystemClock.uptimeMillis();
-        try (OutputStream outputStream = getApplicationContext().openFileOutput(tmpXmlName, Context.MODE_PRIVATE)) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             serializer = Xml.newSerializer();
             shouldAddDisplayInfo = root == null;
             serializer.setOutput(outputStream, XML_ENCODING);
@@ -167,19 +161,14 @@ public class AccessibilityNodeInfoDumper {
                     : rebuildForNewRoot(root, null);
             serializeUiElement(xpathRoot, 0);
             serializer.endDocument();
+            Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",
+                    outputStream.size(), SystemClock.uptimeMillis() - startTime));
+            return new ByteArrayInputStream(outputStream.toByteArray());
         }
-        File resultXml = getApplicationContext().getFileStreamPath(tmpXmlName);
-        Logger.info(String.format("The source XML tree (%s bytes) has been fetched in %sms", resultXml.length(),
-                SystemClock.uptimeMillis() - startTime));
-        return getApplicationContext().openFileInput(tmpXmlName);
     }
 
     private void performCleanup() {
         uiElementsMapping = null;
-        if (tmpXmlName != null) {
-            getApplicationContext().deleteFile(tmpXmlName);
-            tmpXmlName = null;
-        }
     }
 
     public String dumpToXml() {
@@ -188,13 +177,8 @@ public class AccessibilityNodeInfoDumper {
         } catch (InterruptedException e) {
             throw new UiAutomator2Exception(e);
         }
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(toStream()))) {
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-            return sb.toString();
+        try (InputStream xmlStream = toStream()) {
+            return IOUtils.toString(xmlStream, XML_ENCODING);
         } catch (IOException e) {
             throw new UiAutomator2Exception(e);
         } finally {
