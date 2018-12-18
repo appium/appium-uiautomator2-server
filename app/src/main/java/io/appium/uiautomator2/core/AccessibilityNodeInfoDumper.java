@@ -22,6 +22,7 @@ import android.os.SystemClock;
 import android.util.SparseArray;
 import android.util.Xml;
 import android.view.Display;
+import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -64,11 +65,11 @@ public class AccessibilityNodeInfoDumper {
     private static final String UI_ELEMENT_INDEX = "uiElementIndex";
     private static final String NON_XML_CHAR_REPLACEMENT = "?";
     private static final String NAMESPACE = "";
-    private final static String DEFAULT_VIEW_CLASS_NAME = "android.view.View";
+    private static final String DEFAULT_VIEW_CLASS_NAME = View.class.getName();
     private static final String XML_ENCODING = "UTF-8";
+    private static final XPathFactory XPATH = XPathFactory.instance();
+    private static final SAXBuilder SAX_BUILDER = new SAXBuilder();
     private final Semaphore RESOURCES_GUARD = new Semaphore(1);
-    private static XPathFactory XPATH = XPathFactory.instance();
-    private static SAXBuilder SAX_BUILDER = new SAXBuilder();
 
     private String tmpXmlName;
     @Nullable
@@ -216,10 +217,10 @@ public class AccessibilityNodeInfoDumper {
         }
         uiElementsMapping = new SparseArray<>();
         try (InputStream xmlStream = toStream()) {
-            Document document = SAX_BUILDER.build(xmlStream);
+            final Document document = SAX_BUILDER.build(xmlStream);
             final XPathExpression<org.jdom2.Attribute> expr = XPATH
                     .compile(String.format("(%s)/@%s", xpathSelector, UI_ELEMENT_INDEX), Filters.attribute());
-            final NodeInfoList matchesList = new NodeInfoList();
+            final NodeInfoList matchedNodes = new NodeInfoList();
             final List<org.jdom2.Attribute> idMatches;
             if (multiple) {
                 idMatches = expr.evaluate(document);
@@ -229,15 +230,15 @@ public class AccessibilityNodeInfoDumper {
                         ? Collections.<org.jdom2.Attribute>emptyList()
                         : Collections.singletonList(idMatch);
             }
-            for (org.jdom2.Attribute id : idMatches) {
-                final UiElement uiElement = uiElementsMapping.get(id.getIntValue());
+            for (org.jdom2.Attribute uiElementId : idMatches) {
+                final UiElement uiElement = uiElementsMapping.get(uiElementId.getIntValue());
                 if (uiElement == null || uiElement.getNode() == null) {
                     continue;
                 }
 
-                matchesList.addToList(uiElement.getNode());
+                matchedNodes.add(uiElement.getNode());
             }
-            return matchesList;
+            return matchedNodes;
         } catch (Exception e) {
             throw new UiAutomator2Exception(e);
         } finally {
