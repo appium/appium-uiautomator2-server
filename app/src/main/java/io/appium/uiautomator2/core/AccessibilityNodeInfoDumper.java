@@ -97,7 +97,7 @@ public class AccessibilityNodeInfoDumper {
         }
 
         String fixedName = className
-                .replaceAll("[$@#&]", ".")
+                .replaceAll("[$@#&ˋ]", ".")
                 .replaceAll("\\.+", ".")
                 .replaceAll("(^\\.|\\.$)", "");
         fixedName = toNodeName(fixedName);
