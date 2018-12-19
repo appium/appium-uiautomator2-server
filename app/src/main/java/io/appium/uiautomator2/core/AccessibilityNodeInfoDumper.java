@@ -28,6 +28,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jdom2.Document;
 import org.jdom2.filter.Filters;
+import org.jdom2.input.JDOMParseException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
@@ -100,7 +101,6 @@ public class AccessibilityNodeInfoDumper {
         }
 
         String fixedName = className
-                .replaceAll("`", "")
                 .replaceAll("[$@#&]", ".")
                 .replaceAll("\\.+", ".")
                 .replaceAll("(^\\.|\\.$)", "");
@@ -108,7 +108,7 @@ public class AccessibilityNodeInfoDumper {
         if (((NormalizeTagNames) Settings.NORMALIZE_TAG_NAMES.getSetting()).getValue()) {
             // A workaround for the Apache Harmony bug described in https://github.com/appium/appium/issues/11854
             // The buggy implementation: https://android.googlesource.com/platform/dalvik/+/21d27c095fee51fd6eac6a68d50b79df4dc97d85/libcore/xml/src/main/java/org/apache/harmony/xml/dom/DocumentImpl.java#84
-            fixedName = unidecode(fixedName).replaceAll("[^A-Za-z._]", "_");
+            fixedName = unidecode(fixedName).replaceAll("[^A-Za-z0-9\\-._]", "_");
         }
 
         fixedName = toNodeName(fixedName);
@@ -237,6 +237,10 @@ public class AccessibilityNodeInfoDumper {
             Logger.debug(String.format("Took %sms to retrieve %s matches for '%s' XPath query",
                     SystemClock.uptimeMillis() - timeStarted, matchedNodes.size(), xpathSelector));
             return matchedNodes;
+        } catch (JDOMParseException e) {
+            throw new UiAutomator2Exception(String.format("%s. " +
+                    "Try setting the '%s' driver setting to 'true' in order to workaround the problem.",
+                    e.getMessage(), Settings.NORMALIZE_TAG_NAMES.toString()), e);
         } catch (Exception e) {
             throw new UiAutomator2Exception(e);
         } finally {
