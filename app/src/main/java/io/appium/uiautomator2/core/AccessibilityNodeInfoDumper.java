@@ -239,7 +239,7 @@ public class AccessibilityNodeInfoDumper {
             return matchedNodes;
         } catch (JDOMParseException e) {
             throw new UiAutomator2Exception(String.format("%s. " +
-                    "Try setting the '%s' driver setting to 'true' in order to workaround the problem.",
+                    "Try changing the '%s' driver setting to 'true' in order to workaround the problem.",
                     e.getMessage(), Settings.NORMALIZE_TAG_NAMES.toString()), e);
         } catch (Exception e) {
             throw new UiAutomator2Exception(e);
