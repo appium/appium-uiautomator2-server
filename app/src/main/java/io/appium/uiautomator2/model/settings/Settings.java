@@ -30,6 +30,7 @@ public enum Settings {
     SHOULD_USE_COMPACT_RESPONSES(new ShouldUseCompactResponses()),
     WAIT_FOR_IDLE_TIMEOUT(new WaitForIdleTimeout()),
     WAIT_FOR_SELECTOR_TIMEOUT(new WaitForSelectorTimeout()),
+    NORMALIZE_TAG_NAMES(new NormalizeTagNames()),
     SHUTDOWN_ON_POWER_DISCONNECT(new ShutdownOnPowerDisconnect());
 
     private final ISetting setting;

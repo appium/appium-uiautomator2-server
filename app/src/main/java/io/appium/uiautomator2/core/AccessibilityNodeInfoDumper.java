@@ -46,6 +46,8 @@ import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.UiElement;
+import io.appium.uiautomator2.model.settings.NormalizeTagNames;
+import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
@@ -54,6 +56,7 @@ import static io.appium.uiautomator2.model.UiAutomationElement.rebuildForNewRoot
 import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
 import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
 import static io.appium.uiautomator2.utils.XMLHelpers.toSafeString;
+import static net.gcardone.junidecode.Junidecode.unidecode;
 
 public class AccessibilityNodeInfoDumper {
     // https://github.com/appium/appium/issues/10204
@@ -97,9 +100,17 @@ public class AccessibilityNodeInfoDumper {
         }
 
         String fixedName = className
-                .replaceAll("[$@#&ˋ]", ".")
+                .replaceAll("`", "")
+                .replaceAll("[$@#&]", ".")
                 .replaceAll("\\.+", ".")
                 .replaceAll("(^\\.|\\.$)", "");
+
+        if (((NormalizeTagNames) Settings.NORMALIZE_TAG_NAMES.getSetting()).getValue()) {
+            // A workaround for the Apache Harmony bug described in https://github.com/appium/appium/issues/11854
+            // The buggy implementation: https://android.googlesource.com/platform/dalvik/+/21d27c095fee51fd6eac6a68d50b79df4dc97d85/libcore/xml/src/main/java/org/apache/harmony/xml/dom/DocumentImpl.java#84
+            fixedName = unidecode(fixedName).replaceAll("[^A-Za-z._]", "_");
+        }
+
         fixedName = toNodeName(fixedName);
         if (StringUtils.isBlank(fixedName)) {
             fixedName = DEFAULT_VIEW_CLASS_NAME;

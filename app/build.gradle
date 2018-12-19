@@ -80,6 +80,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'io.netty:netty-all:4.0.41.Final'
     implementation 'jaxen:jaxen:1.1.6'
+    implementation 'net.gcardone.junidecode:junidecode:0.4.1'
     implementation 'org.jdom:jdom2:2.0.6'
     unmock 'org.robolectric:android-all:7.1.0_r7-robolectric-0'
     testImplementation 'junit:junit:4.12'
