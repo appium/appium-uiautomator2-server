@@ -38,7 +38,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import androidx.annotation.Nullable;
@@ -216,8 +215,7 @@ public class AccessibilityNodeInfoDumper {
             final XPathExpression<org.jdom2.Attribute> expr = XPATH
                     .compile(String.format("(%s)/@%s", xpathSelector, UI_ELEMENT_INDEX), Filters.attribute());
             final NodeInfoList matchedNodes = new NodeInfoList();
-            final List<org.jdom2.Attribute> idMatches = expr.evaluate(document);
-            for (org.jdom2.Attribute uiElementId : idMatches) {
+            for (org.jdom2.Attribute uiElementId : expr.evaluate(document)) {
                 final UiElement uiElement = uiElementsMapping.get(uiElementId.getIntValue());
                 if (uiElement == null || uiElement.getNode() == null) {
                     continue;
