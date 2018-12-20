@@ -124,17 +124,13 @@ public class CustomUiDevice {
      */
     @Nullable
     public Object findObject(Object selector) throws UiAutomator2Exception {
-        AccessibilityNodeInfo node;
+        final AccessibilityNodeInfo node;
         Device.waitForIdle();
         if (selector instanceof BySelector) {
             node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcherClass,
                     Device.getUiDevice(), selector, getWindowRoots());
         } else if (selector instanceof NodeInfoList) {
-            List<AccessibilityNodeInfo> nodesList = ((NodeInfoList) selector).getNodeList();
-            if (nodesList.isEmpty()) {
-                return null;
-            }
-            node = nodesList.get(0);
+            node = ((NodeInfoList) selector).getFirst();
             selector = toSelector(node);
         } else if (selector instanceof AccessibilityNodeInfo) {
             node = (AccessibilityNodeInfo) selector;
@@ -166,7 +162,7 @@ public class CustomUiDevice {
             //noinspection unchecked
             axNodesList = (List) nodes;
         } else if (selector instanceof NodeInfoList) {
-            axNodesList = ((NodeInfoList) selector).getNodeList();
+            axNodesList = ((NodeInfoList) selector).getAll();
         } else {
             throw new InvalidSelectorException("Selector of type " + selector.getClass().getName() + " not supported");
         }
@@ -187,7 +183,10 @@ public class CustomUiDevice {
     }
 
     @Nullable
-    private static BySelector toSelector(AccessibilityNodeInfo nodeInfo) {
+    private static BySelector toSelector(@Nullable AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null) {
+            return null;
+        }
         final CharSequence className = nodeInfo.getClassName();
         return className == null ? null : By.clazz(className.toString());
     }

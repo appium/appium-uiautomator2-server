@@ -115,10 +115,9 @@ public class FindElements extends SafeRequestHandler {
         } else if (by instanceof By.ByXPath) {
             //TODO: need to handle the context parameter in a smart way
             final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null, true);
-            if (matchedNodes.isEmpty()) {
-                return Collections.emptyList();
-            }
-            return CustomUiDevice.getInstance().findObjects(matchedNodes);
+            return matchedNodes.isEmpty()
+                ? Collections.emptyList()
+                : CustomUiDevice.getInstance().findObjects(matchedNodes);
         } else if (by instanceof By.ByAndroidUiAutomator) {
             //TODO: need to handle the context parameter in a smart way
             return getUiObjectsUsingAutomator(toSelectors(by.getElementLocator()), "");
@@ -144,10 +143,9 @@ public class FindElements extends SafeRequestHandler {
             return element.getChildren(androidx.test.uiautomator.By.clazz(by.getElementLocator()), by);
         } else if (by instanceof By.ByXPath) {
             final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), element, true);
-            if (matchedNodes.isEmpty()) {
-                return Collections.emptyList();
-            }
-            return CustomUiDevice.getInstance().findObjects(matchedNodes);
+            return matchedNodes.isEmpty()
+                ? Collections.emptyList()
+                : CustomUiDevice.getInstance().findObjects(matchedNodes);
         } else if (by instanceof By.ByAndroidUiAutomator) {
             return getUiObjectsUsingAutomator(toSelectors(by.getElementLocator()), contextId);
         }

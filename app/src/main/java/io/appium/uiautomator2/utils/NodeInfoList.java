@@ -19,7 +19,10 @@ package io.appium.uiautomator2.utils;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 public class NodeInfoList {
 
@@ -29,8 +32,13 @@ public class NodeInfoList {
         nodeList.add(node);
     }
 
-    public List<AccessibilityNodeInfo> getNodeList() {
-        return new ArrayList<>(nodeList);
+    public List<AccessibilityNodeInfo> getAll() {
+        return Collections.unmodifiableList(nodeList);
+    }
+
+    @Nullable
+    public AccessibilityNodeInfo getFirst() {
+        return isEmpty() ? null : nodeList.get(0);
     }
 
     public boolean isEmpty() {
