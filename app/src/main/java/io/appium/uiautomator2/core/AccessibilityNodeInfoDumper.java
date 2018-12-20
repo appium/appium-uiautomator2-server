@@ -197,7 +197,6 @@ public class AccessibilityNodeInfoDumper {
     }
 
     public NodeInfoList findNodes(String xpathSelector, boolean multiple) {
-        final long timeStarted = SystemClock.uptimeMillis();
         try {
             XPATH.compile(xpathSelector, Filters.element());
         } catch (IllegalArgumentException e) {
@@ -215,6 +214,7 @@ public class AccessibilityNodeInfoDumper {
             final XPathExpression<org.jdom2.Attribute> expr = XPATH
                     .compile(String.format("(%s)/@%s", xpathSelector, UI_ELEMENT_INDEX), Filters.attribute());
             final NodeInfoList matchedNodes = new NodeInfoList();
+            final long timeStarted = SystemClock.uptimeMillis();
             for (org.jdom2.Attribute uiElementId : expr.evaluate(document)) {
                 final UiElement uiElement = uiElementsMapping.get(uiElementId.getIntValue());
                 if (uiElement == null || uiElement.getNode() == null) {
