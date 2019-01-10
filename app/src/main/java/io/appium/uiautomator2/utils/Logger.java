@@ -35,27 +35,35 @@ public class Logger {
      * Logger error
      */
     public static void error(Object... messages) {
-        android.util.Log.e(TAG, getString(messages));
+        if (android.util.Log.isLoggable(TAG, android.util.Log.ERROR)) {
+            android.util.Log.e(TAG, getString(messages));
+        }
     }
 
     /**
      * Logger error
      */
     public static void error(String message, Throwable throwable) {
-        android.util.Log.e(TAG, getString(message), throwable);
+        if (android.util.Log.isLoggable(TAG, android.util.Log.ERROR)) {
+            android.util.Log.e(TAG, getString(message), throwable);
+        }
     }
 
     /**
      * Logger info
      */
     public static void info(Object... messages) {
-        android.util.Log.i(TAG, getString(messages));
+        if (android.util.Log.isLoggable(TAG, android.util.Log.INFO)) {
+            android.util.Log.i(TAG, getString(messages));
+        }
     }
 
     /**
      * Logger debug
      */
     public static void debug(Object... messages) {
-        android.util.Log.d(TAG, getString(messages));
+        if (android.util.Log.isLoggable(TAG, android.util.Log.DEBUG)) {
+            android.util.Log.d(TAG, getString(messages));
+        }
     }
 }
