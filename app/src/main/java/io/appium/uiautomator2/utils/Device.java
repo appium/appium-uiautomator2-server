@@ -36,11 +36,13 @@ public abstract class Device {
         getUiDevice().wakeUp();
     }
 
-    public static void scrollTo(String scrollToString) throws UiObjectNotFoundException {
-        // TODO This logic needs to be changed according to the request body from the Driver
+    public static void scrollToElement(UiSelector selector) throws UiObjectNotFoundException {
         UiScrollable uiScrollable = new UiScrollable(new UiSelector().scrollable(true).instance(0));
-        uiScrollable.scrollIntoView(new UiSelector().descriptionContains(scrollToString).instance(0));
-        uiScrollable.scrollIntoView(new UiSelector().textContains(scrollToString).instance(0));
+        boolean result = uiScrollable.scrollIntoView(selector);
+
+        if(!result) {
+            throw new UiObjectNotFoundException("Cannot scroll to the element.");
+        }
     }
 
     public static boolean back() {
@@ -69,6 +71,4 @@ public abstract class Device {
             Logger.error(String.format("Unable wait %s for AUT to idle", timeInMS));
         }
     }
-
-
 }
