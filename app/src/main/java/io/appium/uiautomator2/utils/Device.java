@@ -38,9 +38,8 @@ public abstract class Device {
 
     public static void scrollToElement(UiSelector selector) throws UiObjectNotFoundException {
         UiScrollable uiScrollable = new UiScrollable(new UiSelector().scrollable(true).instance(0));
-        boolean result = uiScrollable.scrollIntoView(selector);
 
-        if(!result) {
+        if(!uiScrollable.scrollIntoView(selector)) {
             throw new UiObjectNotFoundException("Cannot scroll to the element.");
         }
     }
