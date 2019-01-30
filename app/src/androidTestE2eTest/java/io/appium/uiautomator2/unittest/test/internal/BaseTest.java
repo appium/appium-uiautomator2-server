@@ -42,6 +42,8 @@ import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForEle
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElementInvisibility;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.createSession;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.deleteSession;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static org.junit.Assert.assertNotNull;
@@ -100,5 +102,19 @@ public abstract class BaseTest {
     protected void clickAndWaitForStaleness(String elementId) throws JSONException {
         click(elementId);
         waitForElementInvisibility(elementId);
+    }
+
+    protected void navigateTo(String navigationPath) throws JSONException {
+        for(String item : navigationPath.split("/")) {
+            By by = By.androidUiAutomator("new UiSelector().text(\"" + item + "\")");
+            Response response;
+            while(true)
+            {
+                response = findElement(by);
+                if(response.isSuccessful()) break;
+                else scrollToText(item);
+            }
+            clickAndWaitForStaleness(response.getElementId());
+        }
     }
 }
