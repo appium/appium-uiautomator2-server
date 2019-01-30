@@ -36,8 +36,16 @@ public abstract class Device {
         getUiDevice().wakeUp();
     }
 
-    public static void scrollToElement(UiSelector selector) throws UiObjectNotFoundException {
+    public static void scrollToElement(UiSelector selector, int maxSwipes) throws UiObjectNotFoundException {
         UiScrollable uiScrollable = new UiScrollable(new UiSelector().scrollable(true).instance(0));
+
+        if(uiScrollable.getClassName().equals(android.widget.HorizontalScrollView.class.getName())) {
+            uiScrollable.setAsHorizontalList();
+        }
+
+        if (maxSwipes > 0) {
+            uiScrollable.setMaxSearchSwipes(maxSwipes);
+        }
 
         if(!uiScrollable.scrollIntoView(selector)) {
             throw new UiObjectNotFoundException("Cannot scroll to the element.");

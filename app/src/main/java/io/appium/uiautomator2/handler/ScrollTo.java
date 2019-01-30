@@ -1,5 +1,6 @@
 package io.appium.uiautomator2.handler;
 
+import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.JsonPath;
 import org.json.JSONException;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -31,11 +32,19 @@ public class ScrollTo extends SafeRequestHandler {
         throws JSONException, UiObjectNotFoundException
     {
         String json = getPayload(request).toString();
-        String strategy = "$.params.strategy";
-        String selector = "$.params.selector";
+        String strategy  = "$.params.strategy";
+        String selector  = "$.params.selector";
+        String maxSwipes = "$.params.maxSwipes";
 
         String strategyString = JsonPath.compile(strategy).read(json);
         String selectorString = JsonPath.compile(selector).read(json);
+
+        int maxSearchSwipes;
+        try {
+            maxSearchSwipes = JsonPath.compile(maxSwipes).read(json);
+        } catch (InvalidPathException e) {
+            maxSearchSwipes = 0;
+        }
 
         By by = new NativeAndroidBySelector().pickFrom(strategyString, selectorString);
 
@@ -61,7 +70,7 @@ public class ScrollTo extends SafeRequestHandler {
 
         Device.waitForIdle();
 
-        scrollToElement(uiselector);
+        scrollToElement(uiselector, maxSearchSwipes);
 
         Logger.info(String.format("Scrolled via strategy: '%s' and selector '%s'.",
                                   strategyString, selectorString));
