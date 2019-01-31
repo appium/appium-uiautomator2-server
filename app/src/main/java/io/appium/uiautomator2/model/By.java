@@ -66,6 +66,13 @@ public abstract class By {
         return new ByAndroidUiAutomator(expression);
     }
 
+    public static By text(final String text) {
+        if (text == null)
+            throw new IllegalArgumentException("Cannot find elements when text is null.");
+
+        return new ByText(text);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -203,6 +210,31 @@ public abstract class By {
         @Override
         public String toString() {
             return "By.AndroidUiAutomator: " + expresion;
+        }
+    }
+
+    public static class ByText extends By {
+        private final String text;
+
+        public ByText(String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String getElementLocator() {
+            String textEscaped = text
+                    .replace("\\", "\\\\")
+                    .replace("\"", "\\\"");
+
+            return "new UiSelector().text(\"" + textEscaped + "\")";
+        }
+
+        @Override
+        public String getElementStrategy() { return SELECTOR_ANDROID_UIAUTOMATOR; }
+
+        @Override
+        public String toString() {
+            return "By.text: " + text;
         }
     }
 }
