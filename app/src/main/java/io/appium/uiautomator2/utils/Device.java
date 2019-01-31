@@ -36,10 +36,13 @@ public abstract class Device {
         getUiDevice().wakeUp();
     }
 
-    public static void scrollToElement(UiSelector selector, int maxSwipes) throws UiObjectNotFoundException {
+    public static void scrollToElement(UiSelector selector, int maxSwipes)
+            throws UiObjectNotFoundException {
         UiScrollable uiScrollable = new UiScrollable(new UiSelector().scrollable(true).instance(0));
+        String uiScrollableClassName = uiScrollable.getClassName();
+        String hScrollViewClassName = android.widget.HorizontalScrollView.class.getName();
 
-        if(uiScrollable.getClassName().equals(android.widget.HorizontalScrollView.class.getName())) {
+        if(uiScrollableClassName != null && uiScrollableClassName.equals(hScrollViewClassName)) {
             uiScrollable.setAsHorizontalList();
         }
 
