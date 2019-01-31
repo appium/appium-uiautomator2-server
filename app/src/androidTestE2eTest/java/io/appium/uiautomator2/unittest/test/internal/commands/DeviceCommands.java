@@ -207,7 +207,7 @@ public class DeviceCommands {
      */
     public static Response scrollToText(String text, int maxSwipes) throws JSONException {
         String textEscaped = text.replace("\"", "\\\"");
-        String uiSelectorSpec = "new UiSelector().text(\"" + textEscaped + "\")";
+        String uiSelectorSpec = String.format("new UiSelector().text(\"%s\")", textEscaped);
 
         return scrollToElement(uiSelectorSpec, maxSwipes);
     }
