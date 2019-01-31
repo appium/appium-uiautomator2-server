@@ -106,13 +106,24 @@ public abstract class BaseTest {
 
     protected void navigateTo(String navigationPath) throws JSONException {
         for(String item : navigationPath.split("/")) {
-            By by = By.androidUiAutomator("new UiSelector().text(\"" + item + "\")");
+            long timeoutMs = 60000;
+            long endTimeMs = System.currentTimeMillis() + timeoutMs;
             Response response;
             while(true)
             {
-                response = findElement(by);
-                if(response.isSuccessful()) break;
-                else scrollToText(item);
+                response = findElement(By.text(item));
+                if(response.isSuccessful()) {
+                    break;
+                }
+                else {
+                    if (System.currentTimeMillis() > endTimeMs)
+                    {
+                        throw new TimeoutException(String.format(
+                                "item '%s'. The item did not come into view in %d ms.",
+                                item, timeoutMs));
+                    }
+                    scrollToText(item);
+                }
             }
             clickAndWaitForStaleness(response.getElementId());
         }
