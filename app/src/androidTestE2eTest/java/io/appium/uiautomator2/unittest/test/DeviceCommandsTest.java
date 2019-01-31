@@ -502,6 +502,8 @@ public class DeviceCommandsTest extends BaseTest {
      * @throws JSONException
      */
     @Test
+    @Ignore // The run-time of this test is ~8.5 minutes, which might fail automated build jobs
+            // that have timeout of 10 minutes. To verify this scenario, run the test locally.
     public void scrollVeryLongListSuccessfully() throws JSONException {
         navigateTo("Views/Search View/Filter"); // A very long list (500+ items).
 
@@ -753,7 +755,6 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
-    @Ignore
     @RootRequired
     public void shouldShutdownServerOnPowerDisconnect() throws IOException, JSONException {
         try {
