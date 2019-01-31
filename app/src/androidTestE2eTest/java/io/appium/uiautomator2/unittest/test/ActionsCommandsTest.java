@@ -27,7 +27,7 @@ import io.appium.uiautomator2.unittest.test.internal.Response;
 
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.performActions;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollTo;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -48,7 +48,7 @@ public class ActionsCommandsTest extends BaseTest {
     }
 
     private void setupDragDropView() throws JSONException {
-        scrollTo("Views"); // Due to 'Views' option not visible on small screen
+        scrollToText("Views"); // Due to 'Views' option not visible on small screen
         Response response = findElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
         response = findElement(By.accessibilityId("Drag and Drop"));

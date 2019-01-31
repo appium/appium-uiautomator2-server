@@ -185,25 +185,115 @@ public class DeviceCommands {
     }
 
     /**
-     * performs scroll to the given text
+     * Performs scroll to an element displaying the given text.
+     * The default maximum number of swipes will be used during the element search.
      *
-     * @param scrollToText
+     * @param text
      * @return Response from UiAutomator2 server
      * @throws JSONException
      */
-    public static Response scrollTo(String scrollToText) throws JSONException {
-        // TODO Create JSON object instead of below json string.Once the json is finalised from
-        // driver module
-        String json = " {\"cmd\":\"action\",\"action\":\"find\"," +
-                "\"params\":{\"strategy\":\"-android uiautomator\",\"selector\":\"" +
-                "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView" +
-                "(new UiSelector().descriptionContains(\\\"" + scrollToText + "\\\").instance(0))" +
-                ";" +
-                "new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView" +
-                "(new UiSelector().textContains(\\\"" + scrollToText + "\\\").instance(0));" +
-                "\",\"context\":\"\",\"multiple\":false}}";
-        JSONObject jsonObject = new JSONObject(json);
-        return Client.post("/touch/scroll", jsonObject);
+    public static Response scrollToText(String text) throws JSONException {
+        return scrollToText(text, 0);
+    }
+
+    /**
+     * Performs scroll to an element displaying the given text.
+     * The given maximum number of swipes will be used during the element search.
+     *
+     * @param text
+     * @param maxSwipes
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response scrollToText(String text, int maxSwipes) throws JSONException {
+        String textEscaped = text.replace("\"", "\\\"");
+        String uiSelectorSpec = "new UiSelector().text(\"" + textEscaped + "\")";
+
+        return scrollToElement(uiSelectorSpec, maxSwipes);
+    }
+
+    /**
+     * performs scroll to an element with the given accessibility id
+     *
+     * @param scrollToId
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response scrollToAccessibilityId(String scrollToId) throws JSONException {
+        JSONObject postBody = new JSONObject();
+        postBody.put("cmd", "action");
+        postBody.put("action", "find");
+
+        JSONObject params = new JSONObject();
+        params.put("strategy", "accessibility id");
+        params.put("selector", scrollToId);
+        params.put("context",  "");
+        params.put("multiple", false);
+
+        postBody.put("params", params);
+        return Client.post("/touch/scroll", postBody);
+    }
+
+    /**
+     * Performs scroll to an element identified by the given UiSelector specification.
+     * The default maximum number of swipes will be used during the element search.
+     *
+     * @param className
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response scrollToClassName(String className) throws JSONException {
+        JSONObject postBody = new JSONObject();
+        postBody.put("cmd", "action");
+        postBody.put("action", "find");
+
+        JSONObject params = new JSONObject();
+        params.put("strategy", "class name");
+        params.put("selector", className);
+        params.put("context",  "");
+        params.put("multiple", false);
+
+        postBody.put("params", params);
+        return Client.post("/touch/scroll", postBody);
+    }
+
+    /**
+     * Performs scroll to an element identified by the given UiSelector specification.
+     * The given maximum number of swipes will be used during the element search.
+     *
+     * @param uiSelectorSpec
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response scrollToElement(String uiSelectorSpec) throws JSONException {
+        return scrollToElement(uiSelectorSpec, 0);
+    }
+
+    /**
+     * Performs scroll to an element identified by the given UiSelector specification.
+     *
+     * @param uiSelectorSpec
+     * @param maxSwipes
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response scrollToElement(String uiSelectorSpec, int maxSwipes) throws JSONException {
+        JSONObject postBody = new JSONObject();
+        postBody.put("cmd", "action");
+        postBody.put("action", "find");
+
+        JSONObject params = new JSONObject();
+        params.put("strategy", "-android uiautomator");
+        params.put("selector",  uiSelectorSpec);
+        params.put("context",  "");
+        params.put("multiple", false);
+
+        if(maxSwipes > 0) {
+            params.put("maxSwipes", maxSwipes);
+        }
+
+        postBody.put("params", params);
+        return Client.post("/touch/scroll", postBody);
     }
 
     /**

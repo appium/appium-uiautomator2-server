@@ -30,7 +30,7 @@ import static io.appium.uiautomator2.server.WDStatus.STALE_ELEMENT_REFERENCE;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElementInvisibility;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForSeconds;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollTo;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getLocation;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
@@ -177,7 +177,7 @@ public class GestureCommandsTest extends BaseTest {
      */
     @Test
     public void swipeTest() throws JSONException {
-        scrollTo("Views"); // Due to 'Views' option not visible on small screen
+        scrollToText("Views"); // Due to 'Views' option not visible on small screen
         Response response = findElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
 
@@ -209,7 +209,7 @@ public class GestureCommandsTest extends BaseTest {
      */
     @Test
     public void flickOnElementTest() throws JSONException {
-        scrollTo("Views"); // Due to 'Views' option not visible on small screen
+        scrollToText("Views"); // Due to 'Views' option not visible on small screen
         Response response = findElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
 
@@ -239,7 +239,7 @@ public class GestureCommandsTest extends BaseTest {
 
     @Test
     public void touchActionsTest() throws JSONException {
-        scrollTo("Views"); // Due to 'Views' option not visible on small screen
+        scrollToText("Views"); // Due to 'Views' option not visible on small screen
         Response response = findElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
 

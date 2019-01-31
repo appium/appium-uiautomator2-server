@@ -22,6 +22,7 @@ import android.util.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -54,7 +55,9 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getSettings;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.rotateScreen;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.screenshot;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollTo;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToElement;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToText;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToClassName;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.setRotation;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.updateSetting;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.updateSettings;
@@ -62,6 +65,7 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.ElementComm
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getAttribute;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.sendKeys;
+import static io.appium.uiautomator2.utils.Device.back;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -108,7 +112,7 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void findElementUsingUiAutomatorTest() throws JSONException {
-        scrollTo("Views"); // Due to 'Views' option not visible on small screen
+        scrollToText("Views"); // Due to 'Views' option not visible on small screen
         Response response = findElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
 
@@ -120,8 +124,7 @@ public class DeviceCommandsTest extends BaseTest {
         click(response.getElementId());
 
         response = waitForElementInvisibility(response.getElementId());
-        assertFalse(androidUiAutomator + " should not be found", response
-                .isSuccessful());
+        assertFalse(androidUiAutomator + " should not be found", response.isSuccessful());
     }
 
     /**
@@ -129,7 +132,7 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void findElementsUsingUiAutomatorTest() throws JSONException {
-        scrollTo("Views"); // Due to 'Views' option not visible on small screen
+        scrollToText("Views"); // Due to 'Views' option not visible on small screen
         Response response = findElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
 
@@ -352,10 +355,9 @@ public class DeviceCommandsTest extends BaseTest {
         assertEquals("Access'ibility", response.getValue());
     }
 
-
     @Test
     public void findElementWithAttributes() throws JSONException {
-        scrollTo("Views");
+        scrollToText("Views");
         Response response = findElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
 
@@ -469,26 +471,158 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     /**
-     * Performs Scroll to specified element
+     * Performs scrolling through a horizontal list to an element specified by its text.
      *
      * @throws JSONException
      */
     @Test
-    public void scrollTest() throws JSONException {
-        scrollTo("Views"); // Due to 'Views' option not visible on small screen
-        Response response = findElement(By.accessibilityId("Views"));
-        clickAndWaitForStaleness(response.getElementId());
-        waitForElement(By.accessibilityId("Buttons"));
+    public void scrollHorizontalListTest() throws JSONException {
+        navigateTo("Views/Tabs/5. Scrollable");
 
-        String scrollToText = "WebView";
-        By by = By.accessibilityId(scrollToText);
-        response = findElement(by);
-        // Before Scroll 'Radio Group' Element was not found
-        assertFalse(by + " should not be found", response.isSuccessful());
-        scrollTo(scrollToText);
-        response = findElement(by);
-        // After Scroll Element was found
-        assertTrue(by + " should be found", response.isSuccessful());
+        String[] items = { "TAB 12", "TAB 19", "TAB 26" };
+
+        for (String item : items) {
+            assertFalse(
+                "Item '" + item + "' should not be found in the horizontal list.",
+                findElement(By.text(item)).isSuccessful());
+
+            assertTrue(
+                "Scroll-to-text should have succeeded.",
+                scrollToText(item).isSuccessful());
+
+            assertTrue(
+                "Item '" + item + "' should now be found in the horizontal list.",
+                findElement(By.text(item)).isSuccessful());
+        }
+    }
+
+    /**
+     * Performs scrolling through a very long list to an element specified by its text.
+     *
+     * @throws JSONException
+     */
+    @Test
+    public void scrollVeryLongListSuccessfully() throws JSONException {
+        navigateTo("Views/Search View/Filter"); // A very long list (500+ items).
+
+        // When this page comes into view, the keyboard automatically shows up.
+        back(); // Hide the keyboard.
+
+        String[] items = {
+            "Zanetti Parmigiano Reggiano", // at the very end of the list
+            "Abbaye de Belloc",            // at the very beginning of the list
+            "Grafton Village Cheddar",     // somewhere half-way through the list
+            "Yorkshire Blue"               // almost at the end of the list
+        };
+
+        for (String item : items) {
+            assertFalse(
+                "Item '" + item + "' should not be found in the list.",
+                findElement(By.text(item)).isSuccessful());
+
+            assertTrue(
+                "Scroll-to-text should have succeeded.",
+                scrollToText(item, 150).isSuccessful());
+
+            assertTrue(
+                "Item '" + item + "' should now be found in the list.",
+                findElement(By.text(item)).isSuccessful());
+        }
+    }
+
+    /**
+     * Attempts scrolling through a very long list with a limited number of swipes.
+     *
+     * @throws JSONException
+     */
+    @Test
+    public void scrollVeryLongListUnsuccessfully() throws JSONException {
+        navigateTo("Views/Search View/Filter"); // A very long list (500+ items).
+
+        // When this page comes into view, the keyboard automatically shows up.
+        back(); // Hide the keyboard.
+
+        // Attempt to scroll to the item that is at the end of the very long list.
+        // This cannot be done with 10 swipes, hence it should fail.
+        assertFalse(
+            "Scroll-to-text should not have succeeded.",
+            scrollToText("Zanetti Parmigiano Reggiano", 10).isSuccessful());
+
+        // Attempt to scroll back to the item that is at the beginning of the list.
+        // This will need at least 10 swipes, but now we allow only 5. Thus, it should fail.
+        assertFalse(
+            "Scroll-to-text should not have succeeded.",
+            scrollToText("Abbaye de Belloc", 5).isSuccessful());
+    }
+
+    /**
+     * Performs scrolling to an element specified by its class name.
+     *
+     * @throws JSONException
+     */
+    @Test
+    public void scrollByClassNameTest() throws JSONException {
+        navigateTo("Preference/5. Preferences from code");
+
+        // This page contains GUI elements of different classes (text, checkbox, switch).
+        // However, in the portrait mode, all elements fit on one page. We need to rotate
+        // the screen to the landscape mode to shorten the visible part of the list.
+        String defaultOrientation = getScreenOrientation();
+        rotateScreen("LANDSCAPE");
+
+        String badClassName = "non.existent.ClassName";
+
+        assertFalse(
+            "Scroll-by-class-name should fail for non-existent element.",
+            scrollToClassName(badClassName).isSuccessful());
+
+        // At this point, we are at the end of the list, and the Switch element is off the screen.
+
+        String goodClassName = android.widget.Switch.class.getName();
+
+        assertFalse(
+            "Element of type '" + goodClassName + "' should not be found in the list.",
+            findElement(By.className(goodClassName)).isSuccessful());
+
+        try {
+            assertTrue(
+                "Scroll-to-class-name should have succeeded.",
+                scrollToClassName(goodClassName).isSuccessful());
+
+            assertTrue(
+                "Element of type '" + goodClassName + "' should now be found in the list.",
+                findElement(By.className(goodClassName)).isSuccessful());
+        } finally {
+            rotateScreen(defaultOrientation);
+        }
+    }
+
+    /**
+     * Performs scrolling to an element identified by a UiSelector specification.
+     *
+     * @throws JSONException
+     */
+    @Test
+    public void scrollByUiSelectorTest() throws JSONException {
+        navigateTo("Preference/5. Preferences from code");
+
+        String uiSelectorSpec = "new UiSelector()" +
+                ".classNameMatches(\"android.widget.RelativeLayout\")" +
+                ".childSelector(new UiSelector().textStartsWith(\"Parent checkbox\"))";
+
+        By by = By.androidUiAutomator(uiSelectorSpec);
+
+        assertFalse(
+            by + " should not be found in the list.",
+            findElement(by).isSuccessful());
+
+        assertTrue(
+            "Scroll-to-element should have succeeded.",
+            scrollToElement(uiSelectorSpec).isSuccessful());
+
+        assertTrue(
+            by + " should be found in the list.",
+            findElement(by).isSuccessful());
     }
 
     @Test
@@ -619,6 +753,7 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     @RootRequired
     public void shouldShutdownServerOnPowerDisconnect() throws IOException, JSONException {
         try {
