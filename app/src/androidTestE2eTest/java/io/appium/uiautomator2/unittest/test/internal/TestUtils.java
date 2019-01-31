@@ -165,6 +165,8 @@ public class TestUtils {
                 strategy = "id";
             } else if (by instanceof By.ByXPath) {
                 strategy = "xpath";
+            } else if (by instanceof By.ByText) {
+                strategy = "-android uiautomator";
             } else if (by instanceof By.ByAndroidUiAutomator) {
                 strategy = "-android uiautomator";
             } else {
