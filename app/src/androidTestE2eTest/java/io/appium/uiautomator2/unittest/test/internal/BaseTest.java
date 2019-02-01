@@ -105,14 +105,14 @@ public abstract class BaseTest {
     }
 
     protected void navigateTo(String navigationPath) throws JSONException {
-        for(String item : navigationPath.split("/")) {
+        for (String item : navigationPath.split("/")) {
             long timeoutMs = 60000;
             long endTimeMs = System.currentTimeMillis() + timeoutMs;
             Response response;
             while(true)
             {
                 response = findElement(By.text(item));
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     break;
                 }
                 else {

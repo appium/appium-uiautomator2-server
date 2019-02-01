@@ -50,7 +50,7 @@ public abstract class Device {
             uiScrollable.setMaxSearchSwipes(maxSwipes);
         }
 
-        if(!uiScrollable.scrollIntoView(selector)) {
+        if (!uiScrollable.scrollIntoView(selector)) {
             throw new UiObjectNotFoundException("Cannot scroll to the element.");
         }
     }
