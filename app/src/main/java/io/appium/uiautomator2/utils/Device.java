@@ -42,7 +42,7 @@ public abstract class Device {
         String uiScrollableClassName = uiScrollable.getClassName();
         String hScrollViewClassName = android.widget.HorizontalScrollView.class.getName();
 
-        if(uiScrollableClassName != null && uiScrollableClassName.equals(hScrollViewClassName)) {
+        if (java.util.Objects.equals(uiScrollableClassName, hScrollViewClassName)) {
             uiScrollable.setAsHorizontalList();
         }
 
