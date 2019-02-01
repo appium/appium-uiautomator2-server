@@ -115,15 +115,13 @@ public abstract class BaseTest {
                 if (response.isSuccessful()) {
                     break;
                 }
-                else {
-                    if (System.currentTimeMillis() > endTimeMs)
-                    {
-                        throw new TimeoutException(String.format(
-                                "item '%s'. The item did not come into view in %d ms.",
-                                item, timeoutMs));
-                    }
-                    scrollToText(item);
+                if (System.currentTimeMillis() > endTimeMs)
+                {
+                    throw new TimeoutException(String.format(
+                            "item '%s'. The item did not come into view in %d ms.",
+                            item, timeoutMs));
                 }
+                scrollToText(item);
             }
             clickAndWaitForStaleness(response.getElementId());
         }

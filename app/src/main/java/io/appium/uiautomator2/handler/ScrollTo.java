@@ -43,7 +43,8 @@ public class ScrollTo extends SafeRequestHandler {
         try {
             maxSearchSwipes = JsonPath.compile(maxSwipes).read(json);
         } catch (InvalidPathException e) {
-            Logger.info("Parameter 'maxSwipes' not specified. Using default value.");
+            Logger.info("The parameter 'maxSwipes' is either not specified " +
+                        "or mistyped. Using 0 as the default value.");
             maxSearchSwipes = 0;
         }
 
