@@ -109,12 +109,7 @@ public abstract class BaseTest {
             long timeoutMs = 60000;
             long endTimeMs = System.currentTimeMillis() + timeoutMs;
             Response response;
-            while(true)
-            {
-                response = findElement(By.text(item));
-                if (response.isSuccessful()) {
-                    break;
-                }
+            do {
                 if (System.currentTimeMillis() > endTimeMs)
                 {
                     throw new TimeoutException(String.format(
@@ -122,7 +117,9 @@ public abstract class BaseTest {
                             item, timeoutMs));
                 }
                 scrollToText(item);
-            }
+                response = findElement(By.text(item));
+            } while (!response.isSuccessful());
+
             clickAndWaitForStaleness(response.getElementId());
         }
     }
