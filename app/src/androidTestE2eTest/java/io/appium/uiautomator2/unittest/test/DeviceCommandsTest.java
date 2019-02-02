@@ -65,11 +65,13 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.ElementComm
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getAttribute;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.sendKeys;
-import static io.appium.uiautomator2.utils.Device.back;
+import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @SuppressWarnings("JavaDoc")
 public class DeviceCommandsTest extends BaseTest {
@@ -479,19 +481,27 @@ public class DeviceCommandsTest extends BaseTest {
     public void scrollHorizontalListTest() throws JSONException {
         navigateTo("Views/Tabs/5. Scrollable");
 
-        String[] items = { "TAB 12", "TAB 19", "TAB 26" };
+        // On devices with Android API Level 23 and earlier, the tab labels are displayed
+        // in all-caps, whereas their actual text is rather like 'Tab 13', 'Tab 26', etc.
+        // The arguments of methods findElement() and scrollToText() are case-sensitive,
+        // therefore we need to use different sets of inputs for different target devices.
+        int apiLevel = (int) getField(UiDevice.class, "API_LEVEL_ACTUAL", getUiDevice());
+
+        String[] items = apiLevel < 24
+            ? new String[] { "Tab 13", "Tab 26", "Tab 5" }  // up to Android 6.0 Marshmallow
+            : new String[] { "TAB 13", "TAB 26", "TAB 5" }; // Android 7.0 Nougat and later
 
         for (String item : items) {
-            assertFalse(
-                "Item '" + item + "' should not be found in the horizontal list.",
+            assertFalse(String.format(
+                "Item '%s' should not be found in the horizontal list.", item),
                 findElement(By.text(item)).isSuccessful());
 
-            assertTrue(
-                "Scroll-to-text should have succeeded.",
+            assertTrue(String.format(
+                "Scroll-to-text should have succeeded for item '%s'.", item),
                 scrollToText(item).isSuccessful());
 
-            assertTrue(
-                "Item '" + item + "' should now be found in the horizontal list.",
+            assertTrue(String.format(
+                "Item '%s' should now be found in the horizontal list.", item),
                 findElement(By.text(item)).isSuccessful());
         }
     }
@@ -505,10 +515,7 @@ public class DeviceCommandsTest extends BaseTest {
     @Ignore // The run-time of this test is ~8.5 minutes, which might fail automated build jobs
             // that have timeout of 10 minutes. To verify this scenario, run the test locally.
     public void scrollVeryLongListSuccessfully() throws JSONException {
-        navigateTo("Views/Search View/Filter"); // A very long list (500+ items).
-
-        // When this page comes into view, the keyboard automatically shows up.
-        back(); // Hide the keyboard.
+        navigateTo("Views/Lists/01. Array"); // A very long list (500+ items).
 
         String[] items = {
             "Zanetti Parmigiano Reggiano", // at the very end of the list
@@ -518,16 +525,16 @@ public class DeviceCommandsTest extends BaseTest {
         };
 
         for (String item : items) {
-            assertFalse(
-                "Item '" + item + "' should not be found in the list.",
+            assertFalse(String.format(
+                "Item '%s' should not be found in the list.", item),
                 findElement(By.text(item)).isSuccessful());
 
-            assertTrue(
-                "Scroll-to-text should have succeeded.",
+            assertTrue(String.format(
+                "Scroll-to-text should have succeeded for item '%s'.", item),
                 scrollToText(item, 150).isSuccessful());
 
-            assertTrue(
-                "Item '" + item + "' should now be found in the list.",
+            assertTrue(String.format(
+                "Item '%s' should now be found in the list.", item),
                 findElement(By.text(item)).isSuccessful());
         }
     }
@@ -539,10 +546,7 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollVeryLongListUnsuccessfully() throws JSONException {
-        navigateTo("Views/Search View/Filter"); // A very long list (500+ items).
-
-        // When this page comes into view, the keyboard automatically shows up.
-        back(); // Hide the keyboard.
+        navigateTo("Views/Lists/01. Array"); // A very long list (500+ items).
 
         // Attempt to scroll to the item that is at the end of the very long list.
         // This cannot be done with 10 swipes, hence it should fail.
