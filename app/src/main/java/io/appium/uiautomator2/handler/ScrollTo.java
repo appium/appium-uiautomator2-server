@@ -51,7 +51,7 @@ public class ScrollTo extends SafeRequestHandler {
         By by = new NativeAndroidBySelector().pickFrom(strategyString, selectorString);
 
         UiSelector uiselector;
-        if(by instanceof By.ByAccessibilityId) {
+        if (by instanceof By.ByAccessibilityId) {
             uiselector = new UiSelector().description(selectorString);
         } else if (by instanceof By.ByClass) {
             uiselector = new UiSelector().className(selectorString);
