@@ -727,7 +727,7 @@ public class DeviceCommandsTest extends BaseTest {
         startActivity(".view.List1");
         waitForElement(By.id("android:id/list"));
         By androidUiAutomator = By.androidUiAutomator(
-                "new UiScrollable(new UiSelector(). resourceId(\"android:id/list\"))" +
+                "new UiScrollable(new UiSelector().resourceId(\"android:id/list\"))" +
                         ".scrollTextIntoView(\"Beer Cheese\");");
         Response response = findElement(androidUiAutomator);
         assertTrue(androidUiAutomator + " should be found", response.isSuccessful());
