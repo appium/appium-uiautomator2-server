@@ -197,8 +197,8 @@ public abstract class By {
     public static class ByAndroidUiAutomator extends By {
         private final String expression;
 
-        public ByAndroidUiAutomator(String expresion) {
-            this.expression = expresion;
+        public ByAndroidUiAutomator(String expression) {
+            this.expression = expression;
         }
 
         @Override
