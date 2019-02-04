@@ -479,7 +479,9 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollHorizontalListTest() throws JSONException {
-        navigateTo("Views/Tabs/5. Scrollable");
+        //navigateTo("Views/Tabs/5. Scrollable");
+        startActivity(".view.Tabs5");
+        waitForElement(By.id("android:id/tabs"));
 
         // On devices with Android API Level 23 and earlier, the tab labels are displayed
         // in all-caps, whereas their actual text is rather like 'Tab 13', 'Tab 26', etc.
@@ -515,7 +517,9 @@ public class DeviceCommandsTest extends BaseTest {
     @Ignore // The run-time of this test is ~8.5 minutes, which might fail automated build jobs
             // that have timeout of 10 minutes. To verify this scenario, run the test locally.
     public void scrollVeryLongListSuccessfully() throws JSONException {
-        navigateTo("Views/Lists/01. Array"); // A very long list (500+ items).
+        //navigateTo("Views/Lists/01. Array"); // A very long list (500+ items).
+        startActivity(".view.List1");
+        waitForElement(By.id("android:id/list"));
 
         String[] items = {
             "Zanetti Parmigiano Reggiano", // at the very end of the list
@@ -546,7 +550,9 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollVeryLongListUnsuccessfully() throws JSONException {
-        navigateTo("Views/Lists/01. Array"); // A very long list (500+ items).
+        //navigateTo("Views/Lists/01. Array"); // A very long list (500+ items).
+        startActivity(".view.List1");
+        waitForElement(By.id("android:id/list"));
 
         // Attempt to scroll to the item that is at the end of the very long list.
         // This cannot be done with 10 swipes, hence it should fail.
@@ -568,7 +574,9 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollByClassNameTest() throws JSONException {
-        navigateTo("Preference/5. Preferences from code");
+        //navigateTo("Preference/5. Preferences from code");
+        startActivity(".preference.PreferencesFromCode");
+        waitForElement(By.id("android:id/list"));
 
         // This page contains GUI elements of different classes (text, checkbox, switch).
         // However, in the portrait mode, all elements fit on one page. We need to rotate
@@ -610,7 +618,9 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollByUiSelectorTest() throws JSONException {
-        navigateTo("Preference/5. Preferences from code");
+        //navigateTo("Preference/5. Preferences from code");
+        startActivity(".preference.PreferencesFromCode");
+        waitForElement(By.id("android:id/list"));
 
         String uiSelectorSpec = "new UiSelector()" +
                 ".classNameMatches(\"android.widget.RelativeLayout\")" +
@@ -738,8 +748,8 @@ public class DeviceCommandsTest extends BaseTest {
         startActivity(".view.ScrollBar1");
         waitForElement(By.accessibilityId("Lorem ipsum dolor sit amet."));
         By androidUiAutomator = By.androidUiAutomator(
-                " new UiScrollable (new UiSelector() .className (android.widget.ScrollView))" +
-                        ". getChildByDescription ( new UiSelector() " +
+                " new UiScrollable (new UiSelector().className (android.widget.ScrollView))" +
+                        ".getChildByDescription ( new UiSelector() " +
                         ".className( android.widget.TextView ),\"Lorem ipsum dolor sit amet.\"," +
                         "true ) ; ");
         Response response = findElement(androidUiAutomator);
