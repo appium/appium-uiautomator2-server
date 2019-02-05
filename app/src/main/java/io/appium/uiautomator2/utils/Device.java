@@ -41,6 +41,7 @@ public abstract class Device {
         UiScrollable uiScrollable = new UiScrollable(new UiSelector().scrollable(true).instance(0));
         String uiScrollableClassName = uiScrollable.getClassName();
         String hScrollViewClassName = android.widget.HorizontalScrollView.class.getName();
+        int defaultMaxSwipes = uiScrollable.getMaxSearchSwipes();
 
         if (java.util.Objects.equals(uiScrollableClassName, hScrollViewClassName)) {
             uiScrollable.setAsHorizontalList();
@@ -50,7 +51,13 @@ public abstract class Device {
             uiScrollable.setMaxSearchSwipes(maxSwipes);
         }
 
-        if (!uiScrollable.scrollIntoView(selector)) {
+        boolean scrollResult = uiScrollable.scrollIntoView(selector);
+        // The number of search swipes is held in a static property of the UiScrollable class.
+        // Whenever a non-default number of search swipes is used during the scroll, we must
+        // always restore the setting after the operation.
+        uiScrollable.setMaxSearchSwipes(defaultMaxSwipes);
+
+        if (!scrollResult) {
             throw new UiObjectNotFoundException("Cannot scroll to the element.");
         }
     }
