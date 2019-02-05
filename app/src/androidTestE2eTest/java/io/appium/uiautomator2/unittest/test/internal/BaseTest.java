@@ -42,8 +42,6 @@ import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForEle
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElementInvisibility;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.createSession;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.deleteSession;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static org.junit.Assert.assertNotNull;
@@ -102,25 +100,5 @@ public abstract class BaseTest {
     protected void clickAndWaitForStaleness(String elementId) throws JSONException {
         click(elementId);
         waitForElementInvisibility(elementId);
-    }
-
-    protected void navigateTo(String navigationPath) throws JSONException {
-        for (String item : navigationPath.split("/")) {
-            long timeoutMs = 60000;
-            long endTimeMs = System.currentTimeMillis() + timeoutMs;
-            Response response;
-            do {
-                if (System.currentTimeMillis() > endTimeMs)
-                {
-                    throw new TimeoutException(String.format(
-                            "item '%s'. The item did not come into view in %d ms.",
-                            item, timeoutMs));
-                }
-                scrollToText(item);
-                response = findElement(By.text(item));
-            } while (!response.isSuccessful());
-
-            clickAndWaitForStaleness(response.getElementId());
-        }
     }
 }

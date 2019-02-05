@@ -71,7 +71,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @SuppressWarnings("JavaDoc")
 public class DeviceCommandsTest extends BaseTest {
@@ -479,8 +478,7 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollHorizontalListTest() throws JSONException {
-        //navigateTo("Views/Tabs/5. Scrollable");
-        startActivity(".view.Tabs5");
+        startActivity(".view.Tabs5"); // Page with horizontally-scrollable tabs
         waitForElement(By.id("android:id/tabs"));
 
         // On devices with Android API Level 23 and earlier, the tab labels are displayed
@@ -517,8 +515,7 @@ public class DeviceCommandsTest extends BaseTest {
     @Ignore // The run-time of this test is ~8.5 minutes, which might fail automated build jobs
             // that have timeout of 10 minutes. To verify this scenario, run the test locally.
     public void scrollVeryLongListSuccessfully() throws JSONException {
-        //navigateTo("Views/Lists/01. Array"); // A very long list (500+ items).
-        startActivity(".view.List1");
+        startActivity(".view.List1"); // A very long list (500+ items).
         waitForElement(By.id("android:id/list"));
 
         String[] items = {
@@ -550,8 +547,7 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollVeryLongListUnsuccessfully() throws JSONException {
-        //navigateTo("Views/Lists/01. Array"); // A very long list (500+ items).
-        startActivity(".view.List1");
+        startActivity(".view.List1"); // A very long list (500+ items).
         waitForElement(By.id("android:id/list"));
 
         // Attempt to scroll to the item that is at the end of the very long list.
@@ -574,7 +570,6 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollByClassNameTest() throws JSONException {
-        //navigateTo("Preference/5. Preferences from code");
         startActivity(".preference.PreferencesFromCode");
         waitForElement(By.id("android:id/list"));
 
@@ -584,21 +579,21 @@ public class DeviceCommandsTest extends BaseTest {
         String defaultOrientation = getScreenOrientation();
         rotateScreen("LANDSCAPE");
 
-        String badClassName = "non.existent.ClassName";
+        try {
+            String badClassName = "non.existent.ClassName";
 
-        assertFalse(
-            "Scroll-by-class-name should fail for non-existent element.",
-            scrollToClassName(badClassName).isSuccessful());
+            assertFalse(
+                "Scroll-by-class-name should fail for non-existent element.",
+                scrollToClassName(badClassName).isSuccessful());
 
-        // At this point, we are at the end of the list, and the Switch element is off the screen.
+            // At this point, we are at the end of the list, and the Switch element is off the screen.
 
-        String goodClassName = android.widget.Switch.class.getName();
+            String goodClassName = android.widget.Switch.class.getName();
 
-        assertFalse(
+            assertFalse(
             "Element of type '" + goodClassName + "' should not be found in the list.",
             findElement(By.className(goodClassName)).isSuccessful());
 
-        try {
             assertTrue(
                 "Scroll-to-class-name should have succeeded.",
                 scrollToClassName(goodClassName).isSuccessful());
@@ -618,7 +613,6 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollByUiSelectorTest() throws JSONException {
-        //navigateTo("Preference/5. Preferences from code");
         startActivity(".preference.PreferencesFromCode");
         waitForElement(By.id("android:id/list"));
 
