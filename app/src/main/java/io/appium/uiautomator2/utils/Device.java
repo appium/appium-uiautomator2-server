@@ -51,14 +51,16 @@ public abstract class Device {
             uiScrollable.setMaxSearchSwipes(maxSwipes);
         }
 
-        boolean scrollResult = uiScrollable.scrollIntoView(selector);
-        // The number of search swipes is held in a static property of the UiScrollable class.
-        // Whenever a non-default number of search swipes is used during the scroll, we must
-        // always restore the setting after the operation.
-        uiScrollable.setMaxSearchSwipes(defaultMaxSwipes);
-
-        if (!scrollResult) {
-            throw new UiObjectNotFoundException("Cannot scroll to the element.");
+        try {
+            if (!uiScrollable.scrollIntoView(selector)) {
+                throw new UiObjectNotFoundException("Cannot scroll to the element.");
+            }
+        }
+        finally {
+            // The number of search swipes is held in a static property of the UiScrollable class.
+            // Whenever a non-default number of search swipes is used during the scroll, we must
+            // always restore the setting after the operation.
+            uiScrollable.setMaxSearchSwipes(defaultMaxSwipes);
         }
     }
 
