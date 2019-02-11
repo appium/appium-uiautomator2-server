@@ -96,7 +96,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         put(attribs, Attribute.CLASS, hierarchyClassName);
         this.attributes = Collections.unmodifiableMap(attribs);
         List<UiAutomationElement> mutableChildren = new ArrayList<>();
-        mutableChildren.add(new UiAutomationElement(childNode, 0));
+        mutableChildren.add(new UiAutomationElement(childNode, index + 1));
         this.children = mutableChildren;
     }
 
