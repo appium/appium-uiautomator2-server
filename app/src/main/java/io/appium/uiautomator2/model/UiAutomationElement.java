@@ -114,11 +114,6 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         return rootElement;
     }
 
-    public static UiAutomationElement rebuildForNewRoot(AccessibilityNodeInfo rawElement) {
-        cache.clear();
-        return new UiAutomationElement(rawElement, 0);
-    }
-
     @Nullable
     public static UiAutomationElement getCachedElement(AccessibilityNodeInfo rawElement,
                                                        AccessibilityNodeInfo windowRoot) {
