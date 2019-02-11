@@ -38,8 +38,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import androidx.annotation.Nullable;
@@ -159,7 +157,7 @@ public class AccessibilityNodeInfoDumper {
         serializer.endTag(NAMESPACE, nodeName);
     }
 
-    private InputStream toStream(boolean buildForXpathLookup) throws IOException {
+    private InputStream toStream() throws IOException {
         final long startTime = SystemClock.uptimeMillis();
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             serializer = Xml.newSerializer();
@@ -168,12 +166,8 @@ public class AccessibilityNodeInfoDumper {
             serializer.startDocument(XML_ENCODING, true);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             final UiElement<?, ?> xpathRoot = root == null
-                    ? (buildForXpathLookup
-                      ? rebuildForNewRoot(currentActiveWindowRoot())
-                      : rebuildForNewRoot(currentActiveWindowRoot(), NotificationListener.getInstance().getToastMessage()))
-                    : (buildForXpathLookup
-                      ? rebuildForNewRoot(root)
-                      : rebuildForNewRoot(root, null));
+                    ? rebuildForNewRoot(currentActiveWindowRoot(), NotificationListener.getInstance().getToastMessage())
+                    : rebuildForNewRoot(root, null);
             serializeUiElement(xpathRoot, 0);
             serializer.endDocument();
             Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",
@@ -192,7 +186,7 @@ public class AccessibilityNodeInfoDumper {
         } catch (InterruptedException e) {
             throw new UiAutomator2Exception(e);
         }
-        try (InputStream xmlStream = toStream(false)) {
+        try (InputStream xmlStream = toStream()) {
             return IOUtils.toString(xmlStream, XML_ENCODING);
         } catch (IOException e) {
             throw new UiAutomator2Exception(e);
@@ -215,28 +209,22 @@ public class AccessibilityNodeInfoDumper {
             throw new UiAutomator2Exception(e);
         }
         uiElementsMapping = new SparseArray<>();
-        try (InputStream xmlStream = toStream(true)) {
+        try (InputStream xmlStream = toStream()) {
             final Document document = SAX_BUILDER.build(xmlStream);
             final XPathExpression<org.jdom2.Attribute> expr = XPATH
                     .compile(String.format("(%s)/@%s", xpathSelector, UI_ELEMENT_INDEX), Filters.attribute());
             final NodeInfoList matchedNodes = new NodeInfoList();
-            final List<org.jdom2.Attribute> idMatches;
             final long timeStarted = SystemClock.uptimeMillis();
-            if (multiple) {
-                idMatches = expr.evaluate(document);
-            } else {
-                org.jdom2.Attribute idMatch = expr.evaluateFirst(document);
-                idMatches = idMatch == null
-                        ? Collections.<org.jdom2.Attribute>emptyList()
-                        : Collections.singletonList(idMatch);
-            }
-            for (org.jdom2.Attribute uiElementId : idMatches) {
+            for (org.jdom2.Attribute uiElementId : expr.evaluate(document)) {
                 final UiElement uiElement = uiElementsMapping.get(uiElementId.getIntValue());
                 if (uiElement == null || uiElement.getNode() == null) {
                     continue;
                 }
 
                 matchedNodes.add(uiElement.getNode());
+                if (!multiple) {
+                    break;
+                }
             }
             Logger.debug(String.format("Took %sms to retrieve %s matches for '%s' XPath query",
                     SystemClock.uptimeMillis() - timeStarted, matchedNodes.size(), xpathSelector));
