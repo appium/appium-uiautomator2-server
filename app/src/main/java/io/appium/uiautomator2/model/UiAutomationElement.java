@@ -96,7 +96,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         put(attribs, Attribute.CLASS, hierarchyClassName);
         this.attributes = Collections.unmodifiableMap(attribs);
         List<UiAutomationElement> mutableChildren = new ArrayList<>();
-        mutableChildren.add(new UiAutomationElement(childNode, index + 1));
+        mutableChildren.add(new UiAutomationElement(childNode, 0));
         this.children = mutableChildren;
     }
 
@@ -150,7 +150,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         node.setPackageName("com.android.settings");
         setField("mSealed", true, node);
 
-        this.children.add(new UiAutomationElement(node, 0));
+        this.children.add(new UiAutomationElement(node, this.children.size()));
     }
 
     private List<UiAutomationElement> buildChildren(AccessibilityNodeInfo node) {
