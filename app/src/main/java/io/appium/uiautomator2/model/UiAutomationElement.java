@@ -100,18 +100,16 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         this.children = mutableChildren;
     }
 
-    public static UiAutomationElement rebuildForNewRoot(AccessibilityNodeInfo rawElement,
-                                                        @Nullable List<CharSequence> toastMSGs) {
+    public static UiAutomationElement rebuildForNewRoot(AccessibilityNodeInfo rawElement, @Nullable List<CharSequence> toastMSGs) {
         cache.clear();
-
-        UiAutomationElement rootElement = new UiAutomationElement(ROOT_NODE_NAME, rawElement, 0);
+        UiAutomationElement root = new UiAutomationElement(ROOT_NODE_NAME, rawElement, 0);
         if (toastMSGs != null && !toastMSGs.isEmpty()) {
             for (CharSequence toastMSG : toastMSGs) {
                 Logger.debug("Adding toastMSG to root:" + toastMSG);
-                rootElement.addToastMsgToRoot(toastMSG);
+                root.addToastMsgToRoot(toastMSG);
             }
         }
-        return rootElement;
+        return root;
     }
 
     @Nullable
@@ -145,7 +143,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         node.setPackageName("com.android.settings");
         setField("mSealed", true, node);
 
-        this.children.add(new UiAutomationElement(node, 0));
+        this.children.add(new UiAutomationElement(node, this.children.size()));
     }
 
     private List<UiAutomationElement> buildChildren(AccessibilityNodeInfo node) {

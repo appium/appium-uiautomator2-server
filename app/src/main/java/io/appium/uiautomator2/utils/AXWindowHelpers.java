@@ -24,10 +24,9 @@ import android.view.accessibility.AccessibilityWindowInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
-import io.appium.uiautomator2.model.NotificationListener;
-import io.appium.uiautomator2.model.UiAutomationElement;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
 public class AXWindowHelpers {
@@ -72,8 +71,6 @@ public class AXWindowHelpers {
                         "getRootAccessibilityNodeInActiveWindow() - ignoring it", e.getMessage()));
             }
             if (root != null) {
-                UiAutomationElement.rebuildForNewRoot(root,
-                        NotificationListener.getInstance().getToastMessage());
                 currentActiveWindowRoot = root;
                 return;
             }
@@ -108,16 +105,12 @@ public class AXWindowHelpers {
             }
             // Prior to API level 21 we can only access the active window
         } else {
-            AccessibilityNodeInfo node = currentActiveWindowRoot();
-            if (node == null) {
-                throw new UiAutomator2Exception("Unable to get Root in Active window," +
-                        " ERROR: null root node returned by UiTestAutomationBridge.");
-            }
-            ret.add(node);
+            ret.add(currentActiveWindowRoot());
         }
         return ret.toArray(new AccessibilityNodeInfo[0]);
     }
 
+    @NonNull
     public static synchronized AccessibilityNodeInfo currentActiveWindowRoot() {
         if (currentActiveWindowRoot == null) {
             refreshRootAXNode();
