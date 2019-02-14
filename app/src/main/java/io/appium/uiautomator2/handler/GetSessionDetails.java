@@ -38,11 +38,9 @@ public class GetSessionDetails extends SafeRequestHandler {
         JSONObject result = new JSONObject();
         if (session != null) {
             AccessibilityScrollData scrollData = session.getLastScrollData();
-            JSONObject lastScrollData = null;
             if (scrollData != null) {
-                lastScrollData = new JSONObject(scrollData.getAsMap());
+                result.put("lastScrollData", new JSONObject(scrollData.getAsMap()));
             }
-            result.put("lastScrollData", lastScrollData);
         }
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
