@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import androidx.annotation.Nullable;
+
 import static io.appium.uiautomator2.model.settings.Settings.ELEMENT_RESPONSE_ATTRIBUTES;
 import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_RESPONSES;
 
@@ -63,6 +65,7 @@ public class Session {
         return commandConfiguration.get(command);
     }
 
+    @Nullable
     public AccessibilityScrollData getLastScrollData() {
         return lastScrollData;
     }
