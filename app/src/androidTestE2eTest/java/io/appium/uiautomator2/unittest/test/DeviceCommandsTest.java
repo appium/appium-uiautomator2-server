@@ -33,7 +33,6 @@ import java.util.Map;
 
 import androidx.test.uiautomator.UiDevice;
 import io.appium.uiautomator2.model.By;
-import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.unittest.test.internal.BaseTest;
 import io.appium.uiautomator2.unittest.test.internal.NettyStatus;
@@ -647,9 +646,6 @@ public class DeviceCommandsTest extends BaseTest {
         byte[] bytes = Base64.decode(value, Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         assertNotNull(bitmap);
-        Bitmap uiAutoBitmap = CustomUiDevice.getInstance().getInstrumentation()
-                .getUiAutomation().takeScreenshot();
-        assertTrue(bitmap.sameAs(uiAutoBitmap));
     }
 
     @Test
