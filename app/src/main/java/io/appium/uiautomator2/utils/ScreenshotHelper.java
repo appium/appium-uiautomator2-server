@@ -40,6 +40,7 @@ import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
 import static android.graphics.Bitmap.CompressFormat.PNG;
+import static android.util.DisplayMetrics.DENSITY_MEDIUM;
 
 public class ScreenshotHelper {
 
@@ -73,25 +74,14 @@ public class ScreenshotHelper {
         return takeScreenshot(null);
     }
 
-    private static boolean isScreenScaled() {
-        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
-        DisplayMetrics realMetrics = new DisplayMetrics();
-        display.getRealMetrics(realMetrics);
-        android.graphics.Point realSize = new android.graphics.Point();
-        display.getRealSize(realSize);
-        return realMetrics.widthPixels != realSize.x;
-    }
-
-    private static android.graphics.Point getScreenSize() {
-        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
-        android.graphics.Point realSize = new android.graphics.Point();
-        display.getRealSize(realSize);
-        return realSize;
-    }
-
     private static Bitmap takeDeviceScreenshot() throws TakeScreenshotException {
+        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
         Bitmap screenshot = null;
-        if (isScreenScaled()) {
+        if (metrics.densityDpi == DENSITY_MEDIUM) {
+            screenshot = uia.takeScreenshot();
+        } else {
             // Workaround for https://github.com/appium/appium/issues/12199
             Logger.info("Making the screenshot with screencap utility to workaround " +
                     "the scaling issue");
@@ -108,16 +98,14 @@ public class ScreenshotHelper {
                     e.printStackTrace();
                 }
             }
-        } else {
-            screenshot = uia.takeScreenshot();
         }
 
         if (screenshot == null || screenshot.getWidth() == 0 || screenshot.getHeight() == 0) {
             throw new TakeScreenshotException();
         }
 
-        Logger.info(String.format("Got screenshot with pixel resolution: %sx%s",
-                screenshot.getWidth(), screenshot.getHeight()));
+        Logger.info(String.format("Got screenshot with pixel resolution: %sx%s. Screen density: %s",
+                screenshot.getWidth(), screenshot.getHeight(), metrics.density));
         return screenshot;
     }
 
@@ -132,15 +120,6 @@ public class ScreenshotHelper {
     private static Bitmap crop(Bitmap bitmap, Rect cropArea) throws CropScreenshotException {
         final Rect bitmapRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         final Rect intersectionRect = new Rect();
-
-        android.graphics.Point logicalScreenSize = getScreenSize();
-        if (bitmapRect.width() != logicalScreenSize.x) {
-            double scale = 1.0 * bitmapRect.width() / logicalScreenSize.x;
-            Logger.info(String.format("Applying scale factor %s to the element area %s",
-                    scale, cropArea.toShortString()));
-            cropArea = new Rect((int) (cropArea.left * scale), (int) (cropArea.top * scale),
-                    (int) (cropArea.right * scale), (int) (cropArea.bottom * scale));
-        }
 
         if (!intersectionRect.setIntersect(bitmapRect, cropArea)) {
             throw new CropScreenshotException(bitmapRect, cropArea);
