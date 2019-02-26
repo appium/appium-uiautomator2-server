@@ -43,7 +43,7 @@ import static android.graphics.Bitmap.CompressFormat.PNG;
 import static android.util.DisplayMetrics.DENSITY_MEDIUM;
 
 public class ScreenshotHelper {
-
+    private static final int PNG_MAGIC_LENGTH = 8;
     private static final UiAutomation uia = CustomUiDevice.getInstance().getInstrumentation()
             .getUiAutomation();
 
@@ -56,13 +56,17 @@ public class ScreenshotHelper {
      */
     public static String takeScreenshot(@Nullable final Rect cropArea) throws
             TakeScreenshotException, CompressScreenshotException, CropScreenshotException {
-        Bitmap screenshot = takeDeviceScreenshot();
+        Object screenshotObj = takeDeviceScreenshot(cropArea == null ? String.class : Bitmap.class);
+
+        if (cropArea == null) {
+            return (String) screenshotObj;
+        }
+
+        Bitmap screenshot = (Bitmap) screenshotObj;
         try {
-            if (cropArea != null) {
-                final Bitmap elementScreenshot = crop(screenshot, cropArea);
-                screenshot.recycle();
-                screenshot = elementScreenshot;
-            }
+            final Bitmap elementScreenshot = crop(screenshot, cropArea);
+            screenshot.recycle();
+            screenshot = elementScreenshot;
             return Base64.encodeToString(compress(screenshot), Base64.DEFAULT);
         } finally {
             screenshot.recycle();
@@ -74,7 +78,14 @@ public class ScreenshotHelper {
         return takeScreenshot(null);
     }
 
-    private static Bitmap takeDeviceScreenshot() throws TakeScreenshotException {
+    /**
+     * Takes a shot of the current device's screen
+     *
+     * @param outputType Either String.class or Bitmap.class
+     * @return Either base64-encoded content of the PNG screenshot or the screenshot as bitmap image
+     * @throws TakeScreenshotException if there was an error while taking the screenshot
+     */
+    private static <T> T takeDeviceScreenshot(Class<T> outputType) throws TakeScreenshotException {
         Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
@@ -88,6 +99,12 @@ public class ScreenshotHelper {
             ParcelFileDescriptor pfd = uia.executeShellCommand("screencap -p");
             try (InputStream is = new FileInputStream(pfd.getFileDescriptor())) {
                 byte[] pngBytes = IOUtils.toByteArray(is);
+                if (outputType == String.class) {
+                    if (pngBytes.length <= PNG_MAGIC_LENGTH) {
+                        throw new TakeScreenshotException();
+                    }
+                    return outputType.cast(Base64.encodeToString(pngBytes, Base64.DEFAULT));
+                }
                 screenshot = BitmapFactory.decodeByteArray(pngBytes, 0, pngBytes.length);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -106,7 +123,14 @@ public class ScreenshotHelper {
 
         Logger.info(String.format("Got screenshot with pixel resolution: %sx%s. Screen density: %s",
                 screenshot.getWidth(), screenshot.getHeight(), metrics.density));
-        return screenshot;
+        if (outputType == String.class) {
+            try {
+                return outputType.cast(Base64.encodeToString(compress(screenshot), Base64.DEFAULT));
+            } finally {
+                screenshot.recycle();
+            }
+        }
+        return outputType.cast(screenshot);
     }
 
     private static byte[] compress(final Bitmap bitmap) throws CompressScreenshotException {
