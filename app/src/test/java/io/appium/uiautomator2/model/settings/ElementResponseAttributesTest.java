@@ -20,16 +20,21 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 
 import static io.appium.uiautomator2.model.settings.Settings.ELEMENT_RESPONSE_ATTRIBUTES;
 
 public class ElementResponseAttributesTest {
-
+    private Session session;
     private ElementResponseAttributes elementResponseAttributes;
 
     @Before
     public void setup() {
+        AppiumUIA2Driver.getInstance().initializeSession(new HashMap<String, Object>());
+        session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         elementResponseAttributes = new ElementResponseAttributes();
     }
 
@@ -45,13 +50,13 @@ public class ElementResponseAttributesTest {
 
     @Test
     public void shouldBeAbleToDisableElementResponseAttributes() {
-        Session.capabilities.remove(ELEMENT_RESPONSE_ATTRIBUTES.toString());
+        session.setCapability(ELEMENT_RESPONSE_ATTRIBUTES.toString(), "");
         Assert.assertEquals("", elementResponseAttributes.getValue());
     }
 
     @Test
     public void shouldBeAbleToEnableElementResponseAttributes() {
-        Session.capabilities.put(ELEMENT_RESPONSE_ATTRIBUTES.toString(), "a,b");
+        session.setCapability(ELEMENT_RESPONSE_ATTRIBUTES.toString(), "a,b");
         Assert.assertEquals("a,b", elementResponseAttributes.getValue());
     }
 }

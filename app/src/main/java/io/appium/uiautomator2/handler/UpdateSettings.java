@@ -25,6 +25,7 @@ import io.appium.uiautomator2.common.exceptions.UnsupportedSettingException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.settings.ISetting;
 import io.appium.uiautomator2.model.settings.Settings;
@@ -39,6 +40,7 @@ public class UpdateSettings extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         Map<String, Object> settings = getPayload(request, "settings");
         Logger.debug("Update settings: " + settings.toString());
         for (Entry<String, Object> entry : settings.entrySet()) {
@@ -47,7 +49,7 @@ public class UpdateSettings extends SafeRequestHandler {
             ISetting setting = getSetting(settingName);
             //noinspection unchecked
             setting.update(settingValue);
-            Session.capabilities.put(settingName, settingValue);
+            session.setCapability(settingName, settingValue);
         }
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
     }

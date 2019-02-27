@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import io.appium.uiautomator2.model.AccessibilityScrollData;
-import io.appium.uiautomator2.model.AppiumUiAutomatorDriver;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Logger;
@@ -46,7 +46,7 @@ public abstract class EventRegister {
             event = events.get(events.size() - 1);
         }
 
-        Session session = AppiumUiAutomatorDriver.getInstance().getSession();
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
 
         if (event == null) {
             Logger.debug("Did not retrieve accessibility event for scroll");
@@ -72,10 +72,11 @@ public abstract class EventRegister {
     }
 
     public static Boolean runAndRegisterScrollEvents(ReturningRunnable<Boolean> runnable) {
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         int timeout;
-        if (Session.capabilities.containsKey(EVENT_COOLDOWN_CAP)) {
+        if (session.hasCapability(EVENT_COOLDOWN_CAP)) {
             try {
-                timeout = (int) Session.capabilities.get(EVENT_COOLDOWN_CAP);
+                timeout = (int) session.getCapability(EVENT_COOLDOWN_CAP);
             } catch (Exception e) {
                 Logger.debug("Could not set scrollEventTimeout from caps: ", e);
                 timeout = EVENT_COOLDOWN_MS;

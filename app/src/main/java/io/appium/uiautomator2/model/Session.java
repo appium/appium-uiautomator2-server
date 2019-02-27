@@ -1,8 +1,8 @@
 package io.appium.uiautomator2.model;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,35 +15,54 @@ import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_
 
 public class Session {
     public static final String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
-    public static Map<String, Object> capabilities = new HashMap<>();
+    public static final String NO_ID = "None";
+    public final Map<String, Object> capabilities = new HashMap<>();
     private String sessionId;
     private ConcurrentMap<String, JSONObject> commandConfiguration;
     private KnownElements knownElements;
     private AccessibilityScrollData lastScrollData;
 
-    Session(String sessionId) {
+    Session(String sessionId, Map<String, Object> capabilities) {
         this.sessionId = sessionId;
         this.knownElements = new KnownElements();
         this.commandConfiguration = new ConcurrentHashMap<>();
+        this.capabilities.putAll(capabilities);
         JSONObject configJsonObject = new JSONObject();
         this.commandConfiguration.put(SEND_KEYS_TO_ELEMENT, configJsonObject);
-        NotificationListener.getInstance().start();
     }
 
-    public static boolean shouldUseCompactResponses() {
-        boolean shouldUseCompactResponses = true;
-        if (capabilities.containsKey(SHOULD_USE_COMPACT_RESPONSES.toString())) {
-            shouldUseCompactResponses = BooleanUtils.toBoolean(
-                    capabilities.get(SHOULD_USE_COMPACT_RESPONSES.toString()).toString());
-        }
-        return shouldUseCompactResponses;
+    public <T> T setCapability(String name, T value) {
+        capabilities.put(name, value);
+        return value;
     }
 
-    public static String[] getElementResponseAttributes() {
-        if (capabilities.containsKey(ELEMENT_RESPONSE_ATTRIBUTES.toString())) {
-            return capabilities.get(ELEMENT_RESPONSE_ATTRIBUTES.toString()).toString().split(",");
-        }
-        return new String[]{"name", "text"};
+    @Nullable
+    public Object getCapability(String name) {
+        return capabilities.get(name);
+    }
+
+    public <T> T getCapability(String name, T defaultValue) {
+        //noinspection unchecked
+        return hasCapability(name) ? (T) capabilities.get(name) : defaultValue;
+    }
+
+    public Map<String, Object> getCapabilities() {
+        return Collections.unmodifiableMap(capabilities);
+    }
+
+    public boolean hasCapability(String name) {
+        return capabilities.containsKey(name);
+    }
+
+    public boolean shouldUseCompactResponses() {
+        return getCapability(SHOULD_USE_COMPACT_RESPONSES.toString(), true);
+    }
+
+    public String[] getElementResponseAttributes() {
+        String capName = ELEMENT_RESPONSE_ATTRIBUTES.toString();
+        return getCapability(capName, "").trim().isEmpty()
+                ? new String[]{"name", "text"}
+                : getCapability(capName, "").split(",");
     }
 
     public String getSessionId() {

@@ -14,6 +14,7 @@ import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.NoAlertOpenException;
 import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.common.exceptions.NoSuchContextException;
+import io.appium.uiautomator2.common.exceptions.NoSuchDriverException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
@@ -72,6 +73,8 @@ public abstract class SafeRequestHandler extends BaseRequestHandler {
         } catch (NoClassDefFoundError e) {
             // This is a potentially interesting class path problem which should be returned to client.
             return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND, e);
+        } catch (NoSuchDriverException e) {
+            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_DRIVER, e);
         } catch (Exception e) {
             // The advantage of catching general Exception here is that we can propagate the Exception to clients.
             Logger.error("Exception while handling action in: " + this.getClass().getName(), e);

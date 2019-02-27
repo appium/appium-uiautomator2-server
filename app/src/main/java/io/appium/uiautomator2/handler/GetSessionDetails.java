@@ -23,7 +23,7 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AccessibilityScrollData;
-import io.appium.uiautomator2.model.AppiumUiAutomatorDriver;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.server.WDStatus;
 
@@ -34,7 +34,7 @@ public class GetSessionDetails extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
-        Session session = AppiumUiAutomatorDriver.getInstance().getSession();
+        Session session = AppiumUIA2Driver.getInstance().getSession();
         JSONObject result = new JSONObject();
         if (session != null) {
             AccessibilityScrollData scrollData = session.getLastScrollData();

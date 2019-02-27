@@ -30,6 +30,7 @@ import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.common.exceptions.UnsupportedSettingException;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.settings.AbstractSetting;
 import io.appium.uiautomator2.model.settings.ActionAcknowledgmentTimeout;
@@ -71,6 +72,7 @@ import static org.mockito.Mockito.verify;
 public class UpdateSettingsTests {
     private static final String SETTING_NAME = "my_setting";
     private static final String SETTING_VALUE = "my_value";
+    private Session session;
 
     @Spy
     private UpdateSettings updateSettings = new UpdateSettings("my_uri");
@@ -83,7 +85,8 @@ public class UpdateSettingsTests {
 
     @Before
     public void setUp() throws JSONException {
-        Session.capabilities.remove(SETTING_NAME);
+        AppiumUIA2Driver.getInstance().initializeSession(new HashMap<String, Object>());
+        session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         HashMap<String, Object> payload = new HashMap<>();
         payload.put(SETTING_NAME, SETTING_VALUE);
 
@@ -158,7 +161,7 @@ public class UpdateSettingsTests {
     public void shouldBeAbleToUpdateSetting() {
         AppiumResponse response = updateSettings.handle(req);
         verify(mySetting).update(SETTING_VALUE);
-        assertEquals(Session.capabilities.get(SETTING_NAME), SETTING_VALUE);
+        assertEquals(session.getCapability(SETTING_NAME), SETTING_VALUE);
         assertEquals(WDStatus.SUCCESS.code(), response.getStatus());
         assertEquals(true, response.getValue());
     }

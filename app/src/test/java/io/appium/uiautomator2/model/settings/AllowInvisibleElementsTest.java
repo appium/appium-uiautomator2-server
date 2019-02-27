@@ -20,14 +20,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 
 public class AllowInvisibleElementsTest {
-
+    private Session session;
     private AllowInvisibleElements allowInvisibleElements;
 
     @Before
     public void setup() {
+        AppiumUIA2Driver.getInstance().initializeSession(new HashMap<String, Object>());
+        session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         allowInvisibleElements = new AllowInvisibleElements();
     }
 
@@ -43,13 +48,13 @@ public class AllowInvisibleElementsTest {
 
     @Test
     public void shouldBeAbleToDisableAllowInvisibleElements() {
-        Session.capabilities.put(allowInvisibleElements.getName(), false);
+        session.setCapability(allowInvisibleElements.getName(), false);
         Assert.assertEquals(false, allowInvisibleElements.getValue());
     }
 
     @Test
     public void shouldBeAbleToEnableAllowInvisibleElements() {
-        Session.capabilities.put(allowInvisibleElements.getName(), true);
+        session.setCapability(allowInvisibleElements.getName(), true);
         Assert.assertEquals(true, allowInvisibleElements.getValue());
     }
 }

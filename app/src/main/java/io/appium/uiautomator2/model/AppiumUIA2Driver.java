@@ -16,36 +16,47 @@
 
 package io.appium.uiautomator2.model;
 
+import java.util.Map;
 import java.util.UUID;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import io.appium.uiautomator2.common.exceptions.NoSuchDriverException;
 
-public class AppiumUiAutomatorDriver {
+public class AppiumUIA2Driver {
 
-    private static AppiumUiAutomatorDriver instance;
+    private static AppiumUIA2Driver instance;
     private Session session;
 
-    private AppiumUiAutomatorDriver() {
+    private AppiumUIA2Driver() {
     }
 
-    public static synchronized AppiumUiAutomatorDriver getInstance() {
+    public static synchronized AppiumUIA2Driver getInstance() {
         if (instance == null) {
-            instance = new AppiumUiAutomatorDriver();
+            instance = new AppiumUIA2Driver();
         }
         return instance;
     }
 
-    public String initializeSession() {
-        if (this.session != null) {
-            session.getKnownElements().clear();
-            return session.getSessionId();
+    public String initializeSession(Map<String, Object> capabilities) {
+        if (this.session == null) {
+            this.session = new Session(UUID.randomUUID().toString(), capabilities);
         }
-        this.session = new Session(UUID.randomUUID().toString());
+        session.getKnownElements().clear();
         return session.getSessionId();
     }
 
     @Nullable
     public Session getSession() {
+        return session;
+    }
+
+    @NonNull
+    public Session getSessionOrThrow() {
+        Session session = getSession();
+        if (session == null) {
+            throw new NoSuchDriverException("A session is either terminated or not started");
+        }
         return session;
     }
 }

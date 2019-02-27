@@ -28,7 +28,7 @@ import io.appium.uiautomator2.utils.Logger;
 import static android.app.UiAutomation.OnAccessibilityEventListener;
 import static java.lang.System.currentTimeMillis;
 
-public final class NotificationListener implements OnAccessibilityEventListener {
+public class NotificationListener implements OnAccessibilityEventListener {
     private static NotificationListener INSTANCE;
     private static final int TOAST_CLEAR_TIMEOUT = 3500;
 

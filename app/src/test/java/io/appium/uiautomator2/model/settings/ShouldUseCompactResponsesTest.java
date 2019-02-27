@@ -20,6 +20,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 
 import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_RESPONSES;
@@ -27,9 +30,12 @@ import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_
 public class ShouldUseCompactResponsesTest {
 
     private ShouldUseCompactResponses shouldUseCompactResponses;
+    private Session session;
 
     @Before
     public void setup() {
+        AppiumUIA2Driver.getInstance().initializeSession(new HashMap<String, Object>());
+        session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         shouldUseCompactResponses = new ShouldUseCompactResponses();
     }
 
@@ -45,13 +51,13 @@ public class ShouldUseCompactResponsesTest {
 
     @Test
     public void shouldBeAbleToEnableShouldUseCompactResponses() {
-        Session.capabilities.put(SHOULD_USE_COMPACT_RESPONSES.toString(), "true");
+        session.setCapability(SHOULD_USE_COMPACT_RESPONSES.toString(), "true");
         Assert.assertEquals(true, shouldUseCompactResponses.getValue());
     }
 
     @Test
     public void shouldBeAbleToDisableShouldUseCompactResponses() {
-        Session.capabilities.put(SHOULD_USE_COMPACT_RESPONSES.toString(), "false");
+        session.setCapability(SHOULD_USE_COMPACT_RESPONSES.toString(), "false");
         Assert.assertEquals(false, shouldUseCompactResponses.getValue());
     }
 }

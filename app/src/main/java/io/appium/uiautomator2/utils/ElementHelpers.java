@@ -52,7 +52,7 @@ import io.appium.uiautomator2.core.UiObjectChildGenerator;
 import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.model.AccessibilityScrollData;
 import io.appium.uiautomator2.model.AndroidElement;
-import io.appium.uiautomator2.model.AppiumUiAutomatorDriver;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.UiObject2Element;
 
@@ -123,10 +123,11 @@ public abstract class ElementHelpers {
     public static JSONObject toJSON(AndroidElement el) throws JSONException, UiObjectNotFoundException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("ELEMENT", el.getId());
-        if (Session.shouldUseCompactResponses()) {
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+        if (session.shouldUseCompactResponses()) {
             return jsonObject;
         }
-        for (String field : Session.getElementResponseAttributes()) {
+        for (String field : session.getElementResponseAttributes()) {
             try {
                 if (Objects.equals(field, "name")) {
                     jsonObject.put(field, formatNull(el.getContentDesc()));
@@ -289,7 +290,7 @@ public abstract class ElementHelpers {
             y2 = yMargin;
         }
 
-        Session session = AppiumUiAutomatorDriver.getInstance().getSession();
+        Session session = AppiumUIA2Driver.getInstance().getSession();
         AccessibilityScrollData lastScrollData = null;
         Logger.debug("Doing a mini swipe-and-back in the scrollable view to generate scroll data");
         swipe(x1, y1, x2, y2);
