@@ -21,7 +21,7 @@ public class Session {
     private KnownElements knownElements;
     private AccessibilityScrollData lastScrollData;
 
-    public Session(String sessionId) {
+    Session(String sessionId) {
         this.sessionId = sessionId;
         this.knownElements = new KnownElements();
         this.commandConfiguration = new ConcurrentHashMap<>();
@@ -32,17 +32,16 @@ public class Session {
 
     public static boolean shouldUseCompactResponses() {
         boolean shouldUseCompactResponses = true;
-        if (Session.capabilities.containsKey(SHOULD_USE_COMPACT_RESPONSES.toString())) {
+        if (capabilities.containsKey(SHOULD_USE_COMPACT_RESPONSES.toString())) {
             shouldUseCompactResponses = BooleanUtils.toBoolean(
-                    Session.capabilities.get(SHOULD_USE_COMPACT_RESPONSES.toString()).toString());
+                    capabilities.get(SHOULD_USE_COMPACT_RESPONSES.toString()).toString());
         }
         return shouldUseCompactResponses;
     }
 
     public static String[] getElementResponseAttributes() {
-        if (Session.capabilities.containsKey(ELEMENT_RESPONSE_ATTRIBUTES.toString())) {
-            return Session.capabilities.get(ELEMENT_RESPONSE_ATTRIBUTES.toString()).toString()
-                    .split(",");
+        if (capabilities.containsKey(ELEMENT_RESPONSE_ATTRIBUTES.toString())) {
+            return capabilities.get(ELEMENT_RESPONSE_ATTRIBUTES.toString()).toString().split(",");
         }
         return new String[]{"name", "text"};
     }

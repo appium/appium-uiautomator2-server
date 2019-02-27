@@ -49,6 +49,7 @@ import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.handler.GetRotation;
 import io.appium.uiautomator2.handler.GetScreenOrientation;
 import io.appium.uiautomator2.handler.GetSessionDetails;
+import io.appium.uiautomator2.handler.GetSessions;
 import io.appium.uiautomator2.handler.GetSettings;
 import io.appium.uiautomator2.handler.GetSize;
 import io.appium.uiautomator2.handler.GetSystemBars;
@@ -68,7 +69,6 @@ import io.appium.uiautomator2.handler.SendKeysToElement;
 import io.appium.uiautomator2.handler.SetClipboard;
 import io.appium.uiautomator2.handler.Source;
 import io.appium.uiautomator2.handler.Status;
-import io.appium.uiautomator2.handler.StopServer;
 import io.appium.uiautomator2.handler.Swipe;
 import io.appium.uiautomator2.handler.TouchDown;
 import io.appium.uiautomator2.handler.TouchLongClick;
@@ -104,11 +104,6 @@ public class AppiumServlet implements IHttpServlet {
         registerGetHandler();
         registerPostHandler();
         registerDeleteHandler();
-        registerStopServerHandler();
-    }
-
-    private void registerStopServerHandler() {
-        register(postHandler, new StopServer("/stop"));
     }
 
     private void registerDeleteHandler() {
@@ -151,6 +146,7 @@ public class AppiumServlet implements IHttpServlet {
 
     private void registerGetHandler() {
         register(getHandler, new Status("/wd/hub/status"));
+        register(getHandler, new GetSessions("/wd/hub/sessions"));
         register(getHandler, new GetSessionDetails("/wd/hub/session/:sessionId"));
         register(getHandler, new CaptureScreenshot("/wd/hub/session/:sessionId/screenshot"));
         register(getHandler, new GetScreenOrientation("/wd/hub/session/:sessionId/orientation"));
