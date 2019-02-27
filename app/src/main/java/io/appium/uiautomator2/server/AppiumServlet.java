@@ -68,6 +68,7 @@ import io.appium.uiautomator2.handler.SendKeysToElement;
 import io.appium.uiautomator2.handler.SetClipboard;
 import io.appium.uiautomator2.handler.Source;
 import io.appium.uiautomator2.handler.Status;
+import io.appium.uiautomator2.handler.StopServer;
 import io.appium.uiautomator2.handler.Swipe;
 import io.appium.uiautomator2.handler.TouchDown;
 import io.appium.uiautomator2.handler.TouchLongClick;
@@ -103,6 +104,11 @@ public class AppiumServlet implements IHttpServlet {
         registerGetHandler();
         registerPostHandler();
         registerDeleteHandler();
+        registerStopServerHandler();
+    }
+
+    private void registerStopServerHandler() {
+        register(postHandler, new StopServer("/stop"));
     }
 
     private void registerDeleteHandler() {

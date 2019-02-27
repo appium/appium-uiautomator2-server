@@ -41,7 +41,7 @@ public class ServerInstrumentation {
 
     private static ServerInstrumentation instance;
 
-    private final Context context;
+    private final PowerManager powerManager;
     private final int serverPort;
     private HttpdThread serverThread;
     private PowerManager.WakeLock wakeLock;
@@ -53,7 +53,7 @@ public class ServerInstrumentation {
                     "The port is out of valid range [%s;%s]: %s", MIN_PORT, MAX_PORT, serverPort));
         }
         this.serverPort = serverPort;
-        this.context = context;
+        this.powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
 
     public static synchronized ServerInstrumentation getInstance() {
@@ -185,8 +185,7 @@ public class ServerInstrumentation {
         @SuppressLint("InvalidWakeLockTag")
         private void startServer() {
             // Get a wake lock to stop the cpu going to sleep
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            wakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "UiAutomator2");
+            wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "UiAutomator2");
             try {
                 wakeLock.acquire();
                 getUiDevice().wakeUp();
