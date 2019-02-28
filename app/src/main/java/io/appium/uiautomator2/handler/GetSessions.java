@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,16 +40,19 @@ public class GetSessions extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Session session = AppiumUIA2Driver.getInstance().getSession();
-        JSONObject result = new JSONObject();
+        JSONArray result = new JSONArray();
         if (session != null) {
+            JSONObject sessionProps = new JSONObject();
             String sessionId = session.getSessionId();
             if (sessionId != null) {
+                sessionProps.put("id", sessionId);
                 JSONObject sessionCaps = new JSONObject();
                 for (Map.Entry<String, Object> capEntry : session.getCapabilities().entrySet()) {
                     sessionCaps.put(capEntry.getKey(), JSONUtils.formatNull(capEntry.getValue()));
                 }
-                result.put(sessionId, sessionCaps);
+                sessionProps.put("capabilities", sessionCaps);
             }
+            result.put(sessionProps);
         }
         return new AppiumResponse(NO_ID, WDStatus.SUCCESS, result);
     }
