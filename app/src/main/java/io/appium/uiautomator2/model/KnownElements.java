@@ -32,10 +32,13 @@ import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocat
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 
 public class KnownElements {
-    private static Map<String, AndroidElement> cache = new HashMap<>();
+    private final Map<String, AndroidElement> cache = new HashMap<>();
+
+    KnownElements() {
+    }
 
     @Nullable
-    private static String getCacheKey(AndroidElement element) {
+    private String getCacheKey(AndroidElement element) {
         for (Map.Entry<String, AndroidElement> entry : cache.entrySet()) {
             if (entry.getValue().equals(element)) {
                 return entry.getKey();
@@ -45,7 +48,7 @@ public class KnownElements {
     }
 
     @Nullable
-    public static AndroidElement getElementFromCache(String id) {
+    public AndroidElement getElementFromCache(String id) {
         AndroidElement result = cache.get(id);
         if (result != null) {
             // It might be that cached UI object has been invalidated
@@ -98,12 +101,5 @@ public class KnownElements {
         }
         cache.put(element.getId(), element);
         return element.getId();
-    }
-
-    public void clear() {
-        if (!cache.isEmpty()) {
-            cache.clear();
-            System.gc();
-        }
     }
 }

@@ -36,9 +36,10 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.By.ById;
-import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
 import io.appium.uiautomator2.utils.Device;
@@ -62,11 +63,9 @@ public class FindElements extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
-            UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         JSONArray result = new JSONArray();
         Logger.info("Find elements command");
-        KnownElements ke = new KnownElements();
         JSONObject payload = getPayload(request);
         String method = payload.getString("strategy");
         String selector = payload.getString("selector");
@@ -82,10 +81,11 @@ public class FindElements extends SafeRequestHandler {
                 elements = this.findElements(by);
             }
 
+            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             for (Object element : elements) {
                 String id = UUID.randomUUID().toString();
                 AndroidElement androidElement = getAndroidElement(id, element, by);
-                ke.add(androidElement);
+                session.getKnownElements().add(androidElement);
                 JSONObject jsonElement = ElementHelpers.toJSON(androidElement);
                 result.put(jsonElement);
             }
@@ -129,7 +129,8 @@ public class FindElements extends SafeRequestHandler {
 
     private List<Object> findElements(By by, String contextId) throws ClassNotFoundException,
             UiAutomator2Exception, UiObjectNotFoundException {
-        AndroidElement element = KnownElements.getElementFromCache(contextId);
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+        AndroidElement element = session.getKnownElements().getElementFromCache(contextId);
         if (element == null) {
             throw new ElementNotFoundException();
         }
@@ -186,6 +187,7 @@ public class FindElements extends SafeRequestHandler {
         final boolean endsWithInstance = endsWithInstancePattern.matcher(selectorString).matches();
         Logger.debug("getElements selector:" + selectorString);
         final ArrayList<Object> elements = new ArrayList<>();
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
 
         // If sel is UiSelector[CLASS=android.widget.Button, INSTANCE=0]
         // then invoking instance with a non-0 argument will corrupt the selector.
@@ -205,7 +207,7 @@ public class FindElements extends SafeRequestHandler {
         }
 
         UiObject lastFoundObj;
-        final AndroidElement baseEl = KnownElements.getElementFromCache(key);
+        final AndroidElement baseEl = session.getKnownElements().getElementFromCache(key);
 
         UiSelector tmp;
         int counter = 0;

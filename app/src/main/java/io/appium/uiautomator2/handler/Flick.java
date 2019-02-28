@@ -8,7 +8,8 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
-import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
+import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
@@ -32,14 +33,15 @@ public class Flick extends SafeRequestHandler {
         JSONObject payload = getPayload(request);
         if (payload.has(ELEMENT_ID_KEY_NAME)) {
             String id = payload.getString(ELEMENT_ID_KEY_NAME);
-            AndroidElement element = KnownElements.getElementFromCache(id);
+            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+            AndroidElement element = session.getKnownElements().getElementFromCache(id);
             if (element == null) {
                 return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
             }
             start = element.getAbsolutePosition(start);
             final Integer xoffset = Integer.parseInt(payload.getString("xoffset"));
             final Integer yoffset = Integer.parseInt(payload.getString("yoffset"));
-            final Integer speed = Integer.parseInt(payload.getString("speed"));
+            final int speed = Integer.parseInt(payload.getString("speed"));
 
             steps = 1250.0 / speed + 1;
             end.x = start.x + xoffset;
@@ -49,7 +51,7 @@ public class Flick extends SafeRequestHandler {
             final Integer xSpeed = Integer.parseInt(payload.getString("xspeed"));
             final Integer ySpeed = Integer.parseInt(payload.getString("yspeed"));
 
-            final Double speed = Math.min(1250.0,
+            final double speed = Math.min(1250.0,
                     Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed));
             steps = 1250.0 / speed + 1;
 

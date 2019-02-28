@@ -31,10 +31,11 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.By.ByClass;
 import io.appium.uiautomator2.model.By.ById;
-import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
 import io.appium.uiautomator2.server.WDStatus;
@@ -58,7 +59,6 @@ public class FindElement extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         Logger.info("Find element command");
-        KnownElements ke = new KnownElements();
         final JSONObject payload = getPayload(request);
         final String method = payload.getString("strategy");
         final String selector = payload.getString("selector");
@@ -83,13 +83,14 @@ public class FindElement extends SafeRequestHandler {
 
         String id = UUID.randomUUID().toString();
         AndroidElement androidElement = getAndroidElement(id, element, by);
-        ke.add(androidElement);
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+        session.getKnownElements().add(androidElement);
         JSONObject result = ElementHelpers.toJSON(androidElement);
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
     }
 
     @Nullable
-    private Object findElement(By by) throws ClassNotFoundException, UiAutomator2Exception, UiObjectNotFoundException {
+    private Object findElement(By by) throws UiAutomator2Exception, UiObjectNotFoundException {
         refreshRootAXNode();
 
         if (by instanceof ById) {
@@ -119,7 +120,8 @@ public class FindElement extends SafeRequestHandler {
     @Nullable
     private Object findElement(By by, String contextId) throws ClassNotFoundException,
             UiAutomator2Exception, UiObjectNotFoundException {
-        AndroidElement element = KnownElements.getElementFromCache(contextId);
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+        AndroidElement element = session.getKnownElements().getElementFromCache(contextId);
         if (element == null) {
             throw new ElementNotFoundException();
         }

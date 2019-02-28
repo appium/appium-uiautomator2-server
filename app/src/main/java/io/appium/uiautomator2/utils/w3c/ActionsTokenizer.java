@@ -32,7 +32,8 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.model.AndroidElement;
-import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
+import io.appium.uiautomator2.model.Session;
 
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_BUTTON_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_DURATION_KEY;
@@ -223,8 +224,9 @@ public class ActionsTokenizer {
         }
         final MotionEvent.PointerCoords result = new MotionEvent.PointerCoords();
         Rect bounds;
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         try {
-            final AndroidElement element = KnownElements.getElementFromCache(elementId);
+            final AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
             //noinspection ConstantConditions
             bounds = element.getBounds();
             if (bounds.width() == 0 || bounds.height() == 0) {

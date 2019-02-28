@@ -24,7 +24,6 @@ import androidx.annotation.Nullable;
 import io.appium.uiautomator2.common.exceptions.NoSuchDriverException;
 
 public class AppiumUIA2Driver {
-
     private static AppiumUIA2Driver instance;
     private Session session;
 
@@ -39,11 +38,9 @@ public class AppiumUIA2Driver {
     }
 
     public String initializeSession(Map<String, Object> capabilities) {
-        if (this.session == null) {
-            this.session = new Session(UUID.randomUUID().toString(), capabilities);
-        }
-        session.getKnownElements().clear();
-        return session.getSessionId();
+        String sessionId = session == null ? UUID.randomUUID().toString() : session.getSessionId();
+        this.session = new Session(sessionId, capabilities);
+        return sessionId;
     }
 
     @Nullable

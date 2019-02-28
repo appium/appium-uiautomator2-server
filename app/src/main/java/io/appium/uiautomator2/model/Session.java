@@ -1,12 +1,8 @@
 package io.appium.uiautomator2.model;
 
-import org.json.JSONObject;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import androidx.annotation.Nullable;
 
@@ -14,23 +10,18 @@ import static io.appium.uiautomator2.model.settings.Settings.ELEMENT_RESPONSE_AT
 import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_RESPONSES;
 
 public class Session {
-    public static final String SEND_KEYS_TO_ELEMENT = "sendKeysToElement";
     public static final String NO_ID = "None";
     public final Map<String, Object> capabilities = new HashMap<>();
-    private String sessionId;
-    private ConcurrentMap<String, JSONObject> commandConfiguration;
-    private KnownElements knownElements;
+    private final String sessionId;
+    private final KnownElements knownElements = new KnownElements();
     private AccessibilityScrollData lastScrollData;
 
     Session(String sessionId, Map<String, Object> capabilities) {
         this.sessionId = sessionId;
-        this.knownElements = new KnownElements();
-        this.commandConfiguration = new ConcurrentHashMap<>();
         this.capabilities.putAll(capabilities);
-        JSONObject configJsonObject = new JSONObject();
-        this.commandConfiguration.put(SEND_KEYS_TO_ELEMENT, configJsonObject);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public <T> T setCapability(String name, T value) {
         capabilities.put(name, value);
         return value;
@@ -55,7 +46,8 @@ public class Session {
     }
 
     public boolean shouldUseCompactResponses() {
-        return getCapability(SHOULD_USE_COMPACT_RESPONSES.toString(), true);
+        String capName = SHOULD_USE_COMPACT_RESPONSES.toString();
+        return !hasCapability(capName) || String.valueOf(getCapability(capName)).equals("true");
     }
 
     public String[] getElementResponseAttributes() {
@@ -69,20 +61,6 @@ public class Session {
         return sessionId;
     }
 
-    public void setCommandConfiguration(String command, JSONObject config) {
-        if (commandConfiguration.containsKey(command)) {
-            commandConfiguration.replace(command, config);
-        }
-    }
-
-    public KnownElements getKnownElements() {
-        return knownElements;
-    }
-
-    public JSONObject getCommandConfiguration(String command) {
-        return commandConfiguration.get(command);
-    }
-
     @Nullable
     public AccessibilityScrollData getLastScrollData() {
         return lastScrollData;
@@ -90,5 +68,9 @@ public class Session {
 
     public void setLastScrollData(AccessibilityScrollData scrollData) {
         lastScrollData = scrollData;
+    }
+
+    public KnownElements getKnownElements() {
+        return this.knownElements;
     }
 }

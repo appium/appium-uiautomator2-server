@@ -9,7 +9,8 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
-import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
+import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
@@ -119,14 +120,15 @@ public class Drag extends SafeRequestHandler {
         public DragArguments(final IHttpRequest request) throws JSONException {
 
             JSONObject payload = getPayload(request);
+            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
 
             if (payload.has("elementId")) {
                 String id = payload.getString("elementId");
-                el = KnownElements.getElementFromCache(id);
+                el = session.getKnownElements().getElementFromCache(id);
             }
             if (payload.has("destElId")) {
                 String id = payload.getString("destElId");
-                destEl = KnownElements.getElementFromCache(id);
+                destEl = session.getKnownElements().getElementFromCache(id);
             }
 
             start = new Point(payload.get("startX"), payload.get("startY"));
