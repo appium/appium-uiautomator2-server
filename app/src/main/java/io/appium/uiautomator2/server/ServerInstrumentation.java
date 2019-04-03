@@ -64,6 +64,33 @@ public class ServerInstrumentation {
         return instance;
     }
 
+    private void releaseWakeLock() {
+        if (wakeLock == null) {
+            return;
+        }
+
+        try {
+            wakeLock.release();
+        } catch (Exception e) {/* ignore */}
+        wakeLock = null;
+    }
+
+    private void acquireWakeLock() {
+        releaseWakeLock();
+
+        // Get a wake lock to stop the cpu going to sleep
+        //noinspection deprecation
+        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, WAKE_LOCK_TAG);
+        try {
+            wakeLock.acquire(MAX_TEST_DURATION);
+            getUiDevice().wakeUp();
+        } catch (SecurityException e) {
+            Logger.error("Security Exception", e);
+        } catch (RemoteException e) {
+            Logger.error("Remote Exception while waking up", e);
+        }
+    }
+
     public boolean isServerStopped() {
         return isServerStopped;
     }
@@ -74,14 +101,8 @@ public class ServerInstrumentation {
 
     public void stopServer() {
         try {
-            if (wakeLock != null) {
-                try {
-                    wakeLock.release();
-                } catch (Exception e) {/* ignore */}
-                wakeLock = null;
-            }
+            releaseWakeLock();
             stopServerThread();
-
         } finally {
             instance = null;
         }
@@ -184,23 +205,7 @@ public class ServerInstrumentation {
         }
 
         private void startServer() {
-            if (wakeLock != null) {
-                try {
-                    wakeLock.release();
-                } catch (Exception e) {/* ignore */}
-            }
-
-            // Get a wake lock to stop the cpu going to sleep
-            wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
-                    WAKE_LOCK_TAG);
-            try {
-                wakeLock.acquire(MAX_TEST_DURATION);
-                getUiDevice().wakeUp();
-            } catch (SecurityException e) {
-                Logger.error("Security Exception", e);
-            } catch (RemoteException e) {
-                Logger.error("Remote Exception while waking up", e);
-            }
+            acquireWakeLock();
 
             server.start();
 
