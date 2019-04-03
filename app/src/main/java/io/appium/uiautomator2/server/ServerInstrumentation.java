@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.server;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +37,8 @@ import static io.appium.uiautomator2.utils.Device.getUiDevice;
 public class ServerInstrumentation {
     private static final int MIN_PORT = 1024;
     private static final int MAX_PORT = 65535;
+    private static final String WAKE_LOCK_TAG = "UiAutomator2:ScreenKeeper";
+    private static final long MAX_TEST_DURATION = 24 * 60 * 60 * 1000;
 
     private static ServerInstrumentation instance;
 
@@ -182,12 +183,12 @@ public class ServerInstrumentation {
             return server;
         }
 
-        @SuppressLint("InvalidWakeLockTag")
         private void startServer() {
             // Get a wake lock to stop the cpu going to sleep
-            wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "UiAutomator2");
+            wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
+                    WAKE_LOCK_TAG);
             try {
-                wakeLock.acquire();
+                wakeLock.acquire(MAX_TEST_DURATION);
                 getUiDevice().wakeUp();
             } catch (SecurityException e) {
                 Logger.error("Security Exception", e);
