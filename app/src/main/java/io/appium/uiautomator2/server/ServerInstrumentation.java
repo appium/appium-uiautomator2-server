@@ -184,6 +184,12 @@ public class ServerInstrumentation {
         }
 
         private void startServer() {
+            if (wakeLock != null) {
+                try {
+                    wakeLock.release();
+                } catch (Exception e) {/* ignore */}
+            }
+
             // Get a wake lock to stop the cpu going to sleep
             wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
                     WAKE_LOCK_TAG);
