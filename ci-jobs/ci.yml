@@ -8,6 +8,11 @@ jobs:
       ANDROID_SDK_VERSION: 28
       ANDROID_AVD: test
     steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: 10.x
+    - script: npm install
+      displayName: Install Node dependencies
     - script: bash ci-jobs/scripts/start-emulator.sh
       displayName: Create and run Emulator
     - script: ./gradlew clean connectedE2ETestDebugAndroidTest
