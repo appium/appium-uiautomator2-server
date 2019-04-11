@@ -20,6 +20,7 @@ import android.app.UiAutomation;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.DisplayMetrics;
@@ -40,7 +41,7 @@ import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
 import static android.graphics.Bitmap.CompressFormat.PNG;
-import static android.util.DisplayMetrics.DENSITY_MEDIUM;
+import static android.util.DisplayMetrics.DENSITY_DEFAULT;
 
 public class ScreenshotHelper {
     private static final int PNG_MAGIC_LENGTH = 8;
@@ -90,39 +91,43 @@ public class ScreenshotHelper {
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
         Bitmap screenshot = null;
-        if (metrics.densityDpi == DENSITY_MEDIUM) {
-            screenshot = uia.takeScreenshot();
-        } else {
-            // Workaround for https://github.com/appium/appium/issues/12199
-            Logger.info("Making the screenshot with screencap utility to workaround " +
-                    "the scaling issue");
-            ParcelFileDescriptor pfd = uia.executeShellCommand("screencap -p");
-            try (InputStream is = new FileInputStream(pfd.getFileDescriptor())) {
-                byte[] pngBytes = IOUtils.toByteArray(is);
-                if (outputType == String.class) {
+        Logger.debug(String.format("Display metrics: %s", metrics));
+        // Workaround for https://github.com/appium/appium/issues/12199
+        // executeShellCommand seems to be faulty on Android 5
+        if (metrics.densityDpi != DENSITY_DEFAULT && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            try {
+                ParcelFileDescriptor pfd = uia.executeShellCommand("screencap -p");
+                try (InputStream is = new FileInputStream(pfd.getFileDescriptor())) {
+                    byte[] pngBytes = IOUtils.toByteArray(is);
                     if (pngBytes.length <= PNG_MAGIC_LENGTH) {
-                        throw new TakeScreenshotException();
+                        throw new IllegalStateException("screencap returned an invalid response");
                     }
-                    return outputType.cast(Base64.encodeToString(pngBytes, Base64.DEFAULT));
+                    if (outputType == String.class) {
+                        return outputType.cast(Base64.encodeToString(pngBytes, Base64.DEFAULT));
+                    }
+                    screenshot = BitmapFactory.decodeByteArray(pngBytes, 0, pngBytes.length);
+                } finally {
+                    try {
+                        pfd.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                screenshot = BitmapFactory.decodeByteArray(pngBytes, 0, pngBytes.length);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    pfd.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                Logger.error(e);
+                Logger.info("Falling back to UiAutomator-based screenshoting");
             }
+        }
+        if (screenshot == null) {
+            screenshot = uia.takeScreenshot();
         }
 
         if (screenshot == null || screenshot.getWidth() == 0 || screenshot.getHeight() == 0) {
             throw new TakeScreenshotException();
         }
 
-        Logger.info(String.format("Got screenshot with pixel resolution: %sx%s. Screen density: %s",
-                screenshot.getWidth(), screenshot.getHeight(), metrics.density));
+        Logger.info(String.format("Got screenshot with resolution: %sx%s", screenshot.getWidth(),
+                screenshot.getHeight()));
         if (outputType == String.class) {
             try {
                 return outputType.cast(Base64.encodeToString(compress(screenshot), Base64.DEFAULT));
