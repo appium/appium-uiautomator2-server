@@ -17,9 +17,15 @@
 package io.appium.uiautomator2.handler;
 
 import android.app.Instrumentation;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -30,12 +36,58 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 
 public class GetDeviceInfo extends SafeRequestHandler {
     private final Instrumentation mInstrumentation = getInstrumentation();
 
     public GetDeviceInfo(String mappedUri) {
         super(mappedUri);
+    }
+
+    private static JSONArray networksInfoToJSON(DeviceInfoHelper deviceInfoHelper,
+                                                List<Network> infos) throws JSONException {
+        JSONArray result = new JSONArray();
+        for (Network info: infos) {
+            JSONObject resultItem = new JSONObject();
+            NetworkInfo networkInfo = deviceInfoHelper.extractInfo(info);
+            if (networkInfo != null) {
+                resultItem.put("typeName", networkInfo.getTypeName());
+                resultItem.put("type", networkInfo.getType());
+                resultItem.put("subtype", networkInfo.getSubtype());
+                resultItem.put("subtypeName", networkInfo.getSubtypeName());
+                resultItem.put("connected", networkInfo.isConnected());
+                resultItem.put("connectionState", networkInfo.getDetailedState().ordinal());
+                resultItem.put("extraInfo", formatNull(networkInfo.getExtraInfo()));
+                resultItem.put("available", networkInfo.isAvailable());
+                resultItem.put("isFailover", networkInfo.isFailover());
+                resultItem.put("isRoaming", networkInfo.isRoaming());
+            }
+
+            NetworkCapabilities networkCaps = deviceInfoHelper.extractCapabilities(info);
+            if (networkCaps != null) {
+                JSONObject caps = new JSONObject();
+                caps.put("transportTypes",
+                        getField("mTransportTypes", networkCaps));
+                caps.put("networkCapabilities",
+                        getField("mNetworkCapabilities", networkCaps));
+                caps.put("linkUpstreamBandwidthKbps",
+                        networkCaps.getLinkUpstreamBandwidthKbps());
+                caps.put("linkDownBandwidthKbps",
+                        networkCaps.getLinkDownstreamBandwidthKbps());
+                caps.put("signalStrength",
+                        getField("mSignalStrength", networkCaps));
+                caps.put("networkSpecifier",
+                        formatNull(getField("mNetworkSpecifier", networkCaps)));
+                caps.put("ssid", formatNull(getField("mSSID", networkCaps)));
+                resultItem.put("capabilities", caps);
+            }
+
+            if (networkCaps != null || networkInfo != null) {
+                result.put(resultItem);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -53,6 +105,8 @@ public class GetDeviceInfo extends SafeRequestHandler {
         response.put("carrierName", formatNull(deviceInfoHelper.getCarrierName()));
         response.put("realDisplaySize", deviceInfoHelper.getRealDisplaySize());
         response.put("displayDensity", deviceInfoHelper.getDisplayDensity());
+        response.put("networks", networksInfoToJSON(deviceInfoHelper,
+                deviceInfoHelper.getNetworks()));
 
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, response);
     }

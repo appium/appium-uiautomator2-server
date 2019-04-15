@@ -18,11 +18,20 @@ package io.appium.uiautomator2.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.Display;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
@@ -30,9 +39,12 @@ import io.appium.uiautomator2.core.UiAutomatorBridge;
 
 public class DeviceInfoHelper {
     private final Context context;
+    private final ConnectivityManager connManager;
 
     public DeviceInfoHelper(Context context) {
         this.context = context;
+        this.connManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     /**
@@ -111,6 +123,46 @@ public class DeviceInfoHelper {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Retrieves the capabilities of the given network
+     *
+     * @param net android network object
+     * @return Capabilities info
+     */
+    @Nullable
+    public NetworkCapabilities extractCapabilities(Network net) {
+        if (connManager == null) {
+            return null;
+        }
+        return connManager.getNetworkCapabilities(net);
+    }
+
+    /**
+     * Retrieves the information about the given network
+     *
+     * @param net android network object
+     * @return Network info
+     */
+    @Nullable
+    public NetworkInfo extractInfo(Network net) {
+        if (connManager == null) {
+            return null;
+        }
+        return connManager.getNetworkInfo(net);
+    }
+
+    /**
+     * Retrieves available networks
+     *
+     * @return The list of network items
+     */
+    public List<Network> getNetworks() {
+        if (connManager == null) {
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(Arrays.asList(connManager.getAllNetworks()));
     }
 
     /**
