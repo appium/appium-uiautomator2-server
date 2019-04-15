@@ -62,8 +62,8 @@ public class GetDeviceInfo extends SafeRequestHandler {
             }
 
             NetworkCapabilities networkCaps = deviceInfoHelper.extractCapabilities(network);
+            JSONObject caps = new JSONObject();
             if (networkCaps != null) {
-                JSONObject caps = new JSONObject();
                 caps.put("transportTypes",
                         getField("mTransportTypes", networkCaps));
                 caps.put("networkCapabilities",
@@ -77,8 +77,8 @@ public class GetDeviceInfo extends SafeRequestHandler {
                 caps.put("networkSpecifier",
                         formatNull(getField("mNetworkSpecifier", networkCaps)));
                 caps.put("SSID", formatNull(getField("mSSID", networkCaps)));
-                resultItem.put("capabilities", caps);
             }
+            resultItem.put("capabilities", formatNull(networkCaps == null ? null : caps));
 
             if (networkCaps != null || networkInfo != null) {
                 result.put(resultItem);
