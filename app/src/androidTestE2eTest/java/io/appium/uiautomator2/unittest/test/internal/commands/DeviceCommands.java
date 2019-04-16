@@ -185,6 +185,16 @@ public class DeviceCommands {
     }
 
     /**
+     * retrieve device information
+     *
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response getInfo() {
+        return Client.get("/appium/device/info");
+    }
+
+    /**
      * Performs scroll to an element displaying the given text.
      * The default maximum number of swipes will be used during the element search.
      *
