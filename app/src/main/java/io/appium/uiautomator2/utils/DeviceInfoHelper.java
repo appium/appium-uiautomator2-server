@@ -39,35 +39,27 @@ import java.util.Map;
 import androidx.annotation.Nullable;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 
-import static android.net.NetworkCapabilities.NET_CAPABILITY_CAPTIVE_PORTAL;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_CBS;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_DUN;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_EIMS;
-import static android.net.NetworkCapabilities.NET_CAPABILITY_FOREGROUND;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_FOTA;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_IA;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_IMS;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_MMS;
-import static android.net.NetworkCapabilities.NET_CAPABILITY_NOT_CONGESTED;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_NOT_METERED;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED;
-import static android.net.NetworkCapabilities.NET_CAPABILITY_NOT_ROAMING;
-import static android.net.NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_NOT_VPN;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_RCS;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_SUPL;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_TRUSTED;
-import static android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_WIFI_P2P;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_XCAP;
 import static android.net.NetworkCapabilities.TRANSPORT_BLUETOOTH;
 import static android.net.NetworkCapabilities.TRANSPORT_CELLULAR;
 import static android.net.NetworkCapabilities.TRANSPORT_ETHERNET;
-import static android.net.NetworkCapabilities.TRANSPORT_LOWPAN;
 import static android.net.NetworkCapabilities.TRANSPORT_VPN;
 import static android.net.NetworkCapabilities.TRANSPORT_WIFI;
-import static android.net.NetworkCapabilities.TRANSPORT_WIFI_AWARE;
 
 
 public class DeviceInfoHelper {
@@ -118,6 +110,7 @@ public class DeviceInfoHelper {
 
     /**
      * Current running OS's API VERSION
+     *
      * @return the os version as String
      */
     public String getApiVersion() {
@@ -138,7 +131,7 @@ public class DeviceInfoHelper {
         Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getRealMetrics(metrics);
-        return (int)(metrics.density * 160);
+        return (int) (metrics.density * 160);
     }
 
     /**
@@ -166,14 +159,14 @@ public class DeviceInfoHelper {
      */
     @Nullable
     public NetworkCapabilities extractCapabilities(Network net) {
-        if (connManager == null) {
-            return null;
-        }
-        return connManager.getNetworkCapabilities(net);
+        return connManager == null
+                ? null
+                : connManager.getNetworkCapabilities(net);
     }
 
     @SuppressLint("UseSparseArrays")
     public static final Map<Integer, String> TRANSPORTS = new HashMap<>();
+
     static {
         TRANSPORTS.put(TRANSPORT_CELLULAR, "TRANSPORT_CELLULAR");
         TRANSPORTS.put(TRANSPORT_WIFI, "TRANSPORT_WIFI");
@@ -185,7 +178,7 @@ public class DeviceInfoHelper {
 
     public static String extractTransportTypes(NetworkCapabilities caps) {
         List<String> result = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry: TRANSPORTS.entrySet()) {
+        for (Map.Entry<Integer, String> entry : TRANSPORTS.entrySet()) {
             if (caps.hasTransport(entry.getKey())) {
                 result.add(entry.getValue());
             }
@@ -195,6 +188,7 @@ public class DeviceInfoHelper {
 
     @SuppressLint("UseSparseArrays")
     public static final Map<Integer, String> CAPS = new HashMap<>();
+
     static {
         TRANSPORTS.put(NET_CAPABILITY_MMS, "NET_CAPABILITY_MMS");
         TRANSPORTS.put(NET_CAPABILITY_SUPL, "NET_CAPABILITY_SUPL");
@@ -223,7 +217,7 @@ public class DeviceInfoHelper {
 
     public static String extractCapNames(NetworkCapabilities caps) {
         List<String> result = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry: CAPS.entrySet()) {
+        for (Map.Entry<Integer, String> entry : CAPS.entrySet()) {
             if (caps.hasCapability(entry.getKey())) {
                 result.add(entry.getValue());
             }
@@ -239,10 +233,9 @@ public class DeviceInfoHelper {
      */
     @Nullable
     public NetworkInfo extractInfo(Network net) {
-        if (connManager == null) {
-            return null;
-        }
-        return connManager.getNetworkInfo(net);
+        return connManager == null
+                ? null
+                : connManager.getNetworkInfo(net);
     }
 
     /**
