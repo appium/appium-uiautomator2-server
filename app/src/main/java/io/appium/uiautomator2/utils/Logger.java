@@ -50,6 +50,15 @@ public class Logger {
     }
 
     /**
+     * Logger warning
+     */
+    public static void warn(Object... messages) {
+        if (android.util.Log.isLoggable(TAG, android.util.Log.WARN)) {
+            android.util.Log.w(TAG, getString(messages));
+        }
+    }
+
+    /**
      * Logger info
      */
     public static void info(Object... messages) {

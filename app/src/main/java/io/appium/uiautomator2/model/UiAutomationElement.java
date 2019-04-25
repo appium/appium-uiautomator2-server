@@ -44,10 +44,13 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableS
 @TargetApi(18)
 public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAutomationElement> {
     private final static String ROOT_NODE_NAME = "hierarchy";
+    // https://github.com/appium/appium/issues/12545
+    private final static int MAX_DEPTH = 70;
 
     private final static Map<AccessibilityNodeInfo, UiAutomationElement> cache = new WeakHashMap<>();
     private final Map<Attribute, Object> attributes;
     private final List<UiAutomationElement> children;
+    private int depth = 0;
 
     /**
      * A snapshot of all attributes is taken at construction. The attributes of a
@@ -100,6 +103,14 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         this.children = mutableChildren;
     }
 
+    private int getDepth() {
+        return this.depth;
+    }
+
+    private void setDepth(int depth) {
+        this.depth = depth;
+    }
+
     public static UiAutomationElement rebuildForNewRoot(AccessibilityNodeInfo rawElement, @Nullable List<CharSequence> toastMSGs) {
         cache.clear();
         UiAutomationElement root = new UiAutomationElement(ROOT_NODE_NAME, rawElement, 0);
@@ -121,10 +132,11 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         return cache.get(rawElement);
     }
 
-    private static UiAutomationElement getOrCreateElement(AccessibilityNodeInfo rawElement, int index) {
+    private static UiAutomationElement getOrCreateElement(AccessibilityNodeInfo rawElement, int index, int depth) {
         UiAutomationElement element = cache.get(rawElement);
         if (element == null) {
             element = new UiAutomationElement(rawElement, index);
+            element.setDepth(depth);
             cache.put(rawElement, element);
         }
         return element;
@@ -147,22 +159,25 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     }
 
     private List<UiAutomationElement> buildChildren(AccessibilityNodeInfo node) {
-        int childCount = node.getChildCount();
-        if (childCount == 0) {
+        final int childCount = node.getChildCount();
+        if (childCount == 0 || getDepth() >= MAX_DEPTH) {
+            if (getDepth() >= MAX_DEPTH) {
+                Logger.warn(String.format("Skipping building children of '%s' because the maximum " +
+                        "recursion depth (%s) has been reached", node, MAX_DEPTH));
+            }
             return Collections.emptyList();
         }
 
         List<UiAutomationElement> children = new ArrayList<>(childCount);
-        Object allowInvisibleElements = AppiumUIA2Driver
+        boolean areInvisibleElementsAllowed = AppiumUIA2Driver
                 .getInstance()
                 .getSessionOrThrow()
-                .getCapability(ALLOW_INVISIBLE_ELEMENTS.toString());
-        boolean isAllowInvisibleElements = allowInvisibleElements != null && (boolean) allowInvisibleElements;
+                .getCapability(ALLOW_INVISIBLE_ELEMENTS.toString(), false);
         for (int i = 0; i < childCount; i++) {
             AccessibilityNodeInfo child = node.getChild(i);
             //Ignore if element is not visible on the screen
-            if (child != null && (child.isVisibleToUser() || isAllowInvisibleElements)) {
-                children.add(getOrCreateElement(child, i));
+            if (child != null && (child.isVisibleToUser() || areInvisibleElementsAllowed)) {
+                children.add(getOrCreateElement(child, i, getDepth() + 1));
             }
         }
         return children;
