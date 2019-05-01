@@ -11,57 +11,70 @@ android:
     - platform-tools
     - tools
     - build-tools
+licenses:
+  - 'android-sdk-preview-license-.+'
+  - 'android-sdk-license-.+'
+  - 'google-gdk-license-.+'
 env:
   global:
+    - NODE_VERSION=10
     - DEVICE=android
     - START_EMU=1
-    - ANDROID_EMU_NAME=test
-    - ANDROID_EMU_ABI=armeabi-v7a
-    - ANDROID_BUILD_TOOLS=28.0.3
-    - ANDROID_EMU_TAG=default
+    - EMU_NAME=test
+    - EMU_ABI=x86_64
+    - EMU_TAG=default
+    - EMU_TARGET=android-26
+    - API_TARGET=android-28
+    - BUILD_TOOLS=28.0.3
     - E2E_TEST_PACKAGE=io.appium.uiautomator2.unittest.test
     - CC=gcc-6 CXX=g++-6
   matrix:
     - TEST=unit START_EMU=0
-    - TEST=AlertCommandsTest ANDROID_EMU_TARGET=android-24
-    - TEST=ActionsCommandsTest ANDROID_EMU_TARGET=android-24
-    - TEST=GestureCommandsTest ANDROID_EMU_TARGET=android-24
-    - TEST=DeviceCommandsTest ANDROID_EMU_TARGET=android-24
-    - TEST=ElementCommandsTest ANDROID_EMU_TARGET=android-24
-    - TEST=GestureCommandsTest ANDROID_EMU_TARGET=android-22
-    - TEST=DeviceCommandsTest ANDROID_EMU_TARGET=android-22
-    - TEST=ElementCommandsTest ANDROID_EMU_TARGET=android-22
+    - TEST=AlertCommandsTest
+    - TEST=ActionsCommandsTest
+    - TEST=GestureCommandsTest
+    - TEST=DeviceCommandsTest
+    - TEST=ElementCommandsTest
+    - TEST=GestureCommandsTest EMU_TARGET=android-22
+    - TEST=DeviceCommandsTest EMU_TARGET=android-22
+    - TEST=ElementCommandsTest EMU_TARGET=android-22
 before_script:
   # node stuff
-  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
-  - nvm install 8
+  - nvm install $NODE_VERSION
   - node --version
   - npm --version
   - npm install appium-test-support # get the travis emu scripts
 
   # npm stuff
-  - npm install
+  - SERVER_INSTALL_ATTEMPTS=50 npm install
 
   - |
-    echo y | android update sdk --no-ui -t tools
-    echo yes | sdkmanager tools > /dev/null
+    echo 'count=0' > /home/travis/.android/repositories.cfg
+    echo yes | android update sdk --no-ui -t tools
     echo yes | sdkmanager --update > /dev/null
-    echo yes | sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" > /dev/null
-    echo yes | sdkmanager "extras;android;m2repository" > /dev/null
-    echo yes | sdkmanager "extras;google;m2repository" > /dev/null
+    echo yes | sdkmanager "platform-tools" > /dev/null
+    echo yes | sdkmanager > /dev/null
+    echo yes | sdkmanager "build-tools;${BUILD_TOOLS}" > /dev/null
     if [ ${START_EMU} = "1" ]; then
-      echo yes | sdkmanager "platforms;${ANDROID_EMU_TARGET}" > /dev/null
-      export ANDROID_EMU_IMAGE="system-images;${ANDROID_EMU_TARGET};${ANDROID_EMU_TAG};${ANDROID_EMU_ABI}"
+      if [ "$BUILD_TOOLS" != "$API_TARGET" ]; then
+        echo yes | sdkmanager "build-tools;${API_TARGET}" > /dev/null
+      fi
+      echo yes | sdkmanager "platforms;${EMU_TARGET}" > /dev/null
+      echo yes | sdkmanager "platforms;${API_TARGET}" > /dev/null
+      echo yes | sdkmanager "extras;android;m2repository" > /dev/null
+      echo yes | sdkmanager "extras;google;m2repository" > /dev/null
+      echo yes | sdkmanager --channel=3 "emulator" > /dev/null
+      export EMU_IMAGE="system-images;${EMU_TARGET};${EMU_TAG};${EMU_ABI}"
       for retry in 1 2 3; do
-        echo yes | sdkmanager "${ANDROID_EMU_IMAGE}" > /dev/null && break
-        echo "sdkmanager was not able to download the ${ANDROID_EMU_IMAGE} image (retry ${retry})"
+        echo yes | sdkmanager "${EMU_IMAGE}" > /dev/null && break
+        echo "sdkmanager was not able to download the ${EMU_IMAGE} image (retry ${retry})"
         sleep 5
       done
       sdkmanager --list
       export TOOLS=${ANDROID_HOME}/tools
       export PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
-      echo no | avdmanager create avd -k "${ANDROID_EMU_IMAGE}" -n "${ANDROID_EMU_NAME}" -f --abi "${ANDROID_EMU_ABI}" --tag "${ANDROID_EMU_TAG}" || exit 1
-      emulator -avd "${ANDROID_EMU_NAME}" -no-window -camera-back none -camera-front none &
+      echo no | avdmanager create avd -k "${EMU_IMAGE}" -n "${EMU_NAME}" -f --abi "${EMU_ABI}" --tag "${EMU_TAG}" || exit 1
+      emulator -avd "${EMU_NAME}" -no-accel -no-snapshot -no-window -camera-back none -camera-front none -selinux permissive -qemu -m 2048 &
 
       # make sure emulator started
       $(npm bin)/android-emu-travis-post
