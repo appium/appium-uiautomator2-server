@@ -21,20 +21,20 @@ env:
     - DEVICE=android
     - START_EMU=1
     - EMU_NAME=test
-    - EMU_ABI=x86_64
+    - EMU_ABI=armeabi-v7a
     - EMU_TAG=default
-    - EMU_TARGET=android-26
+    - EMU_TARGET=android-25
     - API_TARGET=android-28
     - BUILD_TOOLS=28.0.3
     - E2E_TEST_PACKAGE=io.appium.uiautomator2.unittest.test
     - CC=gcc-6 CXX=g++-6
   matrix:
     - TEST=unit START_EMU=0
-    - TEST=AlertCommandsTest
-    - TEST=ActionsCommandsTest
-    - TEST=GestureCommandsTest
-    - TEST=DeviceCommandsTest
-    - TEST=ElementCommandsTest
+    - TEST=AlertCommandsTest EMU_TAG=google_apis
+    - TEST=ActionsCommandsTest EMU_TAG=google_apis
+    - TEST=GestureCommandsTest EMU_TAG=google_apis
+    - TEST=DeviceCommandsTest EMU_TAG=google_apis
+    - TEST=ElementCommandsTest EMU_TAG=google_apis
     - TEST=GestureCommandsTest EMU_TARGET=android-22
     - TEST=DeviceCommandsTest EMU_TARGET=android-22
     - TEST=ElementCommandsTest EMU_TARGET=android-22
@@ -56,9 +56,6 @@ before_script:
     echo yes | sdkmanager > /dev/null
     echo yes | sdkmanager "build-tools;${BUILD_TOOLS}" > /dev/null
     if [ ${START_EMU} = "1" ]; then
-      if [ "$BUILD_TOOLS" != "$API_TARGET" ]; then
-        echo yes | sdkmanager "build-tools;${API_TARGET}" > /dev/null
-      fi
       echo yes | sdkmanager "platforms;${EMU_TARGET}" > /dev/null
       echo yes | sdkmanager "platforms;${API_TARGET}" > /dev/null
       echo yes | sdkmanager "extras;android;m2repository" > /dev/null
@@ -73,8 +70,9 @@ before_script:
       sdkmanager --list
       export TOOLS=${ANDROID_HOME}/tools
       export PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
+      export QEMU_AUDIO_DRV=none
       echo no | avdmanager create avd -k "${EMU_IMAGE}" -n "${EMU_NAME}" -f --abi "${EMU_ABI}" --tag "${EMU_TAG}" || exit 1
-      emulator -avd "${EMU_NAME}" -no-accel -no-snapshot -no-window -camera-back none -camera-front none -selinux permissive -qemu -m 2048 &
+      emulator -avd "${EMU_NAME}" -no-snapshot -no-window -camera-back none -camera-front none -selinux permissive -qemu -m 2048 &
 
       # make sure emulator started
       $(npm bin)/android-emu-travis-post
