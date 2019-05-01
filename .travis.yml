@@ -24,6 +24,8 @@ env:
     - EMU_TAG=google_apis
     - EMU_ABI=arm64-v8a
     - EMU_TARGET=android-25
+    # on Travis Emulator startup can take up to 20(!) minutes
+    - EMU_STARTUP_TIMEOUT=1200
     - API_TARGET=android-28
     - BUILD_TOOLS=28.0.3
     - E2E_TEST_PACKAGE=io.appium.uiautomator2.unittest.test
@@ -35,9 +37,9 @@ env:
     - TEST=GestureCommandsTest
     - TEST=DeviceCommandsTest
     - TEST=ElementCommandsTest
-    - TEST=GestureCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a EMU_TAG=default
-    - TEST=DeviceCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a EMU_TAG=default
-    - TEST=ElementCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a EMU_TAG=default
+    - TEST=GestureCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a
+    - TEST=DeviceCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a
+    - TEST=ElementCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a
 before_script:
   # node stuff
   - nvm install $NODE_VERSION
@@ -65,6 +67,9 @@ before_script:
       for retry in 1 2 3; do
         echo yes | sdkmanager "${EMU_IMAGE}" > /dev/null && break
         echo "sdkmanager was not able to download the ${EMU_IMAGE} image (retry ${retry})"
+        if [ $retry -eq 3 ]; then
+          exit 1
+        fi
         sleep 5
       done
       sdkmanager --list
@@ -72,7 +77,8 @@ before_script:
       export PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
       export QEMU_AUDIO_DRV=none
       echo no | avdmanager create avd -k "${EMU_IMAGE}" -n "${EMU_NAME}" -f --abi "${EMU_ABI}" --tag "${EMU_TAG}" || exit 1
-      emulator -avd "${EMU_NAME}" -no-snapshot -no-window -camera-back none -camera-front none -selinux permissive -qemu -m 2048 &
+      echo "Starting emulator ${EMU_IMAGE}..."
+      emulator -avd "${EMU_NAME}" -no-snapshot -no-window -gpu swiftshader -camera-back none -camera-front none -selinux permissive -qemu -m 2048 &
 
       # make sure emulator started
       $(npm bin)/android-emu-travis-post
