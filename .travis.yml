@@ -21,8 +21,8 @@ env:
     - DEVICE=android
     - START_EMU=1
     - EMU_NAME=test
-    - EMU_ABI=armeabi-v7a
-    - EMU_TAG=default
+    - EMU_TAG=google_apis
+    - EMU_ABI=arm64-v8a
     - EMU_TARGET=android-25
     - API_TARGET=android-28
     - BUILD_TOOLS=28.0.3
@@ -30,14 +30,14 @@ env:
     - CC=gcc-6 CXX=g++-6
   matrix:
     - TEST=unit START_EMU=0
-    - TEST=AlertCommandsTest EMU_TAG=google_apis
-    - TEST=ActionsCommandsTest EMU_TAG=google_apis
-    - TEST=GestureCommandsTest EMU_TAG=google_apis
-    - TEST=DeviceCommandsTest EMU_TAG=google_apis
-    - TEST=ElementCommandsTest EMU_TAG=google_apis
-    - TEST=GestureCommandsTest EMU_TARGET=android-22
-    - TEST=DeviceCommandsTest EMU_TARGET=android-22
-    - TEST=ElementCommandsTest EMU_TARGET=android-22
+    - TEST=AlertCommandsTest
+    - TEST=ActionsCommandsTest
+    - TEST=GestureCommandsTest
+    - TEST=DeviceCommandsTest
+    - TEST=ElementCommandsTest
+    - TEST=GestureCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a EMU_TAG=default
+    - TEST=DeviceCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a EMU_TAG=default
+    - TEST=ElementCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a EMU_TAG=default
 before_script:
   # node stuff
   - nvm install $NODE_VERSION
