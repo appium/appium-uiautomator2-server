@@ -22,8 +22,8 @@ env:
     - START_EMU=1
     - EMU_NAME=test
     - EMU_TAG=google_apis
-    - EMU_ABI=arm64-v8a
-    - EMU_TARGET=android-25
+    - EMU_ABI=x86_64
+    - EMU_TARGET=android-26
     # on Travis Emulator startup can take up to 20(!) minutes
     - EMU_STARTUP_TIMEOUT=1200
     - API_TARGET=android-28
@@ -37,9 +37,9 @@ env:
     - TEST=GestureCommandsTest
     - TEST=DeviceCommandsTest
     - TEST=ElementCommandsTest
-    - TEST=GestureCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a
-    - TEST=DeviceCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a
-    - TEST=ElementCommandsTest EMU_TARGET=android-22 EMU_ABI=armeabi-v7a
+    - TEST=GestureCommandsTest EMU_TARGET=android-22 EMU_TAG=default
+    - TEST=DeviceCommandsTest EMU_TARGET=android-22 EMU_TAG=default
+    - TEST=ElementCommandsTest EMU_TARGET=android-22 EMU_TAG=default
 before_script:
   # node stuff
   - nvm install $NODE_VERSION
@@ -78,7 +78,13 @@ before_script:
       export QEMU_AUDIO_DRV=none
       echo no | avdmanager create avd -k "${EMU_IMAGE}" -n "${EMU_NAME}" -f --abi "${EMU_ABI}" --tag "${EMU_TAG}" || exit 1
       echo "Starting emulator ${EMU_IMAGE}..."
-      emulator -avd "${EMU_NAME}" -no-window -camera-back none -camera-front none &
+      emulator -avd "${EMU_NAME}" -no-accel \
+      -no-snapshot \
+      -no-window \
+      -gpu swiftshader_indirect \
+      -camera-back none -camera-front none \
+      -selinux permissive \
+      -qemu -m 2048 &
 
       # make sure emulator started
       $(npm bin)/android-emu-travis-post
