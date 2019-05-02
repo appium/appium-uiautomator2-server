@@ -21,7 +21,7 @@ env:
     - DEVICE=android
     - START_EMU=1
     - EMU_NAME=test
-    - EMU_TAG=google_apis
+    - EMU_TAG=default
     - EMU_ABI=x86_64
     - EMU_TARGET=android-26
     # on Travis Emulator startup can take up to 20(!) minutes
@@ -37,9 +37,9 @@ env:
     - TEST=GestureCommandsTest
     - TEST=DeviceCommandsTest
     - TEST=ElementCommandsTest
-    - TEST=GestureCommandsTest EMU_TARGET=android-22 EMU_TAG=default
-    - TEST=DeviceCommandsTest EMU_TARGET=android-22 EMU_TAG=default
-    - TEST=ElementCommandsTest EMU_TARGET=android-22 EMU_TAG=default
+    - TEST=GestureCommandsTest EMU_TARGET=android-22
+    - TEST=DeviceCommandsTest EMU_TARGET=android-22
+    - TEST=ElementCommandsTest EMU_TARGET=android-22
 before_script:
   # node stuff
   - nvm install $NODE_VERSION
@@ -85,6 +85,9 @@ before_script:
       -camera-back none -camera-front none \
       -selinux permissive \
       -qemu -m 2048 &
+
+      # Give Emulator some time to understand what is going on
+      sleep 5
 
       # make sure emulator started
       $(npm bin)/android-emu-travis-post
