@@ -78,7 +78,7 @@ before_script:
       export QEMU_AUDIO_DRV=none
       echo no | avdmanager create avd -k "${EMU_IMAGE}" -n "${EMU_NAME}" -f --abi "${EMU_ABI}" --tag "${EMU_TAG}" || exit 1
       echo "Starting emulator ${EMU_IMAGE}..."
-      emulator -avd "${EMU_NAME}" -no-window -gpu swiftshader -camera-back none -camera-front none &
+      emulator -avd "${EMU_NAME}" -no-window -gpu swiftshader_indirect -camera-back none -camera-front none &
 
       # make sure emulator started
       $(npm bin)/android-emu-travis-post
