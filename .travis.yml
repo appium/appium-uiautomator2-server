@@ -37,6 +37,8 @@ env:
     - TEST=GestureCommandsTest
     - TEST=DeviceCommandsTest
     - TEST=ElementCommandsTest
+    - TEST=AlertCommandsTest EMU_TARGET=android-22
+    - TEST=ActionsCommandsTest EMU_TARGET=android-22
     - TEST=GestureCommandsTest EMU_TARGET=android-22
     - TEST=DeviceCommandsTest EMU_TARGET=android-22
     - TEST=ElementCommandsTest EMU_TARGET=android-22
