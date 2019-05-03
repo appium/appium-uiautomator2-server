@@ -30,21 +30,21 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ActionsCommandsTest extends BaseTest {
-    private static final By DRAG_TEXT = By.id("io.appium.android.apis:id/drag_result_text");
 
     private static String dotIdByIdx(int idx) {
         return String.format("io.appium.android.apis:id/drag_dot_%d", idx);
     }
 
     private void verifyDragResult(String expectedText) {
-        Response response = findElement(DRAG_TEXT);
-        response = getText(response.getElementId());
-        assertThat((String) response.getValue(), containsString(expectedText));
+        Response response = findElement(By.xpath(String.format(
+                        "//*[@id='io.appium.android.apis:id/drag_result_text' and contains(@text, '%s')]",
+                expectedText)));
+        assertThat(response.getElementId(), not(equalTo("0")));
     }
 
     private void setupDragDropView() throws JSONException {
