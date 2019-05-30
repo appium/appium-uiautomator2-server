@@ -19,15 +19,15 @@
     "url": "https://github.com/appium/appium-uiautomator2-server/issues"
   },
   "files": [
-    "/lib",
+    "./index.js",
     "/apks"
   ],
   "homepage": "https://github.com/appium/appium-uiautomator2-server",
   "scripts": {
     "clean": "rm -rf node_modules && rm -f package-lock.json && npm install",
     "bump-gradle-version": "gulp gradle-version-update --package-version=${npm_package_version} && git add app/build.gradle",
-    "build": "./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks && gulp transpile && npm run sign-apk",
-    "sign-apk": "node ./build/lib/scripts/sign-apk.js",
+    "build": "./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks && npm run sign-apk",
+    "sign-apk": "gulp sign-apk",
     "move-server": "cp app/build/outputs/apk/server/debug/appium-uiautomator2-server-v${npm_package_version}.apk ./apks",
     "move-test": "cp app/build/outputs/apk/androidTest/server/debug/appium-uiautomator2-server-debug-androidTest.apk ./apks",
     "move-apks": "rm -rf apks && mkdir -p apks && npm run move-server && npm run move-test",
@@ -39,7 +39,6 @@
     "appium-adb": "^7.0.0",
     "appium-android-driver": "^4.12.0",
     "appium-gulp-plugins": "^4.0.0",
-    "asyncbox": "^2.5.0",
     "gulp": "^4.0.0"
   }
 }
