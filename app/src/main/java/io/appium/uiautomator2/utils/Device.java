@@ -12,6 +12,8 @@ import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.By;
+import io.appium.uiautomator2.model.settings.Settings;
+import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 import io.appium.uiautomator2.model.UiObject2Element;
 import io.appium.uiautomator2.model.UiObjectElement;
 
@@ -76,12 +78,9 @@ public abstract class Device {
      * https://code.google.com/p/android/issues/detail?id=73297
      */
     public static void waitForIdle() {
-        Logger.info("Waiting for device to be idle");
-        try {
-            getUiDevice().waitForIdle();
-        } catch (Exception e) {
-            Logger.error("Unable wait for AUT to idle");
-        }
+        final WaitForIdleTimeout idleTimeout =
+            (WaitForIdleTimeout) Settings.WAIT_FOR_IDLE_TIMEOUT.getSetting();
+        waitForIdle(idleTimeout.getValue());
     }
 
     public static void waitForIdle(long timeInMS) {
