@@ -65,14 +65,15 @@ public class FindElements extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         JSONArray result = new JSONArray();
-        Logger.info("Find elements command");
         JSONObject payload = getPayload(request);
         String method = payload.getString("strategy");
         String selector = payload.getString("selector");
         final String contextId = payload.getString("context");
-        Logger.info(String.format("find element command using '%s' with selector '%s'.", method, selector));
+
+        Logger.info(String.format("Find elements command using '%s' with selector '%s'.", method, selector));
+
         By by = new NativeAndroidBySelector().pickFrom(method, selector);
-        Device.waitForIdle();
+
         List<Object> elements;
         try {
             if (contextId.length() > 0) {

@@ -76,6 +76,7 @@ public abstract class Device {
      * https://code.google.com/p/android/issues/detail?id=73297
      */
     public static void waitForIdle() {
+        Logger.info("Waiting for device to be idle");
         try {
             getUiDevice().waitForIdle();
         } catch (Exception e) {
@@ -84,10 +85,11 @@ public abstract class Device {
     }
 
     public static void waitForIdle(long timeInMS) {
+        Logger.info(String.format("Waiting up to %sms for device to be idle", timeInMS));
         try {
             getUiDevice().waitForIdle(timeInMS);
         } catch (Exception e) {
-            Logger.error(String.format("Unable wait %s for AUT to idle", timeInMS));
+            Logger.error(String.format("Unable wait %sms for AUT to idle", timeInMS));
         }
     }
 }

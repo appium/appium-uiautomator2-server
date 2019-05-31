@@ -58,15 +58,15 @@ public class FindElement extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
-        Logger.info("Find element command");
         final JSONObject payload = getPayload(request);
         final String method = payload.getString("strategy");
         final String selector = payload.getString("selector");
         final String contextId = payload.getString("context");
-        Logger.info(String.format("find element command using '%s' with selector '%s'.", method, selector));
+
+        Logger.info(String.format("Find element command using '%s' with selector '%s'.", method, selector));
+
         final By by = new NativeAndroidBySelector().pickFrom(method, selector);
 
-        Device.waitForIdle();
         Object element;
         try {
             if (contextId.length() > 0) {
@@ -92,7 +92,6 @@ public class FindElement extends SafeRequestHandler {
     @Nullable
     private Object findElement(By by) throws UiAutomator2Exception, UiObjectNotFoundException {
         refreshRootAXNode();
-
         if (by instanceof ById) {
             String locator = rewriteIdLocator((ById) by);
             return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator));

@@ -125,7 +125,6 @@ public class CustomUiDevice {
     @Nullable
     public Object findObject(Object selector) throws UiAutomator2Exception {
         final AccessibilityNodeInfo node;
-        Device.waitForIdle();
         if (selector instanceof BySelector) {
             node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcherClass,
                     Device.getUiDevice(), selector, getWindowRoots());
