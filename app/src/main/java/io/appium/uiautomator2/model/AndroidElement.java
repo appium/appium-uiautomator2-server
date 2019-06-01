@@ -20,6 +20,7 @@ import android.graphics.Rect;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
@@ -28,7 +29,11 @@ import io.appium.uiautomator2.utils.Point;
 
 public interface AndroidElement {
 
-    By getBy();
+    @Nullable By getBy();
+
+    @Nullable String getContextId();
+
+    boolean isSingleMatch();
 
     void clear() throws UiObjectNotFoundException;
 

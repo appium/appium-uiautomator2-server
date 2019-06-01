@@ -78,7 +78,7 @@ public class FirstVisibleView extends SafeRequestHandler {
         }
 
         String id = UUID.randomUUID().toString();
-        AndroidElement androidElement = getAndroidElement(id, firstObject, null);
+        AndroidElement androidElement = getAndroidElement(id, firstObject, false);
         session.getKnownElements().add(androidElement);
         JSONObject result = new JSONObject();
         result.put("ELEMENT", id);

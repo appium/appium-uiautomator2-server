@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,7 +40,6 @@ import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
 import io.appium.uiautomator2.server.WDStatus;
-import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
@@ -67,13 +67,11 @@ public class FindElement extends SafeRequestHandler {
 
         final By by = new NativeAndroidBySelector().pickFrom(method, selector);
 
-        Object element;
+        final Object element;
         try {
-            if (contextId.length() > 0) {
-                element = this.findElement(by, contextId);
-            } else {
-                element = this.findElement(by);
-            }
+            element = StringUtils.isBlank(contextId)
+                    ? this.findElement(by)
+                    : this.findElement(by, contextId);
         } catch (ClassNotFoundException e) {
             throw new UiAutomator2Exception(e);
         }
@@ -82,7 +80,7 @@ public class FindElement extends SafeRequestHandler {
         }
 
         String id = UUID.randomUUID().toString();
-        AndroidElement androidElement = getAndroidElement(id, element, by);
+        AndroidElement androidElement = getAndroidElement(id, element, true, by, contextId);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         session.getKnownElements().add(androidElement);
         JSONObject result = ElementHelpers.toJSON(androidElement);

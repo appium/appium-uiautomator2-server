@@ -202,7 +202,7 @@ public abstract class ElementHelpers {
         if (ui2Object == null) {
             throw new ElementNotFoundException();
         }
-        return getAndroidElement(UUID.randomUUID().toString(), ui2Object, null);
+        return getAndroidElement(UUID.randomUUID().toString(), ui2Object, true);
     }
 
     public static NoAttributeFoundException generateNoAttributeException(@Nullable String attributeName) {

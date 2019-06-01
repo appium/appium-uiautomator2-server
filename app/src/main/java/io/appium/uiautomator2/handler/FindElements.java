@@ -16,6 +16,11 @@
 
 package io.appium.uiautomator2.handler;
 
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
+
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,9 +31,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import androidx.test.uiautomator.UiObject;
-import androidx.test.uiautomator.UiObjectNotFoundException;
-import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -42,7 +44,6 @@ import io.appium.uiautomator2.model.By.ById;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
-import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
@@ -74,18 +75,16 @@ public class FindElements extends SafeRequestHandler {
 
         By by = new NativeAndroidBySelector().pickFrom(method, selector);
 
-        List<Object> elements;
+        final List<Object> elements;
         try {
-            if (contextId.length() > 0) {
-                elements = this.findElements(by, contextId);
-            } else {
-                elements = this.findElements(by);
-            }
+            elements = StringUtils.isBlank(contextId)
+                    ? this.findElements(by)
+                    : this.findElements(by, contextId);
 
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             for (Object element : elements) {
                 String id = UUID.randomUUID().toString();
-                AndroidElement androidElement = getAndroidElement(id, element, by);
+                AndroidElement androidElement = getAndroidElement(id, element, false, by, contextId);
                 session.getKnownElements().add(androidElement);
                 JSONObject jsonElement = ElementHelpers.toJSON(androidElement);
                 result.put(jsonElement);
@@ -117,8 +116,8 @@ public class FindElements extends SafeRequestHandler {
             //TODO: need to handle the context parameter in a smart way
             final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null, true);
             return matchedNodes.isEmpty()
-                ? Collections.emptyList()
-                : CustomUiDevice.getInstance().findObjects(matchedNodes);
+                    ? Collections.emptyList()
+                    : CustomUiDevice.getInstance().findObjects(matchedNodes);
         } else if (by instanceof By.ByAndroidUiAutomator) {
             //TODO: need to handle the context parameter in a smart way
             return getUiObjectsUsingAutomator(toSelectors(by.getElementLocator()), "");
@@ -146,8 +145,8 @@ public class FindElements extends SafeRequestHandler {
         } else if (by instanceof By.ByXPath) {
             final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), element, true);
             return matchedNodes.isEmpty()
-                ? Collections.emptyList()
-                : CustomUiDevice.getInstance().findObjects(matchedNodes);
+                    ? Collections.emptyList()
+                    : CustomUiDevice.getInstance().findObjects(matchedNodes);
         } else if (by instanceof By.ByAndroidUiAutomator) {
             return getUiObjectsUsingAutomator(toSelectors(by.getElementLocator()), contextId);
         }
