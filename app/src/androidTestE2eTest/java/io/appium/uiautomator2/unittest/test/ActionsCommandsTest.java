@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.unittest.test;
 
+import android.os.SystemClock;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Test;
@@ -40,11 +42,20 @@ public class ActionsCommandsTest extends BaseTest {
         return String.format("io.appium.android.apis:id/drag_dot_%d", idx);
     }
 
-    private void verifyDragResult(String expectedText) {
-        Response response = findElement(By.xpath(String.format(
-                "//*[@id='io.appium.android.apis:id/drag_result_text' and contains(@text, '%s')]",
-                expectedText)));
-        assertThat(response.getElementId(), not(equalTo("0")));
+    private void verifyDragResult() {
+        String elementId = "";
+        long msStarted = SystemClock.currentThreadTimeMillis();
+        do {
+            Response response = findElement(By.xpath(
+                    "//*[@id='io.appium.android.apis:id/drag_result_text' and contains(@text, 'Dropped')]"));
+            try {
+                elementId = response.getElementId();
+                break;
+            } catch (IllegalArgumentException e) {
+                SystemClock.sleep(500);
+            }
+        } while (SystemClock.currentThreadTimeMillis() - msStarted <= 5000);
+        assertThat(elementId, not(equalTo("")));
     }
 
     private void setupDragDropView() throws JSONException {
@@ -83,7 +94,7 @@ public class ActionsCommandsTest extends BaseTest {
                 "} ]", dot1Response.getElementId(), dot2Response.getElementId()));
         Response actionsResponse = performActions(actionsJson);
         assertThat(actionsResponse.getStatus(), equalTo(WDStatus.SUCCESS.code()));
-        verifyDragResult("Dropped");
+        verifyDragResult();
     }
 
     @Test
