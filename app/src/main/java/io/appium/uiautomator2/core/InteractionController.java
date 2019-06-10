@@ -22,6 +22,8 @@ import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
+import io.appium.uiautomator2.model.settings.Settings;
+import io.appium.uiautomator2.model.settings.TrackScrollEvents;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
@@ -36,7 +38,6 @@ public class InteractionController {
     private static final String METHOD_TOUCH_DOWN = "touchDown";
     private static final String METHOD_TOUCH_UP = "touchUp";
     private static final String METHOD_TOUCH_MOVE = "touchMove";
-    private static final String TRACK_SCROLL_EVENT_CAP = "trackScrollEvents";
     private final Object interactionController;
 
     public InteractionController(Object interactionController) {
@@ -69,16 +70,11 @@ public class InteractionController {
 
     public boolean shouldTrackScrollEvents() {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        Boolean trackScrollEvents = true;
-        if (session.hasCapability(TRACK_SCROLL_EVENT_CAP)) {
-          try {
-              trackScrollEvents = (Boolean) session.getCapability(TRACK_SCROLL_EVENT_CAP);
-              Logger.debug("Capability '" + TRACK_SCROLL_EVENT_CAP + "': " + trackScrollEvents);
-          } catch (Exception e) {
-              Logger.error("Could not set '" + TRACK_SCROLL_EVENT_CAP + "' from capability: ", e);
-              trackScrollEvents = true;
-          }
-        }
+        final TrackScrollEvents trackScrollEventsSetting =
+                (TrackScrollEvents) Settings.TRACK_SCROLL_EVENTS.getSetting();
+        Boolean trackScrollEvents = (Boolean) trackScrollEventsSetting.getValue();
+        Logger.error(String.format("Setting '%s' is set to %b",
+                trackScrollEventsSetting.getName(), trackScrollEvents));
 
         return trackScrollEvents;
     }
@@ -89,16 +85,14 @@ public class InteractionController {
     }
 
     public boolean touchDown(final int x, final int y) throws UiAutomator2Exception {
-        if (shouldTrackScrollEvents()) {
-            return EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
+        return shouldTrackScrollEvents()
+            ? EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
                 @Override
                 public void run() {
                     setResult(doTouchDown(x, y));
                 }
-            });
-        } else {
-            return doTouchDown(x, y);
-        }
+            })
+            : doTouchDown(x, y);
     }
 
     private boolean doTouchUp(final int x, final int y) {
@@ -107,16 +101,14 @@ public class InteractionController {
     }
 
     public boolean touchUp(final int x, final int y) throws UiAutomator2Exception {
-        if (shouldTrackScrollEvents()) {
-            return EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
+        return shouldTrackScrollEvents()
+            ? EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
                 @Override
                 public void run() {
                     setResult(doTouchUp(x, y));
                 }
-            });
-        } else {
-            return doTouchUp(x, y);
-        }
+            })
+            : doTouchUp(x, y);
     }
 
     private boolean doTouchMove(final int x, final int y) {
@@ -125,16 +117,14 @@ public class InteractionController {
     }
 
     public boolean touchMove(final int x, final int y) throws UiAutomator2Exception {
-        if (shouldTrackScrollEvents()) {
-            return EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
+        return shouldTrackScrollEvents()
+            ? EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
                 @Override
                 public void run() {;
                     setResult(doTouchMove(x, y));
                 }
-            });
-        } else {
-            return doTouchMove(x, y);
-        }
+            })
+            : doTouchMove(x, y);
     }
 
     private boolean doPerformMultiPointerGesture(final PointerCoords[][] pcs) {
