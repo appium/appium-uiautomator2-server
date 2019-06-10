@@ -73,7 +73,7 @@ public class InteractionController {
         if (session.hasCapability(TRACK_SCROLL_EVENT_CAP)) {
           try {
               trackScrollEvents = (Boolean) session.getCapability(TRACK_SCROLL_EVENT_CAP);
-              Logger.error("Capability '" + TRACK_SCROLL_EVENT_CAP + "': " + trackScrollEvents);
+              Logger.debug("Capability '" + TRACK_SCROLL_EVENT_CAP + "': " + trackScrollEvents);
           } catch (Exception e) {
               Logger.error("Could not set '" + TRACK_SCROLL_EVENT_CAP + "' from capability: ", e);
               trackScrollEvents = true;
@@ -114,9 +114,9 @@ public class InteractionController {
                     setResult(doTouchUp(x, y));
                 }
             });
-      } else {
-        return doTouchUp(x, y);
-      }
+        } else {
+            return doTouchUp(x, y);
+        }
     }
 
     private boolean doTouchMove(final int x, final int y) {
