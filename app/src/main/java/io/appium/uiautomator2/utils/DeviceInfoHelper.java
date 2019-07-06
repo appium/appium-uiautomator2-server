@@ -282,8 +282,7 @@ public class DeviceInfoHelper {
     public String getTimeZone() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return TimeZone.getDefault().toZoneId().getId();
-        } else {
-            return TimeZone.getDefault().getID();
         }
+        return TimeZone.getDefault().getID();
     }
 }
