@@ -109,6 +109,8 @@ public class GetDeviceInfo extends SafeRequestHandler {
         response.put("realDisplaySize", deviceInfoHelper.getRealDisplaySize());
         response.put("displayDensity", deviceInfoHelper.getDisplayDensity());
         response.put("networks", extractNetworkInfo(deviceInfoHelper));
+        response.put("locale", deviceInfoHelper.getLocale());
+        response.put("timeZone", deviceInfoHelper.getTimeZone());
 
         return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, response);
     }

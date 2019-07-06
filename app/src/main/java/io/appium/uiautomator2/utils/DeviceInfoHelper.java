@@ -34,8 +34,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 
@@ -260,5 +263,27 @@ public class DeviceInfoHelper {
         android.graphics.Point p = new android.graphics.Point();
         display.getRealSize(p);
         return String.format("%sx%s", p.x, p.y);
+    }
+
+    /**
+     * Get current system locale
+     */
+    @NonNull
+    public String getLocale() {
+        return Locale.getDefault().toString();
+    }
+
+    /**
+     * Get current system timezone
+     * e.g. "Asia/Tokyo", "America/Caracas"
+     *
+     */
+    @NonNull
+    public String getTimeZone() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return TimeZone.getDefault().toZoneId().getId();
+        } else {
+            return TimeZone.getDefault().getID();
+        }
     }
 }
