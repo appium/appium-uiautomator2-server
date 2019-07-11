@@ -36,8 +36,8 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
  * This class contains static helper methods to work with {@link AccessibilityNodeInfo}
  */
 public class AccessibilityNodeInfoHelpers {
-	
-	private final static int MAX_DEPTH = 70;
+    // https://github.com/appium/appium/issues/12892
+    private final static int MAX_DEPTH = 70;
 
     @Nullable
     public static Range<Integer> getSelectionRange(@Nullable AccessibilityNodeInfo nodeInfo) {
@@ -77,15 +77,15 @@ public class AccessibilityNodeInfoHelpers {
         }
         return charSequenceToString(nodeInfo.getText(), replaceNull);
     }
-	
-	    /**
+
+    /**
      * Returns the node's bounds clipped to the size of the display
      *
      * @return null if node is null, else a Rect containing visible bounds
      */
     @SuppressLint("CheckResult")
     public static Rect getVisibleBounds(@Nullable AccessibilityNodeInfo node) {
-		return getVisibleBounds(node, 0);
+        return getVisibleBounds(node, 0);
     }
 
     /**
@@ -108,8 +108,8 @@ public class AccessibilityNodeInfoHelpers {
         Rect screen = new Rect(0, 0, uiDevice.getDisplayWidth(), uiDevice.getDisplayHeight());
         ret.intersect(screen);
 
-		// Find the visible bounds of our first scrollable ancestor 
-		for (AccessibilityNodeInfo ancestor = node.getParent(); ancestor != null && depth < MAX_DEPTH; ancestor = ancestor.getParent()) {
+        // Find the visible bounds of our first scrollable ancestor 
+        for (AccessibilityNodeInfo ancestor = node.getParent(); ancestor != null && ++depth < MAX_DEPTH; ancestor = ancestor.getParent()) {
             // If this ancestor is scrollable
             if (ancestor.isScrollable()) {
                 // Trim any portion of the bounds that are hidden by the non-visible portion of our
@@ -118,8 +118,6 @@ public class AccessibilityNodeInfoHelpers {
                 ret.intersect(ancestorRect);
                 break;
             }
-			
-			depth++;
         }
 
         return ret;
