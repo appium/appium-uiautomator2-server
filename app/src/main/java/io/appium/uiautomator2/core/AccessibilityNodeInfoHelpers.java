@@ -36,6 +36,8 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
  * This class contains static helper methods to work with {@link AccessibilityNodeInfo}
  */
 public class AccessibilityNodeInfoHelpers {
+	
+	private final static int MAX_DEPTH = 70;
 
     @Nullable
     public static Range<Integer> getSelectionRange(@Nullable AccessibilityNodeInfo nodeInfo) {
@@ -75,14 +77,24 @@ public class AccessibilityNodeInfoHelpers {
         }
         return charSequenceToString(nodeInfo.getText(), replaceNull);
     }
-
-    /**
+	
+	    /**
      * Returns the node's bounds clipped to the size of the display
      *
      * @return null if node is null, else a Rect containing visible bounds
      */
     @SuppressLint("CheckResult")
     public static Rect getVisibleBounds(@Nullable AccessibilityNodeInfo node) {
+		return getVisibleBounds(node, 0);
+    }
+
+    /**
+     * Returns the node's bounds clipped to the size of the display, limited by the MAX_DEPTH
+     *
+     * @return null if node is null, else a Rect containing visible bounds
+     */
+    @SuppressLint("CheckResult")
+    private static Rect getVisibleBounds(@Nullable AccessibilityNodeInfo node, int depth) {
         if (node == null) {
             return null;
         }
@@ -96,16 +108,18 @@ public class AccessibilityNodeInfoHelpers {
         Rect screen = new Rect(0, 0, uiDevice.getDisplayWidth(), uiDevice.getDisplayHeight());
         ret.intersect(screen);
 
-        // Find the visible bounds of our first scrollable ancestor
-        for (AccessibilityNodeInfo ancestor = node.getParent(); ancestor != null; ancestor = ancestor.getParent()) {
+		// Find the visible bounds of our first scrollable ancestor 
+		for (AccessibilityNodeInfo ancestor = node.getParent(); ancestor != null && depth < MAX_DEPTH; ancestor = ancestor.getParent()) {
             // If this ancestor is scrollable
             if (ancestor.isScrollable()) {
                 // Trim any portion of the bounds that are hidden by the non-visible portion of our
                 // ancestor
-                Rect ancestorRect = getVisibleBounds(ancestor);
+                Rect ancestorRect = getVisibleBounds(ancestor, depth);
                 ret.intersect(ancestorRect);
                 break;
             }
+			
+			depth++;
         }
 
         return ret;
