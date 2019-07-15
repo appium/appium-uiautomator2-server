@@ -1,9 +1,12 @@
 package io.appium.uiautomator2.utils;
 
+import android.app.UiAutomation;
+import android.os.Build;
 import android.os.RemoteException;
 
 import androidx.annotation.Nullable;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
@@ -22,6 +25,12 @@ import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 public abstract class Device {
 
     public static UiDevice getUiDevice() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // The flag is necessary not to stop running accessibility service
+            // https://github.com/appium/appium/issues/4910
+            // https://developer.android.com/reference/android/app/UiAutomation.html#FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES
+            Configurator.getInstance().setUiAutomationFlags(UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES);
+        }
         return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
 
