@@ -14,7 +14,7 @@ build the android project using below commands
 ### Starting server
 push both src and test apks to the device and execute the instrumentation tests.
 
-`adb shell am instrument -w io.appium.uiautomator2.server.test/android.support.test.runner.AndroidJUnitRunner`
+`adb shell am instrument -w io.appium.uiautomator2.server.test/androidx.test.runner.AndroidJUnitRunner`
 
 
 
@@ -33,7 +33,7 @@ the above command takes care about installing the AUT apk in to the testing devi
 
 you can also invoke the test using below command
 
-`adb shell am instrument -w io.appium.uiautomator2.e2etest.test/android.support.test.runner.AndroidJUnitRunner`
+`adb shell am instrument -w io.appium.uiautomator2.e2etest.test/androidx.test.runner.AndroidJUnitRunner`
 
 Note: AUT apk should be installed before executing above command.
 
