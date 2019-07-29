@@ -72,7 +72,7 @@ before_install:
     fi
 install:
   # node stuff
-  - nvm install 8
+  - nvm install 10
 
   # npm stuff
   - npm install
