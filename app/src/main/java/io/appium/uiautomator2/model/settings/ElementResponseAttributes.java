@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.model.settings;
 
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.utils.Logger;
 
 public class ElementResponseAttributes extends AbstractSetting<String> {
 
@@ -36,7 +35,9 @@ public class ElementResponseAttributes extends AbstractSetting<String> {
 
     @Override
     protected void apply(String elementResponseAttributes) {
-        Logger.debug("Dummy setting. Maintained in Session.capabilities.");
+        AppiumUIA2Driver.getInstance()
+                .getSessionOrThrow()
+                .setCapability(SETTING_NAME, elementResponseAttributes);
     }
 
 }

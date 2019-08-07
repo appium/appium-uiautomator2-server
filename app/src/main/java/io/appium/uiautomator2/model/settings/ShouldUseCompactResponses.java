@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.model.settings;
 
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.utils.Logger;
 
 public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
 
@@ -37,7 +36,10 @@ public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
 
     @Override
     protected void apply(Boolean shouldUseCompactResponses) {
-        Logger.debug("Dummy setting. Maintained in Session.capabilities.");
+        AppiumUIA2Driver
+                .getInstance()
+                .getSessionOrThrow()
+                .setCapability(SETTING_NAME, shouldUseCompactResponses);
     }
-
+    
 }
