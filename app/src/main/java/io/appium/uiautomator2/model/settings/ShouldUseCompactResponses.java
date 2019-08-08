@@ -41,5 +41,5 @@ public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
                 .getSessionOrThrow()
                 .setCapability(SETTING_NAME, shouldUseCompactResponses);
     }
-    
+
 }
