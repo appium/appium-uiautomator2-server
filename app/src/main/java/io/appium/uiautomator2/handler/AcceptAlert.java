@@ -22,7 +22,6 @@ import org.json.JSONObject;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.AlertHelpers;
 import io.appium.uiautomator2.utils.Logger;
 
@@ -38,6 +37,6 @@ public class AcceptAlert extends SafeRequestHandler {
         final String buttonLabel = payload.has("buttonLabel")
                 ? payload.getString("buttonLabel") : null;
         AlertHelpers.handle(AlertHelpers.AlertAction.ACCEPT, buttonLabel);
-        return new AppiumResponse(getSessionId(request), null);
+        return new AppiumResponse(getSessionId(request));
     }
 }

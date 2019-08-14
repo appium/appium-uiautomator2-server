@@ -51,6 +51,6 @@ public class Click extends SafeRequestHandler {
             }
         }
         Device.waitForIdle();
-        return new AppiumResponse(getSessionId(request), null);
+        return new AppiumResponse(getSessionId(request));
     }
 }

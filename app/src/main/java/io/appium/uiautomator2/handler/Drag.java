@@ -47,7 +47,7 @@ public class Drag extends SafeRequestHandler {
         if (!res) {
             throw new InvalidElementStateException("Drag did not complete successfully");
         }
-        return new AppiumResponse(getSessionId(request), null);
+        return new AppiumResponse(getSessionId(request));
     }
 
     private AppiumResponse dragElement(final DragArguments dragArgs, final IHttpRequest request) {
@@ -65,7 +65,7 @@ public class Drag extends SafeRequestHandler {
                 if (!res) {
                     throw new InvalidElementStateException("Drag did not complete successfully");
                 }
-                return new AppiumResponse(getSessionId(request), null);
+                return new AppiumResponse(getSessionId(request));
             } catch (final UiObjectNotFoundException e) {
                 throw new ElementNotFoundException("Drag did not complete successfully. Element not found", e);
             }
@@ -79,7 +79,7 @@ public class Drag extends SafeRequestHandler {
                 if (!res) {
                     throw new InvalidElementStateException("Drag did not complete successfully");
                 }
-                return new AppiumResponse(getSessionId(request), null);
+                return new AppiumResponse(getSessionId(request));
             } catch (final UiObjectNotFoundException e) {
                 throw new ElementNotFoundException("Drag did not complete successfully. Element not found", e);
             }

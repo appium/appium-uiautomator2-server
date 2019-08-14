@@ -15,12 +15,11 @@
  */
 package io.appium.uiautomator2.unittest.test.internal;
 
+import io.appium.uiautomator2.server.HttpStatusCode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-
-import io.appium.uiautomator2.server.WDStatus;
 
 public class Response {
 
@@ -35,13 +34,12 @@ public class Response {
     }
 
     public boolean isSuccessful() {
-        return code == 200 && getStatus() == WDStatus.SUCCESS.code();
+        return code == 200 && getStatus() == HttpStatusCode.OK.getStatusCode();
     }
 
     public String getElementId() {
         try {
-            return new JSONObject(body).getJSONObject("value")
-                    .getString("ELEMENT");
+            return new JSONObject(body).getJSONObject("value").getString("ELEMENT");
         } catch (JSONException e) {
             throw new IllegalArgumentException(String.format(ERR_MSG, "ELEMENT", body), e);
         }
@@ -68,6 +66,7 @@ public class Response {
         }
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public String toString() {
         return String.format("Code:%d; Body:%s;", code, body);

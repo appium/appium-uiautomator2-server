@@ -46,6 +46,6 @@ public class Clear extends SafeRequestHandler {
             }
         }
         element.clear();
-        return new AppiumResponse(getSessionId(request), null);
+        return new AppiumResponse(getSessionId(request));
     }
 }

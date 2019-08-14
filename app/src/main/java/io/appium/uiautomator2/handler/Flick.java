@@ -31,7 +31,7 @@ public class Flick extends SafeRequestHandler {
         Logger.info("Get Text of element command");
         Point start = new Point(0.5, 0.5);
         Point end = new Point();
-        Double steps;
+        double steps;
         JSONObject payload = getPayload(request);
         if (payload.has(ELEMENT_ID_KEY_NAME)) {
             String id = payload.getString(ELEMENT_ID_KEY_NAME);
@@ -53,8 +53,7 @@ public class Flick extends SafeRequestHandler {
             final Integer xSpeed = Integer.parseInt(payload.getString("xspeed"));
             final Integer ySpeed = Integer.parseInt(payload.getString("yspeed"));
 
-            final double speed = Math.min(1250.0,
-                    Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed));
+            final double speed = Math.min(1250.0, Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed));
             steps = 1250.0 / speed + 1;
 
             start = PositionHelper.getDeviceAbsPos(start);
@@ -63,12 +62,12 @@ public class Flick extends SafeRequestHandler {
 
         steps = Math.abs(steps);
         Logger.debug("Flicking from " + start.toString() + " to " + end.toString()
-                + " with steps: " + steps.intValue());
+                + " with steps: " + (int) steps);
         final boolean res = getUiDevice().swipe(start.x.intValue(), start.y.intValue(),
-                end.x.intValue(), end.y.intValue(), steps.intValue());
+                end.x.intValue(), end.y.intValue(), (int) steps);
 
         if (res) {
-            return new AppiumResponse(getSessionId(request), null);
+            return new AppiumResponse(getSessionId(request));
         }
         throw new InvalidElementStateException("Flick did not complete successfully");
     }
