@@ -18,6 +18,7 @@ package io.appium.uiautomator2.handler;
 
 import android.graphics.Rect;
 
+import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,13 +48,13 @@ public abstract class TouchEvent extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
             UiObjectNotFoundException {
         params = new JSONObject(getPayload(request).getString("params"));
-        if (params.has(ELEMENT_ID_KEY_NAME) && !(params.has("x") && params.has("y"))) {
+        final String elementId = W3CElementUtils.extractElementId(params);
+        if (elementId != null && !(params.has("x") && params.has("y"))) {
             /*
              * Finding centerX and centerY.
              */
-            String id = params.getString(ELEMENT_ID_KEY_NAME);
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            element = session.getKnownElements().getElementFromCache(id);
+            element = session.getKnownElements().getElementFromCache(elementId);
             if (element == null) {
                 throw new ElementNotFoundException();
             }

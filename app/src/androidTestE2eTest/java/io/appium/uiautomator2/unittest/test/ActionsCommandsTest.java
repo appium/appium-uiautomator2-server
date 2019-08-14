@@ -23,7 +23,6 @@ import org.json.JSONException;
 import org.junit.Test;
 
 import io.appium.uiautomator2.model.By;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.unittest.test.internal.BaseTest;
 import io.appium.uiautomator2.unittest.test.internal.Response;
 
@@ -34,6 +33,7 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.ElementComm
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class ActionsCommandsTest extends BaseTest {
@@ -95,7 +95,7 @@ public class ActionsCommandsTest extends BaseTest {
                 "{\"type\": \"pointerUp\"}]" +
                 "} ]", dot1Response.getElementId(), dot2Response.getElementId()));
         Response actionsResponse = performActions(actionsJson);
-        assertThat(actionsResponse.getStatus(), equalTo(WDStatus.SUCCESS.code()));
+        assertTrue(actionsResponse.isSuccessful());
         verifyDragResult();
     }
 
@@ -117,7 +117,7 @@ public class ActionsCommandsTest extends BaseTest {
                 "{\"type\": \"keyUp\", \"value\": \"i\"}]" +
                 "} ]");
         Response actionsResponse = performActions(actionsJson);
-        assertThat(actionsResponse.getStatus(), equalTo(WDStatus.SUCCESS.code()));
+        assertTrue(actionsResponse.isSuccessful());
         Response response = getText(edit.getElementId());
         assertThat((String) response.getValue(), equalTo("Hi"));
     }

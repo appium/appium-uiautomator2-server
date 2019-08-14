@@ -20,13 +20,14 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Base64;
 
+import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,16 +35,11 @@ import java.util.Map;
 
 import androidx.test.uiautomator.UiDevice;
 import io.appium.uiautomator2.model.By;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.unittest.test.internal.BaseTest;
-import io.appium.uiautomator2.unittest.test.internal.NettyStatus;
 import io.appium.uiautomator2.unittest.test.internal.Response;
-import io.appium.uiautomator2.unittest.test.internal.RootRequired;
 import io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices;
 import io.appium.uiautomator2.utils.Device;
 
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static io.appium.uiautomator2.unittest.test.internal.Client.waitForNettyStatus;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.getJsonObjectCountInJsonArray;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElement;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElementInvisibility;
@@ -95,7 +91,7 @@ public class DeviceCommandsTest extends BaseTest {
 
         by = By.xpath("//*[@resource-id='android:id/action_bar']");
         response = findElement(by);
-        assertEquals(WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
 
         by = By.xpath("(//*[@class='android.widget.TextView'])[3]");
         response = findElement(by);
@@ -170,8 +166,8 @@ public class DeviceCommandsTest extends BaseTest {
     @Test
     public void getDeviceSizeTest() throws JSONException {
         JSONObject value = getDeviceSize().getValue();
-        Integer height = value.getInt("height");
-        Integer width = value.getInt("width");
+        int height = value.getInt("height");
+        int width = value.getInt("width");
         assertTrue("device window height is " + height + ", which is not expected", height > 200);
         assertTrue("device window width is " + width + ", which is not expected", width > 100);
     }
@@ -184,7 +180,7 @@ public class DeviceCommandsTest extends BaseTest {
     @Test
     public void screenRotationLandscapeTest() throws JSONException {
         Response response = rotateScreen("LANDSCAPE");
-        assertEquals(WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
         Device.waitForIdle();
         assertEquals("LANDSCAPE", getScreenOrientation());
     }
@@ -197,7 +193,7 @@ public class DeviceCommandsTest extends BaseTest {
     @Test
     public void screenRotationPortraitTest() throws JSONException {
         Response response = rotateScreen("PORTRAIT");
-        assertEquals(WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
         Device.waitForIdle();
         assertEquals("PORTRAIT", getScreenOrientation());
     }
@@ -216,7 +212,7 @@ public class DeviceCommandsTest extends BaseTest {
                 .put("z", 90);
         Response response = setRotation(rotateMap);
         Device.waitForIdle();
-        assertEquals(WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
         assertEquals(rotateMap.toString(), getRotation().toString());
     }
 
@@ -234,7 +230,7 @@ public class DeviceCommandsTest extends BaseTest {
                 .put("z", 180);
         Response response = setRotation(rotateMap);
         Device.waitForIdle();
-        assertEquals(WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
         assertEquals(rotateMap.toString(), getRotation().toString());
     }
 
@@ -252,7 +248,7 @@ public class DeviceCommandsTest extends BaseTest {
                 .put("z", 0);
         Response response = setRotation(rotateMap);
         Device.waitForIdle();
-        assertEquals(WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
         assertEquals(rotateMap.toString(), getRotation().toString());
     }
 
@@ -269,7 +265,7 @@ public class DeviceCommandsTest extends BaseTest {
         JSONObject rotateMap = new JSONObject().put("x", 0).put("y", 0)
                 .put("z", 10);
         Response response = setRotation(rotateMap);
-        assertEquals(WDStatus.INVALID_ELEMENT_COORDINATES.code(), response.getStatus());
+        assertFalse(response.isSuccessful());
     }
 
     /**
@@ -280,11 +276,10 @@ public class DeviceCommandsTest extends BaseTest {
         Response response = findElement(By.accessibilityId("invalid_ID"));
         assertEquals("HTTP Status code for unsuccessful request should be '500'.",
                 500, response.code());
-        assertEquals("AppiumResponse status code for element not found should be '7'.",
-                WDStatus.NO_SUCH_ELEMENT.code(), response.getStatus());
+        assertEquals(response.code(), HttpResponseStatus.NOT_FOUND.code());
         assertTrue("AppiumResponse value for element not found should contain 'An element could " +
                         "not be located'.",
-                String.class.cast(response.getValue()).contains("An element could not be located"));
+                ((String) response.getValue()).contains("An element could not be located"));
     }
 
     @Test
@@ -405,7 +400,7 @@ public class DeviceCommandsTest extends BaseTest {
         By by = By.accessibilityId("Buttons");
         response = findElement(by);
         String elementId = response.getElementId();
-        assertEquals(by + " should be found", WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
 
         response = getAttribute(elementId, "clickable");
         assertEquals("true", response.getValue());
@@ -436,7 +431,7 @@ public class DeviceCommandsTest extends BaseTest {
         List<String> expectedTexts = Arrays.asList("API Demos", "Accessibility Node Provider",
                 "Accessibility Node Querying", "Accessibility Service");
         for (int i = 0; i < 4; i++) {
-            String elementId = elements.getJSONObject(i).getString("ELEMENT");
+            String elementId = W3CElementUtils.extractElementId(elements.getJSONObject(i));
             assertEquals(expectedTexts.get(i), getText(elementId).getValue());
         }
     }
@@ -454,7 +449,7 @@ public class DeviceCommandsTest extends BaseTest {
         response = waitForElement(by);
         response = getText(response.getElementId());
         assertEquals("Clicked popup menu item Search", response.getValue());
-        assertEquals(by + "should be found", WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
     }
 
     @Test
@@ -468,7 +463,7 @@ public class DeviceCommandsTest extends BaseTest {
 
         By by = By.xpath("//*[contains(@text,'Clicked popup menu item Add')]");
         response = waitForElement(by);
-        assertEquals(by + " should be found", WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
         response = getText(response.getElementId());
         assertEquals("Clicked popup menu item Add", response.getValue());
     }
@@ -484,7 +479,7 @@ public class DeviceCommandsTest extends BaseTest {
 
         By by = By.xpath("//*[@text='Clicked popup menu item Edit']");
         response = waitForElement(by);
-        assertEquals(by + " should be found", WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
         response = getText(response.getElementId());
         assertEquals("Clicked popup menu item Edit", response.getValue());
     }
@@ -500,13 +495,14 @@ public class DeviceCommandsTest extends BaseTest {
 
         By by = By.xpath("//*[@text='Clicked popup menu item Edit']");
         response = waitForElement(by);
+        assertTrue(response.isSuccessful());
 
         response = waitForElement(By.xpath(".//*[@text='Share']"));
         click(response.getElementId());
 
         by = By.xpath("//*[@text='Clicked popup menu item Share']");
         response = waitForElement(by);
-        assertEquals(by + " should be found", WDStatus.SUCCESS.code(), response.getStatus());
+        assertTrue(response.isSuccessful());
         response = getText(response.getElementId());
         assertEquals("Clicked popup menu item Share", response.getValue());
     }

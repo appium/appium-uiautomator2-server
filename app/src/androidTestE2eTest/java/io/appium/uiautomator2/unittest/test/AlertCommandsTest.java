@@ -16,11 +16,11 @@
 
 package io.appium.uiautomator2.unittest.test;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.json.JSONException;
 import org.junit.Test;
 
 import io.appium.uiautomator2.model.By;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.unittest.test.internal.BaseTest;
 import io.appium.uiautomator2.unittest.test.internal.Response;
 
@@ -28,9 +28,10 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.dismissAlert;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getAlertText;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AlertCommandsTest extends BaseTest {
 
@@ -49,7 +50,7 @@ public class AlertCommandsTest extends BaseTest {
         clickAndWaitForStaleness(response.getElementId());
 
         response = acceptAlert(null);
-        assertThat(response.getStatus(), equalTo(WDStatus.SUCCESS.code()));
+        assertTrue(response.isSuccessful());
     }
 
     @Test
@@ -60,7 +61,7 @@ public class AlertCommandsTest extends BaseTest {
         clickAndWaitForStaleness(response.getElementId());
 
         response = dismissAlert("CANCEL");
-        assertThat(response.getStatus(), equalTo(WDStatus.SUCCESS.code()));
+        assertTrue(response.isSuccessful());
     }
 
     @Test
@@ -71,7 +72,7 @@ public class AlertCommandsTest extends BaseTest {
         clickAndWaitForStaleness(response.getElementId());
 
         response = getAlertText();
-        assertThat(response.getStatus(), equalTo(WDStatus.SUCCESS.code()));
+        assertTrue(response.isSuccessful());
         assertThat((String) response.getValue(), startsWith("Lorem ipsum dolor"));
     }
 
@@ -80,6 +81,6 @@ public class AlertCommandsTest extends BaseTest {
         setupView();
 
         Response response = getAlertText();
-        assertThat(response.getStatus(), equalTo(WDStatus.NO_ALERT_OPEN_ERROR.code()));
+        assertEquals(response.code(), HttpResponseStatus.NOT_FOUND.code());
     }
 }

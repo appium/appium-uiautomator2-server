@@ -1,5 +1,6 @@
 package io.appium.uiautomator2.handler;
 
+import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,11 +31,11 @@ public class Click extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         JSONObject payload = getPayload(request);
-        if (payload.has(ELEMENT_ID_KEY_NAME)) {
+        final String elementId = W3CElementUtils.extractElementId(payload);
+        if (elementId != null) {
             Logger.info("Click element command");
-            String id = payload.getString(ELEMENT_ID_KEY_NAME);
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getKnownElements().getElementFromCache(id);
+            AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
             if (element == null) {
                 throw new NoSuchElementException();
             }

@@ -15,6 +15,7 @@
  */
 package io.appium.uiautomator2.unittest.test;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +26,6 @@ import io.appium.uiautomator2.unittest.test.internal.BaseTest;
 import io.appium.uiautomator2.unittest.test.internal.Response;
 import io.appium.uiautomator2.utils.Device;
 
-import static io.appium.uiautomator2.server.WDStatus.NO_SUCH_ELEMENT;
-import static io.appium.uiautomator2.server.WDStatus.STALE_ELEMENT_REFERENCE;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElementInvisibility;
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForSeconds;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
@@ -119,7 +118,7 @@ public class GestureCommandsTest extends BaseTest {
     @Test
     public void flickTest() throws JSONException {
         Response response = flickOnPosition();
-        assertTrue(Boolean.class.cast(response.getValue()));
+        assertTrue(response.isSuccessful());
     }
 
     /**
@@ -199,7 +198,7 @@ public class GestureCommandsTest extends BaseTest {
         response = findElement(By.accessibilityId("Auto Complete"));
 
         // swipe performed hence the 'Buttons' element was not found on the screen
-        assertEquals(NO_SUCH_ELEMENT.code(), response.getStatus());
+        assertEquals(response.code(), HttpResponseStatus.NOT_FOUND.code());
     }
 
     /**
@@ -215,10 +214,10 @@ public class GestureCommandsTest extends BaseTest {
 
         response = findElement(By.id("android:id/list"));
         response = flickOnElement(response.getElementId());
-        assertTrue(Boolean.class.cast(response.getValue()));
+        assertTrue(response.isSuccessful());
 
         response = findElement(By.accessibilityId("Animation"));
-        assertEquals(NO_SUCH_ELEMENT.code(), response.getStatus());
+        assertEquals(response.code(), HttpResponseStatus.NOT_FOUND.code());
     }
 
     /**
@@ -234,7 +233,7 @@ public class GestureCommandsTest extends BaseTest {
         longClick(response.getElementId());
 
         response = waitForElementInvisibility(response.getElementId());
-        assertEquals(STALE_ELEMENT_REFERENCE.code(), response.getStatus());
+        assertEquals(response.code(), HttpResponseStatus.NOT_FOUND.code());
     }
 
     @Test
@@ -251,6 +250,6 @@ public class GestureCommandsTest extends BaseTest {
         touchMove(upElement);
         touchUp(downElement);
         response = findElement(By.accessibilityId("Auto Complete"));
-        assertEquals(NO_SUCH_ELEMENT.code(), response.getStatus());
+        assertEquals(response.code(), HttpResponseStatus.NOT_FOUND.code());
     }
 }

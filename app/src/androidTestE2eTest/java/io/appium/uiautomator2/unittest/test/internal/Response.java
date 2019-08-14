@@ -16,6 +16,7 @@
 package io.appium.uiautomator2.unittest.test.internal;
 
 import io.appium.uiautomator2.server.HttpStatusCode;
+import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,22 +35,14 @@ public class Response {
     }
 
     public boolean isSuccessful() {
-        return code == 200 && getStatus() == HttpStatusCode.OK.getStatusCode();
+        return code == HttpStatusCode.OK.getStatusCode();
     }
 
     public String getElementId() {
         try {
-            return new JSONObject(body).getJSONObject("value").getString("ELEMENT");
+            return W3CElementUtils.extractElementId(new JSONObject(body).getJSONObject("value"));
         } catch (JSONException e) {
-            throw new IllegalArgumentException(String.format(ERR_MSG, "ELEMENT", body), e);
-        }
-    }
-
-    public int getStatus() {
-        try {
-            return new JSONObject(body).getInt("status");
-        } catch (JSONException e) {
-            throw new IllegalArgumentException(String.format(ERR_MSG, "status", body), e);
+            throw new IllegalArgumentException(String.format(ERR_MSG, "element", body), e);
         }
     }
 

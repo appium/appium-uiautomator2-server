@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +46,6 @@ import io.appium.uiautomator2.model.settings.ShouldUseCompactResponses;
 import io.appium.uiautomator2.model.settings.ShutdownOnPowerDisconnect;
 import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 import io.appium.uiautomator2.model.settings.WaitForSelectorTimeout;
-import io.appium.uiautomator2.server.WDStatus;
 
 import static io.appium.uiautomator2.model.settings.Settings.ACTION_ACKNOWLEDGMENT_TIMEOUT;
 import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
@@ -62,6 +62,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -162,7 +163,7 @@ public class UpdateSettingsTests {
         AppiumResponse response = updateSettings.handle(req);
         verify(mySetting).update(SETTING_VALUE);
         assertEquals(session.getCapability(SETTING_NAME), SETTING_VALUE);
-        assertEquals(WDStatus.SUCCESS.code(), response.getStatus());
+        assertEquals(response.getStatus(), HttpResponseStatus.OK);
         assertEquals(true, response.getValue());
     }
 
@@ -170,7 +171,7 @@ public class UpdateSettingsTests {
     public void shouldReturnResponseWithUnknownErrorStatusIfFailed() {
         doThrow(new UiAutomator2Exception("error")).when(mySetting).update(any());
         AppiumResponse resp = updateSettings.handle(req);
-        assertEquals(WDStatus.UNKNOWN_ERROR.code(), resp.getStatus());
+        assertNotEquals(resp.getStatus(), HttpResponseStatus.OK);
         assertThat(resp.getValue().toString(), containsString("UiAutomator2Exception: error"));
     }
 

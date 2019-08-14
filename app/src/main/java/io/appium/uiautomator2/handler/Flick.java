@@ -1,5 +1,6 @@
 package io.appium.uiautomator2.handler;
 
+import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,10 +34,10 @@ public class Flick extends SafeRequestHandler {
         Point end = new Point();
         double steps;
         JSONObject payload = getPayload(request);
-        if (payload.has(ELEMENT_ID_KEY_NAME)) {
-            String id = payload.getString(ELEMENT_ID_KEY_NAME);
+        final String elementId = W3CElementUtils.extractElementId(payload);
+        if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getKnownElements().getElementFromCache(id);
+            AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
             if (element == null) {
                 throw new ElementNotFoundException();
             }

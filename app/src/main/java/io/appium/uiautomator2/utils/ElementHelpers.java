@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
+import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -122,7 +123,7 @@ public abstract class ElementHelpers {
      */
     public static JSONObject toJSON(AndroidElement el) throws JSONException, UiObjectNotFoundException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("ELEMENT", el.getId());
+        W3CElementUtils.attachElementId(el, jsonObject);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         if (session.shouldUseCompactResponses()) {
             return jsonObject;
@@ -171,7 +172,8 @@ public abstract class ElementHelpers {
         if (nodeInfo.getRangeInfo() != null && Build.VERSION.SDK_INT >= 24) {
             Logger.debug("Element has range info.");
             try {
-                if (AccessibilityNodeInfoHelpers.setProgressValue(nodeInfo, Float.parseFloat(text))) {
+                if (AccessibilityNodeInfoHelpers.setProgressValue(nodeInfo,
+                        Float.parseFloat(Objects.requireNonNull(text)))) {
                     return true;
                 }
             } catch (NumberFormatException e) {
@@ -196,8 +198,7 @@ public abstract class ElementHelpers {
         return nodeInfo.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, args);
     }
 
-    public static AndroidElement findElement(final BySelector ui2BySelector)
-            throws UiAutomator2Exception, ClassNotFoundException {
+    public static AndroidElement findElement(final BySelector ui2BySelector) throws UiAutomator2Exception {
         Object ui2Object = getInstance().findObject(ui2BySelector);
         if (ui2Object == null) {
             throw new ElementNotFoundException();

@@ -26,7 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -209,13 +208,7 @@ public class ActionsTokenizer {
             //
             // if isinstance(origin, WebElement):
             //    action["origin"] = {"element-6066-11e4-a52e-4f735466cecf": origin.id}
-            final Iterator<String> keys = ((JSONObject) originValue).keys();
-            if (keys.hasNext()) {
-                final String name = keys.next();
-                if (name.toLowerCase().startsWith("element")) {
-                    elementId = String.valueOf(((JSONObject) originValue).get(name));
-                }
-            }
+            elementId = W3CElementUtils.extractElementId((JSONObject) originValue);
         }
         if (elementId == null) {
             throw new ActionsParseException(String.format(
