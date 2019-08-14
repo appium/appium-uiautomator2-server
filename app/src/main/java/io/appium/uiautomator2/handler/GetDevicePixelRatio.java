@@ -8,7 +8,6 @@ import android.view.WindowManager;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
@@ -31,6 +30,6 @@ public class GetDevicePixelRatio extends SafeRequestHandler {
         Logger.info("Get device pixel ratio");
         Instrumentation instrumentation = getInstrumentation();
         Float ratio = getDeviceScaleRatio(instrumentation);
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, ratio);
+        return new AppiumResponse(getSessionId(request), ratio);
     }
 }

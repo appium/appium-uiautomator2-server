@@ -42,7 +42,7 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
+import io.appium.uiautomator2.common.exceptions.NoSuchAttributeException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
@@ -141,7 +141,7 @@ public abstract class ElementHelpers {
                     String attributeName = field.substring(ATTRIBUTE_PREFIX.length());
                     jsonObject.put(field, formatNull(el.getAttribute(attributeName)));
                 }
-            } catch (NoAttributeFoundException e) {
+            } catch (NoSuchAttributeException e) {
                 // ignore field
             }
         }
@@ -205,10 +205,10 @@ public abstract class ElementHelpers {
         return getAndroidElement(UUID.randomUUID().toString(), ui2Object, true);
     }
 
-    public static NoAttributeFoundException generateNoAttributeException(@Nullable String attributeName) {
-        return new NoAttributeFoundException(String.format("'%s' attribute is unknown for the element. " +
+    public static NoSuchAttributeException generateNoAttributeException(@Nullable String attributeName) {
+        return new NoSuchAttributeException(String.format("'%s' attribute is unknown for the element. " +
                         "Only the following attributes are supported: %s", attributeName,
-                Arrays.toString(Attribute.exposableAliases())), attributeName);
+                Arrays.toString(Attribute.exposableAliases())));
     }
 
     @NonNull

@@ -18,26 +18,31 @@ package io.appium.uiautomator2.common.exceptions;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-public class UiAutomator2Exception extends RuntimeException {
-    public static final HttpResponseStatus DEFAULT_ERROR_STATUS = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-
-    public UiAutomator2Exception(Throwable t) {
-        super("An unknown server-side error occurred while processing the command", t);
+public class InvalidArgumentException extends UiAutomator2Exception {
+    public InvalidArgumentException() {
+        super("The arguments passed to the command are either invalid or malformed");
     }
 
-    public UiAutomator2Exception(String message) {
+    public InvalidArgumentException(String message) {
         super(message);
     }
 
-    public UiAutomator2Exception(String message, Throwable t) {
-        super(message, t);
+    public InvalidArgumentException(Throwable cause) {
+        super(cause);
     }
 
+    public InvalidArgumentException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+
+    @Override
     public String getError() {
-        return "unknown error";
+        return "invalid argument";
     }
 
+    @Override
     public HttpResponseStatus getHttpStatus() {
-        return DEFAULT_ERROR_STATUS;
+        return HttpResponseStatus.BAD_REQUEST;
     }
 }

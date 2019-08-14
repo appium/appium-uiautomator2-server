@@ -4,8 +4,8 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.SystemClock;
 
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.http.AppiumResponse;
-import io.appium.uiautomator2.server.WDStatus;
 
 import static android.net.wifi.WifiManager.WIFI_STATE_DISABLED;
 import static android.net.wifi.WifiManager.WIFI_STATE_DISABLING;
@@ -24,7 +24,7 @@ public class WifiHandler {
         boolean status = wfm.setWifiEnabled(setTo);
         if (!status) {
             String errorMsg = "Unable to " + (setTo ? "ENABLE" : "DISABLE") + "WIFI";
-            return new AppiumResponse(sessionId, WDStatus.UNKNOWN_ERROR, errorMsg);
+            throw new InvalidElementStateException(errorMsg);
         }
         int wifiState = wfm.getWifiState();
         // If the WIFI state change is in progress,
@@ -39,11 +39,11 @@ public class WifiHandler {
             wifiState = wfm.getWifiState();
         }
         if (isInProgress() || !isSuccessful(setTo)) {
-            return new AppiumResponse(sessionId, WDStatus.TIMEOUT
-                    , String.format("Changing WIFI State not completed in %s ms", TIMEOUT));
+            throw new InvalidElementStateException(
+                    String.format("Changing WIFI State not completed in %s ms", TIMEOUT));
         }
         int response = (wifiState == WIFI_STATE_ENABLED) ? 1 : 0;
-        return new AppiumResponse(sessionId, WDStatus.SUCCESS, response);
+        return new AppiumResponse(sessionId, response);
 
     }
 

@@ -24,10 +24,10 @@ import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.ClipboardHelper;
 import io.appium.uiautomator2.utils.ClipboardHelper.ClipDataType;
 import io.appium.uiautomator2.utils.Logger;
@@ -65,12 +65,12 @@ public class SetClipboard extends SafeRequestHandler {
 
             mInstrumentation.runOnMainSync(new AppiumSetClipboardRunnable(contentType, label, content));
         } catch (IllegalArgumentException e) {
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
+            throw new InvalidArgumentException(
                     String.format("Only '%s' content types are supported. '%s' is given instead",
                             ClipDataType.supportedDataTypes(),
                             contentType));
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS);
+        return new AppiumResponse(getSessionId(request));
     }
 
     // Clip feature should run with main thread

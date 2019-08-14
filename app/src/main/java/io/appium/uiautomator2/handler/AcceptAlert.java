@@ -38,6 +38,6 @@ public class AcceptAlert extends SafeRequestHandler {
         final String buttonLabel = payload.has("buttonLabel")
                 ? payload.getString("buttonLabel") : null;
         AlertHelpers.handle(AlertHelpers.AlertAction.ACCEPT, buttonLabel);
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS);
+        return new AppiumResponse(getSessionId(request), null);
     }
 }

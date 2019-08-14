@@ -21,10 +21,11 @@ import android.view.KeyEvent;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.w3c.ActionTokens;
 import io.appium.uiautomator2.utils.w3c.ActionsExecutor;
@@ -78,14 +79,14 @@ public class W3CActions extends SafeRequestHandler {
 
             final ActionTokens actionTokens = actionsTokenizer.tokenize(actions);
             if (new ActionsExecutor(actionTokens).execute()) {
-                return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "OK");
+                return new AppiumResponse(getSessionId(request));
             }
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
+            throw new InvalidElementStateException(
                     "Unable to perform W3C actions. Check the logcat output " +
                             "for possible error reports and make sure your input actions chain is valid.");
         } catch (ActionsParseException e) {
             Logger.error("Exception while reading JSON: ", e);
-            return new AppiumResponse(getSessionId(request), WDStatus.JSON_DECODER_ERROR, e);
+            throw new InvalidArgumentException("Exception while reading JSON", e);
         }
     }
 }

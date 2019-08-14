@@ -10,6 +10,8 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
+
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -18,7 +20,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
@@ -41,7 +42,7 @@ public class FirstVisibleView extends SafeRequestHandler {
 
         AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
         if (element == null) {
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
+            throw new ElementNotFoundException();
         }
         Object firstObject = null;
         if (element.getUiObject() instanceof UiObject) {
@@ -73,8 +74,7 @@ public class FirstVisibleView extends SafeRequestHandler {
         }
 
         if (firstObject == null) {
-            Logger.error("No visible child was found for element");
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
+            throw new ElementNotFoundException();
         }
 
         String id = UUID.randomUUID().toString();
@@ -82,6 +82,6 @@ public class FirstVisibleView extends SafeRequestHandler {
         session.getKnownElements().add(androidElement);
         JSONObject result = new JSONObject();
         result.put("ELEMENT", id);
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
+        return new AppiumResponse(getSessionId(request), result);
     }
 }

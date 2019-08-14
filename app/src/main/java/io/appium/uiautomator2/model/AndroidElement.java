@@ -24,7 +24,6 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
-import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.utils.Point;
 
 public interface AndroidElement {
@@ -45,7 +44,7 @@ public interface AndroidElement {
 
     String getName() throws UiObjectNotFoundException;
 
-    String getAttribute(String attr) throws UiObjectNotFoundException, NoAttributeFoundException;
+    String getAttribute(String attr) throws UiObjectNotFoundException;
 
     boolean setText(final String text);
 

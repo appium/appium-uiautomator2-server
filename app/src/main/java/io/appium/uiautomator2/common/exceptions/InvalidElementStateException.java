@@ -16,8 +16,20 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
+
 public class InvalidElementStateException extends UiAutomator2Exception {
     public InvalidElementStateException(String message) {
         super(message);
+    }
+
+    @Override
+    public String getError() {
+        return "invalid element state";
+    }
+
+    @Override
+    public HttpResponseStatus getHttpStatus() {
+        return HttpResponseStatus.BAD_REQUEST;
     }
 }

@@ -5,12 +5,13 @@ import com.jayway.jsonpath.JsonPath;
 import org.json.JSONException;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
+
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
 
@@ -58,10 +59,7 @@ public class ScrollTo extends SafeRequestHandler {
         } else if (by instanceof By.ByAndroidUiAutomator) {
             uiselector = toSelector(by.getElementLocator());
         } else {
-            return new AppiumResponse(
-                    getSessionId(request),
-                    WDStatus.UNKNOWN_ERROR,
-                    String.format(
+            throw new InvalidArgumentException(String.format(
                             "Unsupported strategy: '%s'. " +
                             "The only supported strategies are: '%s', '%s', and '%s'.",
                             strategyString,
@@ -77,6 +75,6 @@ public class ScrollTo extends SafeRequestHandler {
         Logger.info(String.format("Scrolled via strategy: '%s' and selector '%s'.",
                                   strategyString, selectorString));
 
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
+        return new AppiumResponse(getSessionId(request));
     }
 }

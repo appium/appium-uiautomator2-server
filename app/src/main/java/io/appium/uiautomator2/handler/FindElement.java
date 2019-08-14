@@ -39,7 +39,6 @@ import io.appium.uiautomator2.model.By.ById;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
@@ -76,7 +75,7 @@ public class FindElement extends SafeRequestHandler {
             throw new UiAutomator2Exception(e);
         }
         if (element == null) {
-            return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
+            throw new ElementNotFoundException();
         }
 
         String id = UUID.randomUUID().toString();
@@ -84,7 +83,7 @@ public class FindElement extends SafeRequestHandler {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         session.getKnownElements().add(androidElement);
         JSONObject result = ElementHelpers.toJSON(androidElement);
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
+        return new AppiumResponse(getSessionId(request), result);
     }
 
     @Nullable

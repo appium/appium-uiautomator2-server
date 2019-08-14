@@ -27,7 +27,6 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.JSONUtils;
 
 import static io.appium.uiautomator2.model.Session.NO_ID;
@@ -54,6 +53,6 @@ public class GetSessions extends SafeRequestHandler {
             }
             result.put(sessionProps);
         }
-        return new AppiumResponse(NO_ID, WDStatus.SUCCESS, result);
+        return new AppiumResponse(NO_ID, result);
     }
 }

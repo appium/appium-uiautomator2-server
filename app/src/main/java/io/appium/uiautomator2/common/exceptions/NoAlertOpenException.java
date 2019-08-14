@@ -16,8 +16,19 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
+
 public class NoAlertOpenException extends UiAutomator2Exception {
     public NoAlertOpenException() {
         super("No alert is present on the screen");
+    }
+
+    @Override
+    public String getError() {
+        return "no such alert";
+    }
+
+    public HttpResponseStatus getHttpStatus() {
+        return HttpResponseStatus.NOT_FOUND;
     }
 }

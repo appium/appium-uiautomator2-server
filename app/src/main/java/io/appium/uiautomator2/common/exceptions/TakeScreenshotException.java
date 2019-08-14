@@ -16,8 +16,24 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
+
 public class TakeScreenshotException extends UiAutomator2Exception {
     public TakeScreenshotException() {
         super("Failed to capture a screenshot. Does the current view have 'secure' flag set?");
+    }
+
+    public TakeScreenshotException(String message) {
+        super(message);
+    }
+
+    @Override
+    public String getError() {
+        return "unable to capture screen";
+    }
+
+    @Override
+    public HttpResponseStatus getHttpStatus() {
+        return HttpResponseStatus.INTERNAL_SERVER_ERROR;
     }
 }

@@ -55,8 +55,7 @@ public class ScreenshotHelper {
      * @param cropArea Area to crop.
      * @return Base64-encoded screenshot string.
      */
-    public static String takeScreenshot(@Nullable final Rect cropArea) throws
-            TakeScreenshotException, CompressScreenshotException, CropScreenshotException {
+    public static String takeScreenshot(@Nullable final Rect cropArea) throws TakeScreenshotException {
         Object screenshotObj = takeDeviceScreenshot(cropArea == null ? String.class : Bitmap.class);
 
         if (cropArea == null) {
@@ -74,8 +73,7 @@ public class ScreenshotHelper {
         }
     }
 
-    public static String takeScreenshot() throws CropScreenshotException,
-            CompressScreenshotException, TakeScreenshotException {
+    public static String takeScreenshot() throws TakeScreenshotException {
         return takeScreenshot(null);
     }
 
@@ -138,7 +136,7 @@ public class ScreenshotHelper {
         return outputType.cast(screenshot);
     }
 
-    private static byte[] compress(final Bitmap bitmap) throws CompressScreenshotException {
+    private static byte[] compress(final Bitmap bitmap) throws TakeScreenshotException {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (!bitmap.compress(PNG, 100, stream)) {
             throw new CompressScreenshotException(PNG);

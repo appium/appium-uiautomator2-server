@@ -5,14 +5,15 @@ import android.os.RemoteException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.OrientationEnum;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -40,11 +41,9 @@ public class RotateScreen extends SafeRequestHandler {
                 return handleRotation(request, x, y, z);
             }
 
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_COMMAND,
-                    "Unable to Rotate Device, Unsupported arguments");
+            throw new InvalidArgumentException("Unable to Rotate Device, Unsupported arguments");
         } catch (RemoteException | InterruptedException e) {
-            Logger.error("Exception while rotating Screen ", e);
-            throw new UiAutomator2Exception(e);
+            throw new UiAutomator2Exception("Cannot perform screen rotation", e);
         }
     }
 
@@ -57,8 +56,7 @@ public class RotateScreen extends SafeRequestHandler {
         OrientationEnum current = OrientationEnum.fromInteger(getUiDevice().getDisplayRotation());
         OrientationEnum desired = OrientationEnum.fromInteger(z / 90);
         if (current.equals(desired)) {
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
-                    String.format("Already in %s mode", current.getOrientation()));
+            return new AppiumResponse(getSessionId(request), current.getOrientation());
         }
 
         switch (desired) {
@@ -106,8 +104,7 @@ public class RotateScreen extends SafeRequestHandler {
                     desired = OrientationEnum.ROTATION_270;
                     break;
                 default:
-                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
-                            "Already in landscape mode.");
+                    return new AppiumResponse(getSessionId(request), current.getOrientation());
             }
         } else {
             switch (current) {
@@ -117,7 +114,7 @@ public class RotateScreen extends SafeRequestHandler {
                     desired = OrientationEnum.ROTATION_0;
                     break;
                 default:
-                    return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "Already in portrait mode.");
+                    return new AppiumResponse(getSessionId(request), current.getOrientation());
             }
         }
 
@@ -137,8 +134,8 @@ public class RotateScreen extends SafeRequestHandler {
             current = OrientationEnum.fromInteger(getUiDevice().getDisplayRotation());
         }
         if (current != desired) {
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, "Set the orientation, but app refused to rotate.");
+            throw new InvalidElementStateException("Set the orientation, but app refused to rotate");
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "Rotation (" + current.getOrientation() + ") successful.");
+        return new AppiumResponse(getSessionId(request), current.getOrientation());
     }
 }

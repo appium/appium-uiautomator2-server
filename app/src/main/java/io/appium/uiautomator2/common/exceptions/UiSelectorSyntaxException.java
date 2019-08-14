@@ -17,27 +17,24 @@
 package io.appium.uiautomator2.common.exceptions;
 
 import androidx.annotation.Nullable;
-import io.appium.uiautomator2.utils.UiSelectorParser;
 
-@SuppressWarnings("serial")
-public class UiSelectorSyntaxException extends UiAutomator2Exception {
+public class UiSelectorSyntaxException extends InvalidSelectorException {
 
-    /**
-     * An exception involving an {@link UiSelectorParser}.
-     *
-     * @param msg A descriptive message describing the error.
-     */
+    private static String formatErrorMessage(String expression, String message) {
+        return String.format("Could not parse expression `%s`: %s", expression, message);
+    }
+
     public UiSelectorSyntaxException(final String expression, final String msg) {
-        this(expression, msg, null);
+        super(formatErrorMessage(expression, msg));
     }
 
     public UiSelectorSyntaxException(final String expression, final String msg,
                                      final int position) {
-        this(expression, msg + " at position " + position, null);
+        super(formatErrorMessage(expression, String.format("%s at position %s", msg, position)));
     }
 
     public UiSelectorSyntaxException(final String expression, final String msg,
                                      @Nullable final Throwable cause) {
-        super(String.format("Could not parse expression `%s`: %s", expression, msg), cause);
+        super(formatErrorMessage(expression, msg), cause);
     }
 }

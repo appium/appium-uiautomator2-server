@@ -34,7 +34,6 @@ import org.apache.commons.lang.StringUtils;
 
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
-import io.appium.uiautomator2.common.exceptions.NoAttributeFoundException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -88,7 +87,7 @@ public class UiObject2Element implements AndroidElement {
 
     @Nullable
     @Override
-    public String getAttribute(String attr) throws NoAttributeFoundException, UiObjectNotFoundException {
+    public String getAttribute(String attr) throws UiObjectNotFoundException {
         final Attribute dstAttribute = Attribute.fromString(attr);
         if (dstAttribute == null) {
             throw generateNoAttributeException(attr);

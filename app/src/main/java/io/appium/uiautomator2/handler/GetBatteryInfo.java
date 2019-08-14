@@ -24,7 +24,6 @@ import org.json.JSONObject;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.BatteryHelper;
 import io.appium.uiautomator2.utils.Logger;
 
@@ -45,6 +44,6 @@ public class GetBatteryInfo extends SafeRequestHandler {
                 .getTargetContext());
         response.put("level", batteryHelper.getLevel());
         response.put("status", batteryHelper.getStatus());
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, response);
+        return new AppiumResponse(getSessionId(request), response);
     }
 }

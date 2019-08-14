@@ -16,11 +16,7 @@
 
 package io.appium.uiautomator2.server;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -255,19 +251,7 @@ public class AppiumServlet implements IHttpServlet {
 
     protected void handleResponse(IHttpRequest request, IHttpResponse response, AppiumResponse result) {
         if (result != null) {
-            String resultString = result.render();
-            response.setContentType("application/json");
-            response.setEncoding(Charset.forName("UTF-8"));
-            response.setContent(resultString);
-            try {
-                if (new JSONObject(resultString).getInt("status") == 0) {
-                    response.setStatus(HttpStatusCode.OK.getStatusCode());
-                } else {
-                    response.setStatus(HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode());
-                }
-            } catch (JSONException e) {
-                response.setStatus(HttpStatusCode.INTERNAL_SERVER_ERROR.getStatusCode());
-            }
+            result.renderTo(response);
         }
         response.end();
     }

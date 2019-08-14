@@ -6,11 +6,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.server.WDStatus;
 
 public class MultiPointerGesture extends SafeRequestHandler {
 
@@ -22,10 +22,9 @@ public class MultiPointerGesture extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         final PointerCoords[][] pcs = parsePointerCoords(request);
         if (!UiAutomatorBridge.getInstance().getInteractionController().performMultiPointerGesture(pcs)) {
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
-                    "Unable to perform multi pointer gesture");
+            throw new InvalidElementStateException("Unable to perform multi pointer gesture");
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, "OK");
+        return new AppiumResponse(getSessionId(request));
     }
 
     private PointerCoords[][] parsePointerCoords(final IHttpRequest request) throws JSONException {

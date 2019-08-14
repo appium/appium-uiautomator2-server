@@ -29,7 +29,6 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.settings.ISetting;
 import io.appium.uiautomator2.model.settings.Settings;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
 public class UpdateSettings extends SafeRequestHandler {
@@ -51,7 +50,7 @@ public class UpdateSettings extends SafeRequestHandler {
             setting.update(settingValue);
             session.setCapability(settingName, settingValue);
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
+        return new AppiumResponse(getSessionId(request));
     }
 
     public ISetting getSetting(String settingName) throws UnsupportedSettingException {

@@ -18,7 +18,7 @@ package io.appium.uiautomator2.common.exceptions;
 
 import java.util.Arrays;
 
-public class UnsupportedSettingException extends UiAutomator2Exception {
+public class UnsupportedSettingException extends InvalidArgumentException {
 
     public UnsupportedSettingException(String settingName, String[] supportedSettingNames) {
         super(String.format("Setting '%s' is not supported. " +

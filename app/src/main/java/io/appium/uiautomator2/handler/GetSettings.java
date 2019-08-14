@@ -9,7 +9,6 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.settings.ISetting;
 import io.appium.uiautomator2.model.settings.Settings;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
 /**
@@ -24,7 +23,7 @@ public class GetSettings extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.debug("Get settings:");
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, getPayload());
+        return new AppiumResponse(getSessionId(request), getPayload());
     }
 
     @VisibleForTesting

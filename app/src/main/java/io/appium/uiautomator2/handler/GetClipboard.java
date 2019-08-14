@@ -24,10 +24,10 @@ import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.ClipboardHelper;
 import io.appium.uiautomator2.utils.ClipboardHelper.ClipDataType;
 import io.appium.uiautomator2.utils.Logger;
@@ -56,13 +56,11 @@ public class GetClipboard extends SafeRequestHandler {
                         .getString("contentType")
                         .toUpperCase());
             }
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS,
-                    getClipboardResponse(contentType));
+            return new AppiumResponse(getSessionId(request), getClipboardResponse(contentType));
         } catch (IllegalArgumentException e) {
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
+            throw new InvalidArgumentException(
                     String.format("Only '%s' content types are supported. '%s' is given instead",
-                            ClipDataType.supportedDataTypes(),
-                            contentType));
+                            ClipDataType.supportedDataTypes(), contentType));
         }
     }
 

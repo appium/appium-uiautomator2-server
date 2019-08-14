@@ -16,11 +16,23 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
-/**
- * For trying to create a ClassInstancePair and something goes wrong.
- */
-public class PairCreationException extends UiAutomator2Exception {
-    public PairCreationException(String msg) {
-        super(msg);
+import io.netty.handler.codec.http.HttpResponseStatus;
+
+public class NotImplementedException extends UiAutomator2Exception {
+    public NotImplementedException() {
+        super("Method is not implemented");
+    }
+
+    public NotImplementedException(String message) {
+        super(message);
+    }
+
+    @Override
+    public String getError() {
+        return "unknown method";
+    }
+
+    public HttpResponseStatus getHttpStatus() {
+        return HttpResponseStatus.METHOD_NOT_ALLOWED;
     }
 }

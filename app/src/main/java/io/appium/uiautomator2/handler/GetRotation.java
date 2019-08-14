@@ -7,7 +7,6 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.OrientationEnum;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Device;
 
 public class GetRotation extends SafeRequestHandler {
@@ -19,7 +18,7 @@ public class GetRotation extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
        int rotation = Device.getUiDevice().getDisplayRotation();
-       return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, getOrientationMap(rotation));
+       return new AppiumResponse(getSessionId(request), getOrientationMap(rotation));
     }
 
     private JSONObject getOrientationMap(int orientation) throws JSONException {

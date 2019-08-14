@@ -23,12 +23,12 @@ import android.view.KeyEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.InteractionController;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.server.WDStatus;
 
 import static io.appium.uiautomator2.utils.JSONUtils.readInteger;
 
@@ -60,9 +60,8 @@ public class LongPressKeyCode extends SafeRequestHandler {
                         KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
                         0, flags));
         if (!isSuccessful) {
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
-                    "Cannot inject long press event for key code " + keyCode);
+            throw new InvalidElementStateException("Cannot inject long press event for key code " + keyCode);
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
+        return new AppiumResponse(getSessionId(request));
     }
 }

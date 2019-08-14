@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
@@ -29,7 +28,7 @@ public class GetSystemBars extends SafeRequestHandler {
 
         JSONObject result = new JSONObject();
         result.put("statusBar", height);
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
+        return new AppiumResponse(getSessionId(request), result);
     }
 
     private int getStatusBarHeight(Instrumentation instrumentation) {

@@ -16,13 +16,28 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
-/**
- * An exception thrown when the element can not be found.
- */
-public class ElementNotFoundException extends UiAutomator2Exception {
-    private final static String error = "Could not find an element using supplied strategy. ";
+import io.netty.handler.codec.http.HttpResponseStatus;
 
+public class ElementNotFoundException extends UiAutomator2Exception {
     public ElementNotFoundException() {
-        super(error);
+        super("An element could not be located on the page using the given search parameters");
+    }
+
+    public ElementNotFoundException(Throwable cause) {
+        super(cause);
+    }
+
+    public ElementNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    @Override
+    public String getError() {
+        return "no such element";
+    }
+
+    @Override
+    public HttpResponseStatus getHttpStatus() {
+        return HttpResponseStatus.NOT_FOUND;
     }
 }

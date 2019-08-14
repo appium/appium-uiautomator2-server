@@ -23,7 +23,6 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.NotificationListener;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
 public class NewSession extends SafeRequestHandler {
@@ -38,6 +37,6 @@ public class NewSession extends SafeRequestHandler {
                 .initializeSession(getPayload(request, "desiredCapabilities"));
         NotificationListener.getInstance().start();
         Logger.info("Session Created with SessionID:" + sessionID);
-        return new AppiumResponse(sessionID, WDStatus.SUCCESS, "Created Session");
+        return new AppiumResponse(sessionID);
     }
 }

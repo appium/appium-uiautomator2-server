@@ -4,6 +4,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
+
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.EventRegister;
 import io.appium.uiautomator2.core.ReturningRunnable;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -12,7 +14,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
@@ -59,10 +60,9 @@ public class Swipe extends SafeRequestHandler {
             }
         });
         if (isSwipePerformed) {
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
+            return new AppiumResponse(getSessionId(request));
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
-                "Swipe did not complete successfully");
+        throw new InvalidElementStateException("Swipe did not complete successfully");
     }
 
     public class SwipeArguments {

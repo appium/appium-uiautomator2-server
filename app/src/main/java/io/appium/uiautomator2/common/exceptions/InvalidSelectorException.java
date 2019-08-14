@@ -16,9 +16,8 @@
 
 package io.appium.uiautomator2.common.exceptions;
 
-/**
- * If an invalid element selector is encountered
- */
+import io.netty.handler.codec.http.HttpResponseStatus;
+
 public class InvalidSelectorException extends UiAutomator2Exception {
     public InvalidSelectorException(String message) {
         super(message);
@@ -30,5 +29,15 @@ public class InvalidSelectorException extends UiAutomator2Exception {
 
     public InvalidSelectorException(String message, Throwable t) {
         super(message, t);
+    }
+
+    @Override
+    public String getError() {
+        return "invalid selector";
+    }
+
+    @Override
+    public HttpResponseStatus getHttpStatus() {
+        return HttpResponseStatus.BAD_REQUEST;
     }
 }

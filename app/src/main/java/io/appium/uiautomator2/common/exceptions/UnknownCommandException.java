@@ -18,26 +18,22 @@ package io.appium.uiautomator2.common.exceptions;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 
-public class UiAutomator2Exception extends RuntimeException {
-    public static final HttpResponseStatus DEFAULT_ERROR_STATUS = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-
-    public UiAutomator2Exception(Throwable t) {
-        super("An unknown server-side error occurred while processing the command", t);
+public class UnknownCommandException extends UiAutomator2Exception {
+    public UnknownCommandException() {
+        super("The requested resource could not be found, or a request was received using an HTTP method that is not supported by the mapped resource");
     }
 
-    public UiAutomator2Exception(String message) {
+    public UnknownCommandException(String message) {
         super(message);
     }
 
-    public UiAutomator2Exception(String message, Throwable t) {
-        super(message, t);
-    }
-
+    @Override
     public String getError() {
-        return "unknown error";
+        return "unknown command";
     }
 
+    @Override
     public HttpResponseStatus getHttpStatus() {
-        return DEFAULT_ERROR_STATUS;
+        return HttpResponseStatus.NOT_FOUND;
     }
 }

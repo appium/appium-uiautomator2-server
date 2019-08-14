@@ -25,7 +25,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AccessibilityScrollData;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.server.WDStatus;
 
 public class GetSessionDetails extends SafeRequestHandler {
     public GetSessionDetails(String mappedUri) {
@@ -42,6 +41,6 @@ public class GetSessionDetails extends SafeRequestHandler {
                 result.put("lastScrollData", new JSONObject(scrollData.getAsMap()));
             }
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, result);
+        return new AppiumResponse(getSessionId(request), result);
     }
 }

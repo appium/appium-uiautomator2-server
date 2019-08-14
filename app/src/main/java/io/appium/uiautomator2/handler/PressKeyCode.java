@@ -23,12 +23,12 @@ import android.view.KeyEvent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.InteractionController;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -66,10 +66,10 @@ public class PressKeyCode extends SafeRequestHandler {
                             KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
         }
         if (!isSuccessful) {
-            return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR, String.format(
+            throw new InvalidElementStateException(String.format(
                     "Cannot generate key press event for key code %s", keyCode));
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
+        return new AppiumResponse(getSessionId(request));
     }
 
 }

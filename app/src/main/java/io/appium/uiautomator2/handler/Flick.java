@@ -4,13 +4,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
+
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.server.WDStatus;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
@@ -36,7 +38,7 @@ public class Flick extends SafeRequestHandler {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             AndroidElement element = session.getKnownElements().getElementFromCache(id);
             if (element == null) {
-                return new AppiumResponse(getSessionId(request), WDStatus.NO_SUCH_ELEMENT);
+                throw new ElementNotFoundException();
             }
             start = element.getAbsolutePosition(start);
             final Integer xoffset = Integer.parseInt(payload.getString("xoffset"));
@@ -66,10 +68,9 @@ public class Flick extends SafeRequestHandler {
                 end.x.intValue(), end.y.intValue(), steps.intValue());
 
         if (res) {
-            return new AppiumResponse(getSessionId(request), WDStatus.SUCCESS, true);
+            return new AppiumResponse(getSessionId(request), null);
         }
-        return new AppiumResponse(getSessionId(request), WDStatus.UNKNOWN_ERROR,
-                "Flick did not complete successfully");
+        throw new InvalidElementStateException("Flick did not complete successfully");
     }
 
     private Point calculateEndPoint(final Point start, final Integer xSpeed,
