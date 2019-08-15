@@ -73,7 +73,7 @@ public abstract class EventRegister {
 
     public static Boolean runAndRegisterScrollEvents(ReturningRunnable<Boolean> runnable) {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        int timeout = (int) session.getCapability(EVENT_COOLDOWN_CAP, EVENT_COOLDOWN_MS);
+        int timeout = session.getCapability(EVENT_COOLDOWN_CAP, EVENT_COOLDOWN_MS);
 
         return runAndRegisterScrollEvents(runnable, timeout);
     }

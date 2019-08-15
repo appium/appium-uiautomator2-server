@@ -93,15 +93,15 @@ public class UiScrollableParser extends UiExpressionParser<UiScrollable, UiSelec
             final Object firstArg = methodWithArguments.second.get(0);
             switch (methodName) {
                 case "scrollTextIntoView":
-                    uiSelector = new UiSelector().text(String.class.cast(firstArg));
+                    uiSelector = new UiSelector().text((String) firstArg);
                     break;
                 case "scrollDescriptionIntoView":
-                    uiSelector = new UiSelector().description(String.class.cast(firstArg));
+                    uiSelector = new UiSelector().description((String) firstArg);
                     break;
                 default:
                     for (final Object arg : methodWithArguments.second) {
                         if (arg instanceof UiSelector) {
-                            uiSelector = UiSelector.class.cast(arg);
+                            uiSelector = (UiSelector) arg;
                             break;
                         }
                     }

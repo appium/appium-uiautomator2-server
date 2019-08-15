@@ -28,14 +28,13 @@ public class AndroidServer {
         Logger.info("AndroidServer created on port " + port);
     }
 
-    protected void init() {
+    private void init() {
         webServer.addHandler(new AppiumServlet());
     }
 
     public void start() {
         webServer.start();
     }
-
 
     public void stop() {
         webServer.stop();

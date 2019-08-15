@@ -72,7 +72,7 @@ public class InteractionController {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         final TrackScrollEvents trackScrollEventsSetting =
                 (TrackScrollEvents) Settings.TRACK_SCROLL_EVENTS.getSetting();
-        Boolean trackScrollEvents = (Boolean) trackScrollEventsSetting.getValue();
+        Boolean trackScrollEvents = trackScrollEventsSetting.getValue();
         Logger.error(String.format("Setting '%s' is set to %b",
                 trackScrollEventsSetting.getName(), trackScrollEvents));
 
@@ -120,7 +120,7 @@ public class InteractionController {
         return shouldTrackScrollEvents()
             ? EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
                 @Override
-                public void run() {;
+                public void run() {
                     setResult(doTouchMove(x, y));
                 }
             })

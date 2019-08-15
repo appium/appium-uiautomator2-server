@@ -54,7 +54,7 @@ public abstract class AbstractSetting<T> implements ISetting {
     private T convertValue(Object value) {
         try {
             if (valueType == Long.class && value instanceof Number) {
-                return valueType.cast(Number.class.cast(value).longValue());
+                return valueType.cast(((Number) value).longValue());
             }
             return valueType.cast(value);
         } catch (ClassCastException e) {
