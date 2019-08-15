@@ -52,6 +52,7 @@ public class AppiumResponse {
     public void renderTo(IHttpResponse response) {
         response.setContentType("application/json");
         response.setEncoding(StandardCharsets.UTF_8);
+        response.setStatus(getHttpStatus().code());
         JSONObject o = new JSONObject();
         try {
             o.put("sessionId", formatNull(sessionId));
