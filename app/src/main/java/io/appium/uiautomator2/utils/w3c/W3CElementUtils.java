@@ -21,14 +21,17 @@ import io.appium.uiautomator2.model.AndroidElement;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
+
 public class W3CElementUtils {
     private static final String JSONWP_ELEMENT_ID_KEY_NAME = "ELEMENT";
     private static final String W3C_ELEMENT_ID_KEY_NAME = "element-6066-11e4-a52e-4f735466cecf";
 
     @Nullable
     public static String extractElementId(JSONObject obj) {
-        while (obj.keys().hasNext()) {
-            String key = obj.keys().next();
+        Iterator<String> keysIterator = obj.keys();
+        while (keysIterator.hasNext()) {
+            String key = keysIterator.next();
             if ((key.equalsIgnoreCase(JSONWP_ELEMENT_ID_KEY_NAME) ||
                     key.equalsIgnoreCase(W3C_ELEMENT_ID_KEY_NAME))
                     && (obj.opt(key) instanceof String)) {

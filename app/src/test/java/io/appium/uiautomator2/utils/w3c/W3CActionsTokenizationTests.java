@@ -25,13 +25,12 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings("ConstantConditions")
 public class W3CActionsTokenizationTests {
     private static final ActionsPreprocessor actionsPreprocessor = new ActionsPreprocessor();
     private static final ActionsTokenizer actionsTokenizer = new ActionsTokenizer();

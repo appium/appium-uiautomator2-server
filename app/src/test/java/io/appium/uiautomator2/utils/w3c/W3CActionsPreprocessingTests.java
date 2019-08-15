@@ -23,10 +23,10 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 public class W3CActionsPreprocessingTests {
     private static final ActionsPreprocessor actionsPreprocessor = new ActionsPreprocessor();
