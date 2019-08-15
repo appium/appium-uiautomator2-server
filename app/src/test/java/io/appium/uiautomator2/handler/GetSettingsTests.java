@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
+import io.appium.uiautomator2.handler.request.BaseRequestHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class GetSettingsTests {
 
     @Test
     public void shouldBeAbleToUpdateSetting() throws JSONException {
-        JSONObject getSessionPayload = getSettings.toJSON(req);
+        JSONObject getSessionPayload = BaseRequestHandler.toJSON(req);
 
         assertEquals(JSONObject.class, getSessionPayload.getClass());
     }

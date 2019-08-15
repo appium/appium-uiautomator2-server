@@ -18,11 +18,12 @@ import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
 public class AppiumResponse {
     private final Object value;
     private final String sessionId;
-    private HttpResponseStatus status = HttpResponseStatus.OK;
+    private HttpResponseStatus httpStatus = HttpResponseStatus.OK;
 
     public AppiumResponse(String sessionId, @Nullable Object value) {
         this.sessionId = sessionId;
         this.value = value;
+        syncHttpStatus();
     }
 
     public AppiumResponse(String sessionId) {
@@ -40,22 +41,25 @@ public class AppiumResponse {
         return result;
     }
 
+    private void syncHttpStatus() {
+        if (value instanceof Throwable) {
+            httpStatus = (value instanceof UiAutomator2Exception)
+                    ? ((UiAutomator2Exception) value).getHttpStatus()
+                    : UiAutomator2Exception.DEFAULT_ERROR_STATUS;
+        }
+    }
+
     public void renderTo(IHttpResponse response) {
         response.setContentType("application/json");
         response.setEncoding(StandardCharsets.UTF_8);
-        final boolean isError = value instanceof Throwable;
         JSONObject o = new JSONObject();
         try {
             o.put("sessionId", formatNull(sessionId));
-            o.put("value", isError ? formatException((Throwable) value) : formatNull(value));
+            o.put("value",
+                    (value instanceof Throwable) ? formatException((Throwable) value) : formatNull(value));
             final String responseString = o.toString();
             Logger.info(String.format("AppiumResponse: %s", responseString));
             response.setContent(responseString);
-            if (isError) {
-                response.setStatus((value instanceof UiAutomator2Exception)
-                        ? ((UiAutomator2Exception) value).getHttpStatus().code()
-                        : UiAutomator2Exception.DEFAULT_ERROR_STATUS.code());
-            }
         } catch (JSONException e) {
             Logger.error("Unable to create JSON Object:", e);
             response.setContent("{}");
@@ -63,8 +67,8 @@ public class AppiumResponse {
         }
     }
 
-    public HttpResponseStatus getStatus() {
-        return status;
+    public HttpResponseStatus getHttpStatus() {
+        return httpStatus;
     }
 
     public Object getValue() {

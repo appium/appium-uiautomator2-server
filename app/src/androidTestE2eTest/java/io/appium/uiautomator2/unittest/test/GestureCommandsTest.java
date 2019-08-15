@@ -83,8 +83,7 @@ public class GestureCommandsTest extends BaseTest {
         dragBody.put("steps", 1000);
 
         response = drag(dragBody);
-        boolean result = response.getValue();
-        assertTrue("Drag status from src to dest should be true. ", result);
+        assertTrue(response.isSuccessful());
 
         response = findElement(By.id("io.appium.android.apis:id/drag_result_text"));
         response = getText(response.getElementId());
@@ -104,8 +103,7 @@ public class GestureCommandsTest extends BaseTest {
         assertTrue("element location y coordinate is zero(0), which is not expected", y > 0);
 
         response = tap(x + 5, y + 5);
-        Boolean tapStatus = response.getValue();
-        assertTrue("Unable to tap on location: " + x + " " + y, tapStatus);
+        assertTrue(response.isSuccessful());
         response = waitForElementInvisibility(elementId);
         assertFalse(by + " found, which not expected", response.isSuccessful());
     }
@@ -162,7 +160,7 @@ public class GestureCommandsTest extends BaseTest {
         actions.put(action1).put(action2);
 
         response = multiPointerGesture((new JSONObject().put("actions", actions)));
-        assertEquals("OK", response.getValue());
+        assertTrue(response.isSuccessful());
 
         response = findElement(By.id("io.appium.android.apis:id/chronometer"));
         response = getText(response.getElementId());

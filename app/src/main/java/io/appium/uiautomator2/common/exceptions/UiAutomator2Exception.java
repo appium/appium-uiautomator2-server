@@ -21,8 +21,12 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 public class UiAutomator2Exception extends RuntimeException {
     public static final HttpResponseStatus DEFAULT_ERROR_STATUS = HttpResponseStatus.INTERNAL_SERVER_ERROR;
 
+    public UiAutomator2Exception() {
+        super("An unknown server-side error occurred while processing the command");
+    }
+
     public UiAutomator2Exception(Throwable t) {
-        super("An unknown server-side error occurred while processing the command", t);
+        super(t);
     }
 
     public UiAutomator2Exception(String message) {

@@ -21,7 +21,6 @@ import android.os.Build;
 import android.util.Base64;
 
 import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -266,20 +265,6 @@ public class DeviceCommandsTest extends BaseTest {
                 .put("z", 10);
         Response response = setRotation(rotateMap);
         assertFalse(response.isSuccessful());
-    }
-
-    /**
-     * Test to verify 500 HTTP Status code for unsuccessful request
-     */
-    @Test
-    public void verify500HTTPStatusCode() {
-        Response response = findElement(By.accessibilityId("invalid_ID"));
-        assertEquals("HTTP Status code for unsuccessful request should be '500'.",
-                500, response.code());
-        assertEquals(response.code(), HttpResponseStatus.NOT_FOUND.code());
-        assertTrue("AppiumResponse value for element not found should contain 'An element could " +
-                        "not be located'.",
-                ((String) response.getValue()).contains("An element could not be located"));
     }
 
     @Test
