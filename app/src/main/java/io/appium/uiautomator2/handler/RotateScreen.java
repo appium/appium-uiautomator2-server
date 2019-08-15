@@ -27,7 +27,7 @@ public class RotateScreen extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
-        JSONObject payload = getPayload(request);
+        JSONObject payload = toJSON(request);
         try {
             if (payload.has("orientation")) {
                 String orientation = payload.getString("orientation");

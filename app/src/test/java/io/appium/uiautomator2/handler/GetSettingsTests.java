@@ -39,7 +39,7 @@ public class GetSettingsTests {
 
     @Test
     public void shouldBeAbleToUpdateSetting() throws JSONException {
-        JSONObject getSessionPayload = getSettings.getPayload(req);
+        JSONObject getSessionPayload = getSettings.toJSON(req);
 
         assertEquals(JSONObject.class, getSessionPayload.getClass());
     }

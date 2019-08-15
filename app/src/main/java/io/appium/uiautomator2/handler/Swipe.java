@@ -33,7 +33,7 @@ public class Swipe extends SafeRequestHandler {
         final Point absEndPos;
         final boolean isSwipePerformed;
         final SwipeArguments swipeArgs;
-        JSONObject payload = getPayload(request);
+        JSONObject payload = toJSON(request);
         Logger.info("JSON Payload : ", payload.toString());
         swipeArgs = new SwipeArguments(request);
 
@@ -72,7 +72,7 @@ public class Swipe extends SafeRequestHandler {
         public AndroidElement element;
 
         public SwipeArguments(final IHttpRequest request) throws JSONException {
-            JSONObject payload = getPayload(request);
+            JSONObject payload = toJSON(request);
             if (payload.has("elementId")) {
                 Logger.info("Payload has elementId" + payload);
                 String id = payload.getString("elementId");

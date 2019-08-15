@@ -40,7 +40,7 @@ public class LongPressKeyCode extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
-        final JSONObject payload = getPayload(request);
+        final JSONObject payload = toJSON(request);
         final int keyCode = readInteger(payload, "keycode");
         Integer metaState = readInteger(payload, "metastate", false);
         metaState = metaState == null ? 0 : metaState;

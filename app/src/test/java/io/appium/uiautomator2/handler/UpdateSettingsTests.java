@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -86,7 +87,7 @@ public class UpdateSettingsTests {
 
     @Before
     public void setUp() throws JSONException {
-        AppiumUIA2Driver.getInstance().initializeSession(new HashMap<String, Object>());
+        AppiumUIA2Driver.getInstance().initializeSession(Collections.<String, Object>emptyMap());
         session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         HashMap<String, Object> payload = new HashMap<>();
         payload.put(SETTING_NAME, SETTING_VALUE);

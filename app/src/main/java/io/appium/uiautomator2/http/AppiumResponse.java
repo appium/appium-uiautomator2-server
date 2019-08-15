@@ -8,8 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.utils.Logger;
@@ -31,11 +29,11 @@ public class AppiumResponse {
         this(sessionId, null);
     }
 
-    private static Map<String, Object> formatException(Throwable error) {
+    private static JSONObject formatException(Throwable error) throws JSONException {
         UiAutomator2Exception err = (error instanceof UiAutomator2Exception)
                 ? (UiAutomator2Exception) error
                 : new UiAutomator2Exception(error);
-        Map<String, Object> result = new HashMap<>();
+        JSONObject result = new JSONObject();
         result.put("error", err.getError());
         result.put("message", err.getMessage());
         result.put("stacktrace", Log.getStackTraceString(error));

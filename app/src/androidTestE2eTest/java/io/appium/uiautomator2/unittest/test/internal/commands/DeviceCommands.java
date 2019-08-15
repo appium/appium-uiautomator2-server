@@ -131,8 +131,7 @@ public class DeviceCommands {
     }
 
     public static Response createSession() throws JSONException {
-        return Client.post(Config.HOST + "/wd/hub", "/session",
-                new JSONObject().put("desiredCapabilities", new JSONObject()));
+        return Client.post(Config.HOST + "/wd/hub", "/session", new JSONObject());
     }
 
     public static Response deleteSession() {

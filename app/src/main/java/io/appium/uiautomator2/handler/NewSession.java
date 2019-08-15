@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.handler;
 
+import io.appium.uiautomator2.common.exceptions.SessionNotCreatedException;
+import io.appium.uiautomator2.utils.w3c.W3CCapsUtils;
 import org.json.JSONException;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -24,6 +26,9 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.utils.Logger;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 public class NewSession extends SafeRequestHandler {
 
@@ -33,10 +38,15 @@ public class NewSession extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
-        String sessionID = AppiumUIA2Driver.getInstance()
-                .initializeSession(getPayload(request, "desiredCapabilities"));
-        NotificationListener.getInstance().start();
-        Logger.info("Session Created with SessionID:" + sessionID);
-        return new AppiumResponse(sessionID);
+        try {
+            JSONObject w3cCaps = toJSON(request);
+            Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(w3cCaps);
+            String sessionID = AppiumUIA2Driver.getInstance().initializeSession(parsedCaps);
+            NotificationListener.getInstance().start();
+            Logger.info(String.format("Created the new session with SessionID: %s",  sessionID));
+            return new AppiumResponse(sessionID);
+        } catch (Exception e) {
+            throw new SessionNotCreatedException(e);
+        }
     }
 }

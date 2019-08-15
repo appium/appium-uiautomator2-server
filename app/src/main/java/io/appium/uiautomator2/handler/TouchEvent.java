@@ -47,7 +47,7 @@ public abstract class TouchEvent extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
             UiObjectNotFoundException {
-        params = new JSONObject(getPayload(request).getString("params"));
+        params = new JSONObject(toJSON(request).getString("params"));
         final String elementId = W3CElementUtils.extractElementId(params);
         if (elementId != null && !(params.has("x") && params.has("y"))) {
             /*

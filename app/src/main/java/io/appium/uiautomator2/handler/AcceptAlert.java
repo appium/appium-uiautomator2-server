@@ -33,7 +33,7 @@ public class AcceptAlert extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.info("Accept alert command");
-        final JSONObject payload = getPayload(request);
+        final JSONObject payload = toJSON(request);
         final String buttonLabel = payload.has("buttonLabel")
                 ? payload.getString("buttonLabel") : null;
         AlertHelpers.handle(AlertHelpers.AlertAction.ACCEPT, buttonLabel);

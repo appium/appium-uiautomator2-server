@@ -1,5 +1,6 @@
 package io.appium.uiautomator2.handler;
 
+import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
@@ -67,12 +68,15 @@ public class ScrollToElement extends SafeRequestHandler {
             throw new InvalidArgumentException(errorMsg.toString());
         }
 
-        UiScrollable uiScrollable = new UiScrollable(elementUiObject.getSelector());
-        boolean elementIsFound = uiScrollable.scrollIntoView(scrollElementUiObject);
+        boolean elementIsFound = false;
+        if (elementUiObject != null) {
+            UiScrollable uiScrollable = new UiScrollable(elementUiObject.getSelector());
+            elementIsFound = uiScrollable.scrollIntoView(scrollElementUiObject);
+        }
         return new AppiumResponse(getSessionId(request), elementIsFound);
     }
 
-    private class UiScrollable extends androidx.test.uiautomator.UiScrollable {
+    private static class UiScrollable extends androidx.test.uiautomator.UiScrollable {
 
         /**
          * Constructor.
@@ -86,7 +90,11 @@ public class ScrollToElement extends SafeRequestHandler {
         }
 
         @Override
-        public boolean scrollIntoView(UiObject obj) throws UiObjectNotFoundException {
+        public boolean scrollIntoView(@Nullable UiObject obj) throws UiObjectNotFoundException {
+            if (obj == null) {
+                return false;
+            }
+
             if (obj.exists()) {
                 return true;
             }

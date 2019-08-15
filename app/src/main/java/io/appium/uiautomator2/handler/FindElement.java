@@ -57,7 +57,7 @@ public class FindElement extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
-        final JSONObject payload = getPayload(request);
+        final JSONObject payload = toJSON(request);
         final String method = payload.getString("strategy");
         final String selector = payload.getString("selector");
         final String contextId = payload.getString("context");

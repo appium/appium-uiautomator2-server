@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
+import java.util.Collections;
 
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
@@ -33,7 +33,7 @@ public class ElementResponseAttributesTest {
 
     @Before
     public void setup() {
-        AppiumUIA2Driver.getInstance().initializeSession(new HashMap<String, Object>());
+        AppiumUIA2Driver.getInstance().initializeSession(Collections.<String, Object>emptyMap());
         session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         elementResponseAttributes = new ElementResponseAttributes();
     }

@@ -33,7 +33,7 @@ public class Flick extends SafeRequestHandler {
         Point start = new Point(0.5, 0.5);
         Point end = new Point();
         double steps;
-        JSONObject payload = getPayload(request);
+        JSONObject payload = toJSON(request);
         final String elementId = W3CElementUtils.extractElementId(payload);
         if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();

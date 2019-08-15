@@ -23,7 +23,6 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -53,7 +52,7 @@ public class SendKeysToElement extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         Logger.info("send keys to element command");
-        JSONObject payload = getPayload(request);
+        JSONObject payload = toJSON(request);
         AndroidElement element;
         if (payload.has("elementId")) {
             String id = payload.getString("elementId");
@@ -64,12 +63,7 @@ public class SendKeysToElement extends SafeRequestHandler {
             }
         } else {
             //perform action on focused element
-            try {
-                element = findElement(focused(true));
-            } catch (ClassNotFoundException e) {
-                Logger.debug("Error in finding focused element: " + e);
-                throw new UiAutomator2Exception(e);
-            }
+            element = findElement(focused(true));
         }
         boolean replace = Boolean.parseBoolean(payload.getString("replace"));
         String text = payload.getString("text");

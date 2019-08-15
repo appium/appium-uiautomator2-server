@@ -33,7 +33,7 @@ public class DismissAlert extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.info("Dismiss alert command");
-        final JSONObject payload = getPayload(request);
+        final JSONObject payload = toJSON(request);
         final String buttonLabel = payload.has("buttonLabel")
                 ? payload.getString("buttonLabel") : null;
         AlertHelpers.handle(AlertHelpers.AlertAction.DISMISS, buttonLabel);

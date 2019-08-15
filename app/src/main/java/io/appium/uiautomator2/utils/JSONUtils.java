@@ -16,11 +16,18 @@
 
 package io.appium.uiautomator2.utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JSONUtils {
     @NonNull
@@ -56,5 +63,45 @@ public class JSONUtils {
                     name, objValue));
         }
         return null;
+    }
+
+    public static Map<String, Object> toMap(JSONObject obj) {
+        if (obj == null) {
+            return null;
+        }
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        Iterator<String> keysItr = obj.keys();
+        while (keysItr.hasNext()) {
+            String key = keysItr.next();
+            Object value = obj.opt(key);
+            if (value instanceof JSONObject) {
+                result.put(key, toMap((JSONObject) value));
+            } else if (value instanceof JSONArray) {
+                result.put(key, toList((JSONArray) value));
+            } else {
+                result.put(key, value);
+            }
+        }
+        return result;
+    }
+
+    public static List<Object> toList(JSONArray obj) {
+        if (obj == null) {
+            return null;
+        }
+
+        List<Object> result = new ArrayList<>();
+        for (int idx = 0; idx < obj.length(); ++idx) {
+            Object value = obj.opt(idx);
+            if (value instanceof JSONArray) {
+                result.add(toList((JSONArray) value));
+            } else if (value instanceof JSONObject) {
+                result.add(toMap((JSONObject) value));
+            } else {
+                result.add(value);
+            }
+        }
+        return result;
     }
 }

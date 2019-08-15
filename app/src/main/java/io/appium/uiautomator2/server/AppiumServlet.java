@@ -86,9 +86,9 @@ public class AppiumServlet implements IHttpServlet {
     public static final String ELEMENT_ID_NEXT_KEY = "elementId";
     public static final String COMMAND_NAME_KEY = "COMMAND_KEY";
     public static final String NAME_ID_KEY = "NAME_ID_KEY";
-    protected static ConcurrentMap<String, BaseRequestHandler> getHandler = new ConcurrentHashMap<>();
-    protected static ConcurrentMap<String, BaseRequestHandler> postHandler = new ConcurrentHashMap<>();
-    protected static ConcurrentMap<String, BaseRequestHandler> deleteHandler = new ConcurrentHashMap<>();
+    private static ConcurrentMap<String, BaseRequestHandler> getHandler = new ConcurrentHashMap<>();
+    private static ConcurrentMap<String, BaseRequestHandler> postHandler = new ConcurrentHashMap<>();
+    private static ConcurrentMap<String, BaseRequestHandler> deleteHandler = new ConcurrentHashMap<>();
     private ConcurrentMap<String, String[]> mapperUrlSectionsCache = new ConcurrentHashMap<>();
 
 

@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -49,7 +50,7 @@ public abstract class BaseRequestHandler {
         return (String) request.data().get(AppiumServlet.NAME_ID_KEY);
     }
 
-    public JSONObject getPayload(IHttpRequest request) throws JSONException {
+    public JSONObject toJSON(IHttpRequest request) throws JSONException {
         String json = request.body();
         Logger.debug("payload: " + json);
         if (json != null && !json.isEmpty()) {
@@ -59,13 +60,12 @@ public abstract class BaseRequestHandler {
     }
 
     public Map<String, Object> getPayload(IHttpRequest request, String jsonKey) throws JSONException {
-        JSONObject payload = getPayload(request);
+        JSONObject payload = toJSON(request);
         if (jsonKey != null) {
             payload = payload.getJSONObject(jsonKey);
         }
 
-        Map<String, Object> map = new HashMap<String, Object>();
-
+        Map<String, Object> map = new LinkedHashMap<>();
         Iterator<String> keysItr = payload.keys();
         while (keysItr.hasNext()) {
             String key = keysItr.next();

@@ -51,7 +51,7 @@ public class SetClipboard extends SafeRequestHandler {
         final String content;
         ClipDataType contentType = ClipDataType.PLAINTEXT;
         String label = null;
-        JSONObject payload = getPayload(request);
+        JSONObject payload = toJSON(request);
         try {
             content = fromBase64String(payload.getString("content"));
             if (payload.has("contentType")) {

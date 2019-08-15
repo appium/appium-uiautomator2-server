@@ -29,7 +29,7 @@ public class Drag extends SafeRequestHandler {
         // DragArguments is created on each execute which prevents leaking state
         // across executions.
         final DragArguments dragArgs = new DragArguments(request);
-        if (getPayload(request).has("elementId")) {
+        if (toJSON(request).has("elementId")) {
             return dragElement(dragArgs, request);
         }
         return drag(dragArgs, request);
@@ -97,7 +97,7 @@ public class Drag extends SafeRequestHandler {
 
         public DragArguments(final IHttpRequest request) throws JSONException {
 
-            JSONObject payload = getPayload(request);
+            JSONObject payload = toJSON(request);
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
 
             if (payload.has("elementId")) {

@@ -50,7 +50,7 @@ public class GetClipboard extends SafeRequestHandler {
         Logger.info("Get Clipboard command");
         ClipDataType contentType = ClipDataType.PLAINTEXT;
         try {
-            JSONObject payload = getPayload(request);
+            JSONObject payload = toJSON(request);
             if (payload.has("contentType")) {
                 contentType = ClipDataType.valueOf(payload
                         .getString("contentType")

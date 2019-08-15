@@ -74,7 +74,7 @@ public class W3CActions extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         try {
             final JSONArray actions = actionsPreprocessor.preprocess(
-                    (JSONArray) getPayload(request).get("actions")
+                    (JSONArray) toJSON(request).get("actions")
             );
 
             final ActionTokens actionTokens = actionsTokenizer.tokenize(actions);

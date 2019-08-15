@@ -42,7 +42,7 @@ public class PressKeyCode extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.info("Calling PressKeyCode... ");
-        final JSONObject payload = getPayload(request);
+        final JSONObject payload = toJSON(request);
         final int keyCode = readInteger(payload, "keycode");
         Integer metaState = readInteger(payload, "metastate", false);
         final Integer flags = readInteger(payload, "flags", false);

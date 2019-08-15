@@ -35,6 +35,6 @@ public class DeleteSession extends SafeRequestHandler {
         String sessionId = getSessionId(request);
         NotificationListener.getInstance().stop();
         ServerInstrumentation.getInstance().stopServer();
-        return new AppiumResponse(sessionId, null);
+        return new AppiumResponse(sessionId);
     }
 }

@@ -30,7 +30,7 @@ public class Click extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
-        JSONObject payload = getPayload(request);
+        JSONObject payload = toJSON(request);
         final String elementId = W3CElementUtils.extractElementId(payload);
         if (elementId != null) {
             Logger.info("Click element command");

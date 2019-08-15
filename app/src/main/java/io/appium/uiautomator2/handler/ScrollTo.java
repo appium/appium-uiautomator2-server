@@ -32,7 +32,7 @@ public class ScrollTo extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request)
         throws JSONException, UiObjectNotFoundException
     {
-        String json = getPayload(request).toString();
+        String json = toJSON(request).toString();
         String strategy  = "$.params.strategy";
         String selector  = "$.params.selector";
         String maxSwipes = "$.params.maxSwipes";

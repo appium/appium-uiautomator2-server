@@ -18,7 +18,7 @@ public class NetworkConnection extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
-        int requestedType = getPayload(request).getInt("type");
+        int requestedType = toJSON(request).getInt("type");
         NetworkConnectionEnum networkType = NetworkConnectionEnum.getNetwork(requestedType);
         switch (networkType) {
             case WIFI:
