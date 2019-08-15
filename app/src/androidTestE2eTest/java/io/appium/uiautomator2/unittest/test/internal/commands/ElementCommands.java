@@ -49,7 +49,6 @@ public class ElementCommands {
      */
     public static Response sendKeys(String elementId, String text) throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("elementId", elementId);
         jsonObject.put("text", text);
         jsonObject.put("replace", false);
         return Client.post("/element/" + elementId + "/value", jsonObject);

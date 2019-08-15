@@ -87,7 +87,7 @@ public class Drag extends SafeRequestHandler {
 
     }
 
-    private class DragArguments {
+    private static class DragArguments {
 
         public final Point start;
         public final Point end;

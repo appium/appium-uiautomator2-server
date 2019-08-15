@@ -16,13 +16,11 @@
 
 package io.appium.uiautomator2.handler.request;
 
+import androidx.annotation.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -42,15 +40,36 @@ public abstract class BaseRequestHandler {
         return mappedUri;
     }
 
-    public String getElementId(IHttpRequest request) {
-        return (String) request.data().get(AppiumServlet.ELEMENT_ID_KEY);
+    @Nullable
+    private static <T> T extractRequestValue(IHttpRequest request, String key,
+                                             @SuppressWarnings("SameParameterValue") Class<T> valueClass) {
+        Object result = request.data().get(key);
+        return result == null ? null : valueClass.cast(result);
     }
 
-    public String getNameAttribute(IHttpRequest request) {
-        return (String) request.data().get(AppiumServlet.NAME_ID_KEY);
+    @Nullable
+    public static String getElementId(IHttpRequest request) {
+        return extractRequestValue(request, AppiumServlet.ELEMENT_ID_KEY, String.class);
     }
 
-    public JSONObject toJSON(IHttpRequest request) throws JSONException {
+    protected static String[] getElementIds(IHttpRequest request) {
+        List<String> result = new ArrayList<>();
+        String firstElementId = getElementId(request);
+        result.add(firstElementId);
+        for (int elementIdx = AppiumServlet.SECOND_ELEMENT_IDX;
+             elementIdx < AppiumServlet.MAX_ELEMENTS + AppiumServlet.SECOND_ELEMENT_IDX; ++elementIdx) {
+            String elementId = extractRequestValue(request, AppiumServlet.ELEMENT_ID_KEY + elementIdx, String.class);
+            result.add(elementId);
+         }
+        return result.toArray(new String[0]);
+    }
+
+    @Nullable
+    protected static String getNameAttribute(IHttpRequest request) {
+        return extractRequestValue(request, AppiumServlet.NAME_ID_KEY, String.class);
+    }
+
+    public static JSONObject toJSON(IHttpRequest request) throws JSONException {
         String json = request.body();
         Logger.debug("payload: " + json);
         if (json != null && !json.isEmpty()) {
@@ -59,7 +78,7 @@ public abstract class BaseRequestHandler {
         return new JSONObject();
     }
 
-    public Map<String, Object> getPayload(IHttpRequest request, String jsonKey) throws JSONException {
+    public static Map<String, Object> getPayload(IHttpRequest request, String jsonKey) throws JSONException {
         JSONObject payload = toJSON(request);
         if (jsonKey != null) {
             payload = payload.getJSONObject(jsonKey);
@@ -75,14 +94,14 @@ public abstract class BaseRequestHandler {
         return map;
     }
 
-    public String getSessionId(IHttpRequest request) {
+    public static String getSessionId(IHttpRequest request) {
         return (String) request.data().get(AppiumServlet.SESSION_ID_KEY);
     }
 
+    @Nullable
     public abstract AppiumResponse handle(IHttpRequest request);
 
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
-            UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         return handle(request);
     }
 }

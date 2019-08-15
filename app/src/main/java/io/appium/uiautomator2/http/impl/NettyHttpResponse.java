@@ -3,7 +3,6 @@ package io.appium.uiautomator2.http.impl;
 import java.nio.charset.Charset;
 
 import io.appium.uiautomator2.http.IHttpResponse;
-import io.appium.uiautomator2.server.HttpStatusCode;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.CharsetUtil;
@@ -11,10 +10,10 @@ import io.netty.util.CharsetUtil;
 public class NettyHttpResponse implements IHttpResponse {
 
     private final FullHttpResponse response;
-    private final String CONTENT_TYPE = "Content-Type";
-    private final String CONTENT_ENCODING = "Content-Encoding";
-    private final String CONTENT_LENGTH = "Content-Length";
-    private final String LOCATION = "location";
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String CONTENT_ENCODING = "Content-Encoding";
+    private static final String CONTENT_LENGTH = "Content-Length";
+    private static final String LOCATION = "location";
     private boolean closed;
     private Charset charset = CharsetUtil.UTF_8;
 
@@ -46,13 +45,13 @@ public class NettyHttpResponse implements IHttpResponse {
     }
 
     public IHttpResponse sendRedirect(String to) {
-        setStatus(HttpStatusCode.MOVED_PERMANENTLY.getStatusCode());
+        setStatus(HttpResponseStatus.MOVED_PERMANENTLY.code());
         response.headers().add(LOCATION, to);
         return this;
     }
 
     public IHttpResponse sendTemporaryRedirect(String to) {
-        setStatus(HttpStatusCode.FOUND.getStatusCode());
+        setStatus(HttpResponseStatus.FOUND.code());
         response.headers().add(LOCATION, to);
         return this;
     }

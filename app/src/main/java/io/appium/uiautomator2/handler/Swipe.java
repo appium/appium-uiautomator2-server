@@ -65,7 +65,7 @@ public class Swipe extends SafeRequestHandler {
         throw new InvalidElementStateException("Swipe did not complete successfully");
     }
 
-    public class SwipeArguments {
+    public static class SwipeArguments {
         public final Point start;
         public final Point end;
         public final Integer steps;

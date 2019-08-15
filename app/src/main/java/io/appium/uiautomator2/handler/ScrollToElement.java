@@ -13,7 +13,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.server.AppiumServlet;
 import io.appium.uiautomator2.utils.Logger;
 
 public class ScrollToElement extends SafeRequestHandler {
@@ -22,25 +21,20 @@ public class ScrollToElement extends SafeRequestHandler {
         super(mappedUri);
     }
 
-    private static String getElementNextId(IHttpRequest request) {
-        return (String) request.data().get(AppiumServlet.ELEMENT_ID_NEXT_KEY);
-    }
-
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("Scroll into view command");
-        String id = getElementId(request);
-        String scrollToId = getElementNextId(request);
+        String[] elementIds = getElementIds(request);
         StringBuilder errorMsg = new StringBuilder();
         UiObject elementUiObject = null;
         UiObject scrollElementUiObject = null;
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
 
-        AndroidElement element = session.getKnownElements().getElementFromCache(id);
+        AndroidElement element = session.getKnownElements().getElementFromCache(elementIds[0]);
         if (element == null) {
             throw new ElementNotFoundException();
         }
-        AndroidElement scrollToElement = session.getKnownElements().getElementFromCache(scrollToId);
+        AndroidElement scrollToElement = session.getKnownElements().getElementFromCache(elementIds[1]);
         if (scrollToElement == null) {
             throw new ElementNotFoundException();
         }

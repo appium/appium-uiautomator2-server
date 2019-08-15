@@ -15,8 +15,8 @@
  */
 package io.appium.uiautomator2.unittest.test.internal;
 
-import io.appium.uiautomator2.server.HttpStatusCode;
 import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,7 +35,7 @@ public class Response {
     }
 
     public boolean isSuccessful() {
-        return code == HttpStatusCode.OK.getStatusCode();
+        return code == HttpResponseStatus.OK.code();
     }
 
     public String getElementId() {

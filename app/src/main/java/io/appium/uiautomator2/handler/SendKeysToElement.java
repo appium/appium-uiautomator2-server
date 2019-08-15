@@ -52,12 +52,11 @@ public class SendKeysToElement extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         Logger.info("send keys to element command");
-        JSONObject payload = toJSON(request);
+        String elementId = getElementId(request);
         AndroidElement element;
-        if (payload.has("elementId")) {
-            String id = payload.getString("elementId");
+        if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            element = session.getKnownElements().getElementFromCache(id);
+            element = session.getKnownElements().getElementFromCache(elementId);
             if (element == null) {
                 throw new ElementNotFoundException();
             }
@@ -65,6 +64,7 @@ public class SendKeysToElement extends SafeRequestHandler {
             //perform action on focused element
             element = findElement(focused(true));
         }
+        JSONObject payload = toJSON(request);
         boolean replace = Boolean.parseBoolean(payload.getString("replace"));
         String text = payload.getString("text");
 

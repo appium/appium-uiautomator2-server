@@ -1,8 +1,5 @@
 package io.appium.uiautomator2.handler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import java.util.NoSuchElementException;
@@ -24,15 +21,13 @@ public class Clear extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
-            UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("Clear element command");
-        JSONObject payload = toJSON(request);
         AndroidElement element;
-        if (payload.has("elementId")) {
-            String id = payload.getString("elementId");
+        String elementId = getElementId(request);
+        if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            element = session.getKnownElements().getElementFromCache(id);
+            element = session.getKnownElements().getElementFromCache(elementId);
             if (element == null) {
                 throw new NoSuchElementException();
             }
