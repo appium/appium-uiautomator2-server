@@ -24,7 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +55,7 @@ public class W3CCapsUtils {
     }
 
     private static Map<String, Object> mergeCaps(Map<String, Object> primary, Map<String, Object> secondary) {
-        Map<String, Object> result = new HashMap<>(primary);
+        Map<String, Object> result = new LinkedHashMap<>(primary);
         for (Map.Entry<String, Object> entry : secondary.entrySet()) {
             if (result.containsKey(entry.getKey())) {
                 throw new InvalidArgumentException(String.format(
@@ -69,7 +69,7 @@ public class W3CCapsUtils {
 
     private static Map<String, Object> stripPrefixes(Map<String, Object> caps) {
         final String prefix = APPIUM_PREFIX + ":";
-        Map<String, Object> filteredCaps = new HashMap<>();
+        Map<String, Object> filteredCaps = new LinkedHashMap<>();
         List<String> badPrefixedCaps = new ArrayList<>();
         for (Map.Entry<String, Object> entry : caps.entrySet()) {
             if (!entry.getKey().startsWith(prefix)) {

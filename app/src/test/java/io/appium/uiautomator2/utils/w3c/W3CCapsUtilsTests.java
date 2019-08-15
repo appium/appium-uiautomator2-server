@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -60,6 +61,27 @@ public class W3CCapsUtilsTests {
         Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(caps);
         assertEquals(parsedCaps.get("activity"), "io.appium.activity");
         assertEquals(parsedCaps.get("package"), "io.appium");
+    }
+
+    @Test
+    public void verifyValidW3CCapsParsingWithUnknownPrefixes() throws JSONException {
+        JSONArray firstMatch = new JSONArray();
+        JSONObject firstMatchEntry = new JSONObject("{" +
+                "\"appium:activity\": \"io.appium.activity\"," +
+                "\"appium:package\": \"io.appium\"," +
+                "\"goog:chromeOptions\": {\"args\" :[\"--disable-popup-blocking\"]}," +
+                "}");
+        firstMatch.put(firstMatchEntry);
+        JSONObject alwaysMatch = new JSONObject();
+        JSONObject caps = new JSONObject();
+        caps.put(W3CCapsUtils.FIRST_MATCH_KEY, firstMatch);
+        caps.put(W3CCapsUtils.ALWAYS_MATCH_KEY, alwaysMatch);
+        Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(caps);
+        assertEquals(parsedCaps.get("activity"), "io.appium.activity");
+        assertEquals(parsedCaps.get("package"), "io.appium");
+        //noinspection unchecked,ConstantConditions
+        assertEquals(((List<String>) ((Map<String, Object>) parsedCaps.get("goog:chromeOptions")).get("args")).get(0),
+                "--disable-popup-blocking");
     }
 
     @Test
