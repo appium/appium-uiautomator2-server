@@ -51,7 +51,10 @@ public class NewSession extends SafeRequestHandler {
             String sessionID = AppiumUIA2Driver.getInstance().initializeSession(parsedCaps);
             NotificationListener.getInstance().start();
             Logger.info(String.format("Created the new session with SessionID: %s",  sessionID));
-            return new AppiumResponse(sessionID);
+            JSONObject result = new JSONObject();
+            result.put("sessionId", sessionID);
+            result.put("capabilities", capabilities);
+            return new AppiumResponse(sessionID, result);
         } catch (Exception e) {
             throw new SessionNotCreatedException(e);
         }
