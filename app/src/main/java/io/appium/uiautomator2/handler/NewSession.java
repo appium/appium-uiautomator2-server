@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.common.exceptions.SessionNotCreatedException;
 import io.appium.uiautomator2.utils.w3c.W3CCapsUtils;
 import org.json.JSONException;
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 public class NewSession extends SafeRequestHandler {
+    private static final String CAPABILITIES_KEY = "capabilities";
 
     public NewSession(String mappedUri) {
         super(mappedUri);
@@ -40,7 +42,13 @@ public class NewSession extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         try {
             JSONObject w3cCaps = toJSON(request);
-            Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(w3cCaps);
+            Object capabilities = w3cCaps.opt(CAPABILITIES_KEY);
+            if (!(capabilities instanceof JSONObject)) {
+                throw new InvalidArgumentException(String.format(
+                        "'%s' are mandatory for session creation", CAPABILITIES_KEY));
+            }
+            Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(
+                    w3cCaps.getJSONObject(CAPABILITIES_KEY));
             String sessionID = AppiumUIA2Driver.getInstance().initializeSession(parsedCaps);
             NotificationListener.getInstance().start();
             Logger.info(String.format("Created the new session with SessionID: %s",  sessionID));
