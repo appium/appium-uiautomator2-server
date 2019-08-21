@@ -47,8 +47,7 @@ public class NewSession extends SafeRequestHandler {
                 throw new InvalidArgumentException(String.format(
                         "'%s' are mandatory for session creation", CAPABILITIES_KEY));
             }
-            Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(
-                    w3cCaps.getJSONObject(CAPABILITIES_KEY));
+            Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities((JSONObject) capabilities);
             String sessionID = AppiumUIA2Driver.getInstance().initializeSession(parsedCaps);
             NotificationListener.getInstance().start();
             Logger.info(String.format("Created the new session with SessionID: %s",  sessionID));
