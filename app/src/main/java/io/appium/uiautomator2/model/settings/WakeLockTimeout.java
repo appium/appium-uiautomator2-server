@@ -18,26 +18,26 @@ package io.appium.uiautomator2.model.settings;
 
 import io.appium.uiautomator2.server.ServerInstrumentation;
 
-public class AcquireWakeLock extends AbstractSetting<Boolean> {
+public class WakeLockTimeout extends AbstractSetting<Long> {
 
-    private static final String SETTING_NAME = "acquireWakeLock";
+    private static final String SETTING_NAME = "WakeLockTimeout";
 
-    public AcquireWakeLock() {
-        super(Boolean.class, SETTING_NAME);
+    public WakeLockTimeout() {
+        super(Long.class, SETTING_NAME);
     }
 
     @Override
-    public Boolean getValue() {
-        return ServerInstrumentation.getInstance().isWakeLockAcquired();
+    public Long getValue() {
+        return ServerInstrumentation.getInstance().getWakeLockTimeout();
     }
 
     @Override
-    protected void apply(Boolean value) {
+    protected void apply(Long value) {
         ServerInstrumentation si = ServerInstrumentation.getInstance();
-        if (si.isWakeLockAcquired()) {
-            si.releaseWakeLock();
+        if (value > 0) {
+            si.acquireWakeLock(value);
         } else {
-            si.acquireWakeLock();
+            si.releaseWakeLock();
         }
     }
 }
