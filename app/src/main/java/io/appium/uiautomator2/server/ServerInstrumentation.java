@@ -48,7 +48,7 @@ public class ServerInstrumentation {
     private PowerManager.WakeLock wakeLock;
     private boolean isServerStopped;
 
-    public ServerInstrumentation(Context context, int serverPort) {
+    private ServerInstrumentation(Context context, int serverPort) {
         if (!isValidPort(serverPort)) {
             throw new UiAutomator2Exception(String.format(
                     "The port is out of valid range [%s;%s]: %s", MIN_PORT, MAX_PORT, serverPort));
@@ -64,7 +64,7 @@ public class ServerInstrumentation {
         return instance;
     }
 
-    private void releaseWakeLock() {
+    public void releaseWakeLock() {
         if (wakeLock == null) {
             return;
         }
@@ -75,7 +75,11 @@ public class ServerInstrumentation {
         wakeLock = null;
     }
 
-    private void acquireWakeLock() {
+    public boolean isWakeLockAcquired() {
+        return wakeLock != null && wakeLock.isHeld();
+    }
+
+    public void acquireWakeLock() {
         releaseWakeLock();
 
         // Get a wake lock to stop the cpu going to sleep

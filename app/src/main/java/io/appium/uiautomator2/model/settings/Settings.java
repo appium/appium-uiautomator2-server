@@ -32,7 +32,8 @@ public enum Settings {
     WAIT_FOR_SELECTOR_TIMEOUT(new WaitForSelectorTimeout()),
     NORMALIZE_TAG_NAMES(new NormalizeTagNames()),
     SHUTDOWN_ON_POWER_DISCONNECT(new ShutdownOnPowerDisconnect()),
-    TRACK_SCROLL_EVENTS(new TrackScrollEvents());
+    TRACK_SCROLL_EVENTS(new TrackScrollEvents()),
+    ACQUIRE_WAKE_LOCK(new AcquireWakeLock());
 
     private final ISetting setting;
 
