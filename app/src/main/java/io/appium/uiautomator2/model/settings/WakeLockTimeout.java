@@ -33,11 +33,6 @@ public class WakeLockTimeout extends AbstractSetting<Long> {
 
     @Override
     protected void apply(Long value) {
-        ServerInstrumentation si = ServerInstrumentation.getInstance();
-        if (value > 0) {
-            si.acquireWakeLock(value);
-        } else {
-            si.releaseWakeLock();
-        }
+        ServerInstrumentation.getInstance().acquireWakeLock(value);
     }
 }

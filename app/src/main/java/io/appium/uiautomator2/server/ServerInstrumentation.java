@@ -66,7 +66,7 @@ public class ServerInstrumentation {
         return instance;
     }
 
-    public void releaseWakeLock() {
+    private void releaseWakeLock() {
         if (wakeLock == null) {
             return;
         }
@@ -87,6 +87,10 @@ public class ServerInstrumentation {
 
     public void acquireWakeLock(long msTimeout) {
         releaseWakeLock();
+
+        if (msTimeout <= 0) {
+            return;
+        }
 
         // Get a wake lock to stop the cpu going to sleep
         //noinspection deprecation
