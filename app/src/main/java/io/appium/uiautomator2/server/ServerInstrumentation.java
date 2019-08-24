@@ -67,6 +67,10 @@ public class ServerInstrumentation {
     }
 
     private void releaseWakeLock() {
+        Logger.debug(String.format(
+                "Got request to release the wake lock (current value %s, timeout %s)",
+                wakeLock, wakeLockTimeoutMs));
+
         if (wakeLock == null) {
             return;
         }
@@ -86,6 +90,9 @@ public class ServerInstrumentation {
     }
 
     public void acquireWakeLock(long msTimeout) {
+        Logger.debug(String.format(
+                "Got request to acquire a new wake lock with %sms timeout", msTimeout));
+
         releaseWakeLock();
 
         if (msTimeout <= 0) {
@@ -100,6 +107,8 @@ public class ServerInstrumentation {
             wakeLockAcquireTimestampMs = SystemClock.elapsedRealtime();
             wakeLockTimeoutMs = msTimeout;
             getUiDevice().wakeUp();
+            Logger.debug(String.format(
+                    "Successfully acquired the wake lock with %sms timeout", msTimeout));
         } catch (Exception e) {
             if (wakeLock.isHeld()) {
                 Logger.error("Error while waking up the device", e);
