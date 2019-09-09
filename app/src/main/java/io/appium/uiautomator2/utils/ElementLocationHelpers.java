@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
+import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 import io.appium.uiautomator2.model.AndroidElement;
@@ -29,6 +30,7 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
 
 import static io.appium.uiautomator2.core.AccessibilityNodeInfoGetter.fromUiObject;
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class ElementLocationHelpers {
     /**
@@ -49,6 +51,14 @@ public class ElementLocationHelpers {
     private static final Pattern resourceIdRegex = Pattern
             .compile("^[a-zA-Z_][a-zA-Z0-9._]*:[^/]+/[\\S]+$");
 
+    @Nullable
+    private static String getPackageName() {
+        String pkg = AppiumUIA2Driver.getInstance()
+                .getSessionOrThrow()
+                .getCapability("appPackage", "");
+        return isBlank(pkg) ? null : pkg;
+    }
+
     public static String rewriteIdLocator(By.ById by) {
         String locator = by.getElementLocator();
 
@@ -57,10 +67,15 @@ public class ElementLocationHelpers {
             // transform "textToBeChanged" into:
             // com.example.android.testing.espresso.BasicSample:id/textToBeChanged
             // it's prefixed with the app package.
-            locator = String.format("%s:id/%s", AppiumUIA2Driver
-                    .getInstance()
-                    .getSessionOrThrow()
-                    .getCapability("appPackage"), by.getElementLocator());
+            String packageName = getPackageName();
+            if (packageName == null) {
+                throw new UiAutomator2Exception(String.format(
+                        "Cannot rewrite element locator '%s' to its complete form, because " +
+                                "the current application package name is unknown. Consider " +
+                                "providing the app package name or changing the locator to " +
+                                "'<package_name>:id/%s' format.", by.getElementLocator(), by.getElementLocator()));
+            }
+            locator = String.format("%s:id/%s", packageName, locator);
             Logger.debug("Updated findElement locator strategy: " + locator);
         }
         return locator;

@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.core.InteractionController;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.utils.Logger;
@@ -102,6 +103,12 @@ public class ActionsExecutor {
         final W3CKeyCode w3CKeyCode = W3CKeyCode.fromCodePoint(keyCode);
         if (w3CKeyCode == null) {
             final KeyEvent[] events = keyCharacterMap.getEvents(Character.toChars(keyCode));
+            if (events == null) {
+                throw new InvalidArgumentException(String.format(
+                        "KeyCharacterMap.getEvents is unable to synthesize KeyEvent sequence out " +
+                        "of '%s' key code. Consider applying a patch to UiAutomator2 server code or " +
+                        "try to synthesize the necessary key event(s) for it manually", keyCode));
+            }
             for (KeyEvent event : events) {
                 if (event.getAction() == keyAction) {
                     final long eventTime = SystemClock.uptimeMillis();
