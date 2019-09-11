@@ -41,6 +41,7 @@ import java.io.InputStream;
 import java.util.concurrent.Semaphore;
 
 import androidx.annotation.Nullable;
+
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
@@ -52,7 +53,7 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
 import static io.appium.uiautomator2.model.UiAutomationElement.rebuildForNewRoot;
-import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.getWindowRoots;
 import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
 import static io.appium.uiautomator2.utils.XMLHelpers.toSafeString;
 import static net.gcardone.junidecode.Junidecode.unidecode;
@@ -166,8 +167,8 @@ public class AccessibilityNodeInfoDumper {
             serializer.startDocument(XML_ENCODING, true);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             final UiElement<?, ?> xpathRoot = root == null
-                    ? rebuildForNewRoot(currentActiveWindowRoot(), NotificationListener.getInstance().getToastMessage())
-                    : rebuildForNewRoot(root, null);
+                    ? rebuildForNewRoot(getWindowRoots(), NotificationListener.getInstance().getToastMessage())
+                    : rebuildForNewRoot(new AccessibilityNodeInfo[]{root}, null);
             serializeUiElement(xpathRoot, 0);
             serializer.endDocument();
             Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",

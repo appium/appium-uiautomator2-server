@@ -27,11 +27,13 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+
+import static io.appium.uiautomator2.model.settings.Settings.ENABLE_MULTI_WINDOWS;
 
 public class AXWindowHelpers {
     public static final long AX_ROOT_RETRIEVAL_TIMEOUT = 10000;
-    private static final boolean MULTI_WINDOW = false;
     private static AccessibilityNodeInfo currentActiveWindowRoot = null;
 
     /**
@@ -85,13 +87,20 @@ public class AXWindowHelpers {
      */
     public static AccessibilityNodeInfo[] getWindowRoots() {
         List<AccessibilityNodeInfo> ret = new ArrayList<>();
+
         /*
-         * TODO: MULTI_WINDOW is disabled, UIAutomatorViewer captures active window properties and
-         * end users always relay on UIAutomatorViewer while writing tests.
+         * TODO: MULTI_WINDOW is disabled by default, UIAutomatorViewer captures active window
+         * properties and end users always relay on UIAutomatorViewer while writing tests.
          * If we enable MULTI_WINDOW it effects end users.
          * https://code.google.com/p/android/issues/detail?id=207569
          */
-        if (CustomUiDevice.getInstance().getApiLevelActual() >= Build.VERSION_CODES.LOLLIPOP && MULTI_WINDOW) {
+
+        boolean multiWindowsEnabled = AppiumUIA2Driver
+                .getInstance()
+                .getSessionOrThrow()
+                .getCapability(ENABLE_MULTI_WINDOWS.toString(), false);
+
+        if (CustomUiDevice.getInstance().getApiLevelActual() >= Build.VERSION_CODES.LOLLIPOP && multiWindowsEnabled) {
             // Support multi-window searches for API level 21 and up
             for (AccessibilityWindowInfo window : CustomUiDevice.getInstance().getInstrumentation()
                     .getUiAutomation().getWindows()) {

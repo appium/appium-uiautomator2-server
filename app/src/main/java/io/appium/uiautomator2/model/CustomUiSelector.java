@@ -21,7 +21,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.utils.Attribute;
 
-import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.getWindowRoots;
 
 public class CustomUiSelector {
     private UiSelector selector;
@@ -35,10 +35,7 @@ public class CustomUiSelector {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        UiAutomationElement uiAutomationElement = UiAutomationElement.getCachedElement(node, currentActiveWindowRoot());
-        if (uiAutomationElement == null) {
-            throw new IllegalArgumentException(String.format("The '%s' node is not found in the cache", node));
-        }
+        UiAutomationElement uiAutomationElement = getCachedElement(node);
         put(Attribute.PACKAGE, uiAutomationElement.getPackageName());
         put(Attribute.CLASS, uiAutomationElement.getClassName());
         // For proper selector matching it is important to not replace nulls with empty strings
@@ -58,6 +55,18 @@ public class CustomUiSelector {
         put(Attribute.INDEX, uiAutomationElement.getIndex());
 
         return selector;
+    }
+
+    private static UiAutomationElement getCachedElement(AccessibilityNodeInfo node) {
+        UiAutomationElement uiAutomationElement = UiAutomationElement.getCachedElement(node);
+        if (uiAutomationElement == null) {
+            UiAutomationElement.rebuildForNewRoot(getWindowRoots(), null);
+        }
+        uiAutomationElement = UiAutomationElement.getCachedElement(node);
+        if (uiAutomationElement == null) {
+            throw new IllegalArgumentException(String.format("The '%s' node is not found in the cache", node));
+        }
+        return uiAutomationElement;
     }
 
     private void put(Attribute key, Object value) {

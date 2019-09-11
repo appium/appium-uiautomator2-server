@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import androidx.annotation.Nullable;
+
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
@@ -92,15 +93,17 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         this.children = buildChildren(node);
     }
 
-    protected UiAutomationElement(String hierarchyClassName, AccessibilityNodeInfo childNode, int index) {
+    protected UiAutomationElement(String hierarchyClassName, AccessibilityNodeInfo[] childNodes, int index) {
         super(null);
         Map<Attribute, Object> attribs = new LinkedHashMap<>();
         put(attribs, Attribute.INDEX, index);
         put(attribs, Attribute.CLASS, hierarchyClassName);
         this.attributes = Collections.unmodifiableMap(attribs);
-        List<UiAutomationElement> mutableChildren = new ArrayList<>();
-        mutableChildren.add(new UiAutomationElement(childNode, 0));
-        this.children = mutableChildren;
+        List<UiAutomationElement> children = new ArrayList<>();
+        for (AccessibilityNodeInfo childNode : childNodes) {
+            children.add(new UiAutomationElement(childNode, children.size()));
+        }
+        this.children = children;
     }
 
     private int getDepth() {
@@ -111,9 +114,9 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         this.depth = depth;
     }
 
-    public static UiAutomationElement rebuildForNewRoot(AccessibilityNodeInfo rawElement, @Nullable List<CharSequence> toastMSGs) {
+    public static UiAutomationElement rebuildForNewRoot(AccessibilityNodeInfo[] rawElements, @Nullable List<CharSequence> toastMSGs) {
         cache.clear();
-        UiAutomationElement root = new UiAutomationElement(ROOT_NODE_NAME, rawElement, 0);
+        UiAutomationElement root = new UiAutomationElement(ROOT_NODE_NAME, rawElements, 0);
         if (toastMSGs != null && !toastMSGs.isEmpty()) {
             for (CharSequence toastMSG : toastMSGs) {
                 Logger.debug("Adding toastMSG to root:" + toastMSG);
@@ -124,11 +127,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     }
 
     @Nullable
-    public static UiAutomationElement getCachedElement(AccessibilityNodeInfo rawElement,
-                                                       AccessibilityNodeInfo windowRoot) {
-        if (cache.get(rawElement) == null) {
-            rebuildForNewRoot(windowRoot, null);
-        }
+    public static UiAutomationElement getCachedElement(AccessibilityNodeInfo rawElement) {
         return cache.get(rawElement);
     }
 
