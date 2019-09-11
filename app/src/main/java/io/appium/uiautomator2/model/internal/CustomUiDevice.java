@@ -40,7 +40,7 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.ReflectionUtils;
 
-import static io.appium.uiautomator2.utils.AXWindowHelpers.getWindowRoots;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
@@ -127,7 +127,7 @@ public class CustomUiDevice {
         final AccessibilityNodeInfo node;
         if (selector instanceof BySelector) {
             node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcherClass,
-                    Device.getUiDevice(), selector, getWindowRoots());
+                    Device.getUiDevice(), selector, getCachedWindowRoots());
         } else if (selector instanceof NodeInfoList) {
             node = ((NodeInfoList) selector).getFirst();
             selector = toSelector(node);
@@ -157,7 +157,7 @@ public class CustomUiDevice {
 
         List<AccessibilityNodeInfo> axNodesList;
         if (selector instanceof BySelector) {
-            Object nodes = invoke(METHOD_FIND_MATCHES, ByMatcherClass, getUiDevice(), selector, getWindowRoots());
+            Object nodes = invoke(METHOD_FIND_MATCHES, ByMatcherClass, getUiDevice(), selector, getCachedWindowRoots());
             //noinspection unchecked
             axNodesList = (List) nodes;
         } else if (selector instanceof NodeInfoList) {

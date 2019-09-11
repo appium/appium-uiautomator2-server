@@ -21,7 +21,7 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 
-import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshRootAXNode;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshAccessibilityCache;
 
 /**
  * Get page source. Return as string of XML doc
@@ -34,7 +34,7 @@ public class Source extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        refreshRootAXNode();
+        refreshAccessibilityCache();
         return new AppiumResponse(getSessionId(request), new AccessibilityNodeInfoDumper().dumpToXml());
     }
 }

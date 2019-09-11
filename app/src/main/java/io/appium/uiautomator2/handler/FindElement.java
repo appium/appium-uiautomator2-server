@@ -43,7 +43,7 @@ import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
-import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshRootAXNode;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshAccessibilityCache;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
@@ -88,7 +88,7 @@ public class FindElement extends SafeRequestHandler {
 
     @Nullable
     private Object findElement(By by) throws UiAutomator2Exception, UiObjectNotFoundException {
-        refreshRootAXNode();
+        refreshAccessibilityCache();
         if (by instanceof ById) {
             String locator = rewriteIdLocator((ById) by);
             return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator));

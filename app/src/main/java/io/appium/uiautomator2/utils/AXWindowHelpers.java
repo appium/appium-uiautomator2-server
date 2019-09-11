@@ -24,15 +24,14 @@ import android.view.accessibility.AccessibilityWindowInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.model.settings.Settings;
 
 public class AXWindowHelpers {
-    public static final long AX_ROOT_RETRIEVAL_TIMEOUT = 10000;
-    private static final boolean MULTI_WINDOW = false;
-    private static AccessibilityNodeInfo currentActiveWindowRoot = null;
+    private static final long AX_ROOT_RETRIEVAL_TIMEOUT = 10000;
+    private static AccessibilityNodeInfo[] cachedWindowRoots = null;
 
     /**
      * Clears the in-process Accessibility cache, removing any stale references. Because the
@@ -52,15 +51,20 @@ public class AXWindowHelpers {
         }
     }
 
-    public static void refreshRootAXNode() {
+    public static void refreshAccessibilityCache() {
         Device.waitForIdle();
         clearAccessibilityCache();
+        cachedWindowRoots = null;
+    }
 
+    private static AccessibilityNodeInfo getActiveWindowRoot() {
         long end = SystemClock.uptimeMillis() + AX_ROOT_RETRIEVAL_TIMEOUT;
         while (end > SystemClock.uptimeMillis()) {
-            AccessibilityNodeInfo root = null;
             try {
-                root = UiAutomatorBridge.getInstance().getAccessibilityRootNode();
+                AccessibilityNodeInfo root = UiAutomatorBridge.getInstance().getAccessibilityRootNode();
+                if (root != null) {
+                    return root;
+                }
             } catch (Exception e) {
                 /*
                  * Sometimes getAccessibilityRootNode() throws
@@ -70,51 +74,45 @@ public class AXWindowHelpers {
                 Logger.debug(String.format("'%s' exception was caught while invoking " +
                         "getRootAccessibilityNodeInActiveWindow() - ignoring it", e.getMessage()));
             }
-            if (root != null) {
-                currentActiveWindowRoot = root;
-                return;
-            }
         }
         throw new UiAutomator2Exception(String.format(
                 "Timed out after %d milliseconds waiting for root AccessibilityNodeInfo",
                 AX_ROOT_RETRIEVAL_TIMEOUT));
     }
 
-    /**
-     * Returns a list containing the root {@link AccessibilityNodeInfo}s for each active window
-     */
-    public static AccessibilityNodeInfo[] getWindowRoots() {
-        List<AccessibilityNodeInfo> ret = new ArrayList<>();
-        /*
-         * TODO: MULTI_WINDOW is disabled, UIAutomatorViewer captures active window properties and
-         * end users always relay on UIAutomatorViewer while writing tests.
-         * If we enable MULTI_WINDOW it effects end users.
-         * https://code.google.com/p/android/issues/detail?id=207569
-         */
-        if (CustomUiDevice.getInstance().getApiLevelActual() >= Build.VERSION_CODES.LOLLIPOP && MULTI_WINDOW) {
-            // Support multi-window searches for API level 21 and up
-            for (AccessibilityWindowInfo window : CustomUiDevice.getInstance().getInstrumentation()
-                    .getUiAutomation().getWindows()) {
-                @SuppressWarnings("UnusedAssignment") AccessibilityNodeInfo root = window.getRoot();
-
-                if (root == null) {
-                    Logger.debug(String.format("Skipping null root node for window: %s", window.toString()));
-                    continue;
-                }
-                ret.add(root);
+    private static AccessibilityNodeInfo[] getWindowRoots() {
+        List<AccessibilityNodeInfo> result = new ArrayList<>();
+        List<AccessibilityWindowInfo> windows = CustomUiDevice.getInstance()
+                .getInstrumentation()
+                .getUiAutomation()
+                .getWindows();
+        for (AccessibilityWindowInfo window : windows) {
+            AccessibilityNodeInfo root = window.getRoot();
+            if (root == null) {
+                Logger.debug(String.format("Skipping null root node for window: %s", window.toString()));
+                continue;
             }
-            // Prior to API level 21 we can only access the active window
-        } else {
-            ret.add(currentActiveWindowRoot());
+            result.add(root);
         }
-        return ret.toArray(new AccessibilityNodeInfo[0]);
+        return result.toArray(new AccessibilityNodeInfo[0]);
     }
 
-    @NonNull
-    public static synchronized AccessibilityNodeInfo currentActiveWindowRoot() {
-        if (currentActiveWindowRoot == null) {
-            refreshRootAXNode();
+    public static AccessibilityNodeInfo[] getCachedWindowRoots() {
+        if (cachedWindowRoots == null) {
+            // Multi-window searches are supported since API level 21
+            boolean shouldRetrieveAllWindowRoots = CustomUiDevice.getInstance()
+                    .getApiLevelActual() >= Build.VERSION_CODES.LOLLIPOP
+                    && (Boolean) Settings.ENABLE_MULTI_WINDOWS.getSetting().getValue();
+            /*
+             * ENABLE_MULTI_WINDOWS is disabled by default
+             * because UIAutomatorViewer captures active window properties and
+             * end users always rely on its output while writing their tests.
+             * https://code.google.com/p/android/issues/detail?id=207569
+             */
+            cachedWindowRoots = shouldRetrieveAllWindowRoots
+                    ? getWindowRoots()
+                    : new AccessibilityNodeInfo[]{getActiveWindowRoot()};
         }
-        return currentActiveWindowRoot;
+        return cachedWindowRoots;
     }
 }

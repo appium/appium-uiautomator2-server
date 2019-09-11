@@ -21,7 +21,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.utils.Attribute;
 
-import static io.appium.uiautomator2.utils.AXWindowHelpers.currentActiveWindowRoot;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
+
 
 public class CustomUiSelector {
     private UiSelector selector;
@@ -35,7 +36,7 @@ public class CustomUiSelector {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        UiAutomationElement uiAutomationElement = UiAutomationElement.getCachedElement(node, currentActiveWindowRoot());
+        UiAutomationElement uiAutomationElement = UiAutomationElement.getCachedElement(node, getCachedWindowRoots());
         if (uiAutomationElement == null) {
             throw new IllegalArgumentException(String.format("The '%s' node is not found in the cache", node));
         }

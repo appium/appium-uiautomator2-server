@@ -24,6 +24,7 @@ public enum Settings {
     ALLOW_INVISIBLE_ELEMENTS(new AllowInvisibleElements()),
     COMPRESSED_LAYOUT_HIERARCHY(new CompressedLayoutHierarchy()),
     ELEMENT_RESPONSE_ATTRIBUTES(new ElementResponseAttributes()),
+    ENABLE_MULTI_WINDOWS(new EnableMultiWindows()),
     ENABLE_NOTIFICATION_LISTENER(new EnableNotificationListener()),
     KEY_INJECTION_DELAY(new KeyInjectionDelay()),
     SCROLL_ACKNOWLEDGMENT_TIMEOUT(new ScrollAcknowledgmentTimeout()),
