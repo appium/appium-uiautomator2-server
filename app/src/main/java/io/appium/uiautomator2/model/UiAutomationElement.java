@@ -121,7 +121,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         cache.clear();
         UiAutomationElement root = new UiAutomationElement(ROOT_NODE_NAME, roots, 0);
         for (CharSequence toastMSG : toastMSGs) {
-            Logger.debug("Adding toastMSG to root:" + toastMSG);
+            Logger.debug(String.format("Adding toast message to root: %s", toastMSG));
             root.addToastMsgToRoot(toastMSG);
         }
         return root;
