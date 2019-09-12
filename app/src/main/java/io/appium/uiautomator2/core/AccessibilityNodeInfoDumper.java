@@ -167,7 +167,7 @@ public class AccessibilityNodeInfoDumper {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             final UiElement<?, ?> xpathRoot = root == null
                     ? rebuildForNewRoots(getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage())
-                    : rebuildForNewRoots(new AccessibilityNodeInfo[]{root}, null);
+                    : rebuildForNewRoots(new AccessibilityNodeInfo[]{root});
             serializeUiElement(xpathRoot, 0);
             serializer.endDocument();
             Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",

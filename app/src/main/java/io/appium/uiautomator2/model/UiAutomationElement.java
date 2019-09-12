@@ -113,10 +113,14 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         this.depth = depth;
     }
 
-    public static UiAutomationElement rebuildForNewRoots(AccessibilityNodeInfo[] roots, @Nullable List<CharSequence> toastMSGs) {
+    public static UiAutomationElement rebuildForNewRoots(AccessibilityNodeInfo[] roots) {
+        return rebuildForNewRoots(roots, Collections.<CharSequence>emptyList());
+    }
+
+    public static UiAutomationElement rebuildForNewRoots(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs) {
         cache.clear();
         UiAutomationElement root = new UiAutomationElement(ROOT_NODE_NAME, roots, 0);
-        if (toastMSGs != null && !toastMSGs.isEmpty()) {
+        if (!toastMSGs.isEmpty()) {
             for (CharSequence toastMSG : toastMSGs) {
                 Logger.debug("Adding toastMSG to root:" + toastMSG);
                 root.addToastMsgToRoot(toastMSG);
@@ -126,10 +130,9 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     }
 
     @Nullable
-    public static UiAutomationElement getCachedElement(AccessibilityNodeInfo rawElement,
-                                                       AccessibilityNodeInfo[] windowRoots) {
+    public static UiAutomationElement getCachedElement(AccessibilityNodeInfo rawElement, AccessibilityNodeInfo[] windowRoots) {
         if (cache.get(rawElement) == null) {
-            rebuildForNewRoots(windowRoots, null);
+            rebuildForNewRoots(windowRoots);
         }
         return cache.get(rawElement);
     }
