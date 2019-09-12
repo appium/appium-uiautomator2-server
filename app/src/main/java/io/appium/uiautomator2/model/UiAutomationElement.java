@@ -120,11 +120,9 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     public static UiAutomationElement rebuildForNewRoots(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs) {
         cache.clear();
         UiAutomationElement root = new UiAutomationElement(ROOT_NODE_NAME, roots, 0);
-        if (!toastMSGs.isEmpty()) {
-            for (CharSequence toastMSG : toastMSGs) {
-                Logger.debug("Adding toastMSG to root:" + toastMSG);
-                root.addToastMsgToRoot(toastMSG);
-            }
+        for (CharSequence toastMSG : toastMSGs) {
+            Logger.debug("Adding toastMSG to root:" + toastMSG);
+            root.addToastMsgToRoot(toastMSG);
         }
         return root;
     }
