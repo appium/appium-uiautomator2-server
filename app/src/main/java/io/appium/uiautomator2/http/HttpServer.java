@@ -38,7 +38,7 @@ public class HttpServer {
                             .channel(NioServerSocketChannel.class)
                             .option(ChannelOption.SO_BACKLOG, 1024)
                             .option(ChannelOption.SO_REUSEADDR, true)
-                            .option(ChannelOption.SO_KEEPALIVE, true)
+                            .option(ChannelOption.SO_KEEPALIVE, false)
                             .option(ChannelOption.TCP_NODELAY, true)
                             .childHandler(new ServerInitializer(handlers));
 

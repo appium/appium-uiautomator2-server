@@ -1,26 +1,29 @@
 package io.appium.uiautomator2.http;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import io.appium.uiautomator2.http.impl.NettyHttpRequest;
 import io.appium.uiautomator2.http.impl.NettyHttpResponse;
 import io.appium.uiautomator2.utils.Logger;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaders;
 
+import static io.netty.handler.codec.http.HttpHeaders.Names.CACHE_CONTROL;
+import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
+import static io.netty.handler.codec.http.HttpHeaders.Names.PRAGMA;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class ServerHandler extends ChannelInboundHandlerAdapter {
-    private final static java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(ServerHandler.class.getName());
-    private List<io.appium.uiautomator2.http.IHttpServlet> httpHandlers;
+    private final List<IHttpServlet> httpHandlers;
 
-    public ServerHandler(List<io.appium.uiautomator2.http.IHttpServlet> handlers) {
+    public ServerHandler(List<IHttpServlet> handlers) {
         this.httpHandlers = handlers;
     }
 
@@ -33,26 +36,32 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
         FullHttpRequest request = (FullHttpRequest) msg;
         FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK);
-        response.headers().add("Connection", "close");
+        boolean keepAlive = HttpHeaders.isKeepAlive(request);
+        response.headers().set(CONNECTION, keepAlive
+                ? HttpHeaders.Values.KEEP_ALIVE
+                : HttpHeaders.Values.CLOSE);
+        response.headers().set(PRAGMA, "no-cache");
+        response.headers().set(CACHE_CONTROL, "no-store");
 
         Logger.info("channel read: " + request.getMethod().toString() + " " + request.getUri());
 
-        io.appium.uiautomator2.http.IHttpRequest httpRequest = new NettyHttpRequest(request);
-        io.appium.uiautomator2.http.IHttpResponse httpResponse = new NettyHttpResponse(response);
-
-        for (io.appium.uiautomator2.http.IHttpServlet handler : httpHandlers) {
+        IHttpRequest httpRequest = new NettyHttpRequest(request);
+        IHttpResponse httpResponse = new NettyHttpResponse(response);
+        for (IHttpServlet handler : httpHandlers) {
             handler.handleHttpRequest(httpRequest, httpResponse);
             if (httpResponse.isClosed()) {
                 break;
             }
         }
-
         if (!httpResponse.isClosed()) {
             httpResponse.setStatus(404);
             httpResponse.end();
         }
 
-        ctx.write(response).addListener(ChannelFutureListener.CLOSE);
+        ChannelFuture future = ctx.write(response);
+        if (!keepAlive) {
+            future.addListener(ChannelFutureListener.CLOSE);
+        }
         super.channelRead(ctx, msg);
     }
 
@@ -64,7 +73,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOGGER.log(Level.SEVERE, "Error handling request", cause);
+        Logger.error("Error handling request", cause);
         ctx.close();
         super.exceptionCaught(ctx, cause);
     }
