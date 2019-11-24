@@ -42,15 +42,17 @@ env:
 before_install:
   - echo $ANDROID_HOME
   - |
-    if [ -z ${CLOUD} ]; then
-      curl -o "${ANDROID_HOME}/sdk.zip" https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
-      rm -rf ${ANDROID_HOME}/tools
-      unzip -o "${ANDROID_HOME}/sdk.zip" -d "$ANDROID_HOME"
-      rm -f "${ANDROID_HOME}/sdk.zip"
+    if [[ -z "${CLOUD}" ]]; then
+      mkdir -p "${HOME}/.android"
+      export TOOLS=${ANDROID_HOME}/tools
+      curl -o "${HOME}/sdk.zip" https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
+      rm -rf "${TOOLS}"
+      unzip -o "${HOME}/sdk.zip" -d "$ANDROID_HOME" > /dev/null
+      rm -f "${HOME}/sdk.zip"
       echo yes | sdkmanager --update > /dev/null
       echo yes | sdkmanager "build-tools;${BUILD_TOOLS}" "platforms;${API_TARGET}" > /dev/null
 
-      if [ ${START_EMU} = "1" ]; then
+      if [[ "${START_EMU}" -eq "1" ]]; then
         echo yes | sdkmanager "platform-tools" "platforms;${EMU_TARGET}" "extras;android;m2repository" "extras;google;m2repository" > /dev/null
         echo yes | sdkmanager --channel=3 "emulator" > /dev/null
         export EMU_IMAGE="system-images;${EMU_TARGET};${EMU_TAG};${EMU_ABI}"
@@ -60,7 +62,6 @@ before_install:
           sleep 5
         done
         sdkmanager --list
-        export TOOLS=${ANDROID_HOME}/tools
         export PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
         echo no | avdmanager create avd -k "${EMU_IMAGE}" -n "${EMU_NAME}" -f --abi "${EMU_ABI}" --tag "${EMU_TAG}" || exit 1
         emulator -avd "${EMU_NAME}" -no-accel -no-snapshot -no-window -camera-back none -camera-front none -selinux permissive -qemu -m 2048 &
