@@ -64,7 +64,7 @@ before_install:
         sdkmanager --list
         export PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
         echo no | avdmanager create avd -k "${EMU_IMAGE}" -n "${EMU_NAME}" -f --abi "${EMU_ABI}" --tag "${EMU_TAG}" || exit 1
-        emulator-headless -avd "${EMU_NAME}" -verbose -debug all -no-accel -no-snapshot -no-window -camera-back none -camera-front none -selinux permissive -qemu -m 2048 &
+        emulator -avd "${EMU_NAME}" -verbose -debug all -no-accel -no-snapshot -no-window -camera-back none -camera-front none -selinux permissive -qemu -m 2048 &
       else
         sdkmanager --list
       fi
