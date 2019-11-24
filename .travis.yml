@@ -44,18 +44,15 @@ before_install:
   - |
     if [ -z ${CLOUD} ]; then
       curl -o "${ANDROID_HOME}/sdk.zip" https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
+      rm -rf ${ANDROID_HOME}/tools
       unzip -o "${ANDROID_HOME}/sdk.zip" -d "$ANDROID_HOME"
       rm -f "${ANDROID_HOME}/sdk.zip"
       echo yes | sdkmanager --update > /dev/null
-      echo yes | sdkmanager "build-tools;${BUILD_TOOLS}" > /dev/null
-      echo yes | sdkmanager "platforms;${API_TARGET}" > /dev/null
+      echo yes | sdkmanager "build-tools;${BUILD_TOOLS}" "platforms;${API_TARGET}" > /dev/null
 
       if [ ${START_EMU} = "1" ]; then
-        echo yes | sdkmanager "platform-tools" > /dev/null
-        echo yes | sdkmanager "platforms;${EMU_TARGET}" > /dev/null
-        echo yes | sdkmanager "extras;android;m2repository" > /dev/null
-        echo yes | sdkmanager "extras;google;m2repository" > /dev/null
-        echo yes | sdkmanager --channel=3 "emulator" >/dev/null
+        echo yes | sdkmanager "platform-tools" "platforms;${EMU_TARGET}" "extras;android;m2repository" "extras;google;m2repository" > /dev/null
+        echo yes | sdkmanager --channel=3 "emulator" > /dev/null
         export EMU_IMAGE="system-images;${EMU_TARGET};${EMU_TAG};${EMU_ABI}"
         for retry in 1 2 3; do
           echo yes | sdkmanager "${EMU_IMAGE}" > /dev/null && break
