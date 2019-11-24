@@ -43,15 +43,15 @@ before_install:
   - echo $ANDROID_HOME
   - |
     if [ -z ${CLOUD} ]; then
-      echo yes | android update sdk --no-ui -t tools
+      curl -o "${ANDROID_HOME}/sdk.zip" https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
+      unzip -o "${ANDROID_HOME}/sdk.zip" -d "$ANDROID_HOME"
+      rm -f "${ANDROID_HOME}/sdk.zip"
       echo yes | sdkmanager --update > /dev/null
-      echo yes | sdkmanager "build-toold;${BUILD_TOOLS}" >/dev/null
-      echo yes | sdkmanager "platforms;${API_TARGET}" >/dev/null
+      echo yes | sdkmanager "build-tools;${BUILD_TOOLS}" > /dev/null
+      echo yes | sdkmanager "platforms;${API_TARGET}" > /dev/null
 
       if [ ${START_EMU} = "1" ]; then
-        echo yes | sdkmanager "platform-tools" >/dev/null
-        echo yes | sdkmanager tools > /dev/null
-        echo yes | sdkmanager "build-tools;${API_TARGET}" >/dev/null
+        echo yes | sdkmanager "platform-tools" > /dev/null
         echo yes | sdkmanager "platforms;${EMU_TARGET}" > /dev/null
         echo yes | sdkmanager "extras;android;m2repository" > /dev/null
         echo yes | sdkmanager "extras;google;m2repository" > /dev/null
