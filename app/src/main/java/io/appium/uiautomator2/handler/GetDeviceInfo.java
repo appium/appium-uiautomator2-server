@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.handler;
 
 import android.app.Instrumentation;
+import android.bluetooth.BluetoothAdapter;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
@@ -35,6 +36,8 @@ import io.appium.uiautomator2.utils.Logger;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
+import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
+import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public class GetDeviceInfo extends SafeRequestHandler {
     private final Instrumentation mInstrumentation = getInstrumentation();
@@ -92,6 +95,17 @@ public class GetDeviceInfo extends SafeRequestHandler {
         return result;
     }
 
+    private static Object extractBluetoothInfo() throws JSONException {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter == null) {
+            return JSONObject.NULL;
+        }
+        JSONObject result = new JSONObject();
+        result.put("state", invoke(method(BluetoothAdapter.class, "nameForState", int.class),
+                null, bluetoothAdapter.getState()));
+        return result;
+    }
+
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
         Logger.info("Get Device Info command");
@@ -110,6 +124,7 @@ public class GetDeviceInfo extends SafeRequestHandler {
         response.put("networks", extractNetworkInfo(deviceInfoHelper));
         response.put("locale", deviceInfoHelper.getLocale());
         response.put("timeZone", deviceInfoHelper.getTimeZone());
+        response.put("bluetooth", extractBluetoothInfo());
 
         return new AppiumResponse(getSessionId(request), response);
     }
