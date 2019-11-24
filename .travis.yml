@@ -80,7 +80,8 @@ before_script:
   - |
     if [[ "${START_EMU}" == "1" ]]; then
       # make sure emulator started
-      $(npm bin)/android-emu-travis-post
+      ls "$(npm bin)"
+      /bin/bash "$(npm bin)/android-emu-travis-post.sh"
     fi
 script:
   - ./gradlew compileServerDebugSources compileServerDebugAndroidTestSources
