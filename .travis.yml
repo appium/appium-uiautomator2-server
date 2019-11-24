@@ -52,7 +52,7 @@ before_install:
       echo yes | sdkmanager --update > /dev/null
       echo yes | sdkmanager "build-tools;${BUILD_TOOLS}" "platforms;${API_TARGET}" > /dev/null
 
-      if [[ "${START_EMU}" -eq "1" ]]; then
+      if [[ "${START_EMU}" == "1" ]]; then
         echo yes | sdkmanager "platform-tools" "platforms;${EMU_TARGET}" "extras;android;m2repository" "extras;google;m2repository" > /dev/null
         echo yes | sdkmanager --channel=3 "emulator" > /dev/null
         export EMU_IMAGE="system-images;${EMU_TARGET};${EMU_TAG};${EMU_ABI}"
@@ -78,14 +78,14 @@ install:
   - npm install appium-test-support
 before_script:
   - |
-    if [ ${START_EMU} = "1" ]; then
+    if [[ "${START_EMU}" == "1" ]]; then
       # make sure emulator started
-      $(npm bin)/android-emu-travis-post;
+      $(npm bin)/android-emu-travis-post
     fi
 script:
   - ./gradlew compileServerDebugSources compileServerDebugAndroidTestSources
   - |
-    if [ "$TEST" == "unit" ]; then
+    if [[ "$TEST" == "unit" ]]; then
       ./gradlew testServerDebugUnitTest
     else
       stdbuf -oL adb logcat -v time *:S appium:V appium-e2e-tests:V TestRunner:V *:E *:F > logcat.txt &
@@ -95,7 +95,7 @@ script:
     fi
 after_failure:
   - |
-    if [ "$TEST" != "unit" ]; then
+    if [[ "$TEST" != "unit" ]]; then
       echo -e "----UIAUTOMATOR DUMPS----\n"
       adb pull /sdcard/hierarchy .
       for f in ./hierarchy/*.xml
