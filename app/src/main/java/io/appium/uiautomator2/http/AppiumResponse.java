@@ -30,6 +30,7 @@ import io.appium.uiautomator2.utils.Logger;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
+import static org.apache.commons.lang.StringUtils.abbreviate;
 
 public class AppiumResponse {
     private final Object value;
@@ -67,13 +68,14 @@ public class AppiumResponse {
         response.setContentType("application/json");
         response.setEncoding(StandardCharsets.UTF_8);
         response.setStatus(getHttpStatus().code());
-        JSONObject o = new JSONObject();
         try {
+            JSONObject o = new JSONObject();
             o.put("sessionId", formatNull(sessionId));
-            o.put("value",
-                    (value instanceof Throwable) ? formatException((Throwable) value) : formatNull(value));
+            o.put("value", (value instanceof Throwable)
+                    ? formatException((Throwable) value)
+                    : formatNull(value));
             final String responseString = o.toString();
-            Logger.info(String.format("AppiumResponse: %s", responseString));
+            Logger.info(String.format("AppiumResponse: %s", abbreviate(responseString, 300)));
             response.setContent(responseString);
         } catch (JSONException e) {
             Logger.error("Unable to create JSON Object", e);

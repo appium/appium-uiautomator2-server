@@ -137,11 +137,14 @@ public class ScreenshotHelper {
     }
 
     private static byte[] compress(final Bitmap bitmap) throws TakeScreenshotException {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        if (!bitmap.compress(PNG, 100, stream)) {
-            throw new CompressScreenshotException(PNG);
+        try (final ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
+            if (!bitmap.compress(PNG, 100, stream)) {
+                throw new CompressScreenshotException(PNG);
+            }
+            return stream.toByteArray();
+        } catch (IOException e) {
+            throw new CompressScreenshotException(PNG, e);
         }
-        return stream.toByteArray();
     }
 
     private static Bitmap crop(Bitmap bitmap, Rect cropArea) throws CropScreenshotException {
