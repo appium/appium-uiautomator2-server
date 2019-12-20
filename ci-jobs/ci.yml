@@ -15,7 +15,5 @@ jobs:
       displayName: Install Node dependencies
     - script: bash ci-jobs/scripts/start-emulator.sh
       displayName: Create and run Emulator
-    - script: ./gradlew compileServerDebugSources compileServerDebugAndroidTestSources
-      displayName: Compile Tests
     - script: ./gradlew clean connectedE2ETestDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.notAnnotation=$E2E_TEST_PACKAGE.internal.SkipHeadlessDevices
       displayName: Run Gradle Tests

@@ -365,8 +365,11 @@ public class ActionsTokenizer {
                                 ACTION_ITEM_VALUE_KEY, actionItem, action.getString(ACTION_KEY_ID)));
                     }
                     final KeyInputEventParams evtParams = new KeyInputEventParams(
-                            chainEntryPointDelta, itemType.equals(ACTION_ITEM_TYPE_KEY_DOWN) ?
-                            KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP, value.codePointAt(0)
+                            chainEntryPointDelta,
+                            itemType.equals(ACTION_ITEM_TYPE_KEY_DOWN)
+                                ? KeyEvent.ACTION_DOWN
+                                : KeyEvent.ACTION_UP,
+                            value.codePointAt(0)
                     );
                     recordEventParams(timeDelta, evtParams);
                     chainEntryPointDelta = timeDelta;
