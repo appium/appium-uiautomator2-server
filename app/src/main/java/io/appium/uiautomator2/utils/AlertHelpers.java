@@ -51,6 +51,10 @@ public class AlertHelpers {
     private static final Pattern permissionAlertButtonResIdPattern =
             Pattern.compile(".+:id/permission_\\w+_button$");
     private static final Pattern alertElementsResIdPattern = Pattern.compile(".+:id/.+");
+    private static final Pattern allowButtonResIdPattern =
+            Pattern.compile("^(.*[^a-z])allow([^a-z].*)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern denyButtonResIdPattern =
+            Pattern.compile("^(.*[^a-z])deny([^a-z].*)$", Pattern.CASE_INSENSITIVE);
 
     private static String buttonResIdByIdx(int index) {
         return String.format("%s%s", regularAlertButtonResIdPrefix, index);
@@ -95,13 +99,14 @@ public class AlertHelpers {
         }
         Log.d(TAG, String.format("Found %d buttons on the alert", alertButtonsMapping.size()));
 
-        if (buttonLabel == null) {
-            final int minIdx = Collections.min(buttonIndexes);
-            return action == AlertAction.ACCEPT
-                    ? alertButtonsMapping.get(buttonResIdByIdx(minIdx))
-                    : alertButtonsMapping.get(buttonResIdByIdx(alertButtonsMapping.size() > 1 ? minIdx + 1 : minIdx));
+        if (buttonLabel != null) {
+            return filterButtonByLabel(alertButtonsMapping.values(), buttonLabel);
         }
-        return filterButtonByLabel(alertButtonsMapping.values(), buttonLabel);
+
+        final int minIdx = Collections.min(buttonIndexes);
+        return action == AlertAction.ACCEPT
+                ? alertButtonsMapping.get(buttonResIdByIdx(minIdx))
+                : alertButtonsMapping.get(buttonResIdByIdx(alertButtonsMapping.size() > 1 ? minIdx + 1 : minIdx));
     }
 
     @Nullable
@@ -112,15 +117,34 @@ public class AlertHelpers {
         }
         Log.d(TAG, String.format("Found %d buttons on the alert", buttons.size()));
 
-        if (buttonLabel == null) {
-            if (action == AlertAction.ACCEPT) {
-                return buttons.size() > 1 ? buttons.get(1) : buttons.get(0);
-            }
-            if (action == AlertAction.DISMISS) {
-                return buttons.get(0);
-            }
-        } else {
+        if (buttonLabel != null) {
             return filterButtonByLabel(buttons, buttonLabel);
+        }
+
+        if (action == AlertAction.ACCEPT) {
+            if (buttons.size() > 1) {
+                for (UiObject2 button : buttons) {
+                    if (allowButtonResIdPattern.matcher(button.getResourceName()).matches()) {
+                        Log.d(TAG, String.format("Matched the button with resource id '%s' for ACCEPT action",
+                                button.getResourceName()));
+                        return button;
+                    }
+                }
+                return buttons.get(1);
+            }
+            return buttons.get(0);
+        }
+        if (action == AlertAction.DISMISS) {
+            if (buttons.size() > 1) {
+                for (UiObject2 button : buttons) {
+                    if (denyButtonResIdPattern.matcher(button.getResourceName()).matches()) {
+                        Log.d(TAG, String.format("Matched the button with resource id '%s' for DISMISS action",
+                                button.getResourceName()));
+                        return button;
+                    }
+                }
+            }
+            return buttons.get(0);
         }
         return null;
     }
