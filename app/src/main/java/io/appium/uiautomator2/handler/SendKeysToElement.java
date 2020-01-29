@@ -71,31 +71,29 @@ public class SendKeysToElement extends SafeRequestHandler {
             Logger.debug("Will press Enter after setting text");
         }
 
-        String currentText = element.getText();
-        if (!StringUtils.isEmpty(currentText)) {
-            element.clear();
-        }
-        if (!StringUtils.isEmpty(element.getText())) {
-            // clear could have failed, or we could have a hint in the field
-            // we'll assume it is the latter
-            Logger.debug("Could not clear the text. Assuming the remainder is a hint text.");
-            currentText = "";
-        }
-        if (!replace && currentText != null) {
-            text = currentText + text;
+        if (!replace) {
+            String currentText = element.getText();
+            if (!StringUtils.isEmpty(currentText)) {
+                element.clear();
+                if (!StringUtils.isEmpty(element.getText())) {
+                    // clear could have failed, or we could have a hint in the field
+                    // we'll assume it is the latter
+                    Logger.debug("Could not clear the text. Assuming the remainder is a hint text.");
+                    currentText = "";
+                }
+                text = currentText + text;
+            }
         }
         if (!element.setText(text)) {
             throw new InvalidElementStateException(String.format("Cannot set the element to '%s'. " +
                     "Did you interact with the correct element?", text));
         }
 
-        String actionMsg = "";
         if (pressEnter) {
-            actionMsg = getUiDevice().pressEnter()
+            Logger.debug(getUiDevice().pressEnter()
                     ? "Sent Enter key to the device"
-                    : "Could not send Enter key to the device";
+                    : "Could not send Enter key to the device");
         }
-        Logger.debug(actionMsg);
         return new AppiumResponse(getSessionId(request));
     }
 }
