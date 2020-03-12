@@ -1,7 +1,7 @@
 jobs:
   - job: UiAutomator2ServerCI
     pool:
-      vmImage: macOS-10.13
+      vmImage: macOS-10.15
     variables:
       CI: true
       TERM: dumb
