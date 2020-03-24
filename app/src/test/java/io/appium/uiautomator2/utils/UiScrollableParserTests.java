@@ -197,15 +197,6 @@ public class UiScrollableParserTests {
     }
 
     @Test
-    public void shouldThrowExceptionIfLastMethodDoesNotReturnUiObject() throws
-            UiSelectorSyntaxException, UiObjectNotFoundException {
-        expectedException.expect(UiSelectorSyntaxException.class);
-        expectedException.expectMessage("Last method called on a UiScrollable object must return " +
-                "a UiObject object");
-        new UiScrollableParserSpy("new UiScrollable(new UiSelector()).scrollForward(5)").parse();
-    }
-
-    @Test
     public void shouldReThrowUiObjectNotFoundException() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         expectedException.expect(UiObjectNotFoundException.class);
