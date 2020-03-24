@@ -19,7 +19,10 @@ package io.appium.uiautomator2.utils;
 import android.util.Pair;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -32,6 +35,9 @@ import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
  * For parsing strings that create UiScrollable objects into UiScrollable objects
  */
 public class UiScrollableParser extends UiExpressionParser<UiScrollable, UiSelector> {
+
+    private static final List<String> LEGACY_METHOD_NAMES = Arrays.asList("scrollTextIntoView",
+            "scrollDescriptionIntoView", "scrollIntoView");
 
     private UiSelector uiSelector;
 
@@ -53,23 +59,39 @@ public class UiScrollableParser extends UiExpressionParser<UiScrollable, UiSelec
     @Override
     public UiSelector parse() throws UiSelectorSyntaxException, UiObjectNotFoundException {
         resetCurrentIndex();
-        Object result = null;
-        consumeConstructor();
+        UiObject self = consumeConstructor();
+        List<Object> results = new ArrayList<>();
         while (hasMoreDataToParse()) {
             consumePeriod();
-            result = consumeMethodCall();
+            Object result = consumeMethodCall();
+            if (result == null) {
+                continue;
+            }
+
+            results.add(result);
             if (result instanceof UiScrollable) {
                 setTarget((UiScrollable) result);
             }
         }
 
-        if (result instanceof UiObject) {
-            uiSelector = ((UiObject) result).getSelector();
+        ListIterator<Object> resultsIterator = results.listIterator(results.size());
+        while (resultsIterator.hasPrevious()) {
+            Object item = resultsIterator.previous();
+            if (item instanceof UiObject) {
+                // assign the result to the last method in the chain
+                // that returns UiObject
+                uiSelector = ((UiObject) item).getSelector();
+                break;
+            }
         }
-
+        if (uiSelector == null && self != null) {
+            // if none of the methods in the chain return UiObject instance
+            // the assign the result to self instance
+            uiSelector = self.getSelector();
+        }
         if (uiSelector == null) {
             throw new UiSelectorSyntaxException(expression.toString(),
-                    "Last method called on a UiScrollable object must return a UiObject object");
+                    "At least one method called on a UiScrollable object must return an UiObject instance");
         }
         return uiSelector;
     }
@@ -110,9 +132,7 @@ public class UiScrollableParser extends UiExpressionParser<UiScrollable, UiSelec
             /*
                 TODO: It looks like a dirty hack, but we need to keep it for backward compatibility
             */
-            if ("scrollTextIntoView".equals(methodName)
-                    || "scrollDescriptionIntoView".equals(methodName)
-                    || "scrollIntoView".equals(methodName)) {
+            if (LEGACY_METHOD_NAMES.contains(methodName)) {
                 /* Skip invocation to avoid exception if scrollable container does not exist */
                 final UiObject uiObject = createUiObject(uiSelector);
                 if (uiObject.exists()) {
