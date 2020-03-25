@@ -25,7 +25,9 @@ import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 public abstract class Device {
 
     public static UiDevice getUiDevice() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        // Control the service flag with bundle with process argument like `--ez SUPPRESS_ACCESSIBILITY_SERVICES false`
+        boolean suppressAccessibilityService = InstrumentationRegistry.getArguments().getBoolean("ACCESSIBILITY_SERVICE", true);
+        if (!suppressAccessibilityService && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             // The flag is necessary not to stop running accessibility service
             // https://github.com/appium/appium/issues/4910
             // https://developer.android.com/reference/android/app/UiAutomation.html#FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES
