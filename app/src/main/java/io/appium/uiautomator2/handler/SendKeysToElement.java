@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,11 +45,6 @@ public class SendKeysToElement extends SafeRequestHandler {
         super(mappedUri);
     }
 
-    private static boolean isTextFieldNotClear(AndroidElement element) throws UiObjectNotFoundException {
-        String text = element.getText();
-        return text != null && !text.isEmpty();
-    }
-
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
         Logger.info("send keys to element command");
@@ -72,34 +68,32 @@ public class SendKeysToElement extends SafeRequestHandler {
         if (text.endsWith("\\n")) {
             pressEnter = true;
             text = text.replace("\\n", "");
-            Logger.debug("Will press enter after setting text");
+            Logger.debug("Will press Enter after setting text");
         }
 
-        String currText = element.getText();
-        if (isTextFieldNotClear(element)) {
-            new Clear("/wd/hub/session/:sessionId/element/:id/clear").handle(request);
-        }
-        if (isTextFieldNotClear(element)) {
-            // clear could have failed, or we could have a hint in the field
-            // we'll assume it is the latter
-            Logger.debug("Text not cleared. Assuming remainder is hint text.");
-            currText = "";
-        }
-        if (!replace && currText != null) {
-            text = currText + text;
+        if (!replace) {
+            String currentText = element.getText();
+            if (!StringUtils.isEmpty(currentText)) {
+                element.clear();
+                if (!StringUtils.isEmpty(element.getText())) {
+                    // clear could have failed, or we could have a hint in the field
+                    // we'll assume it is the latter
+                    Logger.debug("Could not clear the text. Assuming the remainder is a hint text.");
+                    currentText = "";
+                }
+                text = currentText + text;
+            }
         }
         if (!element.setText(text)) {
             throw new InvalidElementStateException(String.format("Cannot set the element to '%s'. " +
                     "Did you interact with the correct element?", text));
         }
 
-        String actionMsg = "";
         if (pressEnter) {
-            actionMsg = getUiDevice().pressEnter() ?
-                    "Sent keys to the device" :
-                    "Unable to send keys to the device";
+            Logger.debug(getUiDevice().pressEnter()
+                    ? "Sent Enter key to the device"
+                    : "Could not send Enter key to the device");
         }
-        Logger.debug(actionMsg);
         return new AppiumResponse(getSessionId(request));
     }
 }

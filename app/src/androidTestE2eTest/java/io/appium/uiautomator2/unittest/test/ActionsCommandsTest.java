@@ -109,16 +109,14 @@ public class ActionsCommandsTest extends BaseTest {
                 "\"type\": \"key\"," +
                 "\"id\": \"keyboard\"," +
                 "\"actions\": [" +
-                "{\"type\": \"keyDown\", \"value\": \"\uE008\"}," +
                 "{\"type\": \"keyDown\", \"value\": \"h\"}," +
                 "{\"type\": \"keyUp\", \"value\": \"h\"}," +
-                "{\"type\": \"keyUp\", \"value\": \"\uE008\"}," +
                 "{\"type\": \"keyDown\", \"value\": \"i\"}," +
                 "{\"type\": \"keyUp\", \"value\": \"i\"}]" +
                 "} ]");
         Response actionsResponse = performActions(actionsJson);
         assertTrue(actionsResponse.isSuccessful());
         Response response = getText(edit.getElementId());
-        assertThat((String) response.getValue(), equalTo("Hi"));
+        assertThat((String) response.getValue(), equalTo("hi"));
     }
 }

@@ -57,7 +57,7 @@ abstract class UiExpressionParser<T, U> {
     }
 
     @SuppressWarnings("unchecked")
-    protected void consumeConstructor() throws UiSelectorSyntaxException,
+    protected T consumeConstructor() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         skipLeadingSpaces();
         final String constructorExpression = getConstructorExpression();
@@ -76,6 +76,7 @@ abstract class UiExpressionParser<T, U> {
             throw new UiAutomator2Exception("Can not create instance of " +
                     clazz.getSimpleName(), e);
         }
+        return target;
     }
 
     protected void consumePeriod() throws UiSelectorSyntaxException {

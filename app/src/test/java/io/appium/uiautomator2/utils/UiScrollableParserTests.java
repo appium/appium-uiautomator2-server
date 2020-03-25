@@ -90,6 +90,15 @@ public class UiScrollableParserTests {
     }
 
     @Test
+    public void shouldBeAbleToParseUiSelectorInConstructorIfTheFinalMethodDoesNotReturnUiObject()
+            throws UiSelectorSyntaxException, UiObjectNotFoundException {
+        new UiScrollableParserSpy("new UiScrollable(new UiSelector().text(\"test\"))" +
+                ".scrollToEnd(20)").parse();
+        UiSelector expectedUiScrollableSelector = new UiSelector().text("test");
+        assertEquals(expectedUiScrollableSelector, uiScrollableSpy.getSelector());
+    }
+
+    @Test
     public void shouldBeAbleToChainUiScrollableMethods() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         final String locator = "new UiScrollable(new UiSelector()).setAsHorizontalList()" +
@@ -188,15 +197,6 @@ public class UiScrollableParserTests {
     }
 
     @Test
-    public void shouldThrowExceptionIfLastMethodDoesNotReturnUiObject() throws
-            UiSelectorSyntaxException, UiObjectNotFoundException {
-        expectedException.expect(UiSelectorSyntaxException.class);
-        expectedException.expectMessage("Last method called on a UiScrollable object must return " +
-                "a UiObject object");
-        new UiScrollableParserSpy("new UiScrollable(new UiSelector()).scrollForward(5)").parse();
-    }
-
-    @Test
     public void shouldReThrowUiObjectNotFoundException() throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
         expectedException.expect(UiObjectNotFoundException.class);
@@ -232,9 +232,9 @@ public class UiScrollableParserTests {
         }
 
         @Override
-        protected void consumeConstructor() throws UiSelectorSyntaxException,
+        protected UiScrollable consumeConstructor() throws UiSelectorSyntaxException,
                 UiObjectNotFoundException {
-            super.consumeConstructor();
+            UiScrollable self = super.consumeConstructor();
             uiScrollableSpy = spy(getTarget());
             doReturn(true).when(uiScrollableSpy).scrollIntoView(any(UiSelector.class));
             doReturn(true).when(uiScrollableSpy).scrollIntoView(any(UiObject.class));
@@ -244,6 +244,7 @@ public class UiScrollableParserTests {
                     .getChildByText(any(UiSelector.class), anyString());
             doReturn(true).when(uiScrollableSpy).scrollForward(anyInt());
             setTarget(uiScrollableSpy);
+            return self;
         }
 
         @Override

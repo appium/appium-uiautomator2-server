@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="io.appium.uiautomator2.test">
+          xmlns:tools="http://schemas.android.com/tools" package="io.appium.uiautomator2.test">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -7,8 +7,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
-    <application android:allowBackup="true">
+    <application android:allowBackup="true" tools:ignore="GoogleAppIndexingWarning">
         <receiver android:name="io.appium.uiautomator2.server.ServerInstrumentation$PowerConnectionReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />

@@ -19,8 +19,15 @@ package io.appium.uiautomator2.common.exceptions;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class TakeScreenshotException extends UiAutomator2Exception {
+    private static final String DEFAULT_MESSAGE =
+            "Failed to capture a screenshot. Does the current view have 'secure' flag set?";
+
     public TakeScreenshotException() {
-        super("Failed to capture a screenshot. Does the current view have 'secure' flag set?");
+        super(DEFAULT_MESSAGE);
+    }
+
+    public TakeScreenshotException(String message, Throwable cause) {
+        super(message, cause);
     }
 
     public TakeScreenshotException(String message) {

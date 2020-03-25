@@ -42,6 +42,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 
+import static android.bluetooth.BluetoothAdapter.STATE_OFF;
+import static android.bluetooth.BluetoothAdapter.STATE_ON;
+import static android.bluetooth.BluetoothAdapter.STATE_TURNING_OFF;
+import static android.bluetooth.BluetoothAdapter.STATE_TURNING_ON;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_CBS;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_DUN;
 import static android.net.NetworkCapabilities.NET_CAPABILITY_EIMS;
@@ -168,8 +172,7 @@ public class DeviceInfoHelper {
     }
 
     @SuppressLint("UseSparseArrays")
-    public static final Map<Integer, String> TRANSPORTS = new HashMap<>();
-
+    private static final Map<Integer, String> TRANSPORTS = new HashMap<>();
     static {
         TRANSPORTS.put(TRANSPORT_CELLULAR, "TRANSPORT_CELLULAR");
         TRANSPORTS.put(TRANSPORT_WIFI, "TRANSPORT_WIFI");
@@ -190,32 +193,31 @@ public class DeviceInfoHelper {
     }
 
     @SuppressLint("UseSparseArrays")
-    public static final Map<Integer, String> CAPS = new HashMap<>();
-
+    private static final Map<Integer, String> CAPS = new HashMap<>();
     static {
-        TRANSPORTS.put(NET_CAPABILITY_MMS, "NET_CAPABILITY_MMS");
-        TRANSPORTS.put(NET_CAPABILITY_SUPL, "NET_CAPABILITY_SUPL");
-        TRANSPORTS.put(NET_CAPABILITY_DUN, "NET_CAPABILITY_DUN");
-        TRANSPORTS.put(NET_CAPABILITY_FOTA, "NET_CAPABILITY_FOTA");
-        TRANSPORTS.put(NET_CAPABILITY_IMS, "NET_CAPABILITY_IMS");
-        TRANSPORTS.put(NET_CAPABILITY_CBS, "NET_CAPABILITY_CBS");
-        TRANSPORTS.put(NET_CAPABILITY_WIFI_P2P, "NET_CAPABILITY_WIFI_P2P");
-        TRANSPORTS.put(NET_CAPABILITY_IA, "NET_CAPABILITY_IA");
-        TRANSPORTS.put(NET_CAPABILITY_RCS, "NET_CAPABILITY_RCS");
-        TRANSPORTS.put(NET_CAPABILITY_XCAP, "NET_CAPABILITY_XCAP");
-        TRANSPORTS.put(NET_CAPABILITY_EIMS, "NET_CAPABILITY_EIMS");
-        TRANSPORTS.put(NET_CAPABILITY_NOT_METERED, "NET_CAPABILITY_NOT_METERED");
-        TRANSPORTS.put(NET_CAPABILITY_INTERNET, "NET_CAPABILITY_INTERNET");
-        TRANSPORTS.put(NET_CAPABILITY_NOT_RESTRICTED, "NET_CAPABILITY_NOT_RESTRICTED");
-        TRANSPORTS.put(NET_CAPABILITY_TRUSTED, "NET_CAPABILITY_TRUSTED");
-        TRANSPORTS.put(NET_CAPABILITY_NOT_VPN, "NET_CAPABILITY_NOT_VPN");
-        TRANSPORTS.put(16, "NET_CAPABILITY_VALIDATED");
-        TRANSPORTS.put(17, "NET_CAPABILITY_CAPTIVE_PORTAL");
-        TRANSPORTS.put(18, "NET_CAPABILITY_NOT_ROAMING");
-        TRANSPORTS.put(19, "NET_CAPABILITY_FOREGROUND");
-        TRANSPORTS.put(20, "NET_CAPABILITY_NOT_CONGESTED");
-        TRANSPORTS.put(21, "NET_CAPABILITY_NOT_SUSPENDED");
-        TRANSPORTS.put(22, "NET_CAPABILITY_OEM_PAID");
+        CAPS.put(NET_CAPABILITY_MMS, "NET_CAPABILITY_MMS");
+        CAPS.put(NET_CAPABILITY_SUPL, "NET_CAPABILITY_SUPL");
+        CAPS.put(NET_CAPABILITY_DUN, "NET_CAPABILITY_DUN");
+        CAPS.put(NET_CAPABILITY_FOTA, "NET_CAPABILITY_FOTA");
+        CAPS.put(NET_CAPABILITY_IMS, "NET_CAPABILITY_IMS");
+        CAPS.put(NET_CAPABILITY_CBS, "NET_CAPABILITY_CBS");
+        CAPS.put(NET_CAPABILITY_WIFI_P2P, "NET_CAPABILITY_WIFI_P2P");
+        CAPS.put(NET_CAPABILITY_IA, "NET_CAPABILITY_IA");
+        CAPS.put(NET_CAPABILITY_RCS, "NET_CAPABILITY_RCS");
+        CAPS.put(NET_CAPABILITY_XCAP, "NET_CAPABILITY_XCAP");
+        CAPS.put(NET_CAPABILITY_EIMS, "NET_CAPABILITY_EIMS");
+        CAPS.put(NET_CAPABILITY_NOT_METERED, "NET_CAPABILITY_NOT_METERED");
+        CAPS.put(NET_CAPABILITY_INTERNET, "NET_CAPABILITY_INTERNET");
+        CAPS.put(NET_CAPABILITY_NOT_RESTRICTED, "NET_CAPABILITY_NOT_RESTRICTED");
+        CAPS.put(NET_CAPABILITY_TRUSTED, "NET_CAPABILITY_TRUSTED");
+        CAPS.put(NET_CAPABILITY_NOT_VPN, "NET_CAPABILITY_NOT_VPN");
+        CAPS.put(16, "NET_CAPABILITY_VALIDATED");
+        CAPS.put(17, "NET_CAPABILITY_CAPTIVE_PORTAL");
+        CAPS.put(18, "NET_CAPABILITY_NOT_ROAMING");
+        CAPS.put(19, "NET_CAPABILITY_FOREGROUND");
+        CAPS.put(20, "NET_CAPABILITY_NOT_CONGESTED");
+        CAPS.put(21, "NET_CAPABILITY_NOT_SUSPENDED");
+        CAPS.put(22, "NET_CAPABILITY_OEM_PAID");
     }
 
     public static String extractCapNames(NetworkCapabilities caps) {
@@ -266,6 +268,33 @@ public class DeviceInfoHelper {
     }
 
     /**
+     * Converts bluetooth adapter state to a human-readable string
+     *
+     * @param state one of BluetoothAdapter.AdapterState constants
+     * @return the string representation of the state constant
+     */
+    public String toBluetoothStateString(int state) {
+        switch (state) {
+            case STATE_OFF:
+                return "OFF";
+            case STATE_TURNING_ON:
+                return "TURNING_ON";
+            case STATE_ON:
+                return "ON";
+            case STATE_TURNING_OFF:
+                return "TURNING_OFF";
+            case 14:
+                return "BLE_TURNING_ON";
+            case 15:
+                return "BLE_ON";
+            case 16:
+                return "BLE_TURNING_OFF";
+            default:
+                return String.format("UNKNOWN (%s)", state);
+        }
+    }
+
+    /**
      * Get current system locale
      */
     @NonNull
@@ -281,6 +310,7 @@ public class DeviceInfoHelper {
     @NonNull
     public String getTimeZone() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //noinspection Since15
             return TimeZone.getDefault().toZoneId().getId();
         }
         return TimeZone.getDefault().getID();
