@@ -25,8 +25,6 @@ import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 public abstract class Device {
 
     public static UiDevice getUiDevice() {
-        // 'adb shell am instrument -w -e DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES true' makes
-        // InstrumentationRegistry.getArguments().getString("DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES", "false") true
         boolean disableSuppressAccessibilityService = Boolean.parseBoolean(
                 InstrumentationRegistry.getArguments().getString("DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES", "false"));
         if (disableSuppressAccessibilityService && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
