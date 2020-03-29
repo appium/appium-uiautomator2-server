@@ -56,22 +56,13 @@ public class ServerInstrumentation {
     private long wakeLockTimeoutMs = 0;
     private boolean isServerStopped;
 
-    private static Boolean shouldDisableSuppressAccessibilityService = getDisableSuppressAccessibilityService();
-
-    private static Boolean getDisableSuppressAccessibilityService() {
-        String d = InstrumentationRegistry.getArguments().getString("DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES");
-        if ( d == null) {
-            return null;
-        }
-        return Boolean.parseBoolean(d);
-    }
-
     private void setAccessibilityServiceState() {
-        if (shouldDisableSuppressAccessibilityService == null ||
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        String disableSuppressAccessibilityService = InstrumentationRegistry.getArguments().getString("DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES");
+        if (disableSuppressAccessibilityService == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             return;
         }
 
+        boolean shouldDisableSuppressAccessibilityService = Boolean.parseBoolean(disableSuppressAccessibilityService);
         if (shouldDisableSuppressAccessibilityService) {
             Configurator.getInstance().setUiAutomationFlags(
                     UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES);
