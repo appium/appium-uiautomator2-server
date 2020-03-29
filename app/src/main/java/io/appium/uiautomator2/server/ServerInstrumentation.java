@@ -59,18 +59,17 @@ public class ServerInstrumentation {
     private static boolean shouldDisableSuppressAccessibilityService = Boolean.parseBoolean(
             InstrumentationRegistry.getArguments().getString("DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES", "false"));
 
-    private static void setDefaultAutomationFlag() {
+    private void setDefaultAutomationFlag() {
         // Need to ensure enabling suppress accessibility service
         Configurator.getInstance().setUiAutomationFlags(0);
     }
 
-    private static void disableSuppressAccessibilityService () {
+    private void disableSuppressAccessibilityService() {
         // The flag is necessary not to stop running accessibility service
         // https://developer.android.com/reference/android/app/UiAutomation
         if (shouldDisableSuppressAccessibilityService && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            int currentFlags = Configurator.getInstance().getUiAutomationFlags();
             Configurator.getInstance().setUiAutomationFlags(
-                    currentFlags + UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES);
+                    UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES);
         }
     }
 
