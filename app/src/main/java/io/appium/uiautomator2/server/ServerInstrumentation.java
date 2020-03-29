@@ -64,7 +64,7 @@ public class ServerInstrumentation {
         Configurator.getInstance().setUiAutomationFlags(0);
     }
 
-    private void disableSuppressAccessibilityService() {
+    private void setAccessibilityServiceState() {
         // The flag is necessary not to stop running accessibility service
         // https://developer.android.com/reference/android/app/UiAutomation
         if (shouldDisableSuppressAccessibilityService && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -82,7 +82,7 @@ public class ServerInstrumentation {
         this.powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 
         setDefaultAutomationFlag();
-        disableSuppressAccessibilityService();
+        setAccessibilityServiceState();
     }
 
     public static synchronized ServerInstrumentation getInstance() {
