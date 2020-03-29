@@ -56,20 +56,29 @@ public class ServerInstrumentation {
     private long wakeLockTimeoutMs = 0;
     private boolean isServerStopped;
 
-    private static boolean shouldDisableSuppressAccessibilityService = Boolean.parseBoolean(
-            InstrumentationRegistry.getArguments().getString("DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES", "false"));
+    private static Boolean shouldDisableSuppressAccessibilityService = getDisableSuppressAccessibilityService();
 
-    private void setDefaultAutomationFlag() {
-        // Need to ensure enabling suppress accessibility service
-        Configurator.getInstance().setUiAutomationFlags(0);
+    private static Boolean getDisableSuppressAccessibilityService() {
+        String d = InstrumentationRegistry.getArguments().getString("DISABLE_SUPPRESS_ACCESSIBILITY_SERVICES");
+        if ( d == null) {
+            return null;
+        }
+        return Boolean.parseBoolean(d);
     }
 
     private void setAccessibilityServiceState() {
-        // The flag is necessary not to stop running accessibility service
-        // https://developer.android.com/reference/android/app/UiAutomation
-        if (shouldDisableSuppressAccessibilityService && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (shouldDisableSuppressAccessibilityService == null ||
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return;
+        }
+
+        if (shouldDisableSuppressAccessibilityService) {
             Configurator.getInstance().setUiAutomationFlags(
                     UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES);
+        } else {
+            // We can disable UiAutomation.FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES
+            // only when we set the value as zero
+            Configurator.getInstance().setUiAutomationFlags(0);
         }
     }
 
@@ -81,7 +90,6 @@ public class ServerInstrumentation {
         this.serverPort = serverPort;
         this.powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 
-        setDefaultAutomationFlag();
         setAccessibilityServiceState();
     }
 
