@@ -1,12 +1,13 @@
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd33cddf5f0b4ae2af8dbced5afe6b49)](https://app.codacy.com/app/dpgraham/appium-uiautomator2-server?utm_source=github.com&utm_medium=referral&utm_content=appium/appium-uiautomator2-server&utm_campaign=badger)
-[![Build Status](https://travis-ci.org/appium/appium-uiautomator2-server.svg?branch=master)](https://travis-ci.org/appium/appium-uiautomator2-server) [![Greenkeeper badge](https://badges.greenkeeper.io/appium/appium-uiautomator2-server.svg)](https://greenkeeper.io/)
 ### appium-uiautomator2-server
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd33cddf5f0b4ae2af8dbced5afe6b49)](https://app.codacy.com/app/dpgraham/appium-uiautomator2-server?utm_source=github.com&utm_medium=referral&utm_content=appium/appium-uiautomator2-server&utm_campaign=badger)
+[![Build Status](https://travis-ci.org/appium/appium-uiautomator2-server.svg?branch=master)](https://travis-ci.org/appium/appium-uiautomator2-server)
 
 A netty server that runs on the device listening for commands and executes using UiAutomator V2.
 
 ### building project
-build the android project using below commands 
+build the android project using below commands
 
 `gradle clean assembleServerDebug assembleServerDebugAndroidTest`
 
@@ -19,12 +20,12 @@ push both src and test apks to the device and execute the instrumentation tests.
 
 
 ### run unitTest
-build the unitTest flavor using the below commands 
+build the unitTest flavor using the below commands
 
 `gradle clean assembleE2ETestDebug assembleE2ETestDebugAndroidTest`
 
 
-unitTest flavor contains tests for handlers and can be invoked by using following command 
+unitTest flavor contains tests for handlers and can be invoked by using following command
 
 `gradle clean connectedE2ETestDebugAndroidTest`
 
