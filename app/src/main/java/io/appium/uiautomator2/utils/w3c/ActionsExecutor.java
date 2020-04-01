@@ -87,7 +87,11 @@ public class ActionsExecutor {
     }
 
     private static void logEvent(Object event, long eventTime, boolean result) {
-        Logger.debug(String.format("[%s (%s)] Synthesized: %s", eventTime, result ? "success" : "fail", event.toString()));
+        Logger.info(String.format("[%s (%s)] Synthesized: %s", eventTime, result ? "success" : "fail", event.toString()));
+        long currentTime = SystemClock.uptimeMillis();
+        if (currentTime > eventTime + EVENT_INJECTION_DELAY_MS) {
+            Logger.info(String.format("The event has been delayed for %sms", currentTime - eventTime));
+        }
     }
 
     private boolean injectKeyEvent(KeyInputEventParams eventParam, long startTimestamp,
@@ -157,8 +161,6 @@ public class ActionsExecutor {
                 return InputDevice.SOURCE_MOUSE;
             case MotionEvent.TOOL_TYPE_STYLUS:
                 return InputDevice.SOURCE_STYLUS;
-            case MotionEvent.TOOL_TYPE_FINGER:
-                return InputDevice.SOURCE_TOUCHSCREEN;
             default:
                 return InputDevice.SOURCE_TOUCHSCREEN;
         }
@@ -250,6 +252,7 @@ public class ActionsExecutor {
             if (synthesizedEvent != null) {
                 result &= interactionController.injectEventSync(synthesizedEvent, false);
                 logEvent(synthesizedEvent, eventTime, result);
+                synthesizedEvent.recycle();
             }
         }
         return result;
