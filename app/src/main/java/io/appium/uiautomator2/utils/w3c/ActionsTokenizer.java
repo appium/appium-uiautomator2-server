@@ -367,8 +367,8 @@ public class ActionsTokenizer {
                     final KeyInputEventParams evtParams = new KeyInputEventParams(
                             chainEntryPointDelta,
                             itemType.equals(ACTION_ITEM_TYPE_KEY_DOWN)
-                                ? KeyEvent.ACTION_DOWN
-                                : KeyEvent.ACTION_UP,
+                                    ? KeyEvent.ACTION_DOWN
+                                    : KeyEvent.ACTION_UP,
                             value.codePointAt(0)
                     );
                     recordEventParams(timeDelta, evtParams);
@@ -409,6 +409,7 @@ public class ActionsTokenizer {
         long recentUpDelta = -1;
         long recentDownDelta = -1;
         boolean isPointerDown = false;
+        boolean isHovering = false;
         int recentButton = 0;
         final JSONArray actionItems = action.getJSONArray(ACTION_KEY_ACTIONS);
         for (int actionItemIdx = 0; actionItemIdx < actionItems.length(); actionItemIdx++) {
@@ -457,7 +458,7 @@ public class ActionsTokenizer {
                 }
                 break;
                 case ACTION_ITEM_TYPE_POINTER_MOVE: {
-                    final long duration = alignDuration(extractDuration(action, actionItem));
+                    long duration = alignDuration(extractDuration(action, actionItem));
                     if (duration < EVENT_INJECTION_DELAY_MS) {
                         break;
                     }
@@ -470,25 +471,26 @@ public class ActionsTokenizer {
                         recordEventParams(timeDelta, null);
                         break;
                     }
-                    int actionCode = MotionEvent.ACTION_MOVE;
+                    int actionCode = !isPointerDown && isToolTypeMouse
+                            ? MotionEvent.ACTION_HOVER_MOVE
+                            : MotionEvent.ACTION_MOVE;
                     final MotionEvent.PointerCoords startCoordinates = extractCoordinates(actionId, actionItems, actionItemIdx - 1);
                     final MotionEvent.PointerCoords endCoordinates = extractCoordinates(actionId, actionItems, actionItemIdx);
 
                     final long startDelta = timeDelta;
                     final long firstActionDelta = recentDownDelta == startDelta || recentUpDelta == startDelta
                             ? startDelta + EVENT_INJECTION_DELAY_MS : startDelta;
-                    final long stepsCount = (startDelta + duration - firstActionDelta) / EVENT_INJECTION_DELAY_MS;
-                    if (!isPointerDown && isToolTypeMouse) {
-                        if (duration <= EVENT_INJECTION_DELAY_MS * 3) {
-                            // Hover gesture should also include enter and exit
-                            // events, so we must book enough time for these
-                            timeDelta += duration;
-                            recordEventParams(timeDelta, null);
-                            break;
-                        }
+                    long stepsCount = (startDelta + duration - firstActionDelta) / EVENT_INJECTION_DELAY_MS;
+                    if (actionCode == MotionEvent.ACTION_HOVER_MOVE && !isHovering) {
                         recordEventParams(firstActionDelta, new MotionInputEventParams(
                                 firstActionDelta, MotionEvent.ACTION_HOVER_ENTER, startCoordinates, 0, props));
-                        actionCode = MotionEvent.ACTION_HOVER_MOVE;
+                        isHovering = true;
+                        if (stepsCount < 3) {
+                            // Hover gesture should also include enter and exit
+                            // events, so we must book enough time for these
+                            stepsCount = 3;
+                            duration = EVENT_INJECTION_DELAY_MS * 3;
+                        }
                     } else {
                         recordEventParams(firstActionDelta, new MotionInputEventParams(chainEntryPointDelta, MotionEvent.ACTION_MOVE,
                                 stepsCount <= 1 ? endCoordinates : startCoordinates, recentButton, props));
@@ -499,13 +501,13 @@ public class ActionsTokenizer {
                         final MotionEvent.PointerCoords currentCoordinates = new MotionEvent.PointerCoords();
                         currentCoordinates.x = startCoordinates.x + (endCoordinates.x - startCoordinates.x) / stepsCount * step;
                         currentCoordinates.y = startCoordinates.y + (endCoordinates.y - startCoordinates.y) / stepsCount * step;
-                        if (step == stepsCount && actionCode == MotionEvent.ACTION_HOVER_MOVE) {
+                        if (step == stepsCount && isHovering) {
                             recordEventParams(timeDelta, new MotionInputEventParams(
                                     firstActionDelta, MotionEvent.ACTION_HOVER_EXIT, endCoordinates, 0, props));
+                            isHovering = false;
                         } else {
                             recordEventParams(timeDelta, new MotionInputEventParams(
-                                    actionCode == MotionEvent.ACTION_HOVER_MOVE ? firstActionDelta : chainEntryPointDelta,
-                                    actionCode, currentCoordinates, recentButton, props));
+                                    chainEntryPointDelta, actionCode, currentCoordinates, recentButton, props));
                         }
                         timeDelta += EVENT_INJECTION_DELAY_MS;
                     }
