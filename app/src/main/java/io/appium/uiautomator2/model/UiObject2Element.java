@@ -30,8 +30,6 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
-import org.apache.commons.lang.StringUtils;
-
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
@@ -45,6 +43,7 @@ import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
+import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class UiObject2Element implements AndroidElement {
 
@@ -176,7 +175,7 @@ public class UiObject2Element implements AndroidElement {
 
     @Override
     public String getContextId() {
-        return StringUtils.isBlank(contextId) ? null : contextId;
+        return isBlank(contextId) ? null : contextId;
     }
 
     @Override

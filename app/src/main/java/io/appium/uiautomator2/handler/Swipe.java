@@ -1,7 +1,22 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.uiautomator2.handler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.SwipeModel;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
@@ -19,6 +34,9 @@ import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+import static io.appium.uiautomator2.utils.ModelValidators.requireDouble;
+import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
 
 public class Swipe extends SafeRequestHandler {
 
@@ -27,17 +45,14 @@ public class Swipe extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
-            JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         final Point absStartPos;
         final Point absEndPos;
         final boolean isSwipePerformed;
         final SwipeArguments swipeArgs;
-        JSONObject payload = toJSON(request);
-        Logger.info("JSON Payload : ", payload.toString());
         swipeArgs = new SwipeArguments(request);
 
-        if (payload.has("elementId")) {
+        if (swipeArgs.element != null) {
             absStartPos = swipeArgs.element.getAbsolutePosition(swipeArgs.start);
             absEndPos = swipeArgs.element.getAbsolutePosition(swipeArgs.end);
             Logger.debug("Swiping the element with ElementId " + swipeArgs.element.getId()
@@ -65,23 +80,22 @@ public class Swipe extends SafeRequestHandler {
         throw new InvalidElementStateException("Swipe did not complete successfully");
     }
 
-    public static class SwipeArguments {
+    private static class SwipeArguments {
         public final Point start;
         public final Point end;
         public final Integer steps;
         public AndroidElement element;
 
-        public SwipeArguments(final IHttpRequest request) throws JSONException {
-            JSONObject payload = toJSON(request);
-            if (payload.has("elementId")) {
-                Logger.info("Payload has elementId" + payload);
-                String id = payload.getString("elementId");
+        public SwipeArguments(final IHttpRequest request) {
+            SwipeModel model = toModel(request, SwipeModel.class);
+            if (model.elementId != null) {
+                Logger.info("Payload has elementId: " + model.elementId);
                 Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-                element = session.getKnownElements().getElementFromCache(id);
+                element = session.getKnownElements().getElementFromCache(model.elementId);
             }
-            start = new Point(payload.get("startX"), payload.get("startY"));
-            end = new Point(payload.get("endX"), payload.get("endY"));
-            steps = (Integer) payload.get("steps");
+            start = new Point(requireDouble(model, "startX"), requireDouble(model, "startY"));
+            end = new Point(requireDouble(model, "endX"), requireDouble(model, "endY"));
+            steps = requireInteger(model, "steps");
         }
     }
 }

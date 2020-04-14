@@ -2,15 +2,19 @@ package io.appium.uiautomator2.handler;
 
 import android.view.MotionEvent.PointerCoords;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.appium_touch_actions.GestureModel;
+import io.appium.uiautomator2.model.api.appium_touch_actions.TouchActionsModel;
+import io.appium.uiautomator2.model.api.appium_touch_actions.TouchLocationModel;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+
+import java.util.List;
+
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
 public class MultiPointerGesture extends SafeRequestHandler {
 
@@ -19,7 +23,7 @@ public class MultiPointerGesture extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         final PointerCoords[][] pcs = parsePointerCoords(request);
         if (!UiAutomatorBridge.getInstance().getInteractionController().performMultiPointerGesture(pcs)) {
             throw new InvalidElementStateException("Unable to perform multi pointer gesture");
@@ -27,14 +31,14 @@ public class MultiPointerGesture extends SafeRequestHandler {
         return new AppiumResponse(getSessionId(request));
     }
 
-    private PointerCoords[][] parsePointerCoords(final IHttpRequest request) throws JSONException {
-        final JSONArray actions = (JSONArray) toJSON(request).get("actions");
+    private PointerCoords[][] parsePointerCoords(final IHttpRequest request) {
+        TouchActionsModel model = toModel(request, TouchActionsModel.class);
 
-        final double time = computeLongestTime(actions);
+        final double time = computeLongestTime(model.actions);
 
-        final PointerCoords[][] pcs = new PointerCoords[actions.length()][];
-        for (int i = 0; i < actions.length(); i++) {
-            final JSONArray gestures = actions.getJSONArray(i);
+        final PointerCoords[][] pcs = new PointerCoords[model.actions.size()][];
+        for (int i = 0; i < model.actions.size(); i++) {
+            final List<GestureModel> gestures = model.actions.get(i);
 
             pcs[i] = gesturesToPointerCoords(time, gestures);
         }
@@ -42,22 +46,18 @@ public class MultiPointerGesture extends SafeRequestHandler {
         return pcs;
     }
 
-    private double computeLongestTime(final JSONArray actions) throws JSONException {
+    private double computeLongestTime(List<List<GestureModel>> actions) {
         double max = 0.0;
-        for (int i = 0; i < actions.length(); i++) {
-            final JSONArray gestures = actions.getJSONArray(i);
-            final double endTime = gestures.getJSONObject(gestures.length() - 1)
-                    .getDouble("time");
+        for (final List<GestureModel> gestures : actions) {
+            final double endTime = gestures.get(gestures.size() - 1).time;
             if (endTime > max) {
                 max = endTime;
             }
         }
-
         return max;
     }
 
-    private PointerCoords[] gesturesToPointerCoords(final double maxTime,
-                                                    final JSONArray gestures) throws JSONException {
+    private PointerCoords[] gesturesToPointerCoords(final double maxTime, List<GestureModel> gestures) {
         // gestures, e.g.:
         // [
         // {"touch":{"y":529.5,"x":120},"time":0.2},
@@ -74,30 +74,28 @@ public class MultiPointerGesture extends SafeRequestHandler {
         final PointerCoords[] pc = new PointerCoords[steps];
 
         int i = 1;
-        JSONObject current = gestures.getJSONObject(0);
-        double currentTime = current.getDouble("time");
+        GestureModel current = gestures.get(0);
+        double currentTime = current.time;
         double runningTime = 0.0;
-        final int gesturesLength = gestures.length();
+        final int gesturesLength = gestures.size();
         for (int j = 0; j < steps; j++) {
             if (runningTime > currentTime && i < gesturesLength) {
-                current = gestures.getJSONObject(i++);
-                currentTime = current.getDouble("time");
+                current = gestures.get(i++);
+                currentTime = current.time;
             }
 
             pc[j] = createPointerCoords(current);
-
             runningTime += 0.005;
         }
 
         return pc;
     }
 
-    private PointerCoords createPointerCoords(final JSONObject obj)
-            throws JSONException {
-        final JSONObject o = obj.getJSONObject("touch");
+    private PointerCoords createPointerCoords(GestureModel gesture) {
+        final TouchLocationModel o = gesture.touch;
 
-        final int x = o.getInt("x");
-        final int y = o.getInt("y");
+        final int x = o.x.intValue();
+        final int y = o.y.intValue();
 
         final PointerCoords p = new PointerCoords();
         p.size = 1;

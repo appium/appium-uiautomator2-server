@@ -24,8 +24,8 @@ import android.view.Display;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import io.appium.uiautomator2.utils.StringHelpers;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jdom2.Document;
 import org.jdom2.filter.Filters;
 import org.jdom2.input.JDOMParseException;
@@ -94,7 +94,7 @@ public class AccessibilityNodeInfoDumper {
     }
 
     private static String toXmlNodeName(@Nullable String className) {
-        if (StringUtils.isBlank(className)) {
+        if (StringHelpers.isBlank(className)) {
             return DEFAULT_VIEW_CLASS_NAME;
         }
 
@@ -110,7 +110,7 @@ public class AccessibilityNodeInfoDumper {
         }
 
         fixedName = toNodeName(fixedName);
-        if (StringUtils.isBlank(fixedName)) {
+        if (StringHelpers.isBlank(fixedName)) {
             fixedName = DEFAULT_VIEW_CLASS_NAME;
         }
         if (!fixedName.equals(className)) {

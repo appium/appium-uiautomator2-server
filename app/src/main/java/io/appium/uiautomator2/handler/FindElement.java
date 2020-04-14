@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.handler;
 
 import io.appium.uiautomator2.model.api.FindElementModel;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.UUID;
 
@@ -49,6 +48,7 @@ import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocat
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 import static io.appium.uiautomator2.utils.ModelValidators.requireString;
+import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class FindElement extends SafeRequestHandler {
 
@@ -69,7 +69,7 @@ public class FindElement extends SafeRequestHandler {
 
         final Object element;
         try {
-            element = StringUtils.isBlank(contextId)
+            element = isBlank(contextId)
                     ? this.findElement(by)
                     : this.findElement(by, contextId);
         } catch (ClassNotFoundException e) {
@@ -83,8 +83,7 @@ public class FindElement extends SafeRequestHandler {
         AndroidElement androidElement = getAndroidElement(id, element, true, by, contextId);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         session.getKnownElements().add(androidElement);
-        JSONObject result = ElementHelpers.toJSON(androidElement);
-        return new AppiumResponse(getSessionId(request), result);
+        return new AppiumResponse(getSessionId(request), ElementHelpers.toModel(androidElement));
     }
 
     @Nullable

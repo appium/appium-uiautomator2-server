@@ -35,7 +35,6 @@ import io.appium.uiautomator2.common.exceptions.NoAlertOpenException;
 
 import static android.text.TextUtils.join;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
-import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class AlertHelpers {
     private static final String TAG = AlertHelpers.class.getSimpleName();
@@ -205,7 +204,7 @@ public class AlertHelpers {
             }
 
             final String text = element.getText();
-            if (isBlank(text)) {
+            if (StringHelpers.isBlank(text)) {
                 continue;
             }
 

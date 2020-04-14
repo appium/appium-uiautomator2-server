@@ -16,8 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.DragModel;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
@@ -34,6 +33,9 @@ import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+import static io.appium.uiautomator2.utils.ModelValidators.requireDouble;
+import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
 
 public class Drag extends SafeRequestHandler {
     public Drag(String mappedUri) {
@@ -45,10 +47,7 @@ public class Drag extends SafeRequestHandler {
         // DragArguments is created on each execute which prevents leaking state
         // across executions.
         final DragArguments dragArgs = new DragArguments(request);
-        if (toJSON(request).has("elementId")) {
-            return dragElement(dragArgs, request);
-        }
-        return drag(dragArgs, request);
+        return dragArgs.el == null ? drag(dragArgs, request) : dragElement(dragArgs, request);
     }
 
     private AppiumResponse drag(final DragArguments dragArgs, final IHttpRequest request) {
@@ -104,30 +103,26 @@ public class Drag extends SafeRequestHandler {
     }
 
     private static class DragArguments {
-
         public final Point start;
         public final Point end;
         public final Integer steps;
         public AndroidElement el;
         public AndroidElement destEl;
 
-        public DragArguments(final IHttpRequest request) throws JSONException {
-
-            JSONObject payload = toJSON(request);
+        public DragArguments(final IHttpRequest request) {
+            DragModel model = toModel(request, DragModel.class);
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
 
-            if (payload.has("elementId")) {
-                String id = payload.getString("elementId");
-                el = session.getKnownElements().getElementFromCache(id);
+            if (model.elementId != null) {
+                el = session.getKnownElements().getElementFromCache(model.elementId);
             }
-            if (payload.has("destElId")) {
-                String id = payload.getString("destElId");
-                destEl = session.getKnownElements().getElementFromCache(id);
+            if (model.destElId != null) {
+                destEl = session.getKnownElements().getElementFromCache(model.destElId);
             }
 
-            start = new Point(payload.get("startX"), payload.get("startY"));
-            end = new Point(payload.get("endX"), payload.get("endY"));
-            steps = (Integer) payload.get("steps");
+            start = new Point(requireDouble(model, "startX"), requireDouble(model, "startY"));
+            end = new Point(requireDouble(model, "endX"), requireDouble(model, "endY"));
+            steps = requireInteger(model, "steps");
         }
     }
 }

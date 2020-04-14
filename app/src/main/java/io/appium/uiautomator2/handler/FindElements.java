@@ -21,10 +21,8 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import io.appium.uiautomator2.common.exceptions.NotImplementedException;
+import io.appium.uiautomator2.model.api.ElementModel;
 import io.appium.uiautomator2.model.api.FindElementModel;
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +55,7 @@ import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocat
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelectors;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 import static io.appium.uiautomator2.utils.ModelValidators.requireString;
+import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class FindElements extends SafeRequestHandler {
 
@@ -68,7 +67,7 @@ public class FindElements extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        JSONArray result = new JSONArray();
+        List<ElementModel> result = new ArrayList<>();
         FindElementModel model = toModel(request, FindElementModel.class);
         final String method = requireString(model, "strategy");
         final String selector = requireString(model,"selector");
@@ -80,7 +79,7 @@ public class FindElements extends SafeRequestHandler {
 
         final List<Object> elements;
         try {
-            elements = StringUtils.isBlank(contextId)
+            elements = isBlank(contextId)
                     ? this.findElements(by)
                     : this.findElements(by, contextId);
 
@@ -89,8 +88,7 @@ public class FindElements extends SafeRequestHandler {
                 String id = UUID.randomUUID().toString();
                 AndroidElement androidElement = getAndroidElement(id, element, false, by, contextId);
                 session.getKnownElements().add(androidElement);
-                JSONObject jsonElement = ElementHelpers.toJSON(androidElement);
-                result.put(jsonElement);
+                result.add(ElementHelpers.toModel(androidElement));
             }
             return new AppiumResponse(getSessionId(request), result);
         } catch (ElementNotFoundException ignored) {

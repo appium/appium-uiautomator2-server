@@ -18,9 +18,8 @@ package io.appium.uiautomator2.handler;
 
 import android.graphics.Rect;
 
-import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.appium_touch_actions.TouchEventModel;
+import io.appium.uiautomator2.model.api.appium_touch_actions.TouchEventParams;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
@@ -35,21 +34,23 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Logger;
 
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
+
 public abstract class TouchEvent extends SafeRequestHandler {
     protected int clickX, clickY;
     protected AndroidElement element;
-    protected JSONObject params;
+    protected TouchEventParams params;
 
     public TouchEvent(String mappedUri) {
         super(mappedUri);
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException,
-            UiObjectNotFoundException {
-        params = new JSONObject(toJSON(request).getString("params"));
-        final String elementId = W3CElementUtils.extractElementId(params);
-        if (elementId != null && !(params.has("x") && params.has("y"))) {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+        params = toModel(request, TouchEventModel.class).params;
+        final String elementId = params.getUnifiedId();
+        if (elementId != null && params.x == null && params.y == null) {
             /*
              * Finding centerX and centerY.
              */
@@ -62,8 +63,8 @@ public abstract class TouchEvent extends SafeRequestHandler {
             clickX = bounds.centerX();
             clickY = bounds.centerY();
         } else { // no element so extract x and y from params
-            clickX = params.getInt("x");
-            clickY = params.getInt("y");
+            clickX = requireInteger(params, "x");
+            clickY = requireInteger(params,"y");
         }
 
         if (executeTouchEvent()) {
@@ -72,7 +73,7 @@ public abstract class TouchEvent extends SafeRequestHandler {
         throw new InvalidElementStateException("Cannot perform touch on the element");
     }
 
-    protected abstract boolean executeTouchEvent() throws UiObjectNotFoundException, UiAutomator2Exception, JSONException;
+    protected abstract boolean executeTouchEvent() throws UiObjectNotFoundException, UiAutomator2Exception;
 
     protected void printEventDebugLine(final String methodName, final Integer... duration) {
         String extra = "";

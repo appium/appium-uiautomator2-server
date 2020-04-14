@@ -20,6 +20,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class StringHelpers {
+    public static boolean isBlank(@Nullable String str) {
+        return str == null || str.trim().length() == 0;
+    }
+
     @Nullable
     public static String charSequenceToNullableString(@Nullable CharSequence input) {
         return charSequenceToString(input, false);

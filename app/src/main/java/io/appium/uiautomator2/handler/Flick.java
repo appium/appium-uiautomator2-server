@@ -1,6 +1,6 @@
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.model.api.ElementIdModel;
+import io.appium.uiautomator2.model.api.ElementModel;
 import io.appium.uiautomator2.model.api.FlickByOffsetModel;
 import io.appium.uiautomator2.model.api.FlickBySpeedModel;
 
@@ -34,7 +34,7 @@ public class Flick extends SafeRequestHandler {
         Point start = new Point(0.5, 0.5);
         Point end = new Point();
         double steps;
-        final String elementId = toModel(request, ElementIdModel.class).getUnifiedId();
+        final String elementId = toModel(request, ElementModel.class).getUnifiedId();
         if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             AndroidElement element = session.getKnownElements().getElementFromCache(elementId);

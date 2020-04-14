@@ -30,7 +30,7 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
 
 import static io.appium.uiautomator2.core.AccessibilityNodeInfoGetter.fromUiObject;
-import static org.apache.commons.lang.StringUtils.isBlank;
+import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class ElementLocationHelpers {
     /**

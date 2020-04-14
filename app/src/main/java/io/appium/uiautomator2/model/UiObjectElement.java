@@ -28,8 +28,6 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -49,6 +47,7 @@ import io.appium.uiautomator2.utils.PositionHelper;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
+import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class UiObjectElement implements AndroidElement {
 
@@ -181,7 +180,7 @@ public class UiObjectElement implements AndroidElement {
 
     @Override
     public String getContextId() {
-        return StringUtils.isBlank(contextId) ? null : contextId;
+        return isBlank(contextId) ? null : contextId;
     }
 
     @Override

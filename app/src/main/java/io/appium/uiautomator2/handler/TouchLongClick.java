@@ -18,8 +18,6 @@ package io.appium.uiautomator2.handler;
 
 import android.os.SystemClock;
 
-import org.json.JSONException;
-
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.InteractionController;
@@ -47,11 +45,8 @@ public class TouchLongClick extends TouchEvent {
     }
 
     @Override
-    protected boolean executeTouchEvent() throws UiObjectNotFoundException,
-            UiAutomator2Exception, JSONException {
-        int duration = params.has("duration")
-                ? Integer.parseInt(params.getString("duration"))
-                : 2000;
+    protected boolean executeTouchEvent() throws UiObjectNotFoundException, UiAutomator2Exception {
+        int duration = params.duration != null ? params.duration : 2000;
         printEventDebugLine("TouchLongClick", duration);
         if (correctLongClick(clickX, clickY, duration)) {
             return true;

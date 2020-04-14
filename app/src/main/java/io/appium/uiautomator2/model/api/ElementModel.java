@@ -20,19 +20,22 @@ import androidx.annotation.Nullable;
 import com.google.gson.annotations.SerializedName;
 import io.appium.uiautomator2.model.AndroidElement;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 import static io.appium.uiautomator2.utils.w3c.ElementConstants.JWP_ELEMENT_ID_KEY_NAME;
 import static io.appium.uiautomator2.utils.w3c.ElementConstants.W3C_ELEMENT_ID_KEY_NAME;
-import static org.apache.commons.lang.StringUtils.isBlank;
 
-public class ElementIdModel implements BaseModel {
+public class ElementModel implements BaseModel {
     @SerializedName(JWP_ELEMENT_ID_KEY_NAME)
     public String jwpElementId;
     @SerializedName(W3C_ELEMENT_ID_KEY_NAME)
     public String w3cElementId;
 
-    public ElementIdModel() {}
+    public ElementModel() {}
 
-    public ElementIdModel(AndroidElement source) {
+    public ElementModel(AndroidElement source) {
         this.jwpElementId = source.getId();
         this.w3cElementId = source.getId();
     }
@@ -40,5 +43,12 @@ public class ElementIdModel implements BaseModel {
     @Nullable
     public String getUnifiedId() {
         return !isBlank(w3cElementId) ? w3cElementId : jwpElementId;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put(JWP_ELEMENT_ID_KEY_NAME, jwpElementId);
+        result.put(W3C_ELEMENT_ID_KEY_NAME, w3cElementId);
+        return result;
     }
 }

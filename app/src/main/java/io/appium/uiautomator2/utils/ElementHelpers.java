@@ -22,7 +22,8 @@ import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
-import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
+import io.appium.uiautomator2.model.api.ElementModel;
+import io.appium.uiautomator2.model.api.ElementRectModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,7 +32,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -50,7 +53,6 @@ import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.core.EventRegister;
 import io.appium.uiautomator2.core.ReturningRunnable;
 import io.appium.uiautomator2.core.UiObjectChildGenerator;
-import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.model.AccessibilityScrollData;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
@@ -60,7 +62,6 @@ import io.appium.uiautomator2.model.UiObject2Element;
 import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
-import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
@@ -121,32 +122,35 @@ public abstract class ElementHelpers {
      * <p>
      * For example, appium returns elements like [{"ELEMENT":1}, {"ELEMENT":2}]
      */
-    public static JSONObject toJSON(AndroidElement el) throws JSONException, UiObjectNotFoundException {
-        JSONObject jsonObject = new JSONObject();
-        W3CElementUtils.attachElementId(el, jsonObject);
+    public static Object toModel(AndroidElement el) throws UiObjectNotFoundException {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+        ElementModel model = new ElementModel(el);
         if (session.shouldUseCompactResponses()) {
-            return jsonObject;
+            return model;
         }
+
+        Map<String, Object> result = new HashMap<>(model.toMap());
         for (String field : session.getElementResponseAttributes()) {
             try {
                 if (Objects.equals(field, "name")) {
-                    jsonObject.put(field, formatNull(el.getContentDesc()));
+                    result.put(field, el.getContentDesc());
                 } else if (Objects.equals(field, "text")) {
-                    jsonObject.put(field, formatNull(el.getText()));
+                    result.put(field, el.getText());
                 } else if (Objects.equals(field, "rect")) {
-                    jsonObject.put(field, formatNull(GetRect.getElementRectJSON(el)));
-                } else if (Objects.equals(field, "enabled") || Objects.equals(field, "displayed") || Objects.equals(field, "selected")) {
-                    jsonObject.put(field, formatNull(el.getAttribute(field)));
+                    result.put(field, new ElementRectModel(el.getBounds()));
+                } else if (Objects.equals(field, "enabled")
+                        || Objects.equals(field, "displayed")
+                        || Objects.equals(field, "selected")) {
+                    result.put(field, el.getAttribute(field));
                 } else if (field.startsWith(ATTRIBUTE_PREFIX)) {
                     String attributeName = field.substring(ATTRIBUTE_PREFIX.length());
-                    jsonObject.put(field, formatNull(el.getAttribute(attributeName)));
+                    result.put(field, el.getAttribute(attributeName));
                 }
             } catch (NoSuchAttributeException e) {
                 // ignore field
             }
         }
-        return jsonObject;
+        return result;
     }
 
     /**
@@ -374,6 +378,7 @@ public abstract class ElementHelpers {
                 return 0;
             }
 
+            @SuppressWarnings("IntegerDivisionInFloatingPointContext")
             int numRows = (int) Math.floor(itemCount / itemsPerRow);
             if (itemCount % itemsPerRow > 0) {
                 // we might have an additional part-row
@@ -424,10 +429,10 @@ public abstract class ElementHelpers {
     }
 
     private static class ContentSize {
-        private int width;
-        private int height;
-        private int top;
-        private int left;
+        private final int width;
+        private final int height;
+        private final int top;
+        private final int left;
         private int scrollableOffset;
         private int touchPadding;
 
