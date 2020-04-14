@@ -1,8 +1,8 @@
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.ElementIdModel;
+import io.appium.uiautomator2.model.api.FlickByOffsetModel;
+import io.appium.uiautomator2.model.api.FlickBySpeedModel;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
@@ -19,6 +19,8 @@ import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
 
 public class Flick extends SafeRequestHandler {
 
@@ -27,14 +29,12 @@ public class Flick extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
-            JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("Get Text of element command");
         Point start = new Point(0.5, 0.5);
         Point end = new Point();
         double steps;
-        JSONObject payload = toJSON(request);
-        final String elementId = W3CElementUtils.extractElementId(payload);
+        final String elementId = toModel(request, ElementIdModel.class).getUnifiedId();
         if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
@@ -42,17 +42,18 @@ public class Flick extends SafeRequestHandler {
                 throw new ElementNotFoundException();
             }
             start = element.getAbsolutePosition(start);
-            final Integer xoffset = Integer.parseInt(payload.getString("xoffset"));
-            final Integer yoffset = Integer.parseInt(payload.getString("yoffset"));
-            final int speed = Integer.parseInt(payload.getString("speed"));
+            FlickByOffsetModel model = toModel(request, FlickByOffsetModel.class);
+            final Integer xoffset = requireInteger(model, "xoffset");
+            final Integer yoffset = requireInteger(model, "yoffset");
+            final int speed = requireInteger(model, "speed");
 
             steps = 1250.0 / speed + 1;
             end.x = start.x + xoffset;
             end.y = start.y + yoffset;
-
         } else {
-            final Integer xSpeed = Integer.parseInt(payload.getString("xspeed"));
-            final Integer ySpeed = Integer.parseInt(payload.getString("yspeed"));
+            FlickBySpeedModel model = toModel(request, FlickBySpeedModel.class);
+            final Integer xSpeed = requireInteger(model, "xspeed");
+            final Integer ySpeed = requireInteger(model, "yspeed");
 
             final double speed = Math.min(1250.0, Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed));
             steps = 1250.0 / speed + 1;

@@ -1,8 +1,6 @@
 package io.appium.uiautomator2.handler;
 
-import com.jayway.jsonpath.InvalidPathException;
-import com.jayway.jsonpath.JsonPath;
-import org.json.JSONException;
+import io.appium.uiautomator2.model.api.ScrollToModel;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
@@ -21,6 +19,8 @@ import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELE
 import static io.appium.uiautomator2.utils.Device.scrollToElement;
 
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+import static io.appium.uiautomator2.utils.ModelValidators.requireString;
 
 public class ScrollTo extends SafeRequestHandler {
 
@@ -29,40 +29,26 @@ public class ScrollTo extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request)
-        throws JSONException, UiObjectNotFoundException
-    {
-        String json = toJSON(request).toString();
-        String strategy  = "$.params.strategy";
-        String selector  = "$.params.selector";
-        String maxSwipes = "$.params.maxSwipes";
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+        ScrollToModel model = toModel(request, ScrollToModel.class);
+        String strategy = requireString(model.params, "strategy");
+        String selector = requireString(model.params, "selector");
+        int maxSwipes = model.params.maxSwipes == null ? 0 : model.params.maxSwipes;
 
-        String strategyString = JsonPath.compile(strategy).read(json);
-        String selectorString = JsonPath.compile(selector).read(json);
-
-        int maxSearchSwipes;
-        try {
-            maxSearchSwipes = JsonPath.compile(maxSwipes).read(json);
-        } catch (InvalidPathException e) {
-            Logger.info("The parameter 'maxSwipes' is either not specified " +
-                        "or mistyped. Using 0 as the default value.");
-            maxSearchSwipes = 0;
-        }
-
-        By by = new NativeAndroidBySelector().pickFrom(strategyString, selectorString);
+        By by = new NativeAndroidBySelector().pickFrom(strategy, selector);
 
         UiSelector uiselector;
         if (by instanceof By.ByAccessibilityId) {
-            uiselector = new UiSelector().description(selectorString);
+            uiselector = new UiSelector().description(selector);
         } else if (by instanceof By.ByClass) {
-            uiselector = new UiSelector().className(selectorString);
+            uiselector = new UiSelector().className(selector);
         } else if (by instanceof By.ByAndroidUiAutomator) {
             uiselector = toSelector(by.getElementLocator());
         } else {
             throw new InvalidArgumentException(String.format(
                             "Unsupported strategy: '%s'. " +
                             "The only supported strategies are: '%s', '%s', and '%s'.",
-                            strategyString,
+                            strategy,
                             SELECTOR_ACCESSIBILITY_ID,
                             SELECTOR_CLASS,
                             SELECTOR_ANDROID_UIAUTOMATOR));
@@ -70,10 +56,9 @@ public class ScrollTo extends SafeRequestHandler {
 
         Device.waitForIdle();
 
-        scrollToElement(uiselector, maxSearchSwipes);
+        scrollToElement(uiselector, maxSwipes);
 
-        Logger.info(String.format("Scrolled via strategy: '%s' and selector '%s'.",
-                                  strategyString, selectorString));
+        Logger.info(String.format("Scrolled via strategy: '%s' and selector '%s'.", strategy, selector));
 
         return new AppiumResponse(getSessionId(request));
     }

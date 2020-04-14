@@ -14,25 +14,9 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.handler;
+package io.appium.uiautomator2.utils.w3c;
 
-import io.appium.uiautomator2.handler.request.SafeRequestHandler;
-import io.appium.uiautomator2.http.AppiumResponse;
-import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.api.StatusModel;
-
-import static io.appium.uiautomator2.model.Session.NO_ID;
-
-public class Status extends SafeRequestHandler {
-
-    public Status(String mappedUri) {
-        super(mappedUri);
-    }
-
-    @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) {
-        return new AppiumResponse(NO_ID, new StatusModel(true,
-                "UiAutomator2 Server is ready to accept commands"
-        ));
-    }
+public interface ElementConstants {
+    String JWP_ELEMENT_ID_KEY_NAME = "ELEMENT";
+    String W3C_ELEMENT_ID_KEY_NAME = "element-6066-11e4-a52e-4f735466cecf";
 }

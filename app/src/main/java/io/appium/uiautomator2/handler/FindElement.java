@@ -16,9 +16,8 @@
 
 package io.appium.uiautomator2.handler;
 
+import io.appium.uiautomator2.model.api.FindElementModel;
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.UUID;
 
@@ -48,6 +47,8 @@ import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+import static io.appium.uiautomator2.utils.ModelValidators.requireString;
 
 public class FindElement extends SafeRequestHandler {
 
@@ -56,11 +57,11 @@ public class FindElement extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
-        final JSONObject payload = toJSON(request);
-        final String method = payload.getString("strategy");
-        final String selector = payload.getString("selector");
-        final String contextId = payload.getString("context");
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+        FindElementModel model = toModel(request, FindElementModel.class);
+        final String method = requireString(model, "strategy");
+        final String selector = requireString(model,"selector");
+        final String contextId = model.context;
 
         Logger.info(String.format("Find element command using '%s' with selector '%s'.", method, selector));
 

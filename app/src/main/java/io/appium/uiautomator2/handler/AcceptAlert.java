@@ -16,8 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.AlertModel;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -25,18 +24,18 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.utils.AlertHelpers;
 import io.appium.uiautomator2.utils.Logger;
 
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+
 public class AcceptAlert extends SafeRequestHandler {
     public AcceptAlert(String mappedUri) {
         super(mappedUri);
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Accept alert command");
-        final JSONObject payload = toJSON(request);
-        final String buttonLabel = payload.has("buttonLabel")
-                ? payload.getString("buttonLabel") : null;
-        AlertHelpers.handle(AlertHelpers.AlertAction.ACCEPT, buttonLabel);
+        AlertModel model = toModel(request, AlertModel.class);
+        AlertHelpers.handle(AlertHelpers.AlertAction.ACCEPT, model.buttonLabel);
         return new AppiumResponse(getSessionId(request));
     }
 }

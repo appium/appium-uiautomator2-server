@@ -18,8 +18,7 @@ package io.appium.uiautomator2.handler;
 
 import android.app.Instrumentation;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.BatteryStatusModel;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -37,13 +36,13 @@ public class GetBatteryInfo extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Get Battery Info command");
-        final JSONObject response = new JSONObject();
         final BatteryHelper batteryHelper = new BatteryHelper(mInstrumentation
                 .getTargetContext());
-        response.put("level", batteryHelper.getLevel());
-        response.put("status", batteryHelper.getStatus());
-        return new AppiumResponse(getSessionId(request), response);
+        return new AppiumResponse(getSessionId(request), new BatteryStatusModel(
+                batteryHelper.getLevel(),
+                batteryHelper.getStatus()
+        ));
     }
 }

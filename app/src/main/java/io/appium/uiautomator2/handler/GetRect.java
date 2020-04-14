@@ -18,6 +18,7 @@ package io.appium.uiautomator2.handler;
 
 import android.graphics.Rect;
 
+import io.appium.uiautomator2.model.api.ElementRectModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,7 +53,7 @@ public class GetRect extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("Get Rect of element command");
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
@@ -60,7 +61,6 @@ public class GetRect extends SafeRequestHandler {
         if (element == null) {
             throw new ElementNotFoundException();
         }
-        JSONObject result = getElementRectJSON(element);
-        return new AppiumResponse(getSessionId(request), result);
+        return new AppiumResponse(getSessionId(request), new ElementRectModel(element.getBounds()));
     }
 }

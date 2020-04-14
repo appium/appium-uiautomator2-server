@@ -101,7 +101,7 @@ public abstract class BaseRequestHandler {
     @Nullable
     public abstract AppiumResponse handle(IHttpRequest request);
 
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         return handle(request);
     }
 }

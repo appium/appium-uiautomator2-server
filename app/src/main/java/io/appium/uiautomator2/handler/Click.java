@@ -16,9 +16,8 @@
 
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.utils.w3c.W3CElementUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.CoordinatesModel;
+import io.appium.uiautomator2.model.api.ElementIdModel;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
@@ -37,6 +36,8 @@ import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+import static io.appium.uiautomator2.utils.ModelValidators.requireDouble;
 
 public class Click extends SafeRequestHandler {
 
@@ -45,9 +46,8 @@ public class Click extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException, UiObjectNotFoundException {
-        JSONObject payload = toJSON(request);
-        final String elementId = W3CElementUtils.extractElementId(payload);
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+        final String elementId = toModel(request, ElementIdModel.class).getUnifiedId();
         if (elementId != null) {
             Logger.info("Click element command");
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
@@ -58,13 +58,15 @@ public class Click extends SafeRequestHandler {
             element.click();
         } else {
             Logger.info("tap command");
-            Point coords = new Point(Double.parseDouble(payload.get("x").toString()),
-                    Double.parseDouble(payload.get("y").toString()));
+            CoordinatesModel coordinates = toModel(request, CoordinatesModel.class);
+            Point coords = new Point(
+                    requireDouble(coordinates, "x"),
+                    requireDouble(coordinates, "y"));
             coords = PositionHelper.getDeviceAbsPos(coords);
             if (!getUiDevice().click(coords.x.intValue(), coords.y.intValue())) {
                 throw new InvalidElementStateException(
                         String.format("Click failed at (%s, %s) coordinates",
-                        coords.x.intValue(), coords.y.intValue()));
+                                coords.x.intValue(), coords.y.intValue()));
             }
         }
         Device.waitForIdle();

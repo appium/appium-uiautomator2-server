@@ -18,9 +18,6 @@ package io.appium.uiautomator2.handler;
 
 import android.graphics.Rect;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -30,6 +27,7 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
+import io.appium.uiautomator2.model.api.SizeModel;
 import io.appium.uiautomator2.utils.Logger;
 
 /**
@@ -42,8 +40,7 @@ public class GetSize extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException,
-            JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         Logger.info("Get Size of element command");
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
@@ -52,10 +49,10 @@ public class GetSize extends SafeRequestHandler {
             throw new ElementNotFoundException();
         }
         final Rect rect = element.getBounds();
-        final JSONObject result = new JSONObject();
-        result.put("width", rect.width());
-        result.put("height", rect.height());
-        return new AppiumResponse(getSessionId(request), result);
+        return new AppiumResponse(getSessionId(request), new SizeModel(
+                rect.width(),
+                rect.height()
+        ));
     }
 
 }

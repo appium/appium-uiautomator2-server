@@ -20,8 +20,7 @@ import android.os.SystemClock;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.KeyCodeModel;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.InteractionController;
@@ -32,7 +31,8 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
-import static io.appium.uiautomator2.utils.JSONUtils.readInteger;
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
 
 public class PressKeyCode extends SafeRequestHandler {
     public PressKeyCode(String mappedUri) {
@@ -40,12 +40,12 @@ public class PressKeyCode extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Calling PressKeyCode... ");
-        final JSONObject payload = toJSON(request);
-        final int keyCode = readInteger(payload, "keycode");
-        Integer metaState = readInteger(payload, "metastate", false);
-        final Integer flags = readInteger(payload, "flags", false);
+        final KeyCodeModel model = toModel(request, KeyCodeModel.class);
+        final int keyCode = requireInteger(model, "keycode");
+        Integer metaState = model.metastate;
+        Integer flags = model.flags;
 
         boolean isSuccessful;
         if (flags == null) {

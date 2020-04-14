@@ -20,8 +20,7 @@ import android.os.SystemClock;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.KeyCodeModel;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.InteractionController;
@@ -30,7 +29,8 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 
-import static io.appium.uiautomator2.utils.JSONUtils.readInteger;
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
 
 public class LongPressKeyCode extends SafeRequestHandler {
 
@@ -39,13 +39,11 @@ public class LongPressKeyCode extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
-        final JSONObject payload = toJSON(request);
-        final int keyCode = readInteger(payload, "keycode");
-        Integer metaState = readInteger(payload, "metastate", false);
-        metaState = metaState == null ? 0 : metaState;
-        Integer flags = readInteger(payload, "flags", false);
-        flags = flags == null ? 0 : flags;
+    protected AppiumResponse safeHandle(IHttpRequest request) {
+        final KeyCodeModel model = toModel(request, KeyCodeModel.class);
+        final int keyCode = requireInteger(model, "keycode");
+        int metaState = model.metastate == null ? 0 : model.metastate;
+        int flags = model.flags == null ? 0 : model.flags;
 
         final long downTime = SystemClock.uptimeMillis();
         final InteractionController interactionController = UiAutomatorBridge.getInstance().getInteractionController();

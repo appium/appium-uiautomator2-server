@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.handler;
+package io.appium.uiautomator2.model.api;
 
-import io.appium.uiautomator2.handler.request.SafeRequestHandler;
-import io.appium.uiautomator2.http.AppiumResponse;
-import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.api.StatusModel;
+public class StatusModel implements BaseModel {
+    public Boolean ready;
+    public String message;
 
-import static io.appium.uiautomator2.model.Session.NO_ID;
+    public StatusModel() {}
 
-public class Status extends SafeRequestHandler {
-
-    public Status(String mappedUri) {
-        super(mappedUri);
+    public StatusModel(
+            Boolean ready,
+            String message
+    ) {
+        this.ready = ready;
+        this.message = message;
     }
 
-    @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) {
-        return new AppiumResponse(NO_ID, new StatusModel(true,
-                "UiAutomator2 Server is ready to accept commands"
-        ));
-    }
 }

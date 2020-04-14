@@ -14,36 +14,31 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.utils.w3c;
+package io.appium.uiautomator2.model.api;
 
 import androidx.annotation.Nullable;
+import com.google.gson.annotations.SerializedName;
 import io.appium.uiautomator2.model.AndroidElement;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Iterator;
 
 import static io.appium.uiautomator2.utils.w3c.ElementConstants.JWP_ELEMENT_ID_KEY_NAME;
 import static io.appium.uiautomator2.utils.w3c.ElementConstants.W3C_ELEMENT_ID_KEY_NAME;
+import static org.apache.commons.lang.StringUtils.isBlank;
 
-public class W3CElementUtils {
-    @Nullable
-    public static String extractElementId(JSONObject obj) {
-        Iterator<String> keysIterator = obj.keys();
-        while (keysIterator.hasNext()) {
-            String key = keysIterator.next();
-            if ((key.equalsIgnoreCase(JWP_ELEMENT_ID_KEY_NAME) ||
-                    key.equalsIgnoreCase(W3C_ELEMENT_ID_KEY_NAME))
-                    && (obj.opt(key) instanceof String)) {
-                return (String) obj.opt(key);
-            }
-        }
-        return null;
+public class ElementIdModel implements BaseModel {
+    @SerializedName(JWP_ELEMENT_ID_KEY_NAME)
+    public String jwpElementId;
+    @SerializedName(W3C_ELEMENT_ID_KEY_NAME)
+    public String w3cElementId;
+
+    public ElementIdModel() {}
+
+    public ElementIdModel(AndroidElement source) {
+        this.jwpElementId = source.getId();
+        this.w3cElementId = source.getId();
     }
 
-    public static void attachElementId(AndroidElement element, JSONObject destination)
-            throws JSONException {
-        destination.put(JWP_ELEMENT_ID_KEY_NAME, element.getId());
-        destination.put(W3C_ELEMENT_ID_KEY_NAME, element.getId());
+    @Nullable
+    public String getUnifiedId() {
+        return !isBlank(w3cElementId) ? w3cElementId : jwpElementId;
     }
 }

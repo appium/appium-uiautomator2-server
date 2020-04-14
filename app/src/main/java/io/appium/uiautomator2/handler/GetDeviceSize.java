@@ -16,8 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import io.appium.uiautomator2.model.api.SizeModel;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -36,12 +35,11 @@ public class GetDeviceSize extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Get window size of the device");
-        // only makes sense on a device
-        final JSONObject res = new JSONObject();
-        res.put("height", getUiDevice().getDisplayHeight());
-        res.put("width", getUiDevice().getDisplayWidth());
-        return new AppiumResponse(getSessionId(request), res);
+        return new AppiumResponse(getSessionId(request), new SizeModel(
+                getUiDevice().getDisplayWidth(),
+                getUiDevice().getDisplayHeight()
+        ));
     }
 }

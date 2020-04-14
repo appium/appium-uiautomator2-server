@@ -21,6 +21,6 @@ public class GetScreenOrientation extends SafeRequestHandler {
         } else {
             orientation = ScreenOrientation.PORTRAIT;
         }
-        return new AppiumResponse(getSessionId(request), orientation);
+        return new AppiumResponse(getSessionId(request), orientation.name());
     }
 }
