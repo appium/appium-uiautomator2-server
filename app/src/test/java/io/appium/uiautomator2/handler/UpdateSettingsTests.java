@@ -45,7 +45,13 @@ import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
 import io.appium.uiautomator2.model.settings.ElementResponseAttributes;
 import io.appium.uiautomator2.model.settings.EnableNotificationListener;
 import io.appium.uiautomator2.model.settings.KeyInjectionDelay;
+import io.appium.uiautomator2.model.settings.MjpegFiltering;
+import io.appium.uiautomator2.model.settings.MjpegScalingFactor;
+import io.appium.uiautomator2.model.settings.MjpegServerFramerate;
+import io.appium.uiautomator2.model.settings.MjpegServerPort;
+import io.appium.uiautomator2.model.settings.MjpegServerScreenshotQuality;
 import io.appium.uiautomator2.model.settings.ScrollAcknowledgmentTimeout;
+import io.appium.uiautomator2.model.settings.ServerPort;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.ShouldUseCompactResponses;
 import io.appium.uiautomator2.model.settings.ShutdownOnPowerDisconnect;
@@ -58,7 +64,13 @@ import static io.appium.uiautomator2.model.settings.Settings.COMPRESSED_LAYOUT_H
 import static io.appium.uiautomator2.model.settings.Settings.ELEMENT_RESPONSE_ATTRIBUTES;
 import static io.appium.uiautomator2.model.settings.Settings.ENABLE_NOTIFICATION_LISTENER;
 import static io.appium.uiautomator2.model.settings.Settings.KEY_INJECTION_DELAY;
+import static io.appium.uiautomator2.model.settings.Settings.MJPEG_FILTERING;
+import static io.appium.uiautomator2.model.settings.Settings.MJPEG_SCALING_FACTOR;
+import static io.appium.uiautomator2.model.settings.Settings.MJPEG_SERVER_FRAMERATE;
+import static io.appium.uiautomator2.model.settings.Settings.MJPEG_SERVER_PORT;
+import static io.appium.uiautomator2.model.settings.Settings.MJPEG_SERVER_SCREENSHOT_QUALITY;
 import static io.appium.uiautomator2.model.settings.Settings.SCROLL_ACKNOWLEDGMENT_TIMEOUT;
+import static io.appium.uiautomator2.model.settings.Settings.SERVER_PORT;
 import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_RESPONSES;
 import static io.appium.uiautomator2.model.settings.Settings.SHUTDOWN_ON_POWER_DISCONNECT;
 import static io.appium.uiautomator2.model.settings.Settings.WAIT_FOR_IDLE_TIMEOUT;
@@ -159,6 +171,36 @@ public class UpdateSettingsTests {
     @Test
     public void shouldBeAbleToReturnShutdownOnPowerDisconnectSetting() {
         verifySettingIsAvailable(SHUTDOWN_ON_POWER_DISCONNECT, ShutdownOnPowerDisconnect.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnServerPortSetting() {
+        verifySettingIsAvailable(SERVER_PORT, ServerPort.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnMjpegServerPortSetting() {
+        verifySettingIsAvailable(MJPEG_SERVER_PORT, MjpegServerPort.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnMjpegServerFramerateSetting() {
+        verifySettingIsAvailable(MJPEG_SERVER_FRAMERATE, MjpegServerFramerate.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnMjpegScalingFactorSetting() {
+        verifySettingIsAvailable(MJPEG_SCALING_FACTOR, MjpegScalingFactor.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnMjpeqServerScreenshotQualitySetting() {
+        verifySettingIsAvailable(MJPEG_SERVER_SCREENSHOT_QUALITY, MjpegServerScreenshotQuality.class);
+    }
+
+    @Test
+    public void shouldBeAbleToReturnMjpegFilteringSetting() {
+        verifySettingIsAvailable(MJPEG_FILTERING, MjpegFiltering.class);
     }
 
     @Test(expected=UnsupportedSettingException.class)

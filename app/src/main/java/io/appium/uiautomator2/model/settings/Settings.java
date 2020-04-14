@@ -34,7 +34,13 @@ public enum Settings {
     NORMALIZE_TAG_NAMES(new NormalizeTagNames()),
     SHUTDOWN_ON_POWER_DISCONNECT(new ShutdownOnPowerDisconnect()),
     TRACK_SCROLL_EVENTS(new TrackScrollEvents()),
-    WAKE_LOCK_TIMEOUT(new WakeLockTimeout());
+    WAKE_LOCK_TIMEOUT(new WakeLockTimeout()),
+    SERVER_PORT(new ServerPort()),
+    MJPEG_SERVER_PORT(new MjpegServerPort()),
+    MJPEG_SERVER_FRAMERATE(new MjpegServerFramerate()),
+    MJPEG_SCALING_FACTOR(new MjpegScalingFactor()),
+    MJPEG_SERVER_SCREENSHOT_QUALITY(new MjpegServerScreenshotQuality()),
+    MJPEG_FILTERING(new MjpegFiltering());
 
     private final ISetting setting;
 

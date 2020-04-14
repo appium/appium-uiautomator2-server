@@ -27,6 +27,7 @@ public class AppiumUiAutomator2Server {
             try {
                 while (!serverInstrumentation.isServerStopped()) {
                     SystemClock.sleep(1000);
+                    serverInstrumentation.startMjpegServer();
                     serverInstrumentation.startServer();
                 }
             } catch (SessionRemovedException e) {
