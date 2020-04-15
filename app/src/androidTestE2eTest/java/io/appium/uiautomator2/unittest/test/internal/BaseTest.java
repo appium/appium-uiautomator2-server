@@ -95,7 +95,7 @@ public abstract class BaseTest {
         waitForElement(By.accessibilityId("Accessibility"));
     }
 
-    protected void dismissSystemAlert() throws JSONException {
+    protected void dismissSystemAlert() {
         String[] ids = {"android:id/button1", "android:id/aerr_wait"};
         for(String id : ids) {
           try {

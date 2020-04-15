@@ -18,11 +18,13 @@ package io.appium.uiautomator2.unittest.test.internal;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
@@ -41,6 +43,8 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getName;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.w3c.ElementConstants.JWP_ELEMENT_ID_KEY_NAME;
+import static io.appium.uiautomator2.utils.w3c.ElementConstants.W3C_ELEMENT_ID_KEY_NAME;
 
 @SuppressWarnings("JavaDoc")
 public class TestUtils {
@@ -193,5 +197,19 @@ public class TestUtils {
             }
         }
         return count;
+    }
+
+    @Nullable
+    public static String extractElementId(JSONObject obj) {
+        Iterator<String> keysIterator = obj.keys();
+        while (keysIterator.hasNext()) {
+            String key = keysIterator.next();
+            if ((key.equalsIgnoreCase(JWP_ELEMENT_ID_KEY_NAME) ||
+                    key.equalsIgnoreCase(W3C_ELEMENT_ID_KEY_NAME))
+                    && (obj.opt(key) instanceof String)) {
+                return (String) obj.opt(key);
+            }
+        }
+        return null;
     }
 }
