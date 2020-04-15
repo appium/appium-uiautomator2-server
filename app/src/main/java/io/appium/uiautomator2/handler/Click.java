@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.handler;
 
 import io.appium.uiautomator2.model.api.CoordinatesModel;
-import io.appium.uiautomator2.model.api.ElementModel;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
@@ -47,16 +46,8 @@ public class Click extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        final String elementId = toModel(request, ElementModel.class).getUnifiedId();
-        if (elementId != null) {
-            Logger.info("Click element command");
-            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
-            if (element == null) {
-                throw new NoSuchElementException();
-            }
-            element.click();
-        } else {
+        String elementId = getElementId(request);
+        if (elementId == null) {
             Logger.info("tap command");
             CoordinatesModel coordinates = toModel(request, CoordinatesModel.class);
             Point coords = new Point(
@@ -68,6 +59,14 @@ public class Click extends SafeRequestHandler {
                         String.format("Click failed at (%s, %s) coordinates",
                                 coords.x.intValue(), coords.y.intValue()));
             }
+        } else {
+            Logger.info("Click element command");
+            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+            AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
+            if (element == null) {
+                throw new NoSuchElementException();
+            }
+            element.click();
         }
         Device.waitForIdle();
         return new AppiumResponse(getSessionId(request));
