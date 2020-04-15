@@ -17,6 +17,7 @@ package io.appium.uiautomator2.unittest.test.internal;
 
 import android.content.Context;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,7 +43,7 @@ import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForEle
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElementInvisibility;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.createSession;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.deleteSession;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElements;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static org.junit.Assert.assertNotNull;
@@ -97,14 +98,20 @@ public abstract class BaseTest {
 
     protected void dismissSystemAlert() {
         String[] ids = {"android:id/button1", "android:id/aerr_wait"};
-        for(String id : ids) {
-          try {
-            Logger.info("Checking for alert using id '" + id + "'");
-            Response response = findElement(By.id(id));
-            clickAndWaitForStaleness(response.getElementId());
-          } catch (Exception e) {
-            Logger.error("Error getting alert: ", e);
-          }
+        for (String id : ids) {
+            try {
+                Logger.info("Checking for alert using id '" + id + "'");
+                Response response = findElements(By.id(id));
+                JSONArray elements = response.getValue();
+                if (elements.length() == 0) {
+                    continue;
+                }
+
+                String elementId = TestUtils.extractElementId(elements.getJSONObject(0));
+                clickAndWaitForStaleness(elementId);
+            } catch (Exception e) {
+                Logger.error("Error getting alert: ", e);
+            }
         }
     }
 
@@ -113,6 +120,10 @@ public abstract class BaseTest {
     }
 
     protected void clickAndWaitForStaleness(String elementId) throws JSONException {
+        if (elementId == null) {
+            return;
+        }
+
         click(elementId);
         waitForElementInvisibility(elementId);
     }

@@ -15,6 +15,7 @@
  */
 package io.appium.uiautomator2.unittest.test.internal;
 
+import androidx.annotation.Nullable;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +38,7 @@ public class Response {
         return code == HttpResponseStatus.OK.code();
     }
 
+    @Nullable
     public String getElementId() {
         try {
             return TestUtils.extractElementId(new JSONObject(body).getJSONObject("value"));

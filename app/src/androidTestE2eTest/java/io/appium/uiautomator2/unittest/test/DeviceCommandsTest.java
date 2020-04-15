@@ -639,10 +639,6 @@ public class DeviceCommandsTest extends BaseTest {
 
         By by = By.androidUiAutomator(uiSelectorSpec);
 
-        assertFalse(
-            by + " should not be found in the list.",
-            findElement(by).isSuccessful());
-
         assertTrue(
             "Scroll-to-element should have succeeded.",
             scrollToElement(uiSelectorSpec).isSuccessful());
