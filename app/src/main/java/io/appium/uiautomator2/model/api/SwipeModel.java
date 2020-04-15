@@ -23,6 +23,5 @@ public class SwipeModel implements BaseModel {
     public Double startY;
     public Integer steps;
 
-
     public SwipeModel() {}
 }

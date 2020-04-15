@@ -29,5 +29,4 @@ public class StatusModel implements BaseModel {
         this.ready = ready;
         this.message = message;
     }
-
 }

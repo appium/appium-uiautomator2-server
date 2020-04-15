@@ -29,5 +29,4 @@ public class LocationModel implements BaseModel {
         this.x = x;
         this.y = y;
     }
-
 }

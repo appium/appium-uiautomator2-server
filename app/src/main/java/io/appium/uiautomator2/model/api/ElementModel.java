@@ -51,7 +51,7 @@ public class ElementModel implements BaseModel {
 
     @Nullable
     public String getUnifiedId() {
-        return !isBlank(w3cElementId) ? w3cElementId : jwpElementId;
+        return isBlank(w3cElementId) ? jwpElementId : w3cElementId;
     }
 
     public Map<String, Object> toMap() {

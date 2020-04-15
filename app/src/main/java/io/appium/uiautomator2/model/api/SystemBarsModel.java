@@ -26,5 +26,4 @@ public class SystemBarsModel implements BaseModel {
     ) {
         this.statusBar = statusBar;
     }
-
 }

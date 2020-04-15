@@ -21,6 +21,5 @@ public class FindElementModel implements BaseModel {
     public String selector;
     public String context;
 
-
     public FindElementModel() {}
 }
