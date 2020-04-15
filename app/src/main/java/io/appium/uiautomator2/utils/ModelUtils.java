@@ -31,7 +31,8 @@ public class ModelUtils {
     }
 
     public static String toJsonString(Object model, boolean includeNullValues) {
-        GsonBuilder builder = new GsonBuilder();
+        GsonBuilder builder = new GsonBuilder()
+                .disableHtmlEscaping();
         if (includeNullValues) {
             builder.serializeNulls();
         }
