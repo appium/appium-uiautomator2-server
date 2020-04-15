@@ -27,6 +27,7 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
+import io.appium.uiautomator2.model.api.SessionModel;
 
 import static io.appium.uiautomator2.model.Session.NO_ID;
 
@@ -42,17 +43,14 @@ public class GetSessions extends SafeRequestHandler {
             return new AppiumResponse(NO_ID, Collections.emptyList());
         }
 
-        List<Map<String, Object>> result = new ArrayList<>();
+        List<SessionModel> result = new ArrayList<>();
         String sessionId = session.getSessionId();
         if (sessionId != null) {
-            Map<String, Object> sessionProps = new HashMap<>();
-            sessionProps.put("id", sessionId);
             Map<String, Object> sessionCaps = new HashMap<>();
             for (Map.Entry<String, Object> capEntry : session.getCapabilities().entrySet()) {
                 sessionCaps.put(capEntry.getKey(), capEntry.getValue());
             }
-            sessionProps.put("capabilities", sessionCaps);
-            result.add(sessionProps);
+            result.add(new SessionModel(sessionId, sessionCaps));
         }
         return new AppiumResponse(NO_ID, result);
     }

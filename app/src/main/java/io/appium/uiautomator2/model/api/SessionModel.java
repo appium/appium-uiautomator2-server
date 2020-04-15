@@ -18,13 +18,13 @@ package io.appium.uiautomator2.model.api;
 
 import java.util.Map;
 
-public class NewSessionModel implements BaseModel {
+public class SessionModel implements BaseModel {
     public String sessionId;
     public Map<String, Object> capabilities;
 
-    public NewSessionModel() {}
+    public SessionModel() {}
 
-    public NewSessionModel(
+    public SessionModel(
             String sessionId,
             Map<String, Object> capabilities
     ) {

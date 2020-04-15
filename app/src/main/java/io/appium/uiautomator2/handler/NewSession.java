@@ -18,7 +18,7 @@ package io.appium.uiautomator2.handler;
 
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.common.exceptions.SessionNotCreatedException;
-import io.appium.uiautomator2.model.api.NewSessionModel;
+import io.appium.uiautomator2.model.api.SessionModel;
 import io.appium.uiautomator2.utils.w3c.W3CCapsUtils;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -27,7 +27,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.utils.Logger;
-import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -43,7 +42,7 @@ public class NewSession extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         try {
-            NewSessionModel w3cCaps = toModel(request, NewSessionModel.class);
+            SessionModel w3cCaps = toModel(request, SessionModel.class);
             if (w3cCaps.capabilities == null) {
                 throw new InvalidArgumentException(String.format(
                         "'%s' are mandatory for session creation", CAPABILITIES_KEY));
