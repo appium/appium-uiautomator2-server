@@ -1,11 +1,13 @@
 package io.appium.uiautomator2.utils;
 
+import io.appium.uiautomator2.model.api.BaseModel;
+
 import java.util.Map;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 
 public class ModelValidators {
-    public static String requireString(Object model, String fieldName) {
+    public static String requireString(BaseModel model, String fieldName) {
         Object value = getField(fieldName, model);
         if (value instanceof String) {
             return (String) value;
@@ -15,7 +17,7 @@ public class ModelValidators {
                         fieldName, value));
     }
 
-    public static Double requireDouble(Object model, String fieldName) {
+    public static Double requireDouble(BaseModel model, String fieldName) {
         Object value = getField(fieldName, model);
         if (value instanceof Double) {
             return (Double) value;
@@ -25,7 +27,7 @@ public class ModelValidators {
                         fieldName, value));
     }
 
-    public static Integer requireInteger(Object model, String fieldName) {
+    public static Integer requireInteger(BaseModel model, String fieldName) {
         Object value = getField(fieldName, model);
         if (value instanceof Integer) {
             return (Integer) value;
@@ -36,7 +38,7 @@ public class ModelValidators {
     }
 
     @SuppressWarnings("rawtypes")
-    public static Map requireMap(Object model, String fieldName) {
+    public static Map requireMap(BaseModel model, String fieldName) {
         Object value = getField(fieldName, model);
         if (value instanceof Map) {
             return (Map) value;

@@ -16,10 +16,22 @@
 
 package io.appium.uiautomator2.model.api;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class SettingsModel implements BaseModel {
     public Map<String, Object> settings;
 
     public SettingsModel() {}
+
+    public SettingsModel(Object ...args) {
+        if (args.length % 2 != 0) {
+            throw new IllegalArgumentException("There must be even count of arguments");
+        }
+
+        this.settings = new HashMap<>();
+        for (int i = 0; i < args.length; i += 2) {
+            this.settings.put((String) args[i], args[i + 1]);
+        }
+    }
 }

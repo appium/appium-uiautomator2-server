@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.handler;
 
 import io.appium.uiautomator2.handler.request.BaseRequestHandler;
+import io.appium.uiautomator2.model.api.SettingsModel;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.json.JSONException;
 import org.junit.Before;
@@ -62,6 +63,7 @@ import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_
 import static io.appium.uiautomator2.model.settings.Settings.SHUTDOWN_ON_POWER_DISCONNECT;
 import static io.appium.uiautomator2.model.settings.Settings.WAIT_FOR_IDLE_TIMEOUT;
 import static io.appium.uiautomator2.model.settings.Settings.WAIT_FOR_SELECTOR_TIMEOUT;
+import static io.appium.uiautomator2.utils.ModelUtils.toJsonString;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -167,6 +169,8 @@ public class UpdateSettingsTests {
     @SuppressWarnings("ConstantConditions")
     @Test
     public void shouldBeAbleToUpdateSetting() {
+        when(req.body())
+                .thenReturn(toJsonString(new SettingsModel(SETTING_NAME, SETTING_VALUE)));
         AppiumResponse response = updateSettings.handle(req);
         verify(mySetting).update(SETTING_VALUE);
         assertEquals(session.getCapability(SETTING_NAME), SETTING_VALUE);

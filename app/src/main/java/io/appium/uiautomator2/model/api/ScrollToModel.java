@@ -21,9 +21,11 @@ public class ScrollToModel implements BaseModel {
 
     public ScrollToModel() {}
 
-    public static class ScrollParams {
+    public static class ScrollParams implements BaseModel {
         public String strategy;
         public String selector;
         public Integer maxSwipes;
+
+        public ScrollParams() {}
     }
 }
