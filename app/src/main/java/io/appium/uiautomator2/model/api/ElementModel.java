@@ -28,7 +28,7 @@ import static io.appium.uiautomator2.utils.w3c.ElementConstants.JWP_ELEMENT_ID_K
 import static io.appium.uiautomator2.utils.w3c.ElementConstants.W3C_ELEMENT_ID_KEY_NAME;
 
 public class ElementModel implements BaseModel {
-    @SerializedName(JWP_ELEMENT_ID_KEY_NAME)
+    @SerializedName(value = JWP_ELEMENT_ID_KEY_NAME, alternate = {"element"})
     public String jwpElementId;
     @SerializedName(W3C_ELEMENT_ID_KEY_NAME)
     public String w3cElementId;

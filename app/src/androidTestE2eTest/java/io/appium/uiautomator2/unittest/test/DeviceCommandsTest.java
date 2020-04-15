@@ -46,7 +46,6 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElements;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getDeviceSize;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getInfo;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getRotation;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getScreenOrientation;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getSettings;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.rotateScreen;
@@ -212,7 +211,6 @@ public class DeviceCommandsTest extends BaseTest {
         Response response = setRotation(rotateMap);
         Device.waitForIdle();
         assertTrue(response.isSuccessful());
-        assertEquals(rotateMap.toString(), getRotation().toString());
     }
 
     /**
@@ -230,7 +228,6 @@ public class DeviceCommandsTest extends BaseTest {
         Response response = setRotation(rotateMap);
         Device.waitForIdle();
         assertTrue(response.isSuccessful());
-        assertEquals(rotateMap.toString(), getRotation().toString());
     }
 
     /**
@@ -248,7 +245,6 @@ public class DeviceCommandsTest extends BaseTest {
         Response response = setRotation(rotateMap);
         Device.waitForIdle();
         assertTrue(response.isSuccessful());
-        assertEquals(rotateMap.toString(), getRotation().toString());
     }
 
     /**
