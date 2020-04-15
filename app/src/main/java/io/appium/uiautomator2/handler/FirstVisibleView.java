@@ -1,7 +1,5 @@
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.utils.ElementHelpers;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -78,6 +76,6 @@ public class FirstVisibleView extends SafeRequestHandler {
         String id = UUID.randomUUID().toString();
         AndroidElement androidElement = getAndroidElement(id, firstObject, false);
         session.getKnownElements().add(androidElement);
-        return new AppiumResponse(getSessionId(request), ElementHelpers.toModel(androidElement));
+        return new AppiumResponse(getSessionId(request), androidElement.toModel());
     }
 }

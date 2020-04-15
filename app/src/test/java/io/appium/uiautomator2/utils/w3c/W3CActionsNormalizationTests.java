@@ -28,7 +28,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-@SuppressWarnings("ConstantConditions")
 public class W3CActionsNormalizationTests {
     @Test
     public void verifySortingOrderInNormalizedEvents() {

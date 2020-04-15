@@ -21,7 +21,6 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import io.appium.uiautomator2.common.exceptions.NotImplementedException;
-import io.appium.uiautomator2.model.api.ElementModel;
 import io.appium.uiautomator2.model.api.FindElementModel;
 
 import java.util.ArrayList;
@@ -88,7 +87,7 @@ public class FindElements extends SafeRequestHandler {
                 String id = UUID.randomUUID().toString();
                 AndroidElement androidElement = getAndroidElement(id, element, false, by, contextId);
                 session.getKnownElements().add(androidElement);
-                result.add(ElementHelpers.toModel(androidElement));
+                result.add(androidElement.toModel());
             }
             return new AppiumResponse(getSessionId(request), result);
         } catch (ElementNotFoundException ignored) {

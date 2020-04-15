@@ -49,7 +49,7 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
-public class UiObjectElement implements AndroidElement {
+public class UiObjectElement extends BaseElement {
 
     private static final Pattern endsWithInstancePattern = Pattern.compile(".*INSTANCE=\\d+]$");
     private final UiObject element;

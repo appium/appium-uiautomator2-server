@@ -45,7 +45,7 @@ import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
-public class UiObject2Element implements AndroidElement {
+public class UiObject2Element extends BaseElement {
 
     private final UiObject2 element;
     private final String id;

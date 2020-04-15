@@ -69,8 +69,6 @@ import static io.appium.uiautomator2.utils.StringHelpers.toNonNullString;
 import static io.appium.uiautomator2.utils.StringHelpers.toNullableString;
 
 public abstract class ElementHelpers {
-
-    private static final String ATTRIBUTE_PREFIX = "attribute/";
     private static Method findAccessibilityNodeInfo;
     // these constants are magic numbers experimentally determined to minimize flakiness in generating
     // last scroll data used in getting the 'contentSize' attribute.
@@ -114,42 +112,6 @@ public abstract class ElementHelpers {
             }
         }
 
-        return result;
-    }
-
-    /**
-     * Return the JSONObject which Appium returns for an element
-     * <p>
-     * For example, appium returns elements like [{"ELEMENT":1}, {"ELEMENT":2}]
-     */
-    public static Object toModel(AndroidElement el) throws UiObjectNotFoundException {
-        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        ElementModel model = new ElementModel(el);
-        if (session.shouldUseCompactResponses()) {
-            return model;
-        }
-
-        Map<String, Object> result = new HashMap<>(model.toMap());
-        for (String field : session.getElementResponseAttributes()) {
-            try {
-                if (Objects.equals(field, "name")) {
-                    result.put(field, el.getContentDesc());
-                } else if (Objects.equals(field, "text")) {
-                    result.put(field, el.getText());
-                } else if (Objects.equals(field, "rect")) {
-                    result.put(field, new ElementRectModel(el.getBounds()));
-                } else if (Objects.equals(field, "enabled")
-                        || Objects.equals(field, "displayed")
-                        || Objects.equals(field, "selected")) {
-                    result.put(field, el.getAttribute(field));
-                } else if (field.startsWith(ATTRIBUTE_PREFIX)) {
-                    String attributeName = field.substring(ATTRIBUTE_PREFIX.length());
-                    result.put(field, el.getAttribute(attributeName));
-                }
-            } catch (NoSuchAttributeException e) {
-                // ignore field
-            }
-        }
         return result;
     }
 
