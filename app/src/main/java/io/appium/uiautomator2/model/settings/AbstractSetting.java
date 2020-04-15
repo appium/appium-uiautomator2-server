@@ -30,7 +30,7 @@ public abstract class AbstractSetting<T> implements ISetting {
     }
 
     public void update(Object value) {
-        Logger.debug(String.format("Set the %s to %s", getName(), String.valueOf(value)));
+        Logger.debug(String.format("Set the %s to %s", getName(), value));
         T convertedValue = convertValue(value);
         try {
             apply(convertedValue);

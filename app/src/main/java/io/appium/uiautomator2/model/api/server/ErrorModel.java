@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.api;
+package io.appium.uiautomator2.model.api.server;
 
-public class ResponseModel implements BaseModel {
-    public Object value;
-    public String sessionId;
+import io.appium.uiautomator2.model.api.BaseModel;
 
-    public ResponseModel() {}
+public class ErrorModel implements BaseModel {
+    public String error;
+    public String message;
+    public String stacktrace;
 
-    public ResponseModel(
-            Object value,
-            String sessionId
+    public ErrorModel() {}
+
+    public ErrorModel(
+            String error,
+            String message,
+            String stacktrace
     ) {
-        this.value = value;
-        this.sessionId = sessionId;
+        this.error = error;
+        this.message = message;
+        this.stacktrace = stacktrace;
     }
 }

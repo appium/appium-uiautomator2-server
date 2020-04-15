@@ -25,8 +25,8 @@ import androidx.test.uiautomator.BySelector;
  */
 public class ClassInstancePair {
 
-    private String androidClass;
-    private String instance;
+    private final String androidClass;
+    private final String instance;
 
     public ClassInstancePair(String clazz, String inst) {
         androidClass = clazz;

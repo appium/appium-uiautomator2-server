@@ -21,7 +21,7 @@ import io.appium.uiautomator2.model.api.BaseModel;
 import java.util.List;
 
 public class TouchActionsModel implements BaseModel {
-    public List<List<GestureModel>> actions;
+    public List<List<TouchGestureModel>> actions;
 
     public TouchActionsModel() {}
 }

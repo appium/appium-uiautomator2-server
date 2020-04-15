@@ -2,7 +2,7 @@ package io.appium.uiautomator2.handler;
 
 import android.view.MotionEvent.PointerCoords;
 
-import io.appium.uiautomator2.model.api.touch.appium.GestureModel;
+import io.appium.uiautomator2.model.api.touch.appium.TouchGestureModel;
 import io.appium.uiautomator2.model.api.touch.appium.TouchActionsModel;
 import io.appium.uiautomator2.model.api.touch.appium.TouchLocationModel;
 
@@ -38,7 +38,7 @@ public class MultiPointerGesture extends SafeRequestHandler {
 
         final PointerCoords[][] pcs = new PointerCoords[model.actions.size()][];
         for (int i = 0; i < model.actions.size(); i++) {
-            final List<GestureModel> gestures = model.actions.get(i);
+            final List<TouchGestureModel> gestures = model.actions.get(i);
 
             pcs[i] = gesturesToPointerCoords(time, gestures);
         }
@@ -46,9 +46,9 @@ public class MultiPointerGesture extends SafeRequestHandler {
         return pcs;
     }
 
-    private double computeLongestTime(List<List<GestureModel>> actions) {
+    private double computeLongestTime(List<List<TouchGestureModel>> actions) {
         double max = 0.0;
-        for (final List<GestureModel> gestures : actions) {
+        for (final List<TouchGestureModel> gestures : actions) {
             final double endTime = gestures.get(gestures.size() - 1).time;
             if (endTime > max) {
                 max = endTime;
@@ -57,7 +57,7 @@ public class MultiPointerGesture extends SafeRequestHandler {
         return max;
     }
 
-    private PointerCoords[] gesturesToPointerCoords(final double maxTime, List<GestureModel> gestures) {
+    private PointerCoords[] gesturesToPointerCoords(final double maxTime, List<TouchGestureModel> gestures) {
         // gestures, e.g.:
         // [
         // {"touch":{"y":529.5,"x":120},"time":0.2},
@@ -74,7 +74,7 @@ public class MultiPointerGesture extends SafeRequestHandler {
         final PointerCoords[] pc = new PointerCoords[steps];
 
         int i = 1;
-        GestureModel current = gestures.get(0);
+        TouchGestureModel current = gestures.get(0);
         double currentTime = current.time;
         double runningTime = 0.0;
         final int gesturesLength = gestures.size();
@@ -91,7 +91,7 @@ public class MultiPointerGesture extends SafeRequestHandler {
         return pc;
     }
 
-    private PointerCoords createPointerCoords(GestureModel gesture) {
+    private PointerCoords createPointerCoords(TouchGestureModel gesture) {
         final TouchLocationModel o = gesture.touch;
 
         final int x = o.x.intValue();

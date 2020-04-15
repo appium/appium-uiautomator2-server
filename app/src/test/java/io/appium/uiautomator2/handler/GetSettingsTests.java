@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 public class GetSettingsTests {
 
     @Spy
-    private GetSettings getSettings = new GetSettings("my_uri");
+    private final GetSettings getSettings = new GetSettings("my_uri");
 
     @Mock
     private IHttpRequest req;

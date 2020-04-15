@@ -31,7 +31,7 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.method;
  * Static helper class for getting {@link AccessibilityNodeInfo} instances.
  */
 public abstract class AccessibilityNodeInfoGetter {
-    private static long TIME_IN_MS = 10000;
+    private static final long TIME_IN_MS = 10000;
 
     /**
      * Gets the {@link AccessibilityNodeInfo} associated with the given {@link UiObject2}

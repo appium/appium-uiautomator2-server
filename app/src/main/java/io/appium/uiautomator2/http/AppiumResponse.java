@@ -21,8 +21,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.google.gson.JsonSyntaxException;
-import io.appium.uiautomator2.model.api.ErrorModel;
-import io.appium.uiautomator2.model.api.ResponseModel;
+import io.appium.uiautomator2.model.api.server.ErrorModel;
+import io.appium.uiautomator2.model.api.server.ResponseModel;
 
 import java.nio.charset.StandardCharsets;
 

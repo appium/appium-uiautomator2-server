@@ -6,13 +6,13 @@ import java.util.HashMap;
 
 public class AccessibilityScrollData {
 
-    private int scrollX;
-    private int maxScrollX;
-    private int scrollY;
-    private int maxScrollY;
-    private int fromIndex;
-    private int toIndex;
-    private int itemCount;
+    private final int scrollX;
+    private final int maxScrollX;
+    private final int scrollY;
+    private final int maxScrollY;
+    private final int fromIndex;
+    private final int toIndex;
+    private final int itemCount;
 
     public AccessibilityScrollData(AccessibilityEvent event) {
         this.scrollX = event.getScrollX();

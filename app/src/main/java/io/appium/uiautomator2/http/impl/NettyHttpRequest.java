@@ -8,8 +8,8 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.util.CharsetUtil;
 
 public class NettyHttpRequest implements IHttpRequest {
-    private FullHttpRequest request;
-    private Map<String, Object> data;
+    private final FullHttpRequest request;
+    private final Map<String, Object> data;
 
     public NettyHttpRequest(FullHttpRequest request) {
         this.request = request;

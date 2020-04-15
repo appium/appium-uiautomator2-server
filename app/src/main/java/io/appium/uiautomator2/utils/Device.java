@@ -1,7 +1,5 @@
 package io.appium.uiautomator2.utils;
 
-import android.os.RemoteException;
-
 import androidx.annotation.Nullable;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
@@ -45,10 +43,6 @@ public abstract class Device {
     public static AndroidElement getAndroidElement(String id, Object element, boolean isSingleMatch)
             throws UiAutomator2Exception {
         return getAndroidElement(id, element, isSingleMatch, null, null);
-    }
-
-    public static void wake() throws RemoteException {
-        getUiDevice().wakeUp();
     }
 
     public static void scrollToElement(UiSelector selector, int maxSwipes)

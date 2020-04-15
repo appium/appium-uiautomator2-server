@@ -33,7 +33,7 @@ public class NotificationListener implements OnAccessibilityEventListener {
     private static final int TOAST_CLEAR_TIMEOUT = 3500;
 
     private final UiAutomation uiAutomation;
-    private List<CharSequence> toastMessage = new CopyOnWriteArrayList<>();
+    private final List<CharSequence> toastMessage = new CopyOnWriteArrayList<>();
     private long recentToastTimestamp = currentTimeMillis();
     private OnAccessibilityEventListener originalListener = null;
     private volatile boolean isListening;

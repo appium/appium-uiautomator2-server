@@ -81,7 +81,7 @@ public class UpdateSettingsTests {
     private Session session;
 
     @Spy
-    private UpdateSettings updateSettings = new UpdateSettings("my_uri");
+    private final UpdateSettings updateSettings = new UpdateSettings("my_uri");
 
     @Mock
     private AbstractSetting mySetting;

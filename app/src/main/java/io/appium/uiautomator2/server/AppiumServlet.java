@@ -89,10 +89,10 @@ public class AppiumServlet implements IHttpServlet {
     public static final String NAME_ID_KEY = "NAME_ID_KEY";
     public static final int MAX_ELEMENTS = 3;
     public static final int SECOND_ELEMENT_IDX = 2;
-    private static ConcurrentMap<String, BaseRequestHandler> getHandler = new ConcurrentHashMap<>();
-    private static ConcurrentMap<String, BaseRequestHandler> postHandler = new ConcurrentHashMap<>();
-    private static ConcurrentMap<String, BaseRequestHandler> deleteHandler = new ConcurrentHashMap<>();
-    private ConcurrentMap<String, String[]> mapperUrlSectionsCache = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, BaseRequestHandler> getHandler = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, BaseRequestHandler> postHandler = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, BaseRequestHandler> deleteHandler = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, String[]> mapperUrlSectionsCache = new ConcurrentHashMap<>();
 
 
     public AppiumServlet() {

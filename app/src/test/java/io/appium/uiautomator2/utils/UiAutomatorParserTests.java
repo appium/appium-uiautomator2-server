@@ -41,10 +41,10 @@ public class UiAutomatorParserTests {
     public ExpectedException expectedException = ExpectedException.none();
 
     private UiAutomatorParser uiAutomatorParser;
-    private UiScrollableParser uiScrollableParser = mock(UiScrollableParser.class);
-    private UiSelectorParser uiSelectorParser = mock(UiSelectorParser.class);
-    private UiSelector scrollableSelector = new UiSelector().text("scroll");
-    private UiSelector selector = new UiSelector().text("selector");
+    private final UiScrollableParser uiScrollableParser = mock(UiScrollableParser.class);
+    private final UiSelectorParser uiSelectorParser = mock(UiSelectorParser.class);
+    private final UiSelector scrollableSelector = new UiSelector().text("scroll");
+    private final UiSelector selector = new UiSelector().text("selector");
 
     @Before
     public void setUp() throws UiSelectorSyntaxException, UiObjectNotFoundException {
