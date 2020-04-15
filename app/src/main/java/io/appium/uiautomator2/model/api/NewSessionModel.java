@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.api.appium_touch_actions;
+package io.appium.uiautomator2.model.api;
 
-import io.appium.uiautomator2.model.api.BaseModel;
+import java.util.Map;
 
-public class TouchEventModel implements BaseModel {
-    public TouchEventParams params;
+public class NewSessionModel implements BaseModel {
+    public String sessionId;
+    public Map<String, Object> capabilities;
 
-    public TouchEventModel() {}
+    public NewSessionModel() {}
+
+    public NewSessionModel(
+            String sessionId,
+            Map<String, Object> capabilities
+    ) {
+        this.sessionId = sessionId;
+        this.capabilities = capabilities;
+    }
 }

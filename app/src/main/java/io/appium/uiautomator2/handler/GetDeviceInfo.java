@@ -22,9 +22,11 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import androidx.annotation.Nullable;
+import io.appium.uiautomator2.model.api.DeviceInfoModel;
+import io.appium.uiautomator2.model.api.network.BluetoothInfoModel;
+import io.appium.uiautomator2.model.api.network.NetworkCapabilitiesModel;
+import io.appium.uiautomator2.model.api.network.NetworkInfoModel;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -33,8 +35,10 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.utils.DeviceInfoHelper;
 import io.appium.uiautomator2.utils.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static io.appium.uiautomator2.utils.JSONUtils.formatNull;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 
 public class GetDeviceInfo extends SafeRequestHandler {
@@ -44,85 +48,81 @@ public class GetDeviceInfo extends SafeRequestHandler {
         super(mappedUri);
     }
 
-    private static Object extractSafeJSONValue(String fieldName, Object source) {
+    @Nullable
+    private static <T> T extractSafeValue(String fieldName, Object source) {
         try {
-            return formatNull(getField(fieldName, source));
-        } catch (UiAutomator2Exception ign) {
-            return JSONObject.NULL;
+            //noinspection unchecked
+            return (T) getField(fieldName, source);
+        } catch (UiAutomator2Exception | ClassCastException ign) {
+            return null;
         }
     }
 
-    private static JSONArray extractNetworkInfo(DeviceInfoHelper deviceInfoHelper) throws JSONException {
-        JSONArray result = new JSONArray();
+    private static List<NetworkInfoModel> extractNetworkInfo(DeviceInfoHelper deviceInfoHelper) {
+        List<NetworkInfoModel> result = new ArrayList<>();
         for (Network network : deviceInfoHelper.getNetworks()) {
-            JSONObject resultItem = new JSONObject();
+            NetworkInfoModel resultItem = new NetworkInfoModel();
             NetworkInfo networkInfo = deviceInfoHelper.extractInfo(network);
             if (networkInfo != null) {
-                resultItem.put("type", networkInfo.getType());
-                resultItem.put("typeName", networkInfo.getTypeName());
-                resultItem.put("subtype", networkInfo.getSubtype());
-                resultItem.put("subtypeName", networkInfo.getSubtypeName());
-                resultItem.put("isConnected", networkInfo.isConnected());
-                resultItem.put("detailedState", networkInfo.getDetailedState().name());
-                resultItem.put("state", networkInfo.getState().name());
-                resultItem.put("extraInfo", formatNull(networkInfo.getExtraInfo()));
-                resultItem.put("isAvailable", networkInfo.isAvailable());
-                resultItem.put("isFailover", networkInfo.isFailover());
-                resultItem.put("isRoaming", networkInfo.isRoaming());
+                resultItem.type = networkInfo.getType();
+                resultItem.typeName = networkInfo.getTypeName();
+                resultItem.subtype = networkInfo.getSubtype();
+                resultItem.subtypeName = networkInfo.getSubtypeName();
+                resultItem.isConnected = networkInfo.isConnected();
+                resultItem.detailedState = networkInfo.getDetailedState().name();
+                resultItem.state = networkInfo.getState().name();
+                resultItem.extraInfo = networkInfo.getExtraInfo();
+                resultItem.isAvailable = networkInfo.isAvailable();
+                resultItem.isFailover = networkInfo.isFailover();
+                resultItem.isRoaming = networkInfo.isRoaming();
             }
 
             NetworkCapabilities networkCaps = deviceInfoHelper.extractCapabilities(network);
-            JSONObject caps = new JSONObject();
+            NetworkCapabilitiesModel caps = new NetworkCapabilitiesModel();
             if (networkCaps != null) {
-                caps.put("transportTypes", DeviceInfoHelper.extractTransportTypes(networkCaps));
-                caps.put("networkCapabilities", DeviceInfoHelper.extractCapNames(networkCaps));
-                caps.put("linkUpstreamBandwidthKbps", networkCaps.getLinkUpstreamBandwidthKbps());
-                caps.put("linkDownBandwidthKbps", networkCaps.getLinkDownstreamBandwidthKbps());
-                caps.put("signalStrength",
-                        extractSafeJSONValue("mSignalStrength", networkCaps));
-                caps.put("networkSpecifier",
-                        extractSafeJSONValue("mNetworkSpecifier", networkCaps));
-                caps.put("SSID", extractSafeJSONValue("mSSID", networkCaps));
+                caps.transportTypes = DeviceInfoHelper.extractTransportTypes(networkCaps);
+                caps.networkCapabilities = DeviceInfoHelper.extractCapNames(networkCaps);
+                caps.linkUpstreamBandwidthKbps = networkCaps.getLinkUpstreamBandwidthKbps();
+                caps.linkDownBandwidthKbps = networkCaps.getLinkDownstreamBandwidthKbps();
+                caps.signalStrength = extractSafeValue("mSignalStrength", networkCaps);
+                caps.SSID = extractSafeValue("mSSID", networkCaps);
             }
-            resultItem.put("capabilities", formatNull(networkCaps == null ? null : caps));
+            resultItem.capabilities = networkCaps == null ? null : caps;
 
-            if (resultItem.length() > 0) {
-                result.put(resultItem);
+            if (networkInfo != null || networkCaps != null) {
+                result.add(resultItem);
             }
         }
         return result;
     }
 
-    private static Object extractBluetoothInfo(DeviceInfoHelper deviceInfoHelper) throws JSONException {
+    @Nullable
+    private static BluetoothInfoModel extractBluetoothInfo(DeviceInfoHelper deviceInfoHelper) {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter == null) {
-            return JSONObject.NULL;
-        }
-        JSONObject result = new JSONObject();
-        result.put("state", deviceInfoHelper.toBluetoothStateString(bluetoothAdapter.getState()));
-        return result;
+        return bluetoothAdapter == null
+                ? null
+                : new BluetoothInfoModel(deviceInfoHelper.toBluetoothStateString(bluetoothAdapter.getState()));
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Get Device Info command");
-        final JSONObject response = new JSONObject();
-        final DeviceInfoHelper deviceInfoHelper = new DeviceInfoHelper(mInstrumentation
-                .getTargetContext());
-        response.put("androidId", deviceInfoHelper.getAndroidId());
-        response.put("manufacturer", deviceInfoHelper.getManufacturer());
-        response.put("model", deviceInfoHelper.getModelName());
-        response.put("brand", deviceInfoHelper.getBrand());
-        response.put("apiVersion", deviceInfoHelper.getApiVersion());
-        response.put("platformVersion", deviceInfoHelper.getPlatformVersion());
-        response.put("carrierName", formatNull(deviceInfoHelper.getCarrierName()));
-        response.put("realDisplaySize", deviceInfoHelper.getRealDisplaySize());
-        response.put("displayDensity", deviceInfoHelper.getDisplayDensity());
-        response.put("networks", extractNetworkInfo(deviceInfoHelper));
-        response.put("locale", deviceInfoHelper.getLocale());
-        response.put("timeZone", deviceInfoHelper.getTimeZone());
-        response.put("bluetooth", extractBluetoothInfo(deviceInfoHelper));
+        DeviceInfoModel result = new DeviceInfoModel();
+        final DeviceInfoHelper deviceInfoHelper = new DeviceInfoHelper(mInstrumentation.getTargetContext());
+        result.androidId = deviceInfoHelper.getAndroidId();
+        result.manufacturer = deviceInfoHelper.getManufacturer();
+        result.model = deviceInfoHelper.getModelName();
+        result.brand = deviceInfoHelper.getBrand();
+        result.apiVersion = deviceInfoHelper.getApiVersion();
+        result.platformVersion = deviceInfoHelper.getPlatformVersion();
+        result.carrierName = deviceInfoHelper.getCarrierName();
+        result.realDisplaySize = deviceInfoHelper.getRealDisplaySize();
+        result.displayDensity = deviceInfoHelper.getDisplayDensity();
+        result.networks = extractNetworkInfo(deviceInfoHelper);
+        result.locale = deviceInfoHelper.getLocale();
+        result.timeZone = deviceInfoHelper.getTimeZone();
+        result.bluetooth = extractBluetoothInfo(deviceInfoHelper);
 
-        return new AppiumResponse(getSessionId(request), response);
+        return new AppiumResponse(getSessionId(request), result);
     }
 }

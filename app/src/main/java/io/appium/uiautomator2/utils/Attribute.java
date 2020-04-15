@@ -16,11 +16,10 @@
 
 package io.appium.uiautomator2.utils;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import android.text.TextUtils;
 import androidx.annotation.Nullable;
 
 public enum Attribute {
@@ -86,7 +85,7 @@ public enum Attribute {
             }
 
             if (attribute.aliases.length > 1) {
-                result.add(String.format("{%s}", StringUtils.join(attribute.aliases, ",")));
+                result.add(String.format("{%s}", TextUtils.join(",", attribute.aliases)));
             } else {
                 result.add(attribute.aliases[0]);
             }

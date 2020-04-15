@@ -25,6 +25,7 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
+import static io.appium.uiautomator2.utils.ModelUtils.toMap;
 import static org.junit.Assert.assertEquals;
 
 public class W3CCapsUtilsTests {
@@ -41,7 +42,7 @@ public class W3CCapsUtilsTests {
         JSONObject caps = new JSONObject();
         caps.put(W3CCapsUtils.FIRST_MATCH_KEY, firstMatch);
         caps.put(W3CCapsUtils.ALWAYS_MATCH_KEY, alwaysMatch);
-        Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(caps);
+        Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(toMap(caps));
         assertEquals(parsedCaps.get("activity"), "io.appium.activity");
         assertEquals(parsedCaps.get("package"), "io.appium");
     }
@@ -58,7 +59,7 @@ public class W3CCapsUtilsTests {
         JSONObject caps = new JSONObject();
         caps.put(W3CCapsUtils.FIRST_MATCH_KEY, firstMatch);
         caps.put(W3CCapsUtils.ALWAYS_MATCH_KEY, alwaysMatch);
-        Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(caps);
+        Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(toMap(caps));
         assertEquals(parsedCaps.get("activity"), "io.appium.activity");
         assertEquals(parsedCaps.get("package"), "io.appium");
     }
@@ -76,7 +77,7 @@ public class W3CCapsUtilsTests {
         JSONObject caps = new JSONObject();
         caps.put(W3CCapsUtils.FIRST_MATCH_KEY, firstMatch);
         caps.put(W3CCapsUtils.ALWAYS_MATCH_KEY, alwaysMatch);
-        Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(caps);
+        Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(toMap(caps));
         assertEquals(parsedCaps.get("activity"), "io.appium.activity");
         assertEquals(parsedCaps.get("package"), "io.appium");
         //noinspection unchecked,ConstantConditions
@@ -97,7 +98,7 @@ public class W3CCapsUtilsTests {
         JSONObject caps = new JSONObject();
         caps.put(W3CCapsUtils.FIRST_MATCH_KEY, firstMatch);
         caps.put(W3CCapsUtils.ALWAYS_MATCH_KEY, alwaysMatch);
-        Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(caps);
+        Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(toMap(caps));
         assertEquals(parsedCaps.get("activity"), "io.appium.activity");
         assertEquals(parsedCaps.get("package"), "io.appium");
     }
@@ -116,7 +117,7 @@ public class W3CCapsUtilsTests {
         JSONObject caps = new JSONObject();
         caps.put(W3CCapsUtils.FIRST_MATCH_KEY, firstMatch);
         caps.put(W3CCapsUtils.ALWAYS_MATCH_KEY, alwaysMatch);
-        W3CCapsUtils.parseCapabilities(caps);
+        W3CCapsUtils.parseCapabilities(toMap(caps));
     }
 
     @Test(expected = InvalidArgumentException.class)
@@ -132,6 +133,6 @@ public class W3CCapsUtilsTests {
         JSONObject caps = new JSONObject();
         caps.put(W3CCapsUtils.FIRST_MATCH_KEY, firstMatch);
         caps.put(W3CCapsUtils.ALWAYS_MATCH_KEY, alwaysMatch);
-        W3CCapsUtils.parseCapabilities(caps);
+        W3CCapsUtils.parseCapabilities(toMap(caps));
     }
 }

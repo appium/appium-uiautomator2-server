@@ -17,10 +17,7 @@
 package io.appium.uiautomator2.utils.w3c;
 
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
-import io.appium.uiautomator2.utils.JSONUtils;
 import io.appium.uiautomator2.utils.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,14 +87,21 @@ public class W3CCapsUtils {
         return filteredCaps;
     }
 
-    public static Map<String, Object> parseCapabilities(JSONObject caps) {
-        Map<String, Object> alwaysMatch = caps.opt(ALWAYS_MATCH_KEY) == null
-                ? Collections.<String, Object>emptyMap()
-                : JSONUtils.toMap((JSONObject) caps.opt(ALWAYS_MATCH_KEY));
-        //noinspection unchecked,RedundantCast
-        List<Map<String, Object>> firstMatch = caps.opt(FIRST_MATCH_KEY) == null
-                ? Collections.<Map<String, Object>>emptyList()
-                : (List) JSONUtils.toList((JSONArray) caps.opt(FIRST_MATCH_KEY));
+    public static Map<String, Object> parseCapabilities(Map<String, Object> caps) {
+        //noinspection unchecked
+        Map<String, Object> alwaysMatch = caps.containsKey(ALWAYS_MATCH_KEY)
+                ? (Map<String, Object>) caps.get(ALWAYS_MATCH_KEY)
+                : null;
+        if (alwaysMatch == null) {
+            alwaysMatch = Collections.emptyMap();
+        }
+        //noinspection unchecked
+        List<Map<String, Object>> firstMatch = caps.containsKey(FIRST_MATCH_KEY)
+                ? (List<Map<String, Object>>) caps.get(FIRST_MATCH_KEY)
+                : null;
+        if (firstMatch == null) {
+            firstMatch = Collections.emptyList();
+        }
 
         List<Map<String, Object>> allFirstMatchCaps = firstMatch.isEmpty()
                 ? Collections.singletonList(Collections.<String, Object>emptyMap())

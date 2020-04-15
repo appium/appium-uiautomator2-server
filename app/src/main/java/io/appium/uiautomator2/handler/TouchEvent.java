@@ -18,8 +18,8 @@ package io.appium.uiautomator2.handler;
 
 import android.graphics.Rect;
 
-import io.appium.uiautomator2.model.api.appium_touch_actions.TouchEventModel;
-import io.appium.uiautomator2.model.api.appium_touch_actions.TouchEventParams;
+import io.appium.uiautomator2.model.api.touch.appium.TouchEventModel;
+import io.appium.uiautomator2.model.api.touch.appium.TouchEventParams;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 

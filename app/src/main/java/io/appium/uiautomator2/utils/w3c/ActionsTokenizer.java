@@ -21,9 +21,8 @@ import android.os.Build;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonSyntaxException;
+import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -530,23 +529,23 @@ public class ActionsTokenizer {
      *
      * @param preprocessedActions a valid W3C actions chain
      * @return tokenized chain of events
-     * @throws JSONException         if the given json has invalid format
+     * @throws JsonSyntaxException if the given json has invalid format
      * @throws ActionsParseException if the given actions chain cannot be tokenized properly
      */
-    public ActionTokens tokenize(JSONArray preprocessedActions) throws JSONException {
+    public ActionTokens tokenize(List<W3CItemModel> preprocessedActions) {
         tokenizedActions = new ActionTokens();
 
-        final List<JSONObject> emptyActions = filterActionsByType(preprocessedActions, ACTION_TYPE_NONE);
-        for (final JSONObject emptyAction : emptyActions) {
+        final List<W3CItemModel> emptyActions = filterActionsByType(preprocessedActions, ACTION_TYPE_NONE);
+        for (final W3CItemModel emptyAction : emptyActions) {
             applyEmptyActionToEventsMapping(emptyAction);
         }
 
-        final List<JSONObject> keyInputActions = filterActionsByType(preprocessedActions, ACTION_TYPE_KEY);
-        for (final JSONObject keyAction : keyInputActions) {
+        final List<W3CItemModel> keyInputActions = filterActionsByType(preprocessedActions, ACTION_TYPE_KEY);
+        for (final W3CItemModel keyAction : keyInputActions) {
             applyKeyActionToEventsMapping(keyAction);
         }
 
-        final List<JSONObject> pointerActions = filterActionsByType(preprocessedActions, ACTION_TYPE_POINTER);
+        final List<W3CItemModel> pointerActions = filterActionsByType(preprocessedActions, ACTION_TYPE_POINTER);
         for (int pointerIdx = 0; pointerIdx < pointerActions.size(); pointerIdx++) {
             applyPointerActionToEventsMapping(pointerActions.get(pointerIdx), pointerIdx);
         }

@@ -67,7 +67,7 @@ public class FindElements extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        List<ElementModel> result = new ArrayList<>();
+        List<Object> result = new ArrayList<>();
         FindElementModel model = toModel(request, FindElementModel.class);
         final String method = requireString(model, "strategy");
         final String selector = requireString(model,"selector");

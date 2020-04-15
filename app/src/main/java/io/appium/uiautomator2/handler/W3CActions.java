@@ -18,20 +18,23 @@ package io.appium.uiautomator2.handler;
 
 import android.view.KeyEvent;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.api.touch.w3c.W3CActionsModel;
+import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.w3c.ActionTokens;
 import io.appium.uiautomator2.utils.w3c.ActionsExecutor;
 import io.appium.uiautomator2.utils.w3c.ActionsParseException;
 import io.appium.uiautomator2.utils.w3c.ActionsPreprocessor;
 import io.appium.uiautomator2.utils.w3c.ActionsTokenizer;
+
+import java.util.List;
+
+import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
 public class W3CActions extends SafeRequestHandler {
     private static final ActionsPreprocessor actionsPreprocessor = new ActionsPreprocessor();
@@ -71,10 +74,10 @@ public class W3CActions extends SafeRequestHandler {
      * @return The standard {@link AppiumResponse} instance with return value or error code inside.
      */
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         try {
-            final JSONArray actions = actionsPreprocessor.preprocess(
-                    (JSONArray) toJSON(request).get("actions")
+            final List<W3CItemModel> actions = actionsPreprocessor.preprocess(
+                    toModel(request, W3CActionsModel.class).actions
             );
 
             final ActionTokens actionTokens = actionsTokenizer.tokenize(actions);

@@ -16,10 +16,10 @@
 
 package io.appium.uiautomator2.handler;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -37,21 +37,23 @@ public class GetSessions extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws JSONException {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         Session session = AppiumUIA2Driver.getInstance().getSession();
-        JSONArray result = new JSONArray();
-        if (session != null) {
-            JSONObject sessionProps = new JSONObject();
-            String sessionId = session.getSessionId();
-            if (sessionId != null) {
-                sessionProps.put("id", sessionId);
-                JSONObject sessionCaps = new JSONObject();
-                for (Map.Entry<String, Object> capEntry : session.getCapabilities().entrySet()) {
-                    sessionCaps.put(capEntry.getKey(), JSONUtils.formatNull(capEntry.getValue()));
-                }
-                sessionProps.put("capabilities", sessionCaps);
+        if (session == null) {
+            return new AppiumResponse(NO_ID, Collections.emptyList());
+        }
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        String sessionId = session.getSessionId();
+        if (sessionId != null) {
+            Map<String, Object> sessionProps = new HashMap<>();
+            sessionProps.put("id", sessionId);
+            Map<String, Object> sessionCaps = new HashMap<>();
+            for (Map.Entry<String, Object> capEntry : session.getCapabilities().entrySet()) {
+                sessionCaps.put(capEntry.getKey(), JSONUtils.formatNull(capEntry.getValue()));
             }
-            result.put(sessionProps);
+            sessionProps.put("capabilities", sessionCaps);
+            result.add(sessionProps);
         }
         return new AppiumResponse(NO_ID, result);
     }

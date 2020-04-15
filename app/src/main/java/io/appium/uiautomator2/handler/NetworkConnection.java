@@ -4,7 +4,6 @@ package io.appium.uiautomator2.handler;
 
 import io.appium.uiautomator2.model.api.NetworkConnectionModel;
 import io.appium.uiautomator2.utils.WifiHandler;
-import org.apache.commons.lang.NotImplementedException;
 
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -31,7 +30,7 @@ public class NetworkConnection extends SafeRequestHandler {
             case AIRPLANE:
             case ALL:
             case NONE:
-                throw new NotImplementedException(String.format("Setting Network Connection to '%s' is not implemented",
+                throw new RuntimeException(String.format("Setting Network Connection to '%s' is not implemented",
                         networkType.getNetworkType()));
             default:
                 throw new InvalidArgumentException("Invalid Network Connection type: " + requestedType);

@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.api.appium_touch_actions;
+package io.appium.uiautomator2.model.api.network;
 
 import io.appium.uiautomator2.model.api.BaseModel;
 
-import java.util.List;
+public class NetworkInfoModel implements BaseModel {
+    public Integer type;
+    public String typeName;
+    public Integer subtype;
+    public String subtypeName;
+    public Boolean isConnected;
+    public String detailedState;
+    public String state;
+    public String extraInfo;
+    public Boolean isAvailable;
+    public Boolean isFailover;
+    public Boolean isRoaming;
+    public NetworkCapabilitiesModel capabilities;
 
-public class TouchActionsModel implements BaseModel {
-    public List<List<GestureModel>> actions;
-
-    public TouchActionsModel() {}
+    public NetworkInfoModel() {}
 }

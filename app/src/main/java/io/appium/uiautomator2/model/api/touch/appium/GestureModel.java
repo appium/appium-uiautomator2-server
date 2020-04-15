@@ -1,4 +1,4 @@
-package io.appium.uiautomator2.model.api.appium_touch_actions;
+package io.appium.uiautomator2.model.api.touch.appium;
 
 import io.appium.uiautomator2.model.api.BaseModel;
 

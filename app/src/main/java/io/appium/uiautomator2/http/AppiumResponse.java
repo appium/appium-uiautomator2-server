@@ -31,7 +31,7 @@ import io.appium.uiautomator2.utils.Logger;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toJsonString;
-import static org.apache.commons.lang.StringUtils.abbreviate;
+import static io.appium.uiautomator2.utils.StringHelpers.abbreviate;
 
 public class AppiumResponse {
     private final Object value;
