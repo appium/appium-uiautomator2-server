@@ -18,9 +18,10 @@ package io.appium.uiautomator2.model.api;
 
 public class SwipeModel implements BaseModel {
     public String elementId;
-    public String destElId;
     public Double startX;
     public Double startY;
+    public Double endX;
+    public Double endY;
     public Integer steps;
 
     public SwipeModel() {}

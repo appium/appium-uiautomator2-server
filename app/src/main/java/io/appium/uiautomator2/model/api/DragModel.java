@@ -21,6 +21,8 @@ public class DragModel implements BaseModel {
     public String destElId;
     public Double startX;
     public Double startY;
+    public Double endX;
+    public Double endY;
     public Integer steps;
 
 
