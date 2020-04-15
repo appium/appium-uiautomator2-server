@@ -39,14 +39,14 @@ import static io.appium.uiautomator2.utils.w3c.ActionsConstants.POINTER_ITEM_TYP
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.POINTER_TYPES;
 
 public class ActionsPreprocessor {
-    private static List<W3CGestureModel> preprocessActionItems(final String actionId,
+    private static List<W3CGestureModel> preprocessGestures(final String actionId,
                                                             final String actionType,
-                                                            final List<W3CGestureModel> actionItems) {
+                                                            final List<W3CGestureModel> gestures) {
         final List<W3CGestureModel> processedItems = new ArrayList<>();
         boolean shouldSkipNextItem = false;
-        for (int i = actionItems.size() - 1; i >= 0; i--) {
-            final W3CGestureModel actionItem = actionItems.get(i);
-            if (actionItem.type == null) {
+        for (int i = gestures.size() - 1; i >= 0; i--) {
+            final W3CGestureModel gesture = gestures.get(i);
+            if (gesture.type == null) {
                 throw new ActionsParseException(
                         String.format("All items of '%s' action must have the %s key set",
                                 actionId, ACTION_ITEM_TYPE_KEY));
@@ -67,14 +67,14 @@ public class ActionsPreprocessor {
                             String.format("Unknown action type '%s' is set for '%s' action",
                                     actionType, actionId));
             }
-            if (!allowedItemTypes.contains(actionItem.type)) {
+            if (!allowedItemTypes.contains(gesture.type)) {
                 throw new ActionsParseException(String.format(
                         "Only %s item type values are supported for action type '%s'. " +
                                 "'%s' is passed instead for action '%s'",
-                        allowedItemTypes, actionType, actionItem.type, actionId));
+                        allowedItemTypes, actionType, gesture.type, actionId));
             }
 
-            if (actionItem.type.equals(ACTION_ITEM_TYPE_POINTER_CANCEL)) {
+            if (gesture.type.equals(ACTION_ITEM_TYPE_POINTER_CANCEL)) {
                 shouldSkipNextItem = true;
                 continue;
             }
@@ -83,7 +83,7 @@ public class ActionsPreprocessor {
                 continue;
             }
 
-            processedItems.add(actionItem);
+            processedItems.add(gesture);
         }
 
         final List<W3CGestureModel> result = new ArrayList<>();
@@ -93,15 +93,15 @@ public class ActionsPreprocessor {
         return result;
     }
 
-    public List<W3CItemModel> preprocess(List<W3CItemModel> actions) {
+    public List<W3CItemModel> preprocess(List<W3CItemModel> items) {
         final List<String> actionIds = new ArrayList<>();
         final Set<String> pointerTypes = new HashSet<>();
-        for (final W3CItemModel action : actions) {
-            if (action.id == null) {
+        for (final W3CItemModel actionItem : items) {
+            if (actionItem.id == null) {
                 throw new ActionsParseException(
                         String.format("All actions must have the %s key set", ACTION_KEY_ID));
             }
-            final String actionId = action.id;
+            final String actionId = actionItem.id;
             if (actionIds.contains(actionId)) {
                 throw new ActionsParseException(
                         String.format("The action %s '%s' has one one or more duplicates",
@@ -109,12 +109,12 @@ public class ActionsPreprocessor {
             }
 
             actionIds.add(actionId);
-            if (action.type == null) {
+            if (actionItem.type == null) {
                 throw new ActionsParseException(
                         String.format("'%s' action must have the %s key set",
                                 actionId, ACTION_KEY_TYPE));
             }
-            final String actionType = action.type;
+            final String actionType = actionItem.type;
             if (!ACTION_TYPES.contains(actionType)) {
                 throw new ActionsParseException(String.format(
                         "Only %s values are supported for %s key. "
@@ -122,16 +122,16 @@ public class ActionsPreprocessor {
                         ACTION_TYPES, ACTION_KEY_TYPE, actionType, actionId));
             }
 
-            if (action.parameters != null) {
-                if (action.parameters.pointerType != null) {
-                    if (!POINTER_TYPES.contains(action.parameters.pointerType)) {
+            if (actionItem.parameters != null) {
+                if (actionItem.parameters.pointerType != null) {
+                    if (!POINTER_TYPES.contains(actionItem.parameters.pointerType)) {
                         throw new ActionsParseException(String.format(
                                 "Only %s values are supported for %s key. " +
                                         "'%s' is passed instead for action '%s'",
                                 POINTER_TYPES, PARAMETERS_KEY_POINTER_TYPE,
-                                action.parameters.pointerType, actionId));
+                                actionItem.parameters.pointerType, actionId));
                     }
-                    pointerTypes.add(action.parameters.pointerType);
+                    pointerTypes.add(actionItem.parameters.pointerType);
                     if (!actionType.equals(ACTION_TYPE_POINTER)) {
                         throw new ActionsParseException(String.format(
                                 "%s parameter is only supported for action type '%s' in '%s' action",
@@ -140,17 +140,17 @@ public class ActionsPreprocessor {
                 }
             }
 
-            if (action.items == null) {
+            if (actionItem.actions == null) {
                 throw new ActionsParseException(String.format(
                         "'%s' action should contain at least one item", actionId));
             }
-            action.items = preprocessActionItems(actionId, actionType, action.items);
+            actionItem.actions = preprocessGestures(actionId, actionType, actionItem.actions);
         }
         if (pointerTypes.size() > 1) {
             throw new ActionsParseException(String.format(
                     "It is only allowed to use one pointer type simultaneously. And you have %s: %s",
                     pointerTypes.size(), pointerTypes));
         }
-        return actions;
+        return items;
     }
 }

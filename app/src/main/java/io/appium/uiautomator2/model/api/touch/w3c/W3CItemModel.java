@@ -8,7 +8,7 @@ public class W3CItemModel implements BaseModel {
     public String type;
     public String id;
     public W3CItemParametersModel parameters;
-    public List<W3CGestureModel> items;
+    public List<W3CGestureModel> actions;
 
     public W3CItemModel() {}
 }

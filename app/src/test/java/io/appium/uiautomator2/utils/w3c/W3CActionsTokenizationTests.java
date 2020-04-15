@@ -19,12 +19,15 @@ package io.appium.uiautomator2.utils.w3c;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.google.gson.reflect.TypeToken;
+import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Test;
 
 import java.util.List;
 
+import static io.appium.uiautomator2.utils.ModelUtils.toObject;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,6 +37,11 @@ import static org.junit.Assert.assertEquals;
 public class W3CActionsTokenizationTests {
     private static final ActionsPreprocessor actionsPreprocessor = new ActionsPreprocessor();
     private static final ActionsTokenizer actionsTokenizer = new ActionsTokenizer();
+
+    private static List<W3CItemModel> toActionItems(JSONArray json) {
+        //noinspection unchecked
+        return (List<W3CItemModel>) toObject(json, new TypeToken<List<W3CItemModel>>() { }.getType());
+    }
 
     @Test
     public void verifyValidInputEventsChainIsCompiledForNoneAction() throws JSONException {
@@ -45,7 +53,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pause\", \"duration\": 20}]" +
                 "} ]");
         final ActionTokens eventsChain = actionsTokenizer.tokenize(
-                actionsPreprocessor.preprocess(actionJson)
+                actionsPreprocessor.preprocess(toActionItems(actionJson))
         );
         assertThat(eventsChain.size(), equalTo(2));
 
@@ -70,7 +78,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"keyUp\", \"value\": \"\uE009\"}]" +
                 "} ]");
         final ActionTokens eventsChain = actionsTokenizer.tokenize(
-                actionsPreprocessor.preprocess(actionJson)
+                actionsPreprocessor.preprocess(toActionItems(actionJson))
         );
         assertThat(eventsChain.size(), equalTo(1));
         final List<InputEventParams> generatedParams = eventsChain.eventsAtIndex(0);
@@ -109,7 +117,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"keyUp\", \"value\": \"A\"}]" +
                 "} ]");
         final ActionTokens eventsChain = actionsTokenizer.tokenize(
-                actionsPreprocessor.preprocess(actionJson)
+                actionsPreprocessor.preprocess(toActionItems(actionJson))
         );
         assertThat(eventsChain.size(), equalTo(2));
 
@@ -152,7 +160,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"keyUp\", \"value\": \"\u2000\"}]" +
                 "} ]");
         final ActionTokens eventsChain = actionsTokenizer.tokenize(
-                actionsPreprocessor.preprocess(actionJson)
+                actionsPreprocessor.preprocess(toActionItems(actionJson))
         );
         assertThat(eventsChain.size(), equalTo(3));
 
@@ -220,7 +228,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerUp\"}]" +
                 "} ]");
         final ActionTokens eventsChain = actionsTokenizer.tokenize(
-                actionsPreprocessor.preprocess(actionJson)
+                actionsPreprocessor.preprocess(toActionItems(actionJson))
         );
         assertThat(eventsChain.size(), equalTo(3));
 
@@ -276,7 +284,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerUp\"}]" +
                 "} ]");
         final ActionTokens eventsChain = actionsTokenizer.tokenize(
-                actionsPreprocessor.preprocess(actionJson)
+                actionsPreprocessor.preprocess(toActionItems(actionJson))
         );
         assertThat(eventsChain.size(), equalTo(1));
 
@@ -320,7 +328,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerUp\"}]" +
                 "} ]");
         final ActionTokens eventsChain = actionsTokenizer.tokenize(
-                actionsPreprocessor.preprocess(actionJson)
+                actionsPreprocessor.preprocess(toActionItems(actionJson))
         );
         assertThat(eventsChain.size(), equalTo(4));
 
@@ -392,7 +400,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerUp\", \"button\": 2}]" +
                 "} ]");
         final ActionTokens eventsChain = actionsTokenizer.tokenize(
-                actionsPreprocessor.preprocess(actionJson)
+                actionsPreprocessor.preprocess(toActionItems(actionJson))
         );
         assertThat(eventsChain.size(), equalTo(4));
 
@@ -460,7 +468,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 30, \"x\": 0, \"y\": 0}]" +
                 "} ]");
         final ActionTokens eventsChain = actionsTokenizer.tokenize(
-                actionsPreprocessor.preprocess(actionJson)
+                actionsPreprocessor.preprocess(toActionItems(actionJson))
         );
         assertThat(eventsChain.size(), equalTo(3));
 
@@ -528,7 +536,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerUp\"}]" +
                 "} ]");
         final ActionTokens eventsChain = actionsTokenizer.tokenize(
-                actionsPreprocessor.preprocess(actionJson)
+                actionsPreprocessor.preprocess(toActionItems(actionJson))
         );
         assertThat(eventsChain.size(), equalTo(3));
 
@@ -610,7 +618,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerMove\", \"duration\": -1, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -623,7 +631,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -638,7 +646,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -653,7 +661,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"keyUp\", \"value\": \"A\"}," +
                 "{\"type\": \"keyUp\", \"value\": \"\u2000\"}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -667,7 +675,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"keyUp\", \"value\": \"A\"}," +
                 "{\"type\": \"keyUp\", \"value\": \"\u2000\"}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -681,7 +689,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"keyUp\", \"value\": \"A\"}," +
                 "{\"type\": \"keyUp\", \"value\": \"\u2000\"}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -694,7 +702,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pause\", \"duration\": 200}," +
                 "{\"type\": \"bla\", \"duration\": 20}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -708,7 +716,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -722,7 +730,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerMove\", \"duration\": 10, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -736,7 +744,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerDown\", \"button\": 1}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -749,7 +757,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerUp\", \"button\": 1}," +
                 "{\"type\": \"pointerUp\", \"button\": 1}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -762,7 +770,7 @@ public class W3CActionsTokenizationTests {
                 "{\"type\": \"pointerUp\", \"button\": 1}," +
                 "{\"type\": \"pointerDown\", \"button\": 1}]" +
                 "} ]");
-        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(actionJson));
+        actionsTokenizer.tokenize(actionsPreprocessor.preprocess(toActionItems(actionJson)));
     }
 }
 

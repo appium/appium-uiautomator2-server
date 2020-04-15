@@ -22,10 +22,13 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.google.gson.JsonSyntaxException;
+import io.appium.uiautomator2.model.api.ElementModel;
+import io.appium.uiautomator2.model.api.touch.w3c.W3CGestureModel;
 import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -33,13 +36,9 @@ import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 
-import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_BUTTON_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_DURATION_KEY;
-import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_ORIGIN_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_ORIGIN_POINTER;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_ORIGIN_VIEWPORT;
-import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_PRESSURE_KEY;
-import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_SIZE_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_TYPE_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_TYPE_KEY_DOWN;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_TYPE_KEY_UP;
@@ -48,12 +47,6 @@ import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_TYPE
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_TYPE_POINTER_MOVE;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_TYPE_POINTER_UP;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_VALUE_KEY;
-import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_X_KEY;
-import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_Y_KEY;
-import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_KEY_ACTIONS;
-import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_KEY_ID;
-import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_KEY_PARAMETERS;
-import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_KEY_TYPE;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_TYPE_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_TYPE_NONE;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_TYPE_POINTER;
@@ -80,33 +73,24 @@ public class ActionsTokenizer {
         return modResult == 0 ? ms : ms + EVENT_INJECTION_DELAY_MS - modResult;
     }
 
-    private static List<JSONObject> filterActionsByType(final JSONArray actions,
-                                                        final String type) throws JSONException {
-        final List<JSONObject> result = new ArrayList<>();
-        for (int i = 0; i < actions.length(); i++) {
-            final JSONObject action = actions.getJSONObject(i);
-            final String actionType = action.getString(ACTION_KEY_TYPE);
-            if (actionType.equals(type)) {
-                result.add(action);
+    private static List<W3CItemModel> filterActionsByType(final List<W3CItemModel> items,
+                                                          final String type) {
+        final List<W3CItemModel> result = new ArrayList<>();
+        for (final W3CItemModel item : items) {
+            if (type.equals(item.type)) {
+                result.add(item);
             }
         }
         return result;
     }
 
-    private static int extractButton(final JSONObject actionItem, final int toolType)
-            throws JSONException {
+    private static int extractButton(final W3CGestureModel gesture, final int toolType) {
         if (toolType == MotionEvent.TOOL_TYPE_FINGER) {
             // Ignore button code conversion for the unsupported tool type
-            if (actionItem.has(ACTION_ITEM_BUTTON_KEY)) {
-                return actionItem.getInt(ACTION_ITEM_BUTTON_KEY);
-            }
-            return 0;
+            return gesture.button == null ? 0 : gesture.button;
         }
 
-        int button = MOUSE_BUTTON_LEFT;
-        if (actionItem.has(ACTION_ITEM_BUTTON_KEY)) {
-            button = actionItem.getInt(ACTION_ITEM_BUTTON_KEY);
-        }
+        int button = gesture.button == null ? MOUSE_BUTTON_LEFT : gesture.button;
         // W3C button codes are different from Android constants. Converting...
         switch (button) {
             case MOUSE_BUTTON_LEFT:
@@ -126,20 +110,18 @@ public class ActionsTokenizer {
     }
 
 
-    private static long extractDuration(final JSONObject action,
-                                        final JSONObject actionItem) throws JSONException {
-        if (!actionItem.has(ACTION_ITEM_DURATION_KEY)) {
+    private static long extractDuration(final W3CItemModel item, final W3CGestureModel gesture) {
+        if (gesture.duration == null) {
             throw new ActionsParseException(String.format(
                     "Missing %s key for action item '%s' of action with id '%s'",
-                    ACTION_ITEM_DURATION_KEY, actionItem, action.getString(ACTION_KEY_ID)));
+                    ACTION_ITEM_DURATION_KEY, gesture, item.id));
         }
-        final long duration = actionItem.getLong(ACTION_ITEM_DURATION_KEY);
-        if (duration < 0) {
+        if (gesture.duration < 0) {
             throw new ActionsParseException(String.format(
                     "%s key cannot be negative for action item '%s' of action with id '%s'",
-                    ACTION_ITEM_DURATION_KEY, actionItem, action.getString(ACTION_KEY_ID)));
+                    ACTION_ITEM_DURATION_KEY, gesture, item.id));
         }
-        return duration;
+        return gesture.duration;
     }
 
     @Nullable
@@ -176,11 +158,10 @@ public class ActionsTokenizer {
         return upDownBalance > 1 ? result : null;
     }
 
-    private static int actionToToolType(final JSONObject action) throws JSONException {
-        if (action.has(ACTION_KEY_PARAMETERS)) {
-            final JSONObject params = action.getJSONObject(ACTION_KEY_PARAMETERS);
-            if (params.has(PARAMETERS_KEY_POINTER_TYPE)) {
-                switch (params.getString(PARAMETERS_KEY_POINTER_TYPE)) {
+    private static int actionToToolType(final W3CItemModel item) {
+        if (item.parameters != null) {
+            if (item.parameters.pointerType != null) {
+                switch (item.parameters.pointerType) {
                     case POINTER_TYPE_MOUSE:
                         return MotionEvent.TOOL_TYPE_MOUSE;
                     case POINTER_TYPE_PEN:
@@ -197,22 +178,22 @@ public class ActionsTokenizer {
     }
 
     private static MotionEvent.PointerCoords extractElementCoordinates(
-            final String actionId, final JSONObject actionItem, final Object originValue)
-            throws JSONException {
+            final String actionId, final W3CGestureModel gesture, final Object originValue) {
         String elementId = null;
         if (originValue instanceof String) {
             elementId = (String) originValue;
-        } else if (originValue instanceof JSONObject) {
+        } else if (originValue instanceof Map) {
             // It's how this is defined in WebDriver source:
             //
             // if isinstance(origin, WebElement):
             //    action["origin"] = {"element-6066-11e4-a52e-4f735466cecf": origin.id}
-            elementId = W3CElementUtils.extractElementId((JSONObject) originValue);
+            //noinspection unchecked
+            elementId = new ElementModel((Map<String, Object>) originValue).getUnifiedId();
         }
         if (elementId == null) {
             throw new ActionsParseException(String.format(
                     "An unknown element '%s' is set for action item '%s' of action '%s'",
-                    originValue, actionItem, actionId));
+                    originValue, gesture, actionId));
         }
         final MotionEvent.PointerCoords result = new MotionEvent.PointerCoords();
         Rect bounds;
@@ -224,83 +205,78 @@ public class ActionsTokenizer {
             if (bounds.width() == 0 || bounds.height() == 0) {
                 throw new ActionsParseException(String.format(
                         "The element with id '%s' has zero width/height in the action item '%s' of action '%s'",
-                        elementId, actionItem, actionId));
+                        elementId, gesture, actionId));
             }
         } catch (NullPointerException | UiObjectNotFoundException e) {
             throw new ActionsParseException(String.format(
                     "An unknown element id '%s' is set for the action item '%s' of action '%s'",
-                    elementId, actionItem, actionId));
+                    elementId, gesture, actionId));
         }
         // https://w3c.github.io/webdriver/webdriver-spec.html#pointer-actions
         // > Let x element and y element be the result of calculating the in-view center point of element.
-        result.x = bounds.left + bounds.width() / 2;
-        result.y = bounds.top + bounds.height() / 2;
-        if (actionItem.has(ACTION_ITEM_X_KEY)) {
-            result.x += (float) actionItem.getDouble(ACTION_ITEM_X_KEY);
+        result.x = bounds.left + bounds.width() / 2.0f;
+        result.y = bounds.top + bounds.height() / 2.0f;
+        if (gesture.x != null) {
+            result.x += gesture.x.floatValue();
             // TODO: Shall we throw an exception if result.x is outside of bounds rect?
         }
-        if (actionItem.has(ACTION_ITEM_Y_KEY)) {
-            result.y += (float) actionItem.getDouble(ACTION_ITEM_Y_KEY);
+        if (gesture.y != null) {
+            result.y += gesture.y.floatValue();
             // TODO: Shall we throw an exception if result.y is outside of bounds rect?
         }
         return result;
     }
 
-    private static MotionEvent.PointerCoords extractCoordinates(final String actionId, final JSONArray allItems,
-                                                                final int itemIdx) throws JSONException {
+    private static MotionEvent.PointerCoords extractCoordinates(final String actionId,
+                                                                final List<W3CGestureModel> gestures,
+                                                                final int itemIdx) {
         if (itemIdx < 0) {
             throw new ActionsParseException(String.format(
                     "The first item of action '%s' cannot define HOVER move, " +
                             "because its start coordinates are not set", actionId));
         }
-        final JSONObject actionItem = allItems.getJSONObject(itemIdx);
-        final String actionType = actionItem.getString(ACTION_ITEM_TYPE_KEY);
-        if (!actionType.equals(ACTION_ITEM_TYPE_POINTER_MOVE)) {
+        final W3CGestureModel gesture = gestures.get(itemIdx);
+        if (!ACTION_ITEM_TYPE_POINTER_MOVE.equals(gesture.type)) {
             if (itemIdx > 0) {
-                return extractCoordinates(actionId, allItems, itemIdx - 1);
+                return extractCoordinates(actionId, gestures, itemIdx - 1);
             }
             throw new ActionsParseException(String.format(
                     "Action item '%s' of action '%s' should be preceded with at least one item " +
-                            "with coordinates", actionItem, actionId));
+                            "with coordinates", gesture, actionId));
         }
-        Object origin = ACTION_ITEM_ORIGIN_VIEWPORT;
-        if (actionItem.has(ACTION_ITEM_ORIGIN_KEY)) {
-            origin = actionItem.get(ACTION_ITEM_ORIGIN_KEY);
-        }
+        Object origin = gesture.origin == null ? ACTION_ITEM_ORIGIN_VIEWPORT : gesture.origin;
         final MotionEvent.PointerCoords result = new MotionEvent.PointerCoords();
-        result.size = actionItem.has(ACTION_ITEM_SIZE_KEY) ?
-                (float) actionItem.getDouble(ACTION_ITEM_SIZE_KEY) : 1;
-        result.pressure = actionItem.has(ACTION_ITEM_PRESSURE_KEY) ?
-                (float) actionItem.getDouble(ACTION_ITEM_PRESSURE_KEY) : 1;
+        result.size = gesture.size == null ? 1 : gesture.size.floatValue();
+        result.pressure = gesture.pressure == null ? 1 : gesture.pressure.floatValue();
         if (origin instanceof String) {
             if (origin.equals(ACTION_ITEM_ORIGIN_VIEWPORT)) {
-                if (!actionItem.has(ACTION_ITEM_X_KEY) || !actionItem.has(ACTION_ITEM_Y_KEY)) {
+                if (gesture.x == null || gesture.y == null) {
                     throw new ActionsParseException(String.format(
                             "Both coordinates must be be set for action item '%s' of action '%s'",
-                            actionItem, actionId));
+                            gesture, actionId));
                 }
-                result.x = (float) actionItem.getDouble(ACTION_ITEM_X_KEY);
-                result.y = (float) actionItem.getDouble(ACTION_ITEM_Y_KEY);
+                result.x = gesture.x.floatValue();
+                result.y = gesture.y.floatValue();
                 return result;
             } else if (origin.equals(ACTION_ITEM_ORIGIN_POINTER)) {
                 if (itemIdx > 0) {
-                    final MotionEvent.PointerCoords recentCoords = extractCoordinates(actionId, allItems, itemIdx - 1);
+                    final MotionEvent.PointerCoords recentCoords = extractCoordinates(actionId, gestures, itemIdx - 1);
                     result.x = recentCoords.x;
                     result.y = recentCoords.y;
-                    if (actionItem.has(ACTION_ITEM_X_KEY)) {
-                        result.x += (float) actionItem.getDouble(ACTION_ITEM_X_KEY);
+                    if (gesture.x != null) {
+                        result.x += gesture.x.floatValue();
                     }
-                    if (actionItem.has(ACTION_ITEM_Y_KEY)) {
-                        result.y += (float) actionItem.getDouble(ACTION_ITEM_Y_KEY);
+                    if (gesture.y != null) {
+                        result.y += gesture.y.floatValue();
                     }
                     return result;
                 }
                 throw new ActionsParseException(String.format(
                         "Action item '%s' of action '%s' should be preceded with at least one item " +
-                                "containing absolute coordinates", actionItem, actionId));
+                                "containing absolute coordinates", gesture, actionId));
             }
         }
-        return extractElementCoordinates(actionId, actionItem, origin);
+        return extractElementCoordinates(actionId, gesture, origin);
     }
 
     private void recordEventParams(long timeDeltaMs, @Nullable final InputEventParams newParam) {
@@ -321,54 +297,49 @@ public class ActionsTokenizer {
         tokenizedActions.addEventAt(timeDeltaMs, newParam);
     }
 
-    private void applyEmptyActionToEventsMapping(final JSONObject action) throws JSONException {
-        final JSONArray actionItems = action.getJSONArray(ACTION_KEY_ACTIONS);
+    private void applyEmptyActionToEventsMapping(final W3CItemModel item) {
+        final List<W3CGestureModel> gestures = item.actions;
         long timeDelta = 0;
-        for (int i = 0; i < actionItems.length(); i++) {
-            final JSONObject actionItem = actionItems.getJSONObject(i);
-            final String itemType = actionItem.getString(ACTION_ITEM_TYPE_KEY);
-            if (!itemType.equals(ACTION_ITEM_TYPE_PAUSE)) {
+        for (final W3CGestureModel gesture : gestures) {
+            if (!ACTION_ITEM_TYPE_PAUSE.equals(gesture.type)) {
                 throw new ActionsParseException(String.format(
                         "Unexpected action item %s '%s' in action with id '%s'",
-                        ACTION_ITEM_TYPE_KEY, itemType, action.getString(ACTION_KEY_ID)));
+                        ACTION_ITEM_TYPE_KEY, gesture.type, item.id));
             }
-            timeDelta += alignDuration(extractDuration(action, actionItem));
+            timeDelta += alignDuration(extractDuration(item, gesture));
             recordEventParams(timeDelta, null);
         }
     }
 
-    private void applyKeyActionToEventsMapping(final JSONObject action) throws JSONException {
-        final JSONArray actionItems = action.getJSONArray(ACTION_KEY_ACTIONS);
+    private void applyKeyActionToEventsMapping(final W3CItemModel item) {
+        final List<W3CGestureModel> gestures = item.actions;
         long timeDelta = 0;
         long chainEntryPointDelta = 0;
-        for (int i = 0; i < actionItems.length(); i++) {
-            final JSONObject actionItem = actionItems.getJSONObject(i);
-            final String itemType = actionItem.getString(ACTION_ITEM_TYPE_KEY);
-            switch (itemType) {
+        for (final W3CGestureModel gesture : gestures) {
+            switch (gesture.type) {
                 case ACTION_ITEM_TYPE_PAUSE:
-                    timeDelta += alignDuration(extractDuration(action, actionItem));
+                    timeDelta += alignDuration(extractDuration(item, gesture));
                     recordEventParams(timeDelta, null);
                     break;
                 case ACTION_ITEM_TYPE_KEY_DOWN:
                     chainEntryPointDelta = timeDelta;
                 case ACTION_ITEM_TYPE_KEY_UP:
-                    if (!actionItem.has(ACTION_ITEM_VALUE_KEY)) {
+                    if (gesture.value == null) {
                         throw new ActionsParseException(String.format(
                                 "Missing %s key for action item '%s' of action with id '%s'",
-                                ACTION_ITEM_VALUE_KEY, actionItem, action.getString(ACTION_KEY_ID)));
+                                ACTION_ITEM_VALUE_KEY, gesture, item.id));
                     }
-                    final String value = actionItem.getString(ACTION_ITEM_VALUE_KEY);
-                    if (value.isEmpty()) {
+                    if (gesture.value.isEmpty()) {
                         throw new ActionsParseException(String.format(
                                 "%s key cannot be empty for action item '%s' of action with id '%s'",
-                                ACTION_ITEM_VALUE_KEY, actionItem, action.getString(ACTION_KEY_ID)));
+                                ACTION_ITEM_VALUE_KEY, gesture, item.id));
                     }
                     final KeyInputEventParams evtParams = new KeyInputEventParams(
                             chainEntryPointDelta,
-                            itemType.equals(ACTION_ITEM_TYPE_KEY_DOWN)
+                            gesture.type.equals(ACTION_ITEM_TYPE_KEY_DOWN)
                                     ? KeyEvent.ACTION_DOWN
                                     : KeyEvent.ACTION_UP,
-                            value.codePointAt(0)
+                            gesture.value.codePointAt(0)
                     );
                     recordEventParams(timeDelta, evtParams);
                     chainEntryPointDelta = timeDelta;
@@ -376,7 +347,7 @@ public class ActionsTokenizer {
                 default:
                     throw new ActionsParseException(String.format(
                             "Unexpected action item %s '%s' in action with id '%s'",
-                            ACTION_ITEM_TYPE_KEY, itemType, action.getString(ACTION_KEY_ID)));
+                            ACTION_ITEM_TYPE_KEY, gesture.type, item.id));
             }
         }
     }
@@ -394,12 +365,11 @@ public class ActionsTokenizer {
         }
     }
 
-    private void applyPointerActionToEventsMapping(
-            final JSONObject action, final int pointerIndex) throws JSONException {
-        final String actionId = action.getString(ACTION_KEY_ID);
+    private void applyPointerActionToEventsMapping(final W3CItemModel item, final int pointerIndex) {
+        final String actionId = item.id;
         final MotionEvent.PointerProperties props = new MotionEvent.PointerProperties();
         props.id = pointerIndex;
-        props.toolType = actionToToolType(action);
+        props.toolType = actionToToolType(item);
         assertPointersCount(props.toolType, pointerIndex);
 
         final boolean isToolTypeMouse = props.toolType == MotionEvent.TOOL_TYPE_MOUSE;
@@ -410,13 +380,12 @@ public class ActionsTokenizer {
         boolean isPointerDown = false;
         boolean isHovering = false;
         int recentButton = 0;
-        final JSONArray actionItems = action.getJSONArray(ACTION_KEY_ACTIONS);
-        for (int actionItemIdx = 0; actionItemIdx < actionItems.length(); actionItemIdx++) {
-            final JSONObject actionItem = actionItems.getJSONObject(actionItemIdx);
-            final String itemType = actionItem.getString(ACTION_ITEM_TYPE_KEY);
-            switch (itemType) {
+        final List<W3CGestureModel> gestures = item.actions;
+        for (int actionItemIdx = 0; actionItemIdx < gestures.size(); actionItemIdx++) {
+            final W3CGestureModel gesture = gestures.get(actionItemIdx);
+            switch (gesture.type) {
                 case ACTION_ITEM_TYPE_PAUSE: {
-                    timeDelta += alignDuration(extractDuration(action, actionItem));
+                    timeDelta += alignDuration(extractDuration(item, gesture));
                     recordEventParams(timeDelta, null);
                 }
                 break;
@@ -424,13 +393,13 @@ public class ActionsTokenizer {
                     if (isPointerDown || recentDownDelta == timeDelta) {
                         throw new ActionsParseException(String.format(
                                 "You cannot perform two or more '%s' actions without a pause between them at " +
-                                        "%sms in '%s' chain", itemType, timeDelta, actionId));
+                                        "%sms in '%s' chain", gesture.type, timeDelta, actionId));
                     }
 
                     chainEntryPointDelta = timeDelta;
-                    recentButton = extractButton(actionItem, props.toolType);
+                    recentButton = extractButton(gesture, props.toolType);
                     recordEventParams(timeDelta, new MotionInputEventParams(chainEntryPointDelta, MotionEvent.ACTION_DOWN,
-                            extractCoordinates(actionId, actionItems, actionItemIdx), recentButton, props));
+                            extractCoordinates(actionId, gestures, actionItemIdx), recentButton, props));
                     isPointerDown = true;
                     recentDownDelta = timeDelta;
                 }
@@ -439,17 +408,17 @@ public class ActionsTokenizer {
                     if (!isPointerDown) {
                         throw new ActionsParseException(String.format(
                                 "You cannot perform '%s' action without performing '%s' first at " +
-                                        "%sms in '%s' chain", itemType, ACTION_ITEM_TYPE_POINTER_DOWN, timeDelta, actionId));
+                                        "%sms in '%s' chain", gesture.type, ACTION_ITEM_TYPE_POINTER_DOWN, timeDelta, actionId));
                     }
                     if (recentUpDelta == timeDelta) {
                         throw new ActionsParseException(String.format(
                                 "You cannot perform two or more '%s' actions without a pause between them at " +
-                                        "%sms in '%s' chain", itemType, timeDelta, actionId));
+                                        "%sms in '%s' chain", gesture.type, timeDelta, actionId));
                     }
 
-                    recentButton = extractButton(actionItem, props.toolType);
+                    recentButton = extractButton(gesture, props.toolType);
                     recordEventParams(timeDelta, new MotionInputEventParams(chainEntryPointDelta, MotionEvent.ACTION_UP,
-                            extractCoordinates(actionId, actionItems, actionItemIdx), recentButton, props));
+                            extractCoordinates(actionId, gestures, actionItemIdx), recentButton, props));
                     isPointerDown = false;
                     recentButton = 0;
                     chainEntryPointDelta = timeDelta;
@@ -457,7 +426,7 @@ public class ActionsTokenizer {
                 }
                 break;
                 case ACTION_ITEM_TYPE_POINTER_MOVE: {
-                    long duration = alignDuration(extractDuration(action, actionItem));
+                    long duration = alignDuration(extractDuration(item, gesture));
                     if (duration < EVENT_INJECTION_DELAY_MS) {
                         break;
                     }
@@ -473,8 +442,8 @@ public class ActionsTokenizer {
                     int actionCode = !isPointerDown && isToolTypeMouse
                             ? MotionEvent.ACTION_HOVER_MOVE
                             : MotionEvent.ACTION_MOVE;
-                    final MotionEvent.PointerCoords startCoordinates = extractCoordinates(actionId, actionItems, actionItemIdx - 1);
-                    final MotionEvent.PointerCoords endCoordinates = extractCoordinates(actionId, actionItems, actionItemIdx);
+                    final MotionEvent.PointerCoords startCoordinates = extractCoordinates(actionId, gestures, actionItemIdx - 1);
+                    final MotionEvent.PointerCoords endCoordinates = extractCoordinates(actionId, gestures, actionItemIdx);
 
                     final long startDelta = timeDelta;
                     final long firstActionDelta = recentDownDelta == startDelta || recentUpDelta == startDelta
@@ -516,7 +485,7 @@ public class ActionsTokenizer {
                 default:
                     throw new ActionsParseException(String.format(
                             "Unexpected action item %s '%s' in action with id '%s'",
-                            ACTION_ITEM_TYPE_KEY, itemType, actionId));
+                            ACTION_ITEM_TYPE_KEY, gesture.type, actionId));
             }
         }
     }
@@ -527,25 +496,25 @@ public class ActionsTokenizer {
      * of corresponding action properties. All events on this timeflow are
      * aligned by 5ms interval
      *
-     * @param preprocessedActions a valid W3C actions chain
+     * @param preprocessedItems a valid W3C actions chain
      * @return tokenized chain of events
      * @throws JsonSyntaxException if the given json has invalid format
      * @throws ActionsParseException if the given actions chain cannot be tokenized properly
      */
-    public ActionTokens tokenize(List<W3CItemModel> preprocessedActions) {
+    public ActionTokens tokenize(List<W3CItemModel> preprocessedItems) {
         tokenizedActions = new ActionTokens();
 
-        final List<W3CItemModel> emptyActions = filterActionsByType(preprocessedActions, ACTION_TYPE_NONE);
+        final List<W3CItemModel> emptyActions = filterActionsByType(preprocessedItems, ACTION_TYPE_NONE);
         for (final W3CItemModel emptyAction : emptyActions) {
             applyEmptyActionToEventsMapping(emptyAction);
         }
 
-        final List<W3CItemModel> keyInputActions = filterActionsByType(preprocessedActions, ACTION_TYPE_KEY);
+        final List<W3CItemModel> keyInputActions = filterActionsByType(preprocessedItems, ACTION_TYPE_KEY);
         for (final W3CItemModel keyAction : keyInputActions) {
             applyKeyActionToEventsMapping(keyAction);
         }
 
-        final List<W3CItemModel> pointerActions = filterActionsByType(preprocessedActions, ACTION_TYPE_POINTER);
+        final List<W3CItemModel> pointerActions = filterActionsByType(preprocessedItems, ACTION_TYPE_POINTER);
         for (int pointerIdx = 0; pointerIdx < pointerActions.size(); pointerIdx++) {
             applyPointerActionToEventsMapping(pointerActions.get(pointerIdx), pointerIdx);
         }

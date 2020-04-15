@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.utils.w3c;
 
+import com.google.gson.reflect.TypeToken;
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,10 +26,15 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
-import static io.appium.uiautomator2.utils.ModelUtils.toMap;
+import static io.appium.uiautomator2.utils.ModelUtils.toObject;
 import static org.junit.Assert.assertEquals;
 
 public class W3CCapsUtilsTests {
+
+    private static Map<String, Object> toMap(JSONObject json) {
+        //noinspection unchecked
+        return (Map<String, Object>) toObject(json, new TypeToken<Map<String, Object>>() { }.getType());
+    }
 
     @Test
     public void verifyValidW3CCapsParsingWithoutPrefixes() throws JSONException {

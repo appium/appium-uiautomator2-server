@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.handler.request;
 
-import org.json.JSONException;
+import com.google.gson.JsonSyntaxException;
 
 import androidx.test.uiautomator.StaleObjectException;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -40,7 +40,7 @@ public abstract class SafeRequestHandler extends BaseRequestHandler {
             return new AppiumResponse(getSessionId(request), new ElementNotFoundException(e));
         } catch (StaleObjectException e) {
             return new AppiumResponse(getSessionId(request), new StaleElementReferenceException(e));
-        } catch (JSONException e) {
+        } catch (JsonSyntaxException | IllegalArgumentException e) {
             return new AppiumResponse(getSessionId(request), new InvalidArgumentException(e));
         } catch (Throwable e) {
             // Catching Errors seems like a bad idea in general but if we don't catch this,

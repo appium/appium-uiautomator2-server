@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.utils.w3c;
 
+import com.google.gson.reflect.TypeToken;
+import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Test;
@@ -23,6 +25,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static io.appium.uiautomator2.utils.ModelUtils.toObject;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,6 +33,11 @@ import static org.junit.Assert.fail;
 
 public class W3CActionsPreprocessingTests {
     private static final ActionsPreprocessor actionsPreprocessor = new ActionsPreprocessor();
+
+    private static List<W3CItemModel> toActionItems(JSONArray json) {
+        //noinspection unchecked
+        return (List<W3CItemModel>) toObject(json, new TypeToken<List<W3CItemModel>>() { }.getType());
+    }
 
     @Test
     public void verifyInvalidActionChainsPreprocessing() throws JSONException {
@@ -130,9 +138,9 @@ public class W3CActionsPreprocessingTests {
         for (final String invalidAction : invalidActions) {
             final JSONArray invalidActionJson = new JSONArray(invalidAction);
             try {
-                actionsPreprocessor.preprocess(invalidActionJson);
+                actionsPreprocessor.preprocess(toActionItems(invalidActionJson));
                 fail(String.format("'%s' should throw an exception", invalidAction));
-            } catch (JSONException | ActionsParseException e) {
+            } catch (ActionsParseException e) {
                 // expected
             }
         }
@@ -151,7 +159,7 @@ public class W3CActionsPreprocessingTests {
                 "{\"type\": \"pointerMove\", \"duration\": 1000, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 0}]" +
                 "} ]");
-        assertThat(actionsPreprocessor.preprocess(actionJson).toString(), is(equalTo(actionJson.toString())));
+        assertThat(actionsPreprocessor.preprocess(toActionItems(actionJson)).toString(), is(equalTo(actionJson.toString())));
     }
 
     @Test
@@ -176,7 +184,7 @@ public class W3CActionsPreprocessingTests {
                 "{\"type\": \"pointerMove\", \"duration\": 1000, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 0}]" +
                 "} ]");
-        assertThat(actionsPreprocessor.preprocess(actionJson).toString(), is(equalTo(processedJson.toString())));
+        assertThat(actionsPreprocessor.preprocess(toActionItems(actionJson)).toString(), is(equalTo(processedJson.toString())));
     }
 
     @Test(expected = ActionsParseException.class)
@@ -198,7 +206,7 @@ public class W3CActionsPreprocessingTests {
                 "{\"type\": \"pointerMove\", \"duration\": 1000, \"origin\": \"pointer\", \"x\": -50, \"y\": 0}," +
                 "{\"type\": \"pointerUp\", \"button\": 0}]" +
                 "} ]");
-        actionsPreprocessor.preprocess(actionJson);
+        actionsPreprocessor.preprocess(toActionItems(actionJson));
     }
 
 }

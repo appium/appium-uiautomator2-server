@@ -50,7 +50,7 @@ public class GetSessions extends SafeRequestHandler {
             sessionProps.put("id", sessionId);
             Map<String, Object> sessionCaps = new HashMap<>();
             for (Map.Entry<String, Object> capEntry : session.getCapabilities().entrySet()) {
-                sessionCaps.put(capEntry.getKey(), JSONUtils.formatNull(capEntry.getValue()));
+                sessionCaps.put(capEntry.getKey(), capEntry.getValue());
             }
             sessionProps.put("capabilities", sessionCaps);
             result.add(sessionProps);

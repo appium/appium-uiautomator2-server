@@ -40,6 +40,15 @@ public class ElementModel implements BaseModel {
         this.w3cElementId = source.getId();
     }
 
+    public ElementModel(Map<String, Object> source) {
+        this.jwpElementId = source.get(JWP_ELEMENT_ID_KEY_NAME) instanceof String
+                ? (String) source.get(JWP_ELEMENT_ID_KEY_NAME)
+                : null;
+        this.w3cElementId = source.get(W3C_ELEMENT_ID_KEY_NAME) instanceof String
+                ? (String) source.get(W3C_ELEMENT_ID_KEY_NAME)
+                : null;
+    }
+
     @Nullable
     public String getUnifiedId() {
         return !isBlank(w3cElementId) ? w3cElementId : jwpElementId;
