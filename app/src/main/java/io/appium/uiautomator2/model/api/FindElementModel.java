@@ -16,8 +16,12 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class FindElementModel implements BaseModel {
+import io.appium.uiautomator2.model.RequiredField;
+
+public class FindElementModel extends BaseModel {
+    @RequiredField
     public String strategy;
+    @RequiredField
     public String selector;
     public String context;
 

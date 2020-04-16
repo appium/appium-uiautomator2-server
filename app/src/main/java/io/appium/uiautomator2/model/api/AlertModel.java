@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class AlertModel implements BaseModel {
+public class AlertModel extends BaseModel {
     public String buttonLabel;
 
     public AlertModel() {}

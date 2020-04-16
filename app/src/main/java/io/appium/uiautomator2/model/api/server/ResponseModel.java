@@ -18,7 +18,7 @@ package io.appium.uiautomator2.model.api.server;
 
 import io.appium.uiautomator2.model.api.BaseModel;
 
-public class ResponseModel implements BaseModel {
+public class ResponseModel extends BaseModel {
     public Object value;
     // This field is actually not needed in W3C, but we still keep it
     public String sessionId;

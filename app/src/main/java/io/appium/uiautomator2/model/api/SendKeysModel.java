@@ -16,8 +16,11 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class SendKeysModel implements BaseModel {
+import io.appium.uiautomator2.model.RequiredField;
+
+public class SendKeysModel extends BaseModel {
     public Boolean replace;
+    @RequiredField
     public String text;
 
     public SendKeysModel() {}

@@ -21,7 +21,7 @@ import io.appium.uiautomator2.model.api.network.NetworkInfoModel;
 
 import java.util.List;
 
-public class DeviceInfoModel implements BaseModel {
+public class DeviceInfoModel extends BaseModel {
     public String androidId;
     public String manufacturer;
     public String model;

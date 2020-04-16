@@ -35,7 +35,6 @@ import static androidx.test.uiautomator.By.focused;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ElementHelpers.findElement;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireString;
 
 /**
  * Send keys to a given element.
@@ -62,7 +61,7 @@ public class SendKeysToElement extends SafeRequestHandler {
             element = findElement(focused(true));
         }
         SendKeysModel model = toModel(request, SendKeysModel.class);
-        String text = requireString(model, "text");
+        String text = model.text;
         boolean replace = model.replace == null ? false : model.replace;
 
         boolean pressEnter = false;

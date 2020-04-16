@@ -18,7 +18,7 @@ package io.appium.uiautomator2.model.api.network;
 
 import io.appium.uiautomator2.model.api.BaseModel;
 
-public class NetworkCapabilitiesModel implements BaseModel {
+public class NetworkCapabilitiesModel extends BaseModel {
     public String transportTypes;
     public String networkCapabilities;
     public Integer linkUpstreamBandwidthKbps;

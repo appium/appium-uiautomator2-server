@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class SystemBarsModel implements BaseModel {
+public class SystemBarsModel extends BaseModel {
     public Integer statusBar;
 
     public SystemBarsModel() {}

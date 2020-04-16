@@ -16,13 +16,20 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class DragModel implements BaseModel {
+import io.appium.uiautomator2.model.RequiredField;
+
+public class DragModel extends BaseModel {
     public String elementId;
     public String destElId;
+    @RequiredField
     public Double startX;
+    @RequiredField
     public Double startY;
+    @RequiredField
     public Double endX;
+    @RequiredField
     public Double endY;
+    @RequiredField
     public Integer steps;
 
 

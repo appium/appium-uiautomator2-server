@@ -16,8 +16,12 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class FlickBySpeedModel implements BaseModel {
+import io.appium.uiautomator2.model.RequiredField;
+
+public class FlickBySpeedModel extends BaseModel {
+    @RequiredField
     public Integer xspeed;
+    @RequiredField
     public Integer yspeed;
 
     public FlickBySpeedModel() {}

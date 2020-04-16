@@ -18,7 +18,7 @@ package io.appium.uiautomator2.model.api.network;
 
 import io.appium.uiautomator2.model.api.BaseModel;
 
-public class BluetoothInfoModel implements BaseModel {
+public class BluetoothInfoModel extends BaseModel {
     public String state;
 
     public BluetoothInfoModel() {}

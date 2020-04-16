@@ -30,7 +30,6 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
 
 public class LongPressKeyCode extends SafeRequestHandler {
 
@@ -41,7 +40,7 @@ public class LongPressKeyCode extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         final KeyCodeModel model = toModel(request, KeyCodeModel.class);
-        final int keyCode = requireInteger(model, "keycode");
+        final int keyCode = model.keycode;
         int metaState = model.metastate == null ? 0 : model.metastate;
         int flags = model.flags == null ? 0 : model.flags;
 

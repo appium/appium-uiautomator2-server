@@ -16,12 +16,19 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class SwipeModel implements BaseModel {
+import io.appium.uiautomator2.model.RequiredField;
+
+public class SwipeModel extends BaseModel {
     public String elementId;
+    @RequiredField
     public Double startX;
+    @RequiredField
     public Double startY;
+    @RequiredField
     public Double endX;
+    @RequiredField
     public Double endY;
+    @RequiredField
     public Integer steps;
 
     public SwipeModel() {}

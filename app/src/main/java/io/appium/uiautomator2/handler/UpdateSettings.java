@@ -31,7 +31,6 @@ import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireMap;
 
 public class UpdateSettings extends SafeRequestHandler {
 
@@ -44,7 +43,7 @@ public class UpdateSettings extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         SettingsModel model = toModel(request, SettingsModel.class);
-        Map<String, Object> settings = requireMap(model, "settings");
+        Map<String, Object> settings = model.settings;
         Logger.debug("Update settings: " + settings.toString());
         for (Entry<String, Object> entry : settings.entrySet()) {
             String settingName = entry.getKey();

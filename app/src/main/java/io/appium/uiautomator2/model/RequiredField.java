@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.api;
+package io.appium.uiautomator2.model;
 
-public class SizeModel extends BaseModel {
-    public Integer width;
-    public Integer height;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    public SizeModel() {}
-
-    public SizeModel(
-            Integer width,
-            Integer height
-    ) {
-        this.width = width;
-        this.height = height;
-    }
-
-}
+/**
+ *  An annotation that indicates this member must be present in the source
+ *  JSON upon serialization and must not be set to `null`.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface RequiredField {}

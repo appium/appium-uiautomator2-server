@@ -16,8 +16,12 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class CoordinatesModel implements BaseModel {
+import io.appium.uiautomator2.model.RequiredField;
+
+public class CoordinatesModel extends BaseModel {
+    @RequiredField
     public Double x;
+    @RequiredField
     public Double y;
 
     public CoordinatesModel() {}

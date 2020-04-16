@@ -20,7 +20,6 @@ import static io.appium.uiautomator2.utils.Device.scrollToElement;
 
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireString;
 
 public class ScrollTo extends SafeRequestHandler {
 
@@ -31,8 +30,8 @@ public class ScrollTo extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         ScrollToModel model = toModel(request, ScrollToModel.class);
-        String strategy = requireString(model.params, "strategy");
-        String selector = requireString(model.params, "selector");
+        String strategy = model.params.strategy;
+        String selector = model.params.selector;
         int maxSwipes = model.params.maxSwipes == null ? 0 : model.params.maxSwipes;
 
         By by = new NativeAndroidBySelector().pickFrom(strategy, selector);

@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class BatteryStatusModel implements BaseModel {
+public class BatteryStatusModel extends BaseModel {
     public Double level;
     public Integer status;
 

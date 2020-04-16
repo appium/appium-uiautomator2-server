@@ -1,8 +1,10 @@
 package io.appium.uiautomator2.model.api.touch.w3c;
 
+import io.appium.uiautomator2.model.RequiredField;
 import io.appium.uiautomator2.model.api.BaseModel;
 
-public class W3CGestureModel implements BaseModel {
+public class W3CGestureModel extends BaseModel {
+    @RequiredField
     public String type;
     public Long duration;
     public Object origin;

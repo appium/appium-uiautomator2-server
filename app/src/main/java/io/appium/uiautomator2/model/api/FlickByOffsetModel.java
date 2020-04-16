@@ -16,9 +16,14 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class FlickByOffsetModel implements BaseModel {
+import io.appium.uiautomator2.model.RequiredField;
+
+public class FlickByOffsetModel extends BaseModel {
+    @RequiredField
     public Integer xoffset;
+    @RequiredField
     public Integer yoffset;
+    @RequiredField
     public Integer speed;
 
     public FlickByOffsetModel() {}

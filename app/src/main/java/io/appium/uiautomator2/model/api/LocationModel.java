@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class LocationModel implements BaseModel {
+public class LocationModel extends BaseModel {
     public Integer x;
     public Integer y;
 

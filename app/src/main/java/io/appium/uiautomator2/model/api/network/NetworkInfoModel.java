@@ -18,7 +18,7 @@ package io.appium.uiautomator2.model.api.network;
 
 import io.appium.uiautomator2.model.api.BaseModel;
 
-public class NetworkInfoModel implements BaseModel {
+public class NetworkInfoModel extends BaseModel {
     public Integer type;
     public String typeName;
     public Integer subtype;

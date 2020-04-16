@@ -16,7 +16,10 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class KeyCodeModel implements BaseModel {
+import io.appium.uiautomator2.model.RequiredField;
+
+public class KeyCodeModel extends BaseModel {
+    @RequiredField
     public Integer keycode;
     public Integer metastate;
     public Integer flags;

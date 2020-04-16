@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class RotationModel implements BaseModel {
+public class RotationModel extends BaseModel {
     public String orientation;
     public Integer x;
     public Integer y;

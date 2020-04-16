@@ -16,11 +16,13 @@
 
 package io.appium.uiautomator2.model.api.touch.w3c;
 
+import io.appium.uiautomator2.model.RequiredField;
 import io.appium.uiautomator2.model.api.BaseModel;
 
 import java.util.List;
 
-public class W3CActionsModel implements BaseModel {
+public class W3CActionsModel extends BaseModel {
+    @RequiredField
     public List<W3CItemModel> actions;
 
     public W3CActionsModel() {}

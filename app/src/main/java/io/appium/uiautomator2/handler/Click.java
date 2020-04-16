@@ -36,7 +36,6 @@ import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireDouble;
 
 public class Click extends SafeRequestHandler {
 
@@ -50,9 +49,7 @@ public class Click extends SafeRequestHandler {
         if (elementId == null) {
             Logger.info("tap command");
             CoordinatesModel coordinates = toModel(request, CoordinatesModel.class);
-            Point coords = new Point(
-                    requireDouble(coordinates, "x"),
-                    requireDouble(coordinates, "y"));
+            Point coords = new Point(coordinates.x, coordinates.y);
             coords = PositionHelper.getDeviceAbsPos(coords);
             if (!getUiDevice().click(coords.x.intValue(), coords.y.intValue())) {
                 throw new InvalidElementStateException(

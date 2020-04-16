@@ -35,7 +35,6 @@ import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
 
 public abstract class TouchEvent extends SafeRequestHandler {
     protected int clickX, clickY;
@@ -63,8 +62,12 @@ public abstract class TouchEvent extends SafeRequestHandler {
             clickX = bounds.centerX();
             clickY = bounds.centerY();
         } else { // no element so extract x and y from params
-            clickX = requireInteger(params, "x");
-            clickY = requireInteger(params,"y");
+            if (params.x == null || params.y == null) {
+                throw new IllegalArgumentException(
+                        "Both x and y coordinates must be provided without elementId set");
+            }
+            clickX = params.x;
+            clickY = params.y;
         }
 
         if (executeTouchEvent()) {

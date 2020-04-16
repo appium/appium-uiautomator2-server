@@ -18,7 +18,7 @@ package io.appium.uiautomator2.model.api;
 
 import java.util.Map;
 
-public class SessionDetailsModel implements BaseModel {
+public class SessionDetailsModel extends BaseModel {
     public Map<String, Integer> lastScrollData;
 
     public SessionDetailsModel() {}

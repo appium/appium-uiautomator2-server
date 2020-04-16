@@ -33,7 +33,6 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireString;
 
 public class SetClipboard extends SafeRequestHandler {
     private final Instrumentation mInstrumentation = getInstrumentation();
@@ -52,7 +51,7 @@ public class SetClipboard extends SafeRequestHandler {
         ClipDataType contentType = ClipDataType.PLAINTEXT;
         ClipboardModel model = toModel(request, ClipboardModel.class);
         try {
-            String content = fromBase64String(requireString(model,"content"));
+            String content = fromBase64String(model.content);
             if (model.contentType != null) {
                 contentType = ClipDataType.valueOf(model.contentType.toUpperCase());
             }

@@ -46,7 +46,6 @@ import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMa
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireString;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class FindElement extends SafeRequestHandler {
@@ -58,8 +57,8 @@ public class FindElement extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         FindElementModel model = toModel(request, FindElementModel.class);
-        final String method = requireString(model, "strategy");
-        final String selector = requireString(model,"selector");
+        final String method = model.strategy;
+        final String selector = model.selector;
         final String contextId = model.context;
 
         Logger.info(String.format("Find element command using '%s' with selector '%s'.", method, selector));

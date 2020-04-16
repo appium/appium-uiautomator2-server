@@ -35,8 +35,6 @@ import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireDouble;
-import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
 
 public class Swipe extends SafeRequestHandler {
 
@@ -93,9 +91,9 @@ public class Swipe extends SafeRequestHandler {
                 Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
                 element = session.getKnownElements().getElementFromCache(model.elementId);
             }
-            start = new Point(requireDouble(model, "startX"), requireDouble(model, "startY"));
-            end = new Point(requireDouble(model, "endX"), requireDouble(model, "endY"));
-            steps = requireInteger(model, "steps");
+            start = new Point(model.startX, model.startY);
+            end = new Point(model.endX, model.endY);
+            steps = model.steps;
         }
     }
 }

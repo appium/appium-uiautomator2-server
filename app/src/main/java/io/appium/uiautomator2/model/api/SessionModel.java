@@ -18,7 +18,7 @@ package io.appium.uiautomator2.model.api;
 
 import java.util.Map;
 
-public class SessionModel implements BaseModel {
+public class SessionModel extends BaseModel {
     public String sessionId;
     public Map<String, Object> capabilities;
 

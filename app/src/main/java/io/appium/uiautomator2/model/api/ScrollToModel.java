@@ -16,13 +16,18 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class ScrollToModel implements BaseModel {
+import io.appium.uiautomator2.model.RequiredField;
+
+public class ScrollToModel extends BaseModel {
+    @RequiredField
     public ScrollParams params;
 
     public ScrollToModel() {}
 
-    public static class ScrollParams implements BaseModel {
+    public static class ScrollParams extends BaseModel {
+        @RequiredField
         public String strategy;
+        @RequiredField
         public String selector;
         public Integer maxSwipes;
 

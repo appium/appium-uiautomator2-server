@@ -20,7 +20,6 @@ import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
 
 public class Flick extends SafeRequestHandler {
 
@@ -43,17 +42,17 @@ public class Flick extends SafeRequestHandler {
             }
             start = element.getAbsolutePosition(start);
             FlickByOffsetModel model = toModel(request, FlickByOffsetModel.class);
-            final Integer xoffset = requireInteger(model, "xoffset");
-            final Integer yoffset = requireInteger(model, "yoffset");
-            final int speed = requireInteger(model, "speed");
+            final Integer xoffset = model.xoffset;
+            final Integer yoffset = model.yoffset;
+            final int speed = model.speed;
 
             steps = 1250.0 / speed + 1;
             end.x = start.x + xoffset;
             end.y = start.y + yoffset;
         } else {
             FlickBySpeedModel model = toModel(request, FlickBySpeedModel.class);
-            final Integer xSpeed = requireInteger(model, "xspeed");
-            final Integer ySpeed = requireInteger(model, "yspeed");
+            final Integer xSpeed = model.xspeed;
+            final Integer ySpeed = model.yspeed;
 
             final double speed = Math.min(1250.0, Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed));
             steps = 1250.0 / speed + 1;

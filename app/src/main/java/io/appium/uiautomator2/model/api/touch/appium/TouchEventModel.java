@@ -16,9 +16,11 @@
 
 package io.appium.uiautomator2.model.api.touch.appium;
 
+import io.appium.uiautomator2.model.RequiredField;
 import io.appium.uiautomator2.model.api.BaseModel;
 
-public class TouchEventModel implements BaseModel {
+public class TouchEventModel extends BaseModel {
+    @RequiredField
     public TouchEventParams params;
 
     public TouchEventModel() {}

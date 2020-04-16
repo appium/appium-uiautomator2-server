@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class NetworkConnectionModel implements BaseModel {
+public class NetworkConnectionModel extends BaseModel {
     public Integer type;
 
     public NetworkConnectionModel() {}

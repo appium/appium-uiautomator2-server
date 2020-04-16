@@ -32,7 +32,6 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.ModelValidators.requireInteger;
 
 public class PressKeyCode extends SafeRequestHandler {
     public PressKeyCode(String mappedUri) {
@@ -43,7 +42,7 @@ public class PressKeyCode extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Calling PressKeyCode... ");
         final KeyCodeModel model = toModel(request, KeyCodeModel.class);
-        final int keyCode = requireInteger(model, "keycode");
+        final int keyCode = model.keycode;
         Integer metaState = model.metastate;
         Integer flags = model.flags;
 

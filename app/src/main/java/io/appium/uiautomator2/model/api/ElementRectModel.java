@@ -18,7 +18,7 @@ package io.appium.uiautomator2.model.api;
 
 import android.graphics.Rect;
 
-public class ElementRectModel implements BaseModel {
+public class ElementRectModel extends BaseModel {
     public Integer x;
     public Integer y;
     public Integer width;

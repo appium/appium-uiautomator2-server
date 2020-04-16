@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class StatusModel implements BaseModel {
+public class StatusModel extends BaseModel {
     public Boolean ready;
     public String message;
 

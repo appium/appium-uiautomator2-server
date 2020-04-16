@@ -18,7 +18,7 @@ package io.appium.uiautomator2.model.api.server;
 
 import io.appium.uiautomator2.model.api.BaseModel;
 
-public class ErrorModel implements BaseModel {
+public class ErrorModel extends BaseModel {
     public String error;
     public String message;
     public String stacktrace;
