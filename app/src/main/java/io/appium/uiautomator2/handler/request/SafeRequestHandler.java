@@ -25,6 +25,7 @@ import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.utils.Logger;
 
 public abstract class SafeRequestHandler extends BaseRequestHandler {
 
@@ -34,6 +35,7 @@ public abstract class SafeRequestHandler extends BaseRequestHandler {
 
     @Override
     public final AppiumResponse handle(IHttpRequest request) {
+        Logger.info(String.format("%s command", getClass().getSimpleName()));
         try {
             return safeHandle(request);
         } catch (UiObjectNotFoundException e) {
