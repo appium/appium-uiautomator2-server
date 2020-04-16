@@ -1,5 +1,6 @@
 package io.appium.uiautomator2.utils;
 
+import android.os.SystemClock;
 import androidx.annotation.Nullable;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
@@ -9,15 +10,18 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.By;
+import io.appium.uiautomator2.model.ScreenOrientation;
 import io.appium.uiautomator2.model.UiObject2Element;
 import io.appium.uiautomator2.model.UiObjectElement;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 
 public abstract class Device {
+    private static final int CHANGE_ORIENTATION_TIMEOUT_MS = 2000;
 
     public static UiDevice getUiDevice() {
         return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
@@ -96,5 +100,19 @@ public abstract class Device {
         } catch (Exception e) {
             Logger.error(String.format("Unable wait %sms for AUT to idle", timeInMS));
         }
+    }
+
+    public static ScreenOrientation waitForOrientationSync(ScreenOrientation desired) {
+        long start = System.currentTimeMillis();
+        ScreenOrientation current;
+        do {
+            SystemClock.sleep(100);
+            current = ScreenOrientation.current();
+        } while (current != desired && System.currentTimeMillis() - start < CHANGE_ORIENTATION_TIMEOUT_MS);
+        if (current != desired) {
+            throw new InvalidElementStateException(String.format("Screen orientation cannot be set to %s after %sms",
+                    desired.toString(), CHANGE_ORIENTATION_TIMEOUT_MS));
+        }
+        return current;
     }
 }

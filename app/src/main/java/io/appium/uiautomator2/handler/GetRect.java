@@ -27,7 +27,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.utils.Logger;
 
 /**
  * This handler is used to get the boundaries of elements that support it.
@@ -40,7 +39,6 @@ public class GetRect extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        Logger.info("Get Rect of element command");
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         AndroidElement element = session.getKnownElements().getElementFromCache(id);

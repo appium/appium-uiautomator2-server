@@ -33,7 +33,6 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.utils.DeviceInfoHelper;
-import io.appium.uiautomator2.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +105,6 @@ public class GetDeviceInfo extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        Logger.info("Get Device Info command");
         DeviceInfoModel result = new DeviceInfoModel();
         final DeviceInfoHelper deviceInfoHelper = new DeviceInfoHelper(mInstrumentation.getTargetContext());
         result.androidId = deviceInfoHelper.getAndroidId();

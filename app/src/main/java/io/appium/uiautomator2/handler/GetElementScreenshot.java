@@ -11,7 +11,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.ScreenshotHelper;
 
 public class GetElementScreenshot extends SafeRequestHandler {
@@ -22,7 +21,6 @@ public class GetElementScreenshot extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        Logger.info("Capture screenshot of an element command");
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         AndroidElement element = session.getKnownElements().getElementFromCache(id);

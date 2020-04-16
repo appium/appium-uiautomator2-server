@@ -26,7 +26,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.uiautomator.By.focused;
 import static io.appium.uiautomator2.utils.ElementHelpers.findElement;
@@ -38,7 +37,6 @@ public class Clear extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        Logger.info("Clear element command");
         AndroidElement element;
         String elementId = getElementId(request);
         if (elementId != null) {

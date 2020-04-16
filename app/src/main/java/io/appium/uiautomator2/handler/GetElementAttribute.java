@@ -9,7 +9,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.utils.Logger;
 
 public class GetElementAttribute extends SafeRequestHandler {
 
@@ -19,7 +18,6 @@ public class GetElementAttribute extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        Logger.info("get attribute of element command");
         String id = getElementId(request);
         String attributeName = getNameAttribute(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();

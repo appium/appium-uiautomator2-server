@@ -28,7 +28,6 @@ import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.api.SizeModel;
-import io.appium.uiautomator2.utils.Logger;
 
 /**
  * This handler is used to get the size of elements that support it.
@@ -41,7 +40,6 @@ public class GetSize extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        Logger.info("Get Size of element command");
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         AndroidElement element = session.getKnownElements().getElementFromCache(id);

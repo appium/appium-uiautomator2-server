@@ -22,7 +22,6 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.utils.AlertHelpers;
-import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
@@ -33,7 +32,6 @@ public class AcceptAlert extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        Logger.info("Accept alert command");
         AlertModel model = toModel(request, AlertModel.class);
         AlertHelpers.handle(AlertHelpers.AlertAction.ACCEPT, model.buttonLabel);
         return new AppiumResponse(getSessionId(request));

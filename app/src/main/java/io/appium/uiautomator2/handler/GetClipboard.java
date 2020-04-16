@@ -29,7 +29,6 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.utils.ClipboardHelper;
 import io.appium.uiautomator2.utils.ClipboardHelper.ClipDataType;
-import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
@@ -47,7 +46,6 @@ public class GetClipboard extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        Logger.info("Get Clipboard command");
         ClipDataType contentType = ClipDataType.PLAINTEXT;
         try {
             ClipboardModel model = toModel(request, ClipboardModel.class);

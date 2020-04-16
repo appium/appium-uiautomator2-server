@@ -29,7 +29,6 @@ public class Flick extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        Logger.info("Get Text of element command");
         Point start = new Point(0.5, 0.5);
         Point end = new Point();
         double steps;

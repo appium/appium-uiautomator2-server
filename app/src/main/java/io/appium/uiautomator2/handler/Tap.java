@@ -16,24 +16,34 @@
 
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.model.api.AlertModel;
-
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.utils.AlertHelpers;
+import io.appium.uiautomator2.model.api.CoordinatesModel;
+import io.appium.uiautomator2.utils.Device;
+import io.appium.uiautomator2.utils.Point;
+import io.appium.uiautomator2.utils.PositionHelper;
 
+import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
-public class DismissAlert extends SafeRequestHandler {
-    public DismissAlert(String mappedUri) {
+public class Tap extends SafeRequestHandler {
+
+    public Tap(String mappedUri) {
         super(mappedUri);
     }
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        AlertModel model = toModel(request, AlertModel.class);
-        AlertHelpers.handle(AlertHelpers.AlertAction.DISMISS, model.buttonLabel);
+        CoordinatesModel coordinates = toModel(request, CoordinatesModel.class);
+        Point coords = PositionHelper.getDeviceAbsPos(new Point(coordinates.x, coordinates.y));
+        if (!getUiDevice().click(coords.x.intValue(), coords.y.intValue())) {
+            throw new InvalidElementStateException(
+                    String.format("Click failed at (%s, %s) coordinates",
+                            coords.x.intValue(), coords.y.intValue()));
+        }
+        Device.waitForIdle();
         return new AppiumResponse(getSessionId(request));
     }
 }

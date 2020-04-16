@@ -21,7 +21,6 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.server.ServerInstrumentation;
-import io.appium.uiautomator2.utils.Logger;
 
 public class DeleteSession extends SafeRequestHandler {
 
@@ -31,7 +30,6 @@ public class DeleteSession extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        Logger.info("Delete session command");
         String sessionId = getSessionId(request);
         NotificationListener.getInstance().stop();
         ServerInstrumentation.getInstance().stopServer();

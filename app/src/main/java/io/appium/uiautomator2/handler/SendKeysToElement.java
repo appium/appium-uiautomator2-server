@@ -47,7 +47,6 @@ public class SendKeysToElement extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        Logger.info("send keys to element command");
         String elementId = getElementId(request);
         AndroidElement element;
         if (elementId != null) {

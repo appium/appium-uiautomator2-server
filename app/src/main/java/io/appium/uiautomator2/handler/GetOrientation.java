@@ -16,24 +16,19 @@
 
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.model.api.AlertModel;
-
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.utils.AlertHelpers;
+import io.appium.uiautomator2.model.ScreenOrientation;
 
-import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+public class GetOrientation extends SafeRequestHandler {
 
-public class DismissAlert extends SafeRequestHandler {
-    public DismissAlert(String mappedUri) {
+    public GetOrientation(String mappedUri) {
         super(mappedUri);
     }
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        AlertModel model = toModel(request, AlertModel.class);
-        AlertHelpers.handle(AlertHelpers.AlertAction.DISMISS, model.buttonLabel);
-        return new AppiumResponse(getSessionId(request));
+        return new AppiumResponse(getSessionId(request), ScreenOrientation.current().toString());
     }
 }

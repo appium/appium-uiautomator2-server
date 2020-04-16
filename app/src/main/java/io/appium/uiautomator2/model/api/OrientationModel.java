@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.handler;
+package io.appium.uiautomator2.model.api;
 
-import io.appium.uiautomator2.handler.request.SafeRequestHandler;
-import io.appium.uiautomator2.http.AppiumResponse;
-import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.utils.AlertHelpers;
+import io.appium.uiautomator2.model.RequiredField;
 
-public class GetAlertText extends SafeRequestHandler {
-    public GetAlertText(String mappedUri) {
-        super(mappedUri);
-    }
+public class OrientationModel extends BaseModel {
+    @RequiredField
+    public String orientation;
 
-    @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) {
-        return new AppiumResponse(getSessionId(request), AlertHelpers.getText());
-    }
+    public OrientationModel() {}
 }

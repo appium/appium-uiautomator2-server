@@ -16,13 +16,10 @@
 
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.model.api.CoordinatesModel;
-
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import java.util.NoSuchElementException;
 
-import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -30,12 +27,6 @@ import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Device;
-import io.appium.uiautomator2.utils.Logger;
-import io.appium.uiautomator2.utils.Point;
-import io.appium.uiautomator2.utils.PositionHelper;
-
-import static io.appium.uiautomator2.utils.Device.getUiDevice;
-import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
 public class Click extends SafeRequestHandler {
 
@@ -45,26 +36,13 @@ public class Click extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        String elementId = getElementId(request);
-        if (elementId == null) {
-            Logger.info("tap command");
-            CoordinatesModel coordinates = toModel(request, CoordinatesModel.class);
-            Point coords = new Point(coordinates.x, coordinates.y);
-            coords = PositionHelper.getDeviceAbsPos(coords);
-            if (!getUiDevice().click(coords.x.intValue(), coords.y.intValue())) {
-                throw new InvalidElementStateException(
-                        String.format("Click failed at (%s, %s) coordinates",
-                                coords.x.intValue(), coords.y.intValue()));
-            }
-        } else {
-            Logger.info("Click element command");
-            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
-            if (element == null) {
-                throw new NoSuchElementException();
-            }
-            element.click();
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+        AndroidElement element = session.getKnownElements()
+                .getElementFromCache(getElementId(request));
+        if (element == null) {
+            throw new NoSuchElementException();
         }
+        element.click();
         Device.waitForIdle();
         return new AppiumResponse(getSessionId(request));
     }

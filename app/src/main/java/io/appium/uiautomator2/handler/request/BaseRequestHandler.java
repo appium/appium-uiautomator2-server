@@ -102,6 +102,7 @@ public abstract class BaseRequestHandler {
     public abstract AppiumResponse handle(IHttpRequest request);
 
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+        Logger.info(String.format("%s command", getClass().getSimpleName()));
         return handle(request);
     }
 }

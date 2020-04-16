@@ -24,7 +24,6 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.utils.BatteryHelper;
-import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
@@ -37,7 +36,6 @@ public class GetBatteryInfo extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        Logger.info("Get Battery Info command");
         final BatteryHelper batteryHelper = new BatteryHelper(mInstrumentation
                 .getTargetContext());
         return new AppiumResponse(getSessionId(request), new BatteryStatusModel(
