@@ -39,15 +39,30 @@ public enum ScreenOrientation {
         switch (degrees) {
             case 0:
                 return ROTATION_0;
-            case 1:
+            case 90:
                 return ROTATION_90;
-            case 2:
+            case 180:
                 return ROTATION_180;
-            case 3:
+            case 270:
                 return ROTATION_270;
         }
         throw new IllegalArgumentException(
-                String.format("Orientation value is not supported for %s degrees", degrees));
+                String.format("Orientation value is not supported for %s degrees. " +
+                        "Only 0, 90, 180 and 270 degrees could be translated into " +
+                        "a screen orientation value.", degrees));
+    }
+
+    public static ScreenOrientation ofString(String abbr) {
+        switch (abbr.toUpperCase()) {
+            case LANDSCAPE:
+                return ROTATION_270;
+            case PORTRAIT:
+                return ROTATION_0;
+        }
+        throw new IllegalArgumentException(
+                String.format("Orientation value '%s' is not supported. " +
+                        "Only '%s' and '%s' values could be translated into " +
+                        "a screen orientation value.", abbr, LANDSCAPE, PORTRAIT));
     }
 
     @Override

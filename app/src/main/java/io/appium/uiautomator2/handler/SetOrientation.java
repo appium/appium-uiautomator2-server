@@ -16,19 +16,14 @@
 
 package io.appium.uiautomator2.handler;
 
-import android.os.RemoteException;
-
-import android.os.SystemClock;
 import io.appium.uiautomator2.model.api.OrientationModel;
 
-import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.ScreenOrientation;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
-import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.Device.waitForOrientationSync;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
@@ -41,32 +36,14 @@ public class SetOrientation extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) {
         OrientationModel model = toModel(request, OrientationModel.class);
         ScreenOrientation current = ScreenOrientation.current();
-        ScreenOrientation desired = null;
-        try {
-            if (model.orientation.equalsIgnoreCase(ScreenOrientation.LANDSCAPE)) {
-                switch (current) {
-                    case ROTATION_0:
-                        getUiDevice().setOrientationRight();
-                        desired = ScreenOrientation.ROTATION_270;
-                        break;
-                    case ROTATION_180:
-                        getUiDevice().setOrientationLeft();
-                        desired = ScreenOrientation.ROTATION_270;
-                        break;
-                }
-            } else {
-                switch (current) {
-                    case ROTATION_90:
-                    case ROTATION_270:
-                        getUiDevice().setOrientationNatural();
-                        desired = ScreenOrientation.ROTATION_0;
-                        break;
-                }
-            }
-        } catch (RemoteException e) {
-            throw new UiAutomator2Exception("Cannot perform screen rotation", e);
+        ScreenOrientation desired = ScreenOrientation.ofString(model.orientation);
+        if (desired != current) {
+            CustomUiDevice.getInstance()
+                    .getInstrumentation()
+                    .getUiAutomation()
+                    .setRotation(desired.ordinal());
+            current = waitForOrientationSync(desired);
         }
-        current = desired == null ? current : waitForOrientationSync(desired);
         return new AppiumResponse(getSessionId(request), current.toString());
     }
 }
