@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
+import android.text.TextUtils;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -43,8 +44,8 @@ public class SetRotation extends SafeRequestHandler {
         RotationModel model = toModel(request, RotationModel.class);
         if (model.x != 0 || model.y != 0 || !SUPPORTED_Z_VALUES.contains(model.z)) {
             throw new InvalidCoordinatesException(String.format(
-                    "Unable to Rotate Device. Invalid rotation (%s), valid params x=0, y=0, z=(0 or 90 or 180 or 270)",
-                    abbreviate(request.body(), 300)));
+                    "Unable to Rotate Device. Invalid rotation (%s), valid params x=0, y=0, z=(%s)",
+                    abbreviate(request.body(), 300), TextUtils.join(" or ", SUPPORTED_Z_VALUES)));
         }
         ScreenOrientation current = ScreenOrientation.current();
         ScreenOrientation desired = ScreenOrientation.ofDegrees(model.z);
