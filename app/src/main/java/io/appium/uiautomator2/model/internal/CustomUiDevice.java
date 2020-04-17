@@ -33,8 +33,10 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiSelector;
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.model.ScreenOrientation;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
@@ -47,6 +49,7 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
 public class CustomUiDevice {
+    private static final int CHANGE_ORIENTATION_TIMEOUT_MS = 2000;
 
     private static final String FIELD_M_INSTRUMENTATION = "mInstrumentation";
     private static final String FIELD_API_LEVEL_ACTUAL = "API_LEVEL_ACTUAL";
@@ -55,8 +58,8 @@ public class CustomUiDevice {
     private static CustomUiDevice INSTANCE = null;
     private final Method METHOD_FIND_MATCH;
     private final Method METHOD_FIND_MATCHES;
-    private final Class ByMatcherClass;
-    private final Constructor uiObject2Constructor;
+    private final Class<?> ByMatcherClass;
+    private final Constructor<?> uiObject2Constructor;
     private final Instrumentation mInstrumentation;
     private final Object API_LEVEL_ACTUAL;
 
@@ -188,5 +191,22 @@ public class CustomUiDevice {
         }
         final CharSequence className = nodeInfo.getClassName();
         return className == null ? null : By.clazz(className.toString());
+    }
+
+    public ScreenOrientation setOrientationSync(ScreenOrientation desired) {
+        if (ScreenOrientation.current() == desired) {
+            return desired;
+        }
+
+        getInstrumentation().getUiAutomation().setRotation(desired.ordinal());
+        long start = System.currentTimeMillis();
+        do {
+            if (ScreenOrientation.current() == desired) {
+                return desired;
+            }
+            SystemClock.sleep(100);
+        } while (System.currentTimeMillis() - start < CHANGE_ORIENTATION_TIMEOUT_MS);
+        throw new InvalidElementStateException(String.format("Screen orientation cannot be changed to %s after %sms. " +
+                "Is it locked programmatically?", desired.toString(), CHANGE_ORIENTATION_TIMEOUT_MS));
     }
 }
