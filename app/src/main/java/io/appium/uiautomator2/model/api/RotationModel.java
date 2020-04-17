@@ -19,9 +19,7 @@ package io.appium.uiautomator2.model.api;
 import io.appium.uiautomator2.model.RequiredField;
 
 public class RotationModel extends BaseModel {
-    @RequiredField
     public Integer x;
-    @RequiredField
     public Integer y;
     @RequiredField
     public Integer z;

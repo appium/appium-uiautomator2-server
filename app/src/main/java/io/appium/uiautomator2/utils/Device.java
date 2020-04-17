@@ -104,15 +104,13 @@ public abstract class Device {
 
     public static ScreenOrientation waitForOrientationSync(ScreenOrientation desired) {
         long start = System.currentTimeMillis();
-        ScreenOrientation current;
         do {
+            if (ScreenOrientation.current() == desired) {
+                return desired;
+            }
             SystemClock.sleep(100);
-            current = ScreenOrientation.current();
-        } while (current != desired && System.currentTimeMillis() - start < CHANGE_ORIENTATION_TIMEOUT_MS);
-        if (current != desired) {
-            throw new InvalidElementStateException(String.format("Screen orientation cannot be set to %s after %sms",
-                    desired.toString(), CHANGE_ORIENTATION_TIMEOUT_MS));
-        }
-        return current;
+        } while (System.currentTimeMillis() - start < CHANGE_ORIENTATION_TIMEOUT_MS);
+        throw new InvalidElementStateException(String.format("Screen orientation cannot be changed to %s after %sms. " +
+                        "Is it locked programmatically?", desired.toString(), CHANGE_ORIENTATION_TIMEOUT_MS));
     }
 }

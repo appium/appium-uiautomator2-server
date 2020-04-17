@@ -32,7 +32,8 @@ public enum ScreenOrientation {
             }
         }
         throw new IllegalArgumentException(
-                String.format("Orientation value '%s' is not supported", rotation));
+                String.format("Rotation value %s cannot be translated into a valid screen orientation",
+                        rotation));
     }
 
     public static ScreenOrientation ofDegrees(int degrees) {
@@ -49,7 +50,7 @@ public enum ScreenOrientation {
         throw new IllegalArgumentException(
                 String.format("Orientation value is not supported for %s degrees. " +
                         "Only 0, 90, 180 and 270 degrees could be translated into " +
-                        "a screen orientation value.", degrees));
+                        "a valid screen orientation", degrees));
     }
 
     public static ScreenOrientation ofString(String abbr) {
@@ -62,7 +63,7 @@ public enum ScreenOrientation {
         throw new IllegalArgumentException(
                 String.format("Orientation value '%s' is not supported. " +
                         "Only '%s' and '%s' values could be translated into " +
-                        "a screen orientation value.", abbr, LANDSCAPE, PORTRAIT));
+                        "a valid screen orientation", abbr, LANDSCAPE, PORTRAIT));
     }
 
     @Override

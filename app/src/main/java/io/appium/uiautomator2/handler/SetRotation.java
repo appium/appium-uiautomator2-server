@@ -16,8 +16,6 @@
 
 package io.appium.uiautomator2.handler;
 
-import android.text.TextUtils;
-import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -25,16 +23,10 @@ import io.appium.uiautomator2.model.ScreenOrientation;
 import io.appium.uiautomator2.model.api.RotationModel;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static io.appium.uiautomator2.utils.Device.waitForOrientationSync;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static io.appium.uiautomator2.utils.StringHelpers.abbreviate;
 
 public class SetRotation extends SafeRequestHandler {
-    private static final List<Integer> SUPPORTED_Z_VALUES = Arrays.asList(0, 90, 180, 270);
-
     public SetRotation(String mappedUri) {
         super(mappedUri);
     }
@@ -42,13 +34,9 @@ public class SetRotation extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         RotationModel model = toModel(request, RotationModel.class);
-        if (model.x != 0 || model.y != 0 || !SUPPORTED_Z_VALUES.contains(model.z)) {
-            throw new InvalidCoordinatesException(String.format(
-                    "Unable to Rotate Device. Invalid rotation (%s), valid params x=0, y=0, z=(%s)",
-                    abbreviate(request.body(), 300), TextUtils.join(" or ", SUPPORTED_Z_VALUES)));
-        }
-        ScreenOrientation current = ScreenOrientation.current();
+        // `x` and `y` are ignored. We only care about `z`
         ScreenOrientation desired = ScreenOrientation.ofDegrees(model.z);
+        ScreenOrientation current = ScreenOrientation.current();
         if (desired != current) {
             CustomUiDevice.getInstance()
                     .getInstrumentation()
