@@ -26,7 +26,7 @@ public class TouchMove extends TouchEvent {
     }
 
     @Override
-    public void executeEvent() throws UiAutomator2Exception {
+    protected void executeEvent() throws UiAutomator2Exception {
         printEventDebugLine();
 
         if (!getIc().touchMove(clickX, clickY)) {
