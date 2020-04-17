@@ -17,6 +17,7 @@ import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.ScreenOrientation;
 import io.appium.uiautomator2.model.UiObject2Element;
 import io.appium.uiautomator2.model.UiObjectElement;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 
@@ -102,7 +103,15 @@ public abstract class Device {
         }
     }
 
-    public static ScreenOrientation waitForOrientationSync(ScreenOrientation desired) {
+    public static ScreenOrientation setOrientationSync(ScreenOrientation desired) {
+        if (ScreenOrientation.current() == desired) {
+            return desired;
+        }
+
+        CustomUiDevice.getInstance()
+                .getInstrumentation()
+                .getUiAutomation()
+                .setRotation(desired.ordinal());
         long start = System.currentTimeMillis();
         do {
             if (ScreenOrientation.current() == desired) {
