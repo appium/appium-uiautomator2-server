@@ -18,14 +18,15 @@ package io.appium.uiautomator2.handler;
 
 import android.graphics.Rect;
 
+import androidx.annotation.Nullable;
+import io.appium.uiautomator2.core.InteractionController;
+import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.api.touch.appium.TouchEventModel;
 import io.appium.uiautomator2.model.api.touch.appium.TouchEventParams;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -37,7 +38,8 @@ import io.appium.uiautomator2.utils.Logger;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
 public abstract class TouchEvent extends SafeRequestHandler {
-    protected int clickX, clickY;
+    protected int clickX;
+    protected int clickY;
     protected AndroidElement element;
     protected TouchEventParams params;
 
@@ -50,9 +52,6 @@ public abstract class TouchEvent extends SafeRequestHandler {
         params = toModel(request, TouchEventModel.class).params;
         final String elementId = params.getUnifiedId();
         if (elementId != null && params.x == null && params.y == null) {
-            /*
-             * Finding centerX and centerY.
-             */
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             element = session.getKnownElements().getElementFromCache(elementId);
             if (element == null) {
@@ -64,25 +63,33 @@ public abstract class TouchEvent extends SafeRequestHandler {
         } else { // no element so extract x and y from params
             if (params.x == null || params.y == null) {
                 throw new IllegalArgumentException(
-                        "Both x and y coordinates must be provided without elementId set");
+                        "Both x and y coordinates must be provided without element id set");
             }
             clickX = params.x;
             clickY = params.y;
         }
 
-        if (executeTouchEvent()) {
-            return new AppiumResponse(getSessionId(request));
-        }
-        throw new InvalidElementStateException("Cannot perform touch on the element");
+        executeEvent();
+        return new AppiumResponse(getSessionId(request));
     }
 
-    protected abstract boolean executeTouchEvent() throws UiObjectNotFoundException, UiAutomator2Exception;
+    protected abstract void executeEvent() throws UiObjectNotFoundException;
 
-    protected void printEventDebugLine(final String methodName, final Integer... duration) {
-        String extra = "";
-        if (duration.length > 0) {
-            extra = ", duration: " + duration[0];
-        }
-        Logger.debug("Performing " + methodName + " x: " + clickX + ", y: " + clickY + extra);
+    protected InteractionController getIc() {
+        return UiAutomatorBridge.getInstance().getInteractionController();
+    }
+
+    protected String getName() {
+        return getClass().getSimpleName();
+    }
+
+    protected void printEventDebugLine() {
+        printEventDebugLine(null);
+    }
+
+    protected void printEventDebugLine(@Nullable Integer duration) {
+        Logger.debug(String.format(
+                "Performing %s at x: (%s, %s)%s", getName(), clickY, clickY,
+                duration == null ? "" : String.format(", duration: %s", duration)));
     }
 }

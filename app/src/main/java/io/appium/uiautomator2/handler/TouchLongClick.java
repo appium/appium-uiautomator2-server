@@ -19,44 +19,47 @@ package io.appium.uiautomator2.handler;
 import android.os.SystemClock;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.InteractionController;
-import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.utils.Logger;
 
 public class TouchLongClick extends TouchEvent {
+    private static final int DEFAULT_DURATION_MS = 2000;
 
     public TouchLongClick(String mappedUri) {
         super(mappedUri);
     }
 
-    protected static boolean correctLongClick(final int x, final int y, final int duration) {
-        try {
-            InteractionController interactionController = UiAutomatorBridge.getInstance().getInteractionController();
-            if (interactionController.touchDown(x, y)) {
-                SystemClock.sleep(duration);
-                return interactionController.touchUp(x, y);
-            }
-            return false;
-        } catch (final Exception e) {
-            Logger.debug("Problem invoking correct long click: " + e);
-            return false;
+    private boolean performLongClick(final int x, final int y, final int duration) {
+        InteractionController ic = getIc();
+        boolean isSuccessful = ic.touchDown(x, y);
+        if (isSuccessful) {
+            SystemClock.sleep(duration);
+            isSuccessful = ic.touchUp(x, y);
         }
+        return isSuccessful;
     }
 
     @Override
-    protected boolean executeTouchEvent() throws UiObjectNotFoundException, UiAutomator2Exception {
-        int duration = params.duration != null ? params.duration : 2000;
-        printEventDebugLine("TouchLongClick", duration);
-        if (correctLongClick(clickX, clickY, duration)) {
-            return true;
+    protected void executeEvent() throws UiObjectNotFoundException {
+        int duration = params.duration != null ? params.duration : DEFAULT_DURATION_MS;
+        printEventDebugLine(duration);
+
+        if (performLongClick(clickX, clickY, duration)) {
+            return;
         }
+
+        if (element == null) {
+            throw new InvalidElementStateException(
+                    String.format("Cannot perform %s action at (%s, %s)", getName(), clickX, clickY));
+        }
+
         // if correctLongClick failed and we have an element
         // then uiautomator's longClick is used as a fallback.
-        if (element != null) {
-            Logger.debug("Falling back to broken longClick");
-            return element.longClick();
+        Logger.debug("Falling back to broken longClick");
+        if (!element.longClick()) {
+            throw new InvalidElementStateException(
+                    String.format("Cannot perform %s action at %s element", getName(), element.getBy()));
         }
-        return false;
     }
 }
