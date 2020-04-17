@@ -1,3 +1,19 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.uiautomator2.handler;
 
 import android.view.MotionEvent.PointerCoords;
@@ -17,6 +33,7 @@ import java.util.List;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
 public class MultiPointerGesture extends SafeRequestHandler {
+    private static final double INTERSTEP_DELAY_SEC = 0.005;
 
     public MultiPointerGesture(String mappedUri) {
         super(mappedUri);
@@ -33,16 +50,12 @@ public class MultiPointerGesture extends SafeRequestHandler {
 
     private PointerCoords[][] parsePointerCoords(final IHttpRequest request) {
         TouchActionsModel model = toModel(request, TouchActionsModel.class);
-
         final double time = computeLongestTime(model.actions);
-
         final PointerCoords[][] pcs = new PointerCoords[model.actions.size()][];
         for (int i = 0; i < model.actions.size(); i++) {
             final List<TouchGestureModel> gestures = model.actions.get(i);
-
             pcs[i] = gesturesToPointerCoords(time, gestures);
         }
-
         return pcs;
     }
 
@@ -70,39 +83,29 @@ public class MultiPointerGesture extends SafeRequestHandler {
         // "Steps are injected about 5 milliseconds apart, so 100 steps may take
         // around 0.5 seconds to complete."
         final int steps = (int) (maxTime * 200) + 2;
-
         final PointerCoords[] pc = new PointerCoords[steps];
-
-        int i = 1;
         TouchGestureModel current = gestures.get(0);
+        int gestureIndex = 1;
         double currentTime = current.time;
         double runningTime = 0.0;
-        final int gesturesLength = gestures.size();
-        for (int j = 0; j < steps; j++) {
-            if (runningTime > currentTime && i < gesturesLength) {
-                current = gestures.get(i++);
+        for (int step = 0; step < steps; step++) {
+            if (runningTime > currentTime && gestureIndex < gestures.size()) {
+                current = gestures.get(gestureIndex++);
                 currentTime = current.time;
             }
-
-            pc[j] = createPointerCoords(current);
-            runningTime += 0.005;
+            pc[step] = toPointerCoords(current);
+            runningTime += INTERSTEP_DELAY_SEC;
         }
-
         return pc;
     }
 
-    private PointerCoords createPointerCoords(TouchGestureModel gesture) {
-        final TouchLocationModel o = gesture.touch;
-
-        final int x = o.x.intValue();
-        final int y = o.y.intValue();
-
+    private PointerCoords toPointerCoords(TouchGestureModel gesture) {
+        final TouchLocationModel touch = gesture.touch;
         final PointerCoords p = new PointerCoords();
         p.size = 1;
         p.pressure = 1;
-        p.x = x;
-        p.y = y;
-
+        p.x = touch.x.intValue();
+        p.y = touch.y.intValue();
         return p;
     }
 }
