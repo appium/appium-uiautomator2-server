@@ -2,6 +2,7 @@ package io.appium.uiautomator2.utils;
 
 import android.graphics.Rect;
 
+import io.appium.uiautomator2.model.Point;
 import org.junit.Test;
 import org.mockito.Mockito;
 

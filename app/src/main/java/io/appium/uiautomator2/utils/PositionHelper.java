@@ -21,6 +21,7 @@ import android.graphics.Rect;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
+import io.appium.uiautomator2.model.Point;
 
 public abstract class PositionHelper {
 

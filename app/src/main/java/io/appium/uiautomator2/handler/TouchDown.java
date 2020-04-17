@@ -19,7 +19,7 @@ package io.appium.uiautomator2.handler;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 
-public class TouchDown extends TouchEvent {
+public class TouchDown extends BaseTouchAction {
 
     public TouchDown(String mappedUri) {
         super(mappedUri);

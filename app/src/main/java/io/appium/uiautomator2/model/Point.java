@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.utils;
+package io.appium.uiautomator2.model;
 
 public class Point {
-
     public Double x;
     public Double y;
 
@@ -43,34 +42,17 @@ public class Point {
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        if (!(obj instanceof Point)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Point other = (Point) obj;
-        if (x == null) {
-            if (other.x != null) {
-                return false;
-            }
-        } else if (!x.equals(other.x)) {
-            return false;
-        }
-        if (y == null) {
-            return other.y == null;
-        } else return y.equals(other.y);
+        return obj.hashCode() == hashCode();
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
         int result = 1;
-        result = prime * result + (x == null ? 0 : x.hashCode());
-        result = prime * result + (y == null ? 0 : y.hashCode());
+        result = 31 * result + (x == null ? 0 : x.hashCode());
+        result = 31 * result + (y == null ? 0 : y.hashCode());
         return result;
     }
 
@@ -78,5 +60,4 @@ public class Point {
     public String toString() {
         return "[x=" + x + ", y=" + y + "]";
     }
-
 }

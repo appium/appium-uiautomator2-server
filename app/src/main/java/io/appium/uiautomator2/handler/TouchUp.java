@@ -18,7 +18,7 @@ package io.appium.uiautomator2.handler;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 
-public class TouchUp extends TouchEvent {
+public class TouchUp extends BaseTouchAction {
 
     public TouchUp(String mappedUri) {
         super(mappedUri);

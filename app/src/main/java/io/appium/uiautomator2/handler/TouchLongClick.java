@@ -23,7 +23,7 @@ import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.InteractionController;
 import io.appium.uiautomator2.utils.Logger;
 
-public class TouchLongClick extends TouchEvent {
+public class TouchLongClick extends BaseTouchAction {
     private static final int DEFAULT_DURATION_MS = 2000;
 
     public TouchLongClick(String mappedUri) {

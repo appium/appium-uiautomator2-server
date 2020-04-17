@@ -22,7 +22,7 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.api.CoordinatesModel;
 import io.appium.uiautomator2.utils.Device;
-import io.appium.uiautomator2.utils.Point;
+import io.appium.uiautomator2.model.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;

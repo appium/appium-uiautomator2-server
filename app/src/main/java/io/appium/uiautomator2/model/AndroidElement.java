@@ -22,9 +22,6 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
-import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
-import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
-import io.appium.uiautomator2.utils.Point;
 
 public interface AndroidElement {
 
@@ -52,24 +49,19 @@ public interface AndroidElement {
 
     Rect getBounds() throws UiObjectNotFoundException;
 
-    Object getChild(final Object sel) throws UiObjectNotFoundException,
-            InvalidSelectorException, ClassNotFoundException;
+    Object getChild(final Object sel) throws UiObjectNotFoundException;
 
-    List<Object> getChildren(final Object selector, final By by)
-            throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException;
+    List<Object> getChildren(final Object selector, final By by) throws UiObjectNotFoundException;
 
     String getContentDesc() throws UiObjectNotFoundException;
 
     Object getUiObject();
 
-    Point getAbsolutePosition(final Point point)
-            throws UiObjectNotFoundException, InvalidCoordinatesException;
+    Point getAbsolutePosition(final Point point) throws UiObjectNotFoundException;
 
-    boolean dragTo(final int destX, final int destY, final int steps)
-            throws UiObjectNotFoundException, InvalidCoordinatesException;
+    boolean dragTo(final int destX, final int destY, final int steps) throws UiObjectNotFoundException;
 
-    boolean dragTo(final Object destObj, final int steps)
-            throws UiObjectNotFoundException, InvalidCoordinatesException;
+    boolean dragTo(final Object destObj, final int steps) throws UiObjectNotFoundException;
 
     Object toModel() throws UiObjectNotFoundException;
 }

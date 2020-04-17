@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.model.api.SwipeModel;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -30,7 +31,7 @@ import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Logger;
-import io.appium.uiautomator2.utils.Point;
+import io.appium.uiautomator2.model.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -42,58 +43,46 @@ public class Swipe extends SafeRequestHandler {
         super(mappedUri);
     }
 
-    @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        final Point absStartPos;
-        final Point absEndPos;
-        final boolean isSwipePerformed;
-        final SwipeArguments swipeArgs;
-        swipeArgs = new SwipeArguments(request);
-
-        if (swipeArgs.element != null) {
-            absStartPos = swipeArgs.element.getAbsolutePosition(swipeArgs.start);
-            absEndPos = swipeArgs.element.getAbsolutePosition(swipeArgs.end);
-            Logger.debug("Swiping the element with ElementId " + swipeArgs.element.getId()
-                    + " to " + absEndPos.toString() + " with steps: "
-                    + swipeArgs.steps.toString());
-        } else {
-            absStartPos = PositionHelper.getDeviceAbsPos(swipeArgs.start);
-            absEndPos = PositionHelper.getDeviceAbsPos(swipeArgs.end);
-            Logger.debug("Swiping On Device from " + absStartPos.toString() + " to "
-                    + absEndPos.toString() + " with steps: " + swipeArgs.steps.toString());
-        }
-
-        isSwipePerformed = EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
+    private boolean executeSwipe(final Point start, final Point end, final int steps) {
+        return EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {
             @Override
             public void run() {
-                setResult(getUiDevice().swipe(absStartPos.x.intValue(),
-                        absStartPos.y.intValue(), absEndPos.x.intValue(),
-                        absEndPos.y.intValue(), swipeArgs.steps));
-
+                setResult(getUiDevice().swipe(
+                        start.x.intValue(), start.y.intValue(),
+                        end.x.intValue(), end.y.intValue(),
+                        steps));
             }
         });
-        if (isSwipePerformed) {
-            return new AppiumResponse(getSessionId(request));
-        }
-        throw new InvalidElementStateException("Swipe did not complete successfully");
     }
 
-    private static class SwipeArguments {
-        public final Point start;
-        public final Point end;
-        public final Integer steps;
-        public AndroidElement element;
+    @Override
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+        SwipeModel model = toModel(request, SwipeModel.class);
 
-        public SwipeArguments(final IHttpRequest request) {
-            SwipeModel model = toModel(request, SwipeModel.class);
-            if (model.elementId != null) {
-                Logger.info("Payload has elementId: " + model.elementId);
-                Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-                element = session.getKnownElements().getElementFromCache(model.elementId);
+        Point absStartPos;
+        Point absEndPos;
+        if (model.elementId != null) {
+            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+            AndroidElement element = session.getKnownElements().getElementFromCache(model.elementId);
+            if (element == null) {
+                throw new ElementNotFoundException();
             }
-            start = new Point(model.startX, model.startY);
-            end = new Point(model.endX, model.endY);
-            steps = model.steps;
+            absStartPos = element.getAbsolutePosition(new Point(model.startX, model.startY));
+            absEndPos = element.getAbsolutePosition(new Point(model.endX, model.endY));
+            Logger.debug(String.format("Swiping the element %s from %s to %s in %s steps",
+                    element.getId(), absStartPos.toString(), absEndPos.toString(),
+                    model.steps));
+        } else {
+            absStartPos = PositionHelper.getDeviceAbsPos(new Point(model.startX, model.startY));
+            absEndPos = PositionHelper.getDeviceAbsPos(new Point(model.endX, model.endY));
+            Logger.debug(String.format("Swiping on device from %s to %s in %s steps",
+                    absStartPos.toString(), absEndPos.toString(), model.steps));
         }
+
+        if (!executeSwipe(absStartPos, absEndPos, model.steps)) {
+            throw new InvalidElementStateException("Swipe action cannot be performed");
+        }
+
+        return new AppiumResponse(getSessionId(request));
     }
 }

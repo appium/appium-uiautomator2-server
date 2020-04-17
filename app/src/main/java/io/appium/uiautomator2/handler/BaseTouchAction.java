@@ -37,13 +37,13 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
-public abstract class TouchEvent extends SafeRequestHandler {
+public abstract class BaseTouchAction extends SafeRequestHandler {
     protected int clickX;
     protected int clickY;
     protected AndroidElement element;
     protected TouchEventParams params;
 
-    public TouchEvent(String mappedUri) {
+    public BaseTouchAction(String mappedUri) {
         super(mappedUri);
     }
 

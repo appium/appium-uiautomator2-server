@@ -16,20 +16,20 @@
 
 package io.appium.uiautomator2.handler;
 
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
+import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.model.api.DragModel;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Logger;
-import io.appium.uiautomator2.utils.Point;
+import io.appium.uiautomator2.model.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -41,86 +41,61 @@ public class Drag extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) {
-        // DragArguments is created on each execute which prevents leaking state
-        // across executions.
-        final DragArguments dragArgs = new DragArguments(request);
-        return dragArgs.el == null ? drag(dragArgs, request) : dragElement(dragArgs, request);
-    }
+    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+        DragModel model = toModel(request, DragModel.class);
+        KnownElements ke = AppiumUIA2Driver.getInstance().getSessionOrThrow().getKnownElements();
+        AndroidElement startElement = model.elementId == null ? null : ke.getElementFromCache(model.elementId);
+        if (model.elementId != null && startElement == null) {
+            throw new ElementNotFoundException();
+        }
+        AndroidElement endElement = model.destElId == null ? null : ke.getElementFromCache(model.destElId);
+        if (model.destElId != null && endElement == null) {
+            throw new ElementNotFoundException();
+        }
+        Point start = new Point(model.startX, model.startY);
+        Point end = new Point(model.endX, model.endY);
 
-    private AppiumResponse drag(final DragArguments dragArgs, final IHttpRequest request) {
-        Point absStartPos = PositionHelper.getDeviceAbsPos(dragArgs.start);
-        Point absEndPos = PositionHelper.getDeviceAbsPos(dragArgs.end);
-
-        Logger.debug("Dragging from " + absStartPos.toString() + " to "
-                + absEndPos.toString() + " with steps: " + dragArgs.steps.toString());
-        final boolean res = getUiDevice().drag(absStartPos.x.intValue(),
-                absStartPos.y.intValue(), absEndPos.x.intValue(),
-                absEndPos.y.intValue(), dragArgs.steps);
-        if (!res) {
-            throw new InvalidElementStateException("Drag did not complete successfully");
+        if (startElement == null) {
+            Point absStartPos = PositionHelper.getDeviceAbsPos(start);
+            Point absEndPos = PositionHelper.getDeviceAbsPos(end);
+            if (!performDrag(absStartPos, absEndPos, model.steps)) {
+                throw new InvalidElementStateException(String.format(
+                        "Drag from %s to %s did not complete successfully",
+                        absStartPos, absEndPos));
+            }
+        } else if (endElement == null) {
+            Point absEndPos = PositionHelper.getDeviceAbsPos(end);
+            if (!performDrag(startElement, absEndPos, model.steps)) {
+                throw new InvalidElementStateException(String.format(
+                        "Drag element %s to %s did not complete successfully",
+                        startElement.getId(), absEndPos));
+            }
+        } else {
+            if (!performDrag(startElement, endElement, model.steps)) {
+                throw new InvalidElementStateException(String.format(
+                        "Drag element %s to element %s did not complete successfully",
+                        startElement.getId(), endElement.getId()));
+            }
         }
         return new AppiumResponse(getSessionId(request));
     }
 
-    private AppiumResponse dragElement(final DragArguments dragArgs, final IHttpRequest request) {
-        Point absEndPos;
-
-        if (dragArgs.destEl == null) {
-            absEndPos = PositionHelper.getDeviceAbsPos(dragArgs.end);
-
-            Logger.debug("Dragging the element with id " + dragArgs.el.getId()
-                    + " to " + absEndPos.toString() + " with steps: "
-                    + dragArgs.steps.toString());
-            try {
-                final boolean res = dragArgs.el.dragTo(absEndPos.x.intValue(),
-                        absEndPos.y.intValue(), dragArgs.steps);
-                if (!res) {
-                    throw new InvalidElementStateException("Drag did not complete successfully");
-                }
-                return new AppiumResponse(getSessionId(request));
-            } catch (final UiObjectNotFoundException e) {
-                throw new ElementNotFoundException("Drag did not complete successfully. Element not found", e);
-            }
-        } else {
-
-            Logger.debug("Dragging the element with id " + dragArgs.el.getId()
-                    + " to destination element with id " + dragArgs.destEl.getId()
-                    + " with steps: " + dragArgs.steps);
-            try {
-                final boolean res = dragArgs.el.dragTo(dragArgs.destEl.getUiObject(), dragArgs.steps);
-                if (!res) {
-                    throw new InvalidElementStateException("Drag did not complete successfully");
-                }
-                return new AppiumResponse(getSessionId(request));
-            } catch (final UiObjectNotFoundException e) {
-                throw new ElementNotFoundException("Drag did not complete successfully. Element not found", e);
-            }
-        }
-
+    private boolean performDrag(Point start, Point end, int steps) {
+        Logger.debug(String.format("Dragging from %s to %s in %s steps",
+                start, end, steps));
+        return getUiDevice().drag(start.x.intValue(), start.y.intValue(),
+                end.x.intValue(), end.y.intValue(), steps);
     }
 
-    private static class DragArguments {
-        public final Point start;
-        public final Point end;
-        public final Integer steps;
-        public AndroidElement el;
-        public AndroidElement destEl;
+    private boolean performDrag(AndroidElement start, Point end, int steps) throws UiObjectNotFoundException {
+        Logger.debug(String.format("Dragging the element %s to %s in %s steps",
+                start.getId(), end, steps));
+        return start.dragTo(end.x.intValue(), end.y.intValue(), steps);
+    }
 
-        public DragArguments(final IHttpRequest request) {
-            DragModel model = toModel(request, DragModel.class);
-            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-
-            if (model.elementId != null) {
-                el = session.getKnownElements().getElementFromCache(model.elementId);
-            }
-            if (model.destElId != null) {
-                destEl = session.getKnownElements().getElementFromCache(model.destElId);
-            }
-
-            start = new Point(model.startX, model.startY);
-            end = new Point(model.endX, model.endY);
-            steps = model.steps;
-        }
+    private boolean performDrag(AndroidElement start, AndroidElement end, int steps) throws UiObjectNotFoundException {
+        Logger.debug(String.format("Dragging the element %s to the element %s in %s steps",
+                start.getId(), end.getId(), steps));
+        return start.dragTo(end.getUiObject(), steps);
     }
 }

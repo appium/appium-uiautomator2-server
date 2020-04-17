@@ -41,7 +41,6 @@ import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
-import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
@@ -205,8 +204,7 @@ public class UiObjectElement extends BaseElement {
 
     @Nullable
     @Override
-    public Object getChild(final Object selector)
-            throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
+    public Object getChild(final Object selector) throws UiObjectNotFoundException, InvalidSelectorException {
         if (selector instanceof BySelector) {
             /*
              * We can't find the child element with BySelector on UiObject,
@@ -223,8 +221,7 @@ public class UiObjectElement extends BaseElement {
 
     @SuppressWarnings({"ConstantConditions", "unchecked"})
     @Override
-    public List<Object> getChildren(final Object selector, final By by)
-            throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
+    public List<Object> getChildren(final Object selector, final By by) throws UiObjectNotFoundException, InvalidSelectorException {
         if (selector instanceof BySelector) {
             /*
              * We can't find the child elements with BySelector on UiObject,

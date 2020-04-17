@@ -38,7 +38,6 @@ import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
-import io.appium.uiautomator2.utils.Point;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
@@ -200,8 +199,7 @@ public class UiObject2Element extends BaseElement {
 
     @Nullable
     @Override
-    public Object getChild(final Object selector)
-            throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
+    public Object getChild(final Object selector) throws UiObjectNotFoundException, InvalidSelectorException {
         if (selector instanceof UiSelector) {
             /*
              * We can't find the child element with UiSelector on UiObject2,
@@ -225,7 +223,7 @@ public class UiObject2Element extends BaseElement {
 
     @Override
     public List<Object> getChildren(final Object selector, final By by)
-            throws UiObjectNotFoundException, InvalidSelectorException, ClassNotFoundException {
+            throws UiObjectNotFoundException, InvalidSelectorException {
         if (selector instanceof UiSelector) {
             /*
              * We can't find the child elements with UiSelector on UiObject2,
