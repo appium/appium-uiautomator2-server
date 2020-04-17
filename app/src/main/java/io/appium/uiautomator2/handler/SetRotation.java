@@ -36,14 +36,13 @@ public class SetRotation extends SafeRequestHandler {
         RotationModel model = toModel(request, RotationModel.class);
         // `x` and `y` are ignored. We only care about `z`
         ScreenOrientation desired = ScreenOrientation.ofDegrees(model.z);
-        ScreenOrientation current = ScreenOrientation.current();
-        if (desired != current) {
+        if (desired != ScreenOrientation.current()) {
             CustomUiDevice.getInstance()
                     .getInstrumentation()
                     .getUiAutomation()
                     .setRotation(desired.ordinal());
-            current = waitForOrientationSync(desired);
+            waitForOrientationSync(desired);
         }
-        return new AppiumResponse(getSessionId(request), current.toString());
+        return new AppiumResponse(getSessionId(request), desired.toString());
     }
 }
