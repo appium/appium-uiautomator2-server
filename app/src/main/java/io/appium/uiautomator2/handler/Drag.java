@@ -58,7 +58,7 @@ public class Drag extends SafeRequestHandler {
         if (startElement == null) {
             if (start == null || end == null) {
                 throw new IllegalArgumentException(
-                        "Both startX and endX must be set if no element ids are provided");
+                        "Both startX/startY and endX/endY must be set if no element ids are provided");
             }
             Point absStartPos = PositionHelper.getDeviceAbsPos(start);
             Point absEndPos = PositionHelper.getDeviceAbsPos(end);
@@ -70,7 +70,7 @@ public class Drag extends SafeRequestHandler {
         } else if (endElement == null) {
             if (end == null) {
                 throw new IllegalArgumentException(
-                        "endX must be set if no destination element id is provided");
+                        "Both endX and endY must be set if no destination element id is provided");
             }
             Point absEndPos = PositionHelper.getDeviceAbsPos(end);
             if (!performDrag(startElement, absEndPos, model.steps)) {
