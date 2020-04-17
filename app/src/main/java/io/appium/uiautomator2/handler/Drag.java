@@ -52,10 +52,14 @@ public class Drag extends SafeRequestHandler {
         if (model.destElId != null && endElement == null) {
             throw new ElementNotFoundException();
         }
-        Point start = new Point(model.startX, model.startY);
-        Point end = new Point(model.endX, model.endY);
+        Point start = (model.startX != null && model.startY != null) ? new Point(model.startX, model.startY) : null;
+        Point end = (model.endX != null && model.endY != null) ? new Point(model.endX, model.endY) : null;
 
         if (startElement == null) {
+            if (start == null || end == null) {
+                throw new IllegalArgumentException(
+                        "Both startX and endX must be set if no element ids are provided");
+            }
             Point absStartPos = PositionHelper.getDeviceAbsPos(start);
             Point absEndPos = PositionHelper.getDeviceAbsPos(end);
             if (!performDrag(absStartPos, absEndPos, model.steps)) {
@@ -64,6 +68,10 @@ public class Drag extends SafeRequestHandler {
                         absStartPos, absEndPos));
             }
         } else if (endElement == null) {
+            if (end == null) {
+                throw new IllegalArgumentException(
+                        "endX must be set if no destination element id is provided");
+            }
             Point absEndPos = PositionHelper.getDeviceAbsPos(end);
             if (!performDrag(startElement, absEndPos, model.steps)) {
                 throw new InvalidElementStateException(String.format(
