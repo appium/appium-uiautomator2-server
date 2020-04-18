@@ -51,9 +51,9 @@ public abstract class BaseModel {
     public BaseModel validate() {
         for (Field f : getProperties()) {
             String jsonFieldName = f.getName();
-            SerializedName serializedNameField = f.getAnnotation(SerializedName.class);
-            if (serializedNameField != null && !isBlank(serializedNameField.value())) {
-                jsonFieldName = serializedNameField.value();
+            SerializedName serializedNameAnnotation = f.getAnnotation(SerializedName.class);
+            if (serializedNameAnnotation != null && !isBlank(serializedNameAnnotation.value())) {
+                jsonFieldName = serializedNameAnnotation.value();
             }
 
             Object fieldValue;
