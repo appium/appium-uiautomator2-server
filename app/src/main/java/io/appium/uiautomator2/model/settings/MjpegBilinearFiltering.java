@@ -16,22 +16,37 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.server.ServerConfig;
 
-public class MjpegFiltering extends AbstractSetting<Boolean> {
-    private static final String SETTING_NAME = "mjpegFiltering";
+/**
+ * Controls whether or not to apply bilinear filtering to source screenshot
+ * resize algorithm. Enabling this flag may improve the quality of the resulting
+ * scaled bitmap, but will introduce a [small] performance hit.
+ *
+ * Type: `Boolean`
+ * Acceptable values: `false`|`true`
+ * Default value: `false`
+ */
+public class MjpegBilinearFiltering extends AbstractSetting<Boolean> {
+    public static final String SETTING_NAME = "mjpegBilinearFiltering";
 
-    public MjpegFiltering() {
+    public MjpegBilinearFiltering() {
         super(Boolean.class, SETTING_NAME);
     }
 
     @Override
     public Boolean getValue() {
-        return ServerConfig.getMjpegFiltering();
+        return ServerConfig.isMjpegBilinearFiltering();
     }
 
     @Override
     protected void apply(Boolean value) {
-        ServerConfig.setMjpegFiltering(value);
+        if (value == null) {
+            throw new InvalidArgumentException(String.format(
+                "Invalid %s value specified, must be false|true. null was given",
+                SETTING_NAME));
+        }
+        ServerConfig.setMjpegBilinearFiltering(value);
     }
 }

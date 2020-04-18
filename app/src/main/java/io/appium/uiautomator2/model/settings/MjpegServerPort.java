@@ -16,10 +16,18 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.server.ServerConfig;
 
+/**
+ * Controls the MJPEG server port
+ *
+ * Type: `Integer`
+ * Acceptable range: `1024` to `65535`
+ * Default value: `7810`
+ */
 public class MjpegServerPort extends AbstractSetting<Integer> {
-    private static final String SETTING_NAME = "mjpegServerPort";
+    public static final String SETTING_NAME = "mjpegServerPort";
 
     public MjpegServerPort() {
         super(Integer.class, SETTING_NAME);
@@ -32,6 +40,13 @@ public class MjpegServerPort extends AbstractSetting<Integer> {
 
     @Override
     protected void apply(Integer value) {
+        if (value == null || value < 1024 || value > 65535) {
+            throw new InvalidArgumentException(String.format(
+                "Invalid %s value specified, must be in range 1024..65535. %s was given",
+                SETTING_NAME,
+                value
+            ));
+        }
         ServerConfig.setMjpegServerPort(value);
     }
 }

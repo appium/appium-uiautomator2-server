@@ -23,27 +23,33 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Locale;
 
+import android.os.SystemClock;
+
 import io.appium.uiautomator2.utils.Logger;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 class MjpegScreenshotClient {
+    private static final int INPUT_NOT_READY_SLEEP_TIME_MS = 100;
+    private static final byte[] START = (
+        "HTTP/1.0 200 OK\r\n" +
+        "Server: Android Screenshot Socket Server\r\n" +
+        "Connection: close\r\n" +
+        "Max-Age: 0\r\n" +
+        "Expires: 0\r\n" +
+        "Cache-Control: no-cache, private\r\n" +
+        "Pragma: no-cache\r\n" +
+        "Content-Type: multipart/x-mixed-replace; boundary=--BoundaryString\r\n\r\n"
+    ).getBytes(UTF_8);
+
     private final Socket socket;
-    private boolean closed = false;
-    private boolean initialized = false;
-    private OutputStream out;
     private BufferedReader in;
+    private OutputStream out;
+    private boolean isClosed = false;
+    private boolean isInitialized = false;
 
     MjpegScreenshotClient(Socket socket) {
         this.socket = socket;
-    }
-
-    boolean getInitialized() {
-        return initialized;
-    }
-
-    boolean getClosed() {
-        return closed;
     }
 
     private String getRemoteAddress() {
@@ -53,17 +59,33 @@ class MjpegScreenshotClient {
         return socket.getRemoteSocketAddress().toString().replaceAll("^/+", "");
     }
 
+    boolean isClosed() {
+        return isClosed;
+    }
+
+    boolean isInitialized() {
+        return isInitialized;
+    }
+
     void closeSocket() {
+        if (isClosed()) {
+            return;
+        }
+
         try {
             socket.close();
         } catch (IOException closeError) {
             Logger.error("Error closing socket.", closeError);
         }
 
-        this.closed = true;
+        this.isClosed = true;
     }
 
     void initialize() {
+        if (isInitialized()) {
+            return;
+        }
+
         Logger.info(String.format(
             Locale.ROOT,
             "Screenshot broadcast client opened a connection %s",
@@ -74,15 +96,14 @@ class MjpegScreenshotClient {
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = socket.getOutputStream();
         } catch (IOException e) {
-            Logger.error("Client failed to initialize");
+            Logger.error("Client failed to initialize", e);
             closeSocket();
             return;
         }
 
         try {
-            String line = in.readLine();
-            while (line == null) {
-                line = in.readLine();
+            while (!in.ready()) {
+               SystemClock.sleep(INPUT_NOT_READY_SLEEP_TIME_MS);
             }
 
             Logger.info(String.format(
@@ -90,22 +111,21 @@ class MjpegScreenshotClient {
                 "Screenshot broadcast starting for %s",
                 getRemoteAddress()
             ));
-            String start = "HTTP/1.0 200 OK\r\nServer: AQI Android Screenshot Socket Server\r\nConnection: close\r\nMax-Age: 0\r\nExpires: 0\r\nCache-Control: no-cache, private\r\nPragma: no-cache\r\nContent-Type: multipart/x-mixed-replace; boundary=--BoundaryString\r\n\r\n";
-            out.write(start.getBytes(UTF_8));
+            out.write(START);
         } catch (IOException e) {
-            Logger.info("Client socket connection could not be read.", e);
+            Logger.warn("Client socket connection could not be read.", e);
             closeSocket();
             return;
         }
 
-        this.initialized = true;
+        this.isInitialized = true;
     }
 
     void write(byte[] data) {
         try {
             out.write(data);
         } catch (IOException e) {
-            Logger.info("Client socket connection not writable. Closing... ", e);
+            Logger.warn("Client socket connection not writable. Closing... ", e);
             closeSocket();
         }
     }

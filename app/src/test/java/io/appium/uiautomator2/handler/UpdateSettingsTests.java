@@ -45,7 +45,7 @@ import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
 import io.appium.uiautomator2.model.settings.ElementResponseAttributes;
 import io.appium.uiautomator2.model.settings.EnableNotificationListener;
 import io.appium.uiautomator2.model.settings.KeyInjectionDelay;
-import io.appium.uiautomator2.model.settings.MjpegFiltering;
+import io.appium.uiautomator2.model.settings.MjpegBilinearFiltering;
 import io.appium.uiautomator2.model.settings.MjpegScalingFactor;
 import io.appium.uiautomator2.model.settings.MjpegServerFramerate;
 import io.appium.uiautomator2.model.settings.MjpegServerPort;
@@ -64,7 +64,7 @@ import static io.appium.uiautomator2.model.settings.Settings.COMPRESSED_LAYOUT_H
 import static io.appium.uiautomator2.model.settings.Settings.ELEMENT_RESPONSE_ATTRIBUTES;
 import static io.appium.uiautomator2.model.settings.Settings.ENABLE_NOTIFICATION_LISTENER;
 import static io.appium.uiautomator2.model.settings.Settings.KEY_INJECTION_DELAY;
-import static io.appium.uiautomator2.model.settings.Settings.MJPEG_FILTERING;
+import static io.appium.uiautomator2.model.settings.Settings.MJPEG_BILINEAR_FILTERING;
 import static io.appium.uiautomator2.model.settings.Settings.MJPEG_SCALING_FACTOR;
 import static io.appium.uiautomator2.model.settings.Settings.MJPEG_SERVER_FRAMERATE;
 import static io.appium.uiautomator2.model.settings.Settings.MJPEG_SERVER_PORT;
@@ -185,22 +185,30 @@ public class UpdateSettingsTests {
 
     @Test
     public void shouldBeAbleToReturnMjpegServerFramerateSetting() {
-        verifySettingIsAvailable(MJPEG_SERVER_FRAMERATE, MjpegServerFramerate.class);
+        verifySettingIsAvailable(
+            MJPEG_SERVER_FRAMERATE,
+            MjpegServerFramerate.class);
     }
 
     @Test
     public void shouldBeAbleToReturnMjpegScalingFactorSetting() {
-        verifySettingIsAvailable(MJPEG_SCALING_FACTOR, MjpegScalingFactor.class);
+        verifySettingIsAvailable(
+            MJPEG_SCALING_FACTOR,
+            MjpegScalingFactor.class);
     }
 
     @Test
     public void shouldBeAbleToReturnMjpeqServerScreenshotQualitySetting() {
-        verifySettingIsAvailable(MJPEG_SERVER_SCREENSHOT_QUALITY, MjpegServerScreenshotQuality.class);
+        verifySettingIsAvailable(
+            MJPEG_SERVER_SCREENSHOT_QUALITY,
+            MjpegServerScreenshotQuality.class);
     }
 
     @Test
-    public void shouldBeAbleToReturnMjpegFilteringSetting() {
-        verifySettingIsAvailable(MJPEG_FILTERING, MjpegFiltering.class);
+    public void shouldBeAbleToReturnMjpegBilinearFilteringSetting() {
+        verifySettingIsAvailable(
+            MJPEG_BILINEAR_FILTERING,
+            MjpegBilinearFiltering.class);
     }
 
     @Test(expected=UnsupportedSettingException.class)

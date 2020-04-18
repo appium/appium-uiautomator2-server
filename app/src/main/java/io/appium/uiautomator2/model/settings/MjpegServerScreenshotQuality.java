@@ -16,10 +16,23 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.server.ServerConfig;
 
+/**
+ * Controls the quality of streamed screenshots. Where the best quality is 100
+ * and the worst is 1. The greater the value is the more CPU time is needed to
+ * encode a single bitmap into JPEG format. Usually a value between 25 and 90 is
+ * fine for this setting. Greater values affect performance too much without
+ * visible quality improvements and lower ones introduce visible distortions
+ * into the resulting image.
+ *
+ * Type: `Integer`
+ * Acceptable range: `1` to `100`
+ * Default value: `50`
+ */
 public class MjpegServerScreenshotQuality extends AbstractSetting<Integer> {
-    private static final String SETTING_NAME = "mjpegServerScreenshotQuality";
+    public static final String SETTING_NAME = "mjpegServerScreenshotQuality";
 
     public MjpegServerScreenshotQuality() {
         super(Integer.class, SETTING_NAME);
@@ -32,6 +45,13 @@ public class MjpegServerScreenshotQuality extends AbstractSetting<Integer> {
 
     @Override
     protected void apply(Integer value) {
+        if (value == null || value < 1 || value > 100) {
+            throw new InvalidArgumentException(String.format(
+                "Invalid %s value specified, must be in range 1..100. %s was given",
+                SETTING_NAME,
+                value
+            ));
+        }
         ServerConfig.setMjpegServerScreenshotQuality(value);
     }
 }

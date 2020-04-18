@@ -16,10 +16,20 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.server.ServerConfig;
 
+/**
+ * Controls the scaling factor of streamed screenshots. 100 means no scaling is
+ * applied (e.g. 100% of the original size). The bigger image size is the more
+ * CPU performance is needed to encode it.
+ *
+ * Type: `Integer`
+ * Acceptable range: `1` to `100`
+ * Default value: `50`
+ */
 public class MjpegScalingFactor extends AbstractSetting<Integer> {
-    private static final String SETTING_NAME = "mjpegScalingFactor";
+    public static final String SETTING_NAME = "mjpegScalingFactor";
 
     public MjpegScalingFactor() {
         super(Integer.class, SETTING_NAME);
@@ -32,6 +42,13 @@ public class MjpegScalingFactor extends AbstractSetting<Integer> {
 
     @Override
     protected void apply(Integer value) {
+        if (value == null || value < 1 || value > 100) {
+            throw new InvalidArgumentException(String.format(
+                "Invalid %s value specified, must be in range 1..100. %s was given",
+                SETTING_NAME,
+                value
+            ));
+        }
         ServerConfig.setMjpegScalingFactor(value);
     }
 }

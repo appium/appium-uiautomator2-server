@@ -77,25 +77,31 @@ public class ServerInstrumentation {
     }
 
     private ServerInstrumentation(Context context, int serverPort, int mjpegServerPort) {
-        if (!isValidPort(serverPort)) {
-            throw new UiAutomator2Exception(String.format(
-                "The server port is out of valid range [%s;%s]: %s",
+        if (isValidPort(serverPort)) {
+            this.serverPort = serverPort;
+        } else {
+            Logger.warn(String.format(
+                "The server port is out of valid range [%s;%s]: %s -- using default: %s",
                 MIN_PORT,
                 MAX_PORT,
-                serverPort
+                serverPort,
+                ServerConfig.DEFAULT_SERVER_PORT
             ));
+            this.serverPort = ServerConfig.DEFAULT_SERVER_PORT;
         }
-        this.serverPort = serverPort;
 
-        if (!isValidPort(mjpegServerPort)) {
-            throw new UiAutomator2Exception(String.format(
-                "The mjpeg streaming server port is out of valid range [%s;%s]: %s",
+        if (isValidPort(mjpegServerPort)) {
+            this.mjpegServerPort = mjpegServerPort;
+        } else {
+            Logger.warn(String.format(
+                "The MJPEG server port is out of valid range [%s;%s]: %s -- using default: %s",
                 MIN_PORT,
                 MAX_PORT,
-                mjpegServerPort
+                mjpegServerPort,
+                ServerConfig.DEFAULT_MJPEG_SERVER_PORT
             ));
+            this.mjpegServerPort = ServerConfig.DEFAULT_MJPEG_SERVER_PORT;
         }
-        this.mjpegServerPort = mjpegServerPort;
 
         this.powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 
@@ -201,6 +207,7 @@ public class ServerInstrumentation {
 
         serverThread = new HttpdThread(this.serverPort);
         serverThread.start();
+
         //client to wait for io.appium.uiautomator2.server to up
         Logger.info("io.appium.uiautomator2.server started:");
     }
@@ -209,6 +216,7 @@ public class ServerInstrumentation {
         if (serverThread == null) {
             return;
         }
+
         if (!serverThread.isAlive()) {
             serverThread = null;
             return;

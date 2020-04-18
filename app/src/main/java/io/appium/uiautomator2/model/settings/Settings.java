@@ -40,7 +40,7 @@ public enum Settings {
     MJPEG_SERVER_FRAMERATE(new MjpegServerFramerate()),
     MJPEG_SCALING_FACTOR(new MjpegScalingFactor()),
     MJPEG_SERVER_SCREENSHOT_QUALITY(new MjpegServerScreenshotQuality()),
-    MJPEG_FILTERING(new MjpegFiltering());
+    MJPEG_BILINEAR_FILTERING(new MjpegBilinearFiltering());
 
     private final ISetting setting;
 

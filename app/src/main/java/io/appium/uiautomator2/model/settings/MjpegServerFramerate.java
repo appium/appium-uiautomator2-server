@@ -16,10 +16,20 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.server.ServerConfig;
 
+/**
+ * Controls the framerate of streamed screenshots. Greater framerate values
+ * create greater CPU load. That actual maximum framerate value is limited by
+ * the performance of the device under test.
+ *
+ * Type: `Integer`
+ * Acceptable range: `1` to `60`
+ * Default value: `10`
+ */
 public class MjpegServerFramerate extends AbstractSetting<Integer> {
-    private static final String SETTING_NAME = "mjpegServerFramerate";
+    public static final String SETTING_NAME = "mjpegServerFramerate";
 
     public MjpegServerFramerate() {
         super(Integer.class, SETTING_NAME);
@@ -32,6 +42,13 @@ public class MjpegServerFramerate extends AbstractSetting<Integer> {
 
     @Override
     protected void apply(Integer value) {
+        if (value == null || value < 1 || value > 60) {
+            throw new InvalidArgumentException(String.format(
+                "Invalid %s value specified, must be in range 1..60. %s was given",
+                SETTING_NAME,
+                value
+            ));
+        }
         ServerConfig.setMjpegServerFramerate(value);
     }
 }

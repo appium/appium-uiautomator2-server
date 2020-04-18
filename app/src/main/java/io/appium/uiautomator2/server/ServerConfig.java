@@ -16,106 +16,128 @@
 
 package io.appium.uiautomator2.server;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.HashMap;
+import java.util.Map;
+
+import io.appium.uiautomator2.model.settings.MjpegBilinearFiltering;
+import io.appium.uiautomator2.model.settings.MjpegScalingFactor;
+import io.appium.uiautomator2.model.settings.MjpegServerFramerate;
+import io.appium.uiautomator2.model.settings.MjpegServerPort;
+import io.appium.uiautomator2.model.settings.MjpegServerScreenshotQuality;
+import io.appium.uiautomator2.model.settings.ServerPort;
 
 public class ServerConfig {
-    // server port (default: `6790`)
-    private final static int SERVER_PORT =
-        System.getenv("SERVER_PORT") == null ? 6790 :
-            Integer.parseInt(System.getenv("SERVER_PORT"));
-    // mjpeg server port (default: `7810`)
-    private final static int MJPEG_SERVER_PORT =
-        System.getenv("MJPEG_SERVER_PORT") == null ? 7810 :
-            Integer.parseInt(System.getenv("MJPEG_SERVER_PORT"));
-    // mjpeg stream will try to match this framerate (default: `10`)
-    private final static int MJPEG_SERVER_FRAMERATE =
-        System.getenv("MJPEG_SERVER_FRAMERATE") == null ? 10 :
-            Integer.parseInt(System.getenv("MJPEG_SERVER_FRAMERATE"));
-    // mjpeg scale should be between 1 and 100 (default: `50`)
-    private final static int MJPEG_SCALING_FACTOR =
-        System.getenv("MJPEG_SCALING_FACTOR") == null ? 50 :
-            Integer.parseInt(System.getenv("MJPEG_SCALING_FACTOR"));
-    // mjpeg quality is between 0 and 100 (default: `75`)
-    private final static int MJPEG_SERVER_SCREENSHOT_QUALITY =
-        System.getenv("MJPEG_SERVER_SCREENSHOT_QUALITY") == null ? 75 :
-            Integer.parseInt(System.getenv("MJPEG_SERVER_SCREENSHOT_QUALITY"));
-    // if filtering should be used in mjpeg resize operation (default: `false`)
-    private final static boolean MJPEG_FILTERING =
-        System.getenv("MJPEG_FILTERING") == null ? false :
-            System.getenv("MJPEG_FILTERING") == "true";
+    public static final int DEFAULT_SERVER_PORT = 6790;
+    public static final int DEFAULT_MJPEG_SERVER_PORT = 7810;
+    public static final int DEFAULT_MJPEG_SERVER_FRAMERATE = 10;
+    public static final int DEFAULT_MJPEG_SCALING_FACTOR = 50;
+    public static final int DEFAULT_MJPEG_SERVER_SCREENSHOT_QUALITY = 50;
+    public static final boolean DEFAULT_MJPEG_SERVER_BILINEAR_FILTERING = false;
+
+    private final static int SERVER_PORT = getValueFromEnvOrDefault(
+        "SERVER_PORT",
+        DEFAULT_SERVER_PORT);
+    private final static int MJPEG_SERVER_PORT = getValueFromEnvOrDefault(
+        "MJPEG_SERVER_PORT",
+        DEFAULT_MJPEG_SERVER_PORT);
+    private final static int MJPEG_SERVER_FRAMERATE = getValueFromEnvOrDefault(
+        "MJPEG_SERVER_FRAMERATE",
+        DEFAULT_MJPEG_SERVER_FRAMERATE);
+    private final static int MJPEG_SCALING_FACTOR = getValueFromEnvOrDefault(
+        "MJPEG_SCALING_FACTOR",
+        DEFAULT_MJPEG_SCALING_FACTOR);
+    private final static int MJPEG_SERVER_SCREENSHOT_QUALITY = getValueFromEnvOrDefault(
+        "MJPEG_SERVER_SCREENSHOT_QUALITY",
+        DEFAULT_MJPEG_SERVER_SCREENSHOT_QUALITY);
+    private final static boolean MJPEG_BILINEAR_FILTERING =
+        Boolean.parseBoolean(System.getenv("MJPEG_BILINEAR_FILTERING"));
 
     // In-memory overrides
-    private static ConcurrentMap<String, Object> overrides =
-        new ConcurrentHashMap<>();
+    private static Map<String, Object> overrides = new HashMap<>();
 
-    /* Getter(s) */
+    private static int getValueFromEnvOrDefault(String key, int defaultValue) {
+        return System.getenv(key) != null ?
+            Integer.parseInt(System.getenv(key)) :
+            defaultValue;
+    }
+
+    private static <T> T getValueFromOverridesOrDefault(String key, T defaultValue) {
+        synchronized (overrides) {
+            return overrides.containsKey(key) ?
+                ((T) overrides.get(key)) :
+                defaultValue;
+        }
+    }
+
+    private static void setOverridesValue(String key, Object value) {
+        synchronized (overrides) {
+            overrides.put(key, value);
+        }
+    }
 
     public static int getServerPort() {
-        if (overrides.containsKey("serverPort")) {
-            return (int) overrides.get("serverPort");
-        }
-        return SERVER_PORT;
+        return getValueFromOverridesOrDefault(
+            ServerPort.SETTING_NAME,
+            SERVER_PORT);
     }
 
     public static int getMjpegServerPort() {
-        if (overrides.containsKey("mjpegServerPort")) {
-            return (int) overrides.get("mjpegServerPort");
-        }
-        return MJPEG_SERVER_PORT;
+        return getValueFromOverridesOrDefault(
+            MjpegServerPort.SETTING_NAME,
+            MJPEG_SERVER_PORT);
     }
 
     public static int getMjpegServerFramerate() {
-        if (overrides.containsKey("mjpegServerFramerate")) {
-            return (int) overrides.get("mjpegServerFramerate");
-        }
-        return MJPEG_SERVER_FRAMERATE;
+        return getValueFromOverridesOrDefault(
+            MjpegServerFramerate.SETTING_NAME,
+            MJPEG_SERVER_FRAMERATE);
     }
 
     public static int getMjpegServerScreenshotQuality() {
-        if (overrides.containsKey("mjpegServerScreenshotQuality")) {
-            return (int) overrides.get("mjpegServerScreenshotQuality");
-        }
-        return MJPEG_SERVER_SCREENSHOT_QUALITY;
+        return getValueFromOverridesOrDefault(
+            MjpegServerScreenshotQuality.SETTING_NAME,
+            MJPEG_SERVER_SCREENSHOT_QUALITY);
     }
 
     public static int getMjpegScalingFactor() {
-        if (overrides.containsKey("mjpegScalingFactor")) {
-            return (int) overrides.get("mjpegScalingFactor");
-        }
-        return MJPEG_SCALING_FACTOR;
+        return getValueFromOverridesOrDefault(
+            MjpegScalingFactor.SETTING_NAME,
+            MJPEG_SCALING_FACTOR);
     }
 
-    public static boolean getMjpegFiltering() {
-        if (overrides.containsKey("mjpegFiltering")) {
-            return (boolean) overrides.get("mjpegFiltering");
-        }
-        return MJPEG_FILTERING;
+    public static boolean isMjpegBilinearFiltering() {
+        return getValueFromOverridesOrDefault(
+            MjpegBilinearFiltering.SETTING_NAME,
+            MJPEG_BILINEAR_FILTERING);
     }
-
-    /* Setter(s) */
 
     public static void setServerPort(int serverPort) {
-        overrides.put("serverPort", serverPort);
+        setOverridesValue(ServerPort.SETTING_NAME, serverPort);
     }
 
     public static void setMjpegServerPort(int mjpegServerPort) {
-        overrides.put("mjpegServerPort", mjpegServerPort);
+        setOverridesValue(MjpegServerPort.SETTING_NAME, mjpegServerPort);
     }
 
     public static void setMjpegServerFramerate(int mjpegServerFramerate) {
-        overrides.put("mjpegServerFramerate", mjpegServerFramerate);
+        setOverridesValue(
+            MjpegServerFramerate.SETTING_NAME,
+            mjpegServerFramerate);
     }
 
     public static void setMjpegServerScreenshotQuality(int mjpegServerScreenshotQuality) {
-        overrides.put("mjpegServerScreenshotQuality", mjpegServerScreenshotQuality);
+        setOverridesValue(
+            MjpegServerScreenshotQuality.SETTING_NAME,
+            mjpegServerScreenshotQuality);
     }
 
     public static void setMjpegScalingFactor(int mjpegScalingFactor) {
-        overrides.put("mjpegScalingFactor", mjpegScalingFactor);
+        setOverridesValue(MjpegScalingFactor.SETTING_NAME, mjpegScalingFactor);
     }
 
-    public static void setMjpegFiltering(boolean mjpegFiltering) {
-        overrides.put("mjpegFiltering", mjpegFiltering);
+    public static void setMjpegBilinearFiltering(boolean mjpegBilinearFiltering) {
+        setOverridesValue(
+            MjpegBilinearFiltering.SETTING_NAME,
+            mjpegBilinearFiltering);
     }
 }

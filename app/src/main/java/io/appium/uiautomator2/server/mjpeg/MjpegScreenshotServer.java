@@ -19,23 +19,26 @@ package io.appium.uiautomator2.server.mjpeg;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import io.appium.uiautomator2.utils.Logger;
 
 public class MjpegScreenshotServer extends Thread {
-    private final List<MjpegScreenshotClient> clients =
-        Collections.synchronizedList(new ArrayList<MjpegScreenshotClient>());
-    private final MjpegScreenshotStream mjpegScreenshotStream =
-        new MjpegScreenshotStream(clients);
-    private boolean stopped = false;
-    private int port;
+    private final int port;
+    private final List<MjpegScreenshotClient> clients;
+    private final MjpegScreenshotStream mjpegScreenshotStream;
     private ServerSocket serverSocket;
+    private boolean isStopped = false;
 
     public MjpegScreenshotServer(int port) {
+        this(port, new ArrayList<MjpegScreenshotClient>());
+    }
+
+    public MjpegScreenshotServer(int port, List<MjpegScreenshotClient> clients) {
         this.port = port;
+        this.clients = clients;
+        this.mjpegScreenshotStream = new MjpegScreenshotStream(clients);
     }
 
     @Override
@@ -57,12 +60,10 @@ public class MjpegScreenshotServer extends Thread {
         }
 
         mjpegScreenshotStream.start();
-        while (!stopped) {
+        while (!isStopped) {
             try {
                 Logger.debug("Socket Server waiting for connections.");
-                MjpegScreenshotClient newClient =
-                    new MjpegScreenshotClient(serverSocket.accept());
-                clients.add(newClient);
+                addClient(new MjpegScreenshotClient(serverSocket.accept()));
             } catch (IOException e) {
                 Logger.error("Socket Server failed to open connection.", e);
             }
@@ -72,6 +73,10 @@ public class MjpegScreenshotServer extends Thread {
     }
 
     private void closeServer() {
+        if (isStopped) {
+            return;
+        }
+
         closeAllClients();
 
         try {
@@ -80,12 +85,20 @@ public class MjpegScreenshotServer extends Thread {
             Logger.error("Socket Server failed to close socket.", e);
         }
 
-        this.stopped = true;
+        this.isStopped = true;
+    }
+
+    private void addClient(MjpegScreenshotClient client) {
+        synchronized (clients) {
+            clients.add(client);
+        }
     }
 
     private void closeAllClients() {
-        for (MjpegScreenshotClient client : clients) {
-            client.closeSocket();
+        synchronized (clients) {
+            for (MjpegScreenshotClient client : clients) {
+                client.closeSocket();
+            }
         }
     }
 }

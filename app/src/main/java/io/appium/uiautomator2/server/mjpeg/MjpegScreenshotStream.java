@@ -18,23 +18,32 @@ package io.appium.uiautomator2.server.mjpeg;
 
 import android.app.UiAutomation;
 import android.graphics.Bitmap;
+import android.os.SystemClock;
 
 import java.lang.Math;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Locale;
 
+import io.appium.uiautomator2.common.exceptions.TakeScreenshotException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.server.ServerConfig;
+import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.ScreenshotHelper;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class MjpegScreenshotStream extends Thread {
-    private static final UiAutomation uia =
+    private static final String BOUNDARY_STRING = 
+        "--BoundaryString\r\n" +
+        "Content-type: image/jpg\r\n" +
+        "Content-Length: %d\r\n\r\n";
+    private static final int NO_CLIENTS_CONNECTED_SLEEP_TIME_MS = 500;
+    private static final byte[] END = "\r\n\r\n".getBytes(UTF_8);
+    private static final UiAutomation UI_AUTOMATION =
         CustomUiDevice.getInstance().getInstrumentation().getUiAutomation();
     private final List<MjpegScreenshotClient> clients;
-    private boolean stopped = false;
+    private boolean isStopped = false;
 
     MjpegScreenshotStream(List<MjpegScreenshotClient> clients) {
         this.clients = clients;
@@ -42,19 +51,20 @@ public class MjpegScreenshotStream extends Thread {
 
     @Override
     public void interrupt() {
-        this.stopped = true;
+        this.isStopped = true;
         super.interrupt();
     }
 
     @Override
     public void run() {
-        while (!stopped) {
-            if (clients.size() == 0) {
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        while (!isStopped) {
+            boolean noClientsConnected;
+            synchronized (clients) {
+                noClientsConnected = clients.isEmpty();
+            }
+
+            if (noClientsConnected) {
+                SystemClock.sleep(NO_CLIENTS_CONNECTED_SLEEP_TIME_MS);
                 continue;
             }
 
@@ -63,23 +73,40 @@ public class MjpegScreenshotStream extends Thread {
                 Math.round((1.0f / ServerConfig.getMjpegServerFramerate()) * 1000.0f);
             long start = System.currentTimeMillis();
 
-            byte[] screenshotData = getScreenshot();
-            if (screenshotData.length > 0) {
-                MjpegScreenshotClient client;
-                for (Iterator<MjpegScreenshotClient> iterator = clients.iterator(); iterator.hasNext();) {
-                    client = iterator.next();
-                    if (client.getClosed()) {
-                        iterator.remove();
-                        continue;
-                    }
-
-                    if (!client.getInitialized()) {
-                        client.initialize();
-                    }
-
-                    client.write(screenshotData);
-                }
+            // add some resilience to handle `getScreenshot` or any of its
+            // sub-routines raising an error. If an error occurs during
+            // [post-]processing the frame will be dropped
+            byte[] screenshotData;
+            try {
+                screenshotData = getScreenshot();
+            } catch (Exception e) {
+                Logger.error("Error getting screenshot: ", e);
+                screenshotData = new byte[0];
             }
+
+            if (screenshotData.length > 0) {
+                synchronized (clients) {
+                    Iterator<MjpegScreenshotClient> clientsIterator = clients.iterator();
+                    while (clientsIterator.hasNext()) {
+                        MjpegScreenshotClient client = clientsIterator.next();
+                        if (client.isClosed()) {
+                            clientsIterator.remove();
+                            continue;
+                        }
+
+                        if (!client.isInitialized()) {
+                            client.initialize();
+                        }
+
+                        client.write(screenshotData);
+                    }
+                }
+            } else {
+                Logger.warn("Empty screenshot returned, dropping frame");
+            }
+
+            // Always attempt to match the target framerate, even if the frame
+            // was dropped, to keep the rate consistent
             matchFramerate(targetInterval, start);
         }
     }
@@ -89,31 +116,30 @@ public class MjpegScreenshotStream extends Thread {
         long duration = end - start;
 
         if (duration < targetInterval) {
-            try {
-                sleep(targetInterval - duration);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            SystemClock.sleep(targetInterval - duration);
         }
     }
 
     private byte[] getScreenshot() {
-        Bitmap screenshot = uia.takeScreenshot();
+        Bitmap screenshot = UI_AUTOMATION.takeScreenshot();
+        if (screenshot == null) {
+            throw new TakeScreenshotException("Could not take screenshot: UiAutomation returned null");
+        }
+
         byte[] jpeg = ScreenshotHelper.compressJpeg(
             screenshot,
             ServerConfig.getMjpegScalingFactor() / 100.0f,
             ServerConfig.getMjpegServerScreenshotQuality(),
-            ServerConfig.getMjpegFiltering()
+            ServerConfig.isMjpegBilinearFiltering()
         );
         screenshot.recycle();
 
         byte[] header = String.format(
             Locale.ROOT,
-            "--BoundaryString\r\nContent-type: image/jpg\r\nContent-Length: %d\r\n\r\n",
+            BOUNDARY_STRING,
             jpeg.length
         ).getBytes(UTF_8);
-        byte[] end = "\r\n\r\n".getBytes(UTF_8);
-        byte[] data = new byte[jpeg.length + header.length + end.length];
+        byte[] data = new byte[jpeg.length + header.length + END.length];
 
         System.arraycopy(
             header,
@@ -130,11 +156,11 @@ public class MjpegScreenshotStream extends Thread {
             jpeg.length
         );
         System.arraycopy(
-            end,
+            END,
             0,
             data,
             header.length + jpeg.length,
-            end.length
+            END.length
         );
 
         return data;

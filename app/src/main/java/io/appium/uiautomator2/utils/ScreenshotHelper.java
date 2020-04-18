@@ -160,7 +160,7 @@ public class ScreenshotHelper {
 
     public static byte[] compressJpeg(final Bitmap bitmap, float scale, int quality, boolean filter) throws TakeScreenshotException {
         Bitmap resultBitmap;
-        if (scale == 1.0) {
+        if (Math.abs(scale - 1.0f) < Float.MIN_NORMAL) {
             resultBitmap = bitmap;
         } else {
             int width = Math.round(bitmap.getWidth() * scale);
