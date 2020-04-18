@@ -38,6 +38,16 @@ public abstract class BaseModel {
         return result;
     }
 
+    private void validateList(List<?> value) {
+        for (Object item : value) {
+            if (item instanceof BaseModel) {
+                ((BaseModel) item).validate();
+            } else if (item instanceof List) {
+                validateList((List<?>) item);
+            }
+        }
+    }
+
     public BaseModel validate() {
         for (Field f : getProperties()) {
             String jsonFieldName = f.getName();
@@ -55,25 +65,18 @@ public abstract class BaseModel {
                             String.format("%s: The mandatory field '%s' is not present in JSON",
                                     getClass().getSimpleName(), jsonFieldName));
                 }
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException(e);
+            } catch (IllegalAccessException ign) {
+                continue;
             }
 
             if (fieldValue == null) {
                 continue;
             }
 
-            Class<?> fieldType = f.getType();
-            if (BaseModel.class.isAssignableFrom(fieldType)) {
+            if (fieldValue instanceof BaseModel) {
                 ((BaseModel) fieldValue).validate();
-            }
-            if (List.class.isAssignableFrom(fieldType)) {
-                //noinspection rawtypes
-                for (Object item : (List) fieldValue) {
-                    if (item instanceof BaseModel) {
-                        ((BaseModel) item).validate();
-                    }
-                }
+            } else if (fieldValue instanceof List) {
+                validateList((List<?>) fieldValue);
             }
         }
         return this;
