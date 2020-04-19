@@ -51,13 +51,13 @@ public interface AndroidElement {
 
     Object getChild(final Object sel) throws UiObjectNotFoundException;
 
-    List<Object> getChildren(final Object selector, final By by) throws UiObjectNotFoundException;
+    List<?> getChildren(final Object selector, final By by) throws UiObjectNotFoundException;
 
     String getContentDesc() throws UiObjectNotFoundException;
 
     Object getUiObject();
 
-    Point getAbsolutePosition(final Point point) throws UiObjectNotFoundException;
+    Point getAbsolutePosition(final Point offset) throws UiObjectNotFoundException;
 
     boolean dragTo(final int destX, final int destY, final int steps) throws UiObjectNotFoundException;
 

@@ -16,13 +16,9 @@
 
 package io.appium.uiautomator2.model.api;
 
-import io.appium.uiautomator2.model.RequiredField;
-
-public class CoordinatesModel extends BaseModel {
-    @RequiredField
+public class TapModel extends ElementModel {
     public Double x;
-    @RequiredField
     public Double y;
 
-    public CoordinatesModel() {}
+    public TapModel() {}
 }

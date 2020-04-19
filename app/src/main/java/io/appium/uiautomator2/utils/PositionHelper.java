@@ -19,9 +19,11 @@ package io.appium.uiautomator2.utils;
 import android.graphics.Rect;
 
 import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.model.Point;
+
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static io.appium.uiautomator2.model.Point.ZERO_POINT;
 
 public abstract class PositionHelper {
 
@@ -32,17 +34,11 @@ public abstract class PositionHelper {
      * @param pointCoord The position to translate.
      * @param length     Length of side to use for percentage positions.
      * @param offset     Position offset.
-     * @return
      */
     private static double translateCoordinate(double pointCoord, double length, double offset) {
-        double translatedCoord;
-
-        if (Math.abs(pointCoord) > 0 && Math.abs(pointCoord) < 1) {
-            translatedCoord = length * pointCoord;
-        } else {
-            translatedCoord = pointCoord;
-        }
-
+        double translatedCoord = Math.abs(pointCoord) > 0 && Math.abs(pointCoord) < 1
+            ? length * pointCoord
+            : pointCoord;
         return translatedCoord + offset;
     }
 
@@ -54,34 +50,25 @@ public abstract class PositionHelper {
      * @param offsets           X and Y values by which to offset the point. These are typically the
      *                          absolute coordinates of the display rectangle.
      * @param shouldCheckBounds Throw if the translated point is outside displayRect?
-     * @return
-     * @throws UiObjectNotFoundException
-     * @throws InvalidCoordinatesException
      */
     public static Point getAbsolutePosition(final Point point, final Rect displayRect,
-                                            final Point offsets, final boolean shouldCheckBounds)
-            throws InvalidCoordinatesException {
-        final Point absolutePosition = new Point();
-
-        absolutePosition.x = translateCoordinate(point.x, displayRect.width(), offsets.x);
-        absolutePosition.y = translateCoordinate(point.y, displayRect.height(), offsets.y);
-
+                                            final Point offsets, final boolean shouldCheckBounds) {
+        final Point absolutePosition = new Point(
+                translateCoordinate(point.x, displayRect.width(), offsets.x),
+                translateCoordinate(point.y, displayRect.height(), offsets.y)
+        );
         if (shouldCheckBounds &&
                 !displayRect.contains(absolutePosition.x.intValue(), absolutePosition.y.intValue())) {
             throw new InvalidCoordinatesException("Coordinate " + absolutePosition.toString() +
                     " is outside of element rect: " + displayRect.toShortString());
         }
-
         return absolutePosition;
     }
 
-    public static Point getDeviceAbsPos(final Point point) throws InvalidCoordinatesException {
-        final UiDevice d = UiDevice.getInstance();
+    public static Point getDeviceAbsPos(final Point point) {
+        final UiDevice d = UiDevice.getInstance(getInstrumentation());
         final Rect displayRect = new Rect(0, 0, d.getDisplayWidth(), d.getDisplayHeight());
-
         Logger.debug("Display bounds: " + displayRect.toShortString());
-
-        return getAbsolutePosition(point, displayRect, new Point(), true);
+        return getAbsolutePosition(point, displayRect, ZERO_POINT, true);
     }
-
 }

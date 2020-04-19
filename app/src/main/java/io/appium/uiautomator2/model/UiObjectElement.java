@@ -32,8 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
-import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -204,7 +203,7 @@ public class UiObjectElement extends BaseElement {
 
     @Nullable
     @Override
-    public Object getChild(final Object selector) throws UiObjectNotFoundException, InvalidSelectorException {
+    public Object getChild(final Object selector) throws UiObjectNotFoundException {
         if (selector instanceof BySelector) {
             /*
              * We can't find the child element with BySelector on UiObject,
@@ -219,9 +218,8 @@ public class UiObjectElement extends BaseElement {
         return element.getChild((UiSelector) selector);
     }
 
-    @SuppressWarnings({"ConstantConditions", "unchecked"})
     @Override
-    public List<Object> getChildren(final Object selector, final By by) throws UiObjectNotFoundException, InvalidSelectorException {
+    public List<?> getChildren(final Object selector, final By by) throws UiObjectNotFoundException {
         if (selector instanceof BySelector) {
             /*
              * We can't find the child elements with BySelector on UiObject,
@@ -230,9 +228,12 @@ public class UiObjectElement extends BaseElement {
              */
             AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
             UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo);
-            return (List) uiObject2.findObjects((BySelector) selector);
+            if (uiObject2 == null) {
+                throw new ElementNotFoundException();
+            }
+            return uiObject2.findObjects((BySelector) selector);
         }
-        return (List) this.getChildElements((UiSelector) selector);
+        return this.getChildElements((UiSelector) selector);
     }
 
 
@@ -303,10 +304,10 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
-    public Point getAbsolutePosition(final Point point) throws UiObjectNotFoundException, InvalidCoordinatesException {
-        final Rect rect = this.getBounds();
-        Logger.debug("Element bounds: " + rect.toShortString());
-        return PositionHelper.getAbsolutePosition(point, rect, new Point(rect.left, rect.top), false);
+    public Point getAbsolutePosition(final Point offset) throws UiObjectNotFoundException {
+        final Rect bounds = this.getBounds();
+        Logger.debug("Element bounds: " + bounds.toShortString());
+        return PositionHelper.getAbsolutePosition(new Point(bounds.left, bounds.top), bounds, offset, false);
     }
 
     public String getResourceId() {
@@ -338,16 +339,14 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
-    public boolean dragTo(final int destX, final int destY, final int steps)
-            throws UiObjectNotFoundException, InvalidCoordinatesException {
+    public boolean dragTo(final int destX, final int destY, final int steps) throws UiObjectNotFoundException {
         Point coords = new Point(destX, destY);
         coords = PositionHelper.getDeviceAbsPos(coords);
         return element.dragTo(coords.x.intValue(), coords.y.intValue(), steps);
     }
 
     @Override
-    public boolean dragTo(final Object destObj, final int steps)
-            throws UiObjectNotFoundException, InvalidCoordinatesException {
+    public boolean dragTo(final Object destObj, final int steps) throws UiObjectNotFoundException {
         if (destObj instanceof UiObject) {
             return element.dragTo((UiObject) destObj, steps);
         }

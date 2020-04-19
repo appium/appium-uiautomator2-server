@@ -17,13 +17,12 @@
 package io.appium.uiautomator2.model;
 
 public class Point {
-    public Double x;
-    public Double y;
+    public Double x = 0.0;
+    public Double y = 0.0;
 
-    public Point() {
-        x = 0.0;
-        y = 0.0;
-    }
+    public static final Point ZERO_POINT = new Point();
+
+    public Point() {}
 
     public Point(final Double x, final Double y) {
         this.x = x;

@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -75,7 +74,7 @@ public class FindElements extends SafeRequestHandler {
 
         By by = new NativeAndroidBySelector().pickFrom(method, selector);
 
-        final List<Object> elements;
+        final List<?> elements;
         try {
             elements = isBlank(contextId)
                     ? this.findElements(by)
@@ -95,13 +94,10 @@ public class FindElements extends SafeRequestHandler {
                https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#sessionsessionidelements
               */
             return new AppiumResponse(getSessionId(request), result);
-        } catch (ClassNotFoundException e) {
-            throw new UiAutomator2Exception(e);
         }
     }
 
-    private List<Object> findElements(By by) throws ClassNotFoundException,
-            UiAutomator2Exception, UiObjectNotFoundException {
+    private List<Object> findElements(By by) throws UiObjectNotFoundException {
         refreshAccessibilityCache();
 
         if (by instanceof By.ById) {
@@ -126,8 +122,7 @@ public class FindElements extends SafeRequestHandler {
         throw new NotImplementedException(msg);
     }
 
-    private List<Object> findElements(By by, String contextId) throws ClassNotFoundException,
-            UiAutomator2Exception, UiObjectNotFoundException {
+    private List<?> findElements(By by, String contextId) throws UiObjectNotFoundException {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         AndroidElement element = session.getKnownElements().getElementFromCache(contextId);
         if (element == null) {
@@ -157,7 +152,7 @@ public class FindElements extends SafeRequestHandler {
      * returns  List<UiObject> using '-android automator' expression
      **/
     private List<Object> getUiObjectsUsingAutomator(List<UiSelector> selectors, String contextId)
-            throws InvalidSelectorException, ClassNotFoundException {
+            throws InvalidSelectorException {
         List<Object> foundElements = new ArrayList<>();
         for (final UiSelector sel : selectors) {
             // With multiple selectors, we expect that some elements may not
@@ -178,7 +173,7 @@ public class FindElements extends SafeRequestHandler {
      * finds elements with given UiSelector return List<UiObject
      */
     private List<Object> fetchElements(UiSelector sel, String key)
-            throws UiObjectNotFoundException, ClassNotFoundException, InvalidSelectorException {
+            throws UiObjectNotFoundException, InvalidSelectorException {
         //TODO: finding elements with contextId yet to implement
         boolean keepSearching = true;
         final String selectorString = sel.toString();

@@ -30,8 +30,6 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
-import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
-import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -199,7 +197,7 @@ public class UiObject2Element extends BaseElement {
 
     @Nullable
     @Override
-    public Object getChild(final Object selector) throws UiObjectNotFoundException, InvalidSelectorException {
+    public Object getChild(final Object selector) throws UiObjectNotFoundException {
         if (selector instanceof UiSelector) {
             /*
              * We can't find the child element with UiSelector on UiObject2,
@@ -222,8 +220,7 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
-    public List<Object> getChildren(final Object selector, final By by)
-            throws UiObjectNotFoundException, InvalidSelectorException {
+    public List<?> getChildren(final Object selector, final By by) throws UiObjectNotFoundException {
         if (selector instanceof UiSelector) {
             /*
              * We can't find the child elements with UiSelector on UiObject2,
@@ -240,8 +237,7 @@ public class UiObject2Element extends BaseElement {
             AndroidElement androidElement = getAndroidElement(id, uiObject, true, by, getContextId());
             return androidElement.getChildren(selector, by);
         }
-        //noinspection unchecked
-        return (List) element.findObjects((BySelector) selector);
+        return element.findObjects((BySelector) selector);
     }
 
     @Override
@@ -255,13 +251,10 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
-    public Point getAbsolutePosition(final Point point)
-            throws InvalidCoordinatesException {
-        final Rect rect = this.getBounds();
-
-        Logger.debug("Element bounds: " + rect.toShortString());
-
-        return PositionHelper.getAbsolutePosition(point, rect, new Point(rect.left, rect.top), false);
+    public Point getAbsolutePosition(final Point offset) {
+        final Rect bounds = this.getBounds();
+        Logger.debug("Element bounds: " + bounds.toShortString());
+        return PositionHelper.getAbsolutePosition(new Point(bounds.left, bounds.top), bounds, offset, false);
     }
 
     @Override
@@ -282,7 +275,7 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
-    public boolean dragTo(int destX, int destY, int steps) throws InvalidCoordinatesException {
+    public boolean dragTo(int destX, int destY, int steps) {
         Point coords = new Point(destX, destY);
         coords = PositionHelper.getDeviceAbsPos(coords);
         element.drag(new android.graphics.Point(coords.x.intValue(), coords.y.intValue()), steps);
