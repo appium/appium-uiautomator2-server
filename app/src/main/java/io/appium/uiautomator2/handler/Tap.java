@@ -47,7 +47,7 @@ public class Tap extends SafeRequestHandler {
         if (model.getUnifiedId() == null) {
             if (model.x == null || model.y == null) {
                 throw new IllegalArgumentException(
-                        "Both x and y must be set if element id is not provided");
+                        "Both x and y tap coordinates must be set if element id is not provided");
             }
             tapLocation = PositionHelper.getDeviceAbsPos(new Point(model.x, model.y));
         } else {
@@ -65,9 +65,7 @@ public class Tap extends SafeRequestHandler {
         }
 
         if (!getUiDevice().click(tapLocation.x.intValue(), tapLocation.y.intValue())) {
-            throw new InvalidElementStateException(
-                    String.format("Click failed at (%s, %s) coordinates",
-                            tapLocation.x.intValue(), tapLocation.y.intValue()));
+            throw new InvalidElementStateException(String.format("Tap at %s has failed", tapLocation));
         }
         Device.waitForIdle();
         return new AppiumResponse(getSessionId(request));
