@@ -69,12 +69,18 @@ import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("JavaDoc")
 public class DeviceCommandsTest extends BaseTest {
-
     /**
      * Test for findElement
+     *
+     * While working on PR #340 to: `appium:appium-uiautomator2-server` we were
+     * seeing this test fail consistently on API-26. Ultimately we confirmed
+     * that it was a test-ordering issue. By prefixing the test-case w/ `"zzz"`
+     * we forced it to be run first which produced consistent result(s)
+     *
+     * TODO: Figure out test state ordering issue
      */
     @Test
-    public void findElementTest() {
+    public void zzzFindElementTest() {
         By by = By.xpath("//*[@text='API Demos']");
         Response response = findElement(by);
         assertTrue(by + " should be found", response.isSuccessful());
