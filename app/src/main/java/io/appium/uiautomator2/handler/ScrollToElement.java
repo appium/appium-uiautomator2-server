@@ -1,6 +1,21 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.uiautomator2.handler;
 
-import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
@@ -12,8 +27,9 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.utils.Logger;
+import io.appium.uiautomator2.model.KnownElements;
+
+import static java.util.Objects.requireNonNull;
 
 public class ScrollToElement extends SafeRequestHandler {
 
@@ -24,16 +40,12 @@ public class ScrollToElement extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         String[] elementIds = getElementIds(request);
-        StringBuilder errorMsg = new StringBuilder();
-        UiObject elementUiObject = null;
-        UiObject scrollElementUiObject = null;
-        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-
-        AndroidElement element = session.getKnownElements().getElementFromCache(elementIds[0]);
+        KnownElements ke = AppiumUIA2Driver.getInstance().getSessionOrThrow().getKnownElements();
+        AndroidElement element = ke.getElementFromCache(elementIds[0]);
         if (element == null) {
             throw new ElementNotFoundException();
         }
-        AndroidElement scrollToElement = session.getKnownElements().getElementFromCache(elementIds[1]);
+        AndroidElement scrollToElement = ke.getElementFromCache(elementIds[1]);
         if (scrollToElement == null) {
             throw new ElementNotFoundException();
         }
@@ -42,52 +54,42 @@ public class ScrollToElement extends SafeRequestHandler {
         // if we can't, we have to error out, since scrollIntoView only works with UiObjects
         // (and not for example UiObject2)
         // TODO make an equivalent implementation of this method for UiObject2 if possible
+        StringBuilder errorMsg = new StringBuilder();
+        UiObject elementUiObject = null;
+        UiObject scrollElementUiObject = null;
         try {
             elementUiObject = (UiObject) element.getUiObject();
             try {
                 scrollElementUiObject = (UiObject) scrollToElement.getUiObject();
-            } catch (Exception e) {
+            } catch (ClassCastException e) {
                 errorMsg.append("Scroll to Element");
             }
-        } catch (Exception e) {
+        } catch (ClassCastException e) {
             errorMsg.append("Element");
         }
 
-        if (!errorMsg.toString().isEmpty()) {
+        if (errorMsg.length() > 0) {
             errorMsg.append(" was not an instance of UiObject; only UiSelector is supported. " +
                     "Ensure you use the '-android uiautomator' locator strategy when " +
                     "finding elements for use with ScrollToElement");
-            Logger.error(errorMsg.toString());
             throw new InvalidArgumentException(errorMsg.toString());
         }
 
-        boolean elementIsFound = false;
-        if (elementUiObject != null) {
-            UiScrollable uiScrollable = new UiScrollable(elementUiObject.getSelector());
-            elementIsFound = uiScrollable.scrollIntoView(scrollElementUiObject);
+        UiScrollable uiScrollable = new UiScrollable(requireNonNull(elementUiObject).getSelector());
+        if (!uiScrollable.scrollIntoView(requireNonNull(scrollElementUiObject))) {
+            throw new UiObjectNotFoundException(String.format("Cannot scroll to %s element",
+                    requireNonNull(scrollElementUiObject).getSelector().toString()));
         }
-        return new AppiumResponse(getSessionId(request), elementIsFound);
+        return new AppiumResponse(getSessionId(request));
     }
 
     private static class UiScrollable extends androidx.test.uiautomator.UiScrollable {
-
-        /**
-         * Constructor.
-         *
-         * @param container a {@link UiSelector} selector to identify the scrollable
-         *                  layout element.
-         * @since API Level 16
-         */
         public UiScrollable(UiSelector container) {
             super(container);
         }
 
         @Override
-        public boolean scrollIntoView(@Nullable UiObject obj) throws UiObjectNotFoundException {
-            if (obj == null) {
-                return false;
-            }
-
+        public boolean scrollIntoView(UiObject obj) throws UiObjectNotFoundException {
             if (obj.exists()) {
                 return true;
             }
@@ -97,7 +99,6 @@ public class ScrollToElement extends SafeRequestHandler {
             if (obj.exists()) {
                 return true;
             }
-
 
             for (int x = 0; x < getMaxSearchSwipes(); x++) {
                 if (!scrollForward()) {

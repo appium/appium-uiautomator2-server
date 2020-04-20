@@ -19,6 +19,7 @@ package io.appium.uiautomator2.model.api;
 import io.appium.uiautomator2.model.RequiredField;
 
 public class ScrollToModel extends BaseModel {
+    public ElementModel origin;
     @RequiredField
     public ScrollParams params;
 

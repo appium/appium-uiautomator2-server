@@ -1,3 +1,19 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package io.appium.uiautomator2.utils;
 
 import androidx.annotation.Nullable;
@@ -16,6 +32,8 @@ import io.appium.uiautomator2.model.UiObject2Element;
 import io.appium.uiautomator2.model.UiObjectElement;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
+
+import java.util.Objects;
 
 public abstract class Device {
     public static UiDevice getUiDevice() {
@@ -44,30 +62,30 @@ public abstract class Device {
         return getAndroidElement(id, element, isSingleMatch, null, null);
     }
 
-    public static void scrollToElement(UiSelector selector, int maxSwipes)
-            throws UiObjectNotFoundException {
-        UiScrollable uiScrollable = new UiScrollable(new UiSelector().scrollable(true).instance(0));
-        String uiScrollableClassName = uiScrollable.getClassName();
+    public static void scrollToElement(@Nullable UiScrollable origin, UiSelector selector,
+                                       @Nullable Integer maxSwipes) throws UiObjectNotFoundException {
+        UiScrollable scrollableOrigin = origin == null
+                ? new UiScrollable(new UiSelector().scrollable(true).instance(0))
+                : origin;
+        Logger.debug(String.format("Using %s as scrolling origin", scrollableOrigin.getSelector()));
         String hScrollViewClassName = android.widget.HorizontalScrollView.class.getName();
-        int defaultMaxSwipes = uiScrollable.getMaxSearchSwipes();
-
-        if (java.util.Objects.equals(uiScrollableClassName, hScrollViewClassName)) {
-            uiScrollable.setAsHorizontalList();
+        if (Objects.equals(scrollableOrigin.getClassName(), hScrollViewClassName)) {
+            scrollableOrigin.setAsHorizontalList();
         }
 
-        if (maxSwipes > 0) {
-            uiScrollable.setMaxSearchSwipes(maxSwipes);
+        int originalMaxSwipes = scrollableOrigin.getMaxSearchSwipes();
+        if (maxSwipes != null && maxSwipes > 0) {
+            scrollableOrigin.setMaxSearchSwipes(maxSwipes);
         }
-
         try {
-            if (!uiScrollable.scrollIntoView(selector)) {
-                throw new UiObjectNotFoundException("Cannot scroll to the element.");
+            if (!scrollableOrigin.scrollIntoView(selector)) {
+                throw new UiObjectNotFoundException(String.format("Cannot scroll to %s", selector));
             }
         } finally {
             // The number of search swipes is held in a static property of the UiScrollable class.
             // Whenever a non-default number of search swipes is used during the scroll, we must
             // always restore the setting after the operation.
-            uiScrollable.setMaxSearchSwipes(defaultMaxSwipes);
+            scrollableOrigin.setMaxSearchSwipes(originalMaxSwipes);
         }
     }
 
