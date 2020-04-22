@@ -16,13 +16,8 @@
 
 package io.appium.uiautomator2.model.api;
 
-import io.appium.uiautomator2.model.RequiredField;
-
-public class ClipboardModel extends BaseModel {
-    @RequiredField
-    public String content;
+public class GetClipboardModel extends BaseModel {
     public String contentType;
-    public String label;
 
-    public ClipboardModel() {}
+    public GetClipboardModel() {}
 }

@@ -19,7 +19,7 @@ package io.appium.uiautomator2.handler;
 import android.app.Instrumentation;
 import android.util.Base64;
 
-import io.appium.uiautomator2.model.api.ClipboardModel;
+import io.appium.uiautomator2.model.api.GetClipboardModel;
 
 import java.nio.charset.StandardCharsets;
 
@@ -47,17 +47,17 @@ public class GetClipboard extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         ClipDataType contentType = ClipDataType.PLAINTEXT;
-        try {
-            ClipboardModel model = toModel(request, ClipboardModel.class);
-            if (model.contentType != null) {
+        GetClipboardModel model = toModel(request, GetClipboardModel.class);
+        if (model.contentType != null) {
+            try {
                 contentType = ClipDataType.valueOf(model.contentType.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new InvalidArgumentException(
+                        String.format("Only '%s' content types are supported. '%s' is given instead",
+                                ClipDataType.supportedDataTypes(), contentType));
             }
-            return new AppiumResponse(getSessionId(request), getClipboardResponse(contentType));
-        } catch (IllegalArgumentException e) {
-            throw new InvalidArgumentException(
-                    String.format("Only '%s' content types are supported. '%s' is given instead",
-                            ClipDataType.supportedDataTypes(), contentType));
         }
+        return new AppiumResponse(getSessionId(request), getClipboardResponse(contentType));
     }
 
     // Clip feature should run with main thread
