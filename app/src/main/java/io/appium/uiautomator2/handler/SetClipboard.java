@@ -46,22 +46,20 @@ public class SetClipboard extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        ClipDataType contentType = ClipDataType.PLAINTEXT;
         SetClipboardModel model = toModel(request, SetClipboardModel.class);
-        try {
-            String content = fromBase64String(model.content);
-            if (model.contentType != null) {
+        String content = fromBase64String(model.content);
+        ClipDataType contentType = ClipDataType.PLAINTEXT;
+        if (model.contentType != null) {
+            try {
                 contentType = ClipDataType.valueOf(model.contentType.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new InvalidArgumentException(
+                        String.format("Only '%s' content types are supported. '%s' is given instead",
+                                ClipDataType.supportedDataTypes(),
+                                contentType));
             }
-            String label = model.label;
-
-            mInstrumentation.runOnMainSync(new AppiumSetClipboardRunnable(contentType, label, content));
-        } catch (IllegalArgumentException e) {
-            throw new InvalidArgumentException(
-                    String.format("Only '%s' content types are supported. '%s' is given instead",
-                            ClipDataType.supportedDataTypes(),
-                            contentType));
         }
+        mInstrumentation.runOnMainSync(new AppiumSetClipboardRunnable(contentType, model.label, content));
         return new AppiumResponse(getSessionId(request));
     }
 
