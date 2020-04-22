@@ -48,16 +48,16 @@ public class GetClipboard extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) {
         ClipDataType contentType = ClipDataType.PLAINTEXT;
         GetClipboardModel model = toModel(request, GetClipboardModel.class);
-        if (model.contentType != null) {
-            try {
+        try {
+            if (model.contentType != null) {
                 contentType = ClipDataType.valueOf(model.contentType.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new InvalidArgumentException(
-                        String.format("Only '%s' content types are supported. '%s' is given instead",
-                                ClipDataType.supportedDataTypes(), contentType));
             }
+            return new AppiumResponse(getSessionId(request), getClipboardResponse(contentType));
+        } catch (IllegalArgumentException e) {
+            throw new InvalidArgumentException(
+                    String.format("Only '%s' content types are supported. '%s' is given instead",
+                            ClipDataType.supportedDataTypes(), contentType));
         }
-        return new AppiumResponse(getSessionId(request), getClipboardResponse(contentType));
     }
 
     // Clip feature should run with main thread
