@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.0-rc01'
+        classpath 'com.android.tools.build:gradle:4.0.0-beta05'
         classpath 'com.github.JakeWharton:sdk-manager-plugin:0ce4cdf08009d79223850a59959d9d6e774d0f77'
         classpath 'de.mobilej.unmock:UnMockPlugin:0.6.4'
     }
@@ -76,23 +76,26 @@ dependencies {
     implementation 'androidx.test:core:1.2.0'
     implementation 'androidx.test:runner:1.2.0'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.squareup.okhttp:okhttp:2.5.0'
+    //noinspection GradleDependency
     implementation 'commons-io:commons-io:2.6'
     implementation 'io.netty:netty-all:4.0.41.Final'
-    implementation 'jaxen:jaxen:1.1.6'
+    implementation 'jaxen:jaxen:1.2.0'
     implementation 'net.gcardone.junidecode:junidecode:0.4.1'
     implementation 'org.jdom:jdom2:2.0.6'
     unmock 'org.robolectric:android-all:7.1.0_r7-robolectric-0'
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.json:json:20160810'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.json:json:20190722'
     testImplementation 'org.powermock:powermock-api-mockito2:1.7.4'
     testImplementation 'org.powermock:powermock-classloading-xstream:1.7.4'
     testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
     testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
-    testImplementation 'org.robolectric:robolectric:4.0.2'
+    testImplementation 'org.robolectric:robolectric:4.3.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'com.squareup.okhttp:okhttp:2.7.5'
     androidTestImplementation 'androidx.test.espresso:espresso-web:3.2.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'junit:junit:4.13'
 }
 
 task installAUT(type: Exec) {
