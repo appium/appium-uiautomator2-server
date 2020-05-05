@@ -197,10 +197,9 @@ public abstract class ElementHelpers {
             if (nodeInfo != null && Objects.equals(nodeInfo.getClassName(), Toast.class.getName())) {
                 return charSequenceToString(nodeInfo.getText(), replaceNull);
             }
-
-            return AccessibilityNodeInfoHelpers.getText(AccessibilityNodeInfoGetter.fromUiObject(element), replaceNull);
         }
-        return toNullableString(((UiObject) element).getText(), replaceNull);
+
+        return AccessibilityNodeInfoHelpers.getText(AccessibilityNodeInfoGetter.fromUiObject(element), replaceNull);
     }
 
     public static String getContentSize(AndroidElement element) throws UiObjectNotFoundException {
