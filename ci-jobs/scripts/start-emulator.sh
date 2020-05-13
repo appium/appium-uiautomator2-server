@@ -18,24 +18,24 @@ echo "Starting emulator"
 nohup $ANDROID_HOME/emulator/emulator -avd $ANDROID_AVD -no-snapshot > /dev/null 2>&1 &
 
 $ANDROID_HOME/platform-tools/adb wait-for-device get-serialno
-secondsStarted=`date +%s`
+secondsStarted=$(date +%s)
 TIMEOUT=360
-while [[ $(( `date +%s` - $secondsStarted )) -lt $TIMEOUT ]]; do
+while [[ $(( $(date +%s) - secondsStarted )) -lt $TIMEOUT ]]; do
   # Fail fast if Emulator process crashed
   pgrep -nf avd || exit 1
 
-  processList=`adb shell ps`
+  processList=$(adb shell ps)
   if [[ "$processList" =~ "com.android.systemui" ]]; then
     echo "System UI process is running. Checking IME services availability"
     $ANDROID_HOME/platform-tools/adb shell ime list && break
   fi
   sleep 5
-  secondsElapsed=$(( `date +%s` - $secondsStarted ))
-  secondsLeft=$(( $TIMEOUT - $secondsElapsed ))
+  secondsElapsed=$(( $(date +%s) - secondsStarted ))
+  secondsLeft=$(( TIMEOUT - secondsElapsed ))
   echo "Waiting until emulator finishes services startup; ${secondsElapsed}s elapsed; ${secondsLeft}s left"
 done
 
-bootDuration=$(( `date +%s` - $secondsStarted ))
+bootDuration=$(( $(date +%s) - secondsStarted ))
 if [[ $bootDuration -ge $TIMEOUT ]]; then
   echo "Emulator has failed to fully start within ${TIMEOUT}s"
   exit 1
