@@ -18,25 +18,23 @@ package io.appium.uiautomator2.model.settings;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.Spy;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AbstractSettingTests {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
+    @Spy
+    private DummyIntegerSetting dummyIntegerSetting;
 
     @Spy
-    private DummySetting dummySetting;
+    private DummyLongSetting dummyLongSetting;
 
     @Before
     public void setUp() {
@@ -44,44 +42,108 @@ public class AbstractSettingTests {
     }
 
     @Test
-    public void shouldThrowExceptionIfTypeIsNotValid() {
-        thrown.expect(UiAutomator2Exception.class);
-        thrown.expectMessage("Invalid setting value type. Got: java.lang.String. Expected: java.lang.Long");
-        dummySetting.update("test");
+    public void dummyIntegerSettingShouldThrowExceptionIfTypeIsNotValid() {
+        boolean exceptionThrown = false;
+        try {
+            dummyIntegerSetting.update("test");
+        } catch (UiAutomator2Exception e) {
+            exceptionThrown = true;
+        }
+        Assert.assertTrue(exceptionThrown);
     }
 
     @Test
-    public void shouldNotThrowExceptionIfApplyFailed() {
-        doThrow(new UiAutomator2Exception("error")).when(dummySetting).apply(anyLong());
-        dummySetting.update(10);
+    public void dummyIntegerSettingShouldNotThrowExceptionIfApplyFailed() {
+        doThrow(new UiAutomator2Exception("error")).when(dummyIntegerSetting).apply(anyInt());
+        boolean exceptionThrown = false;
+        try {
+            dummyIntegerSetting.update(10);
+        } catch (Exception e) {
+            exceptionThrown = true;
+        }
+        Assert.assertFalse(exceptionThrown);
     }
 
     @Test
-    public void shouldReturnValidValueType() {
-        Assert.assertEquals(Long.class, dummySetting.getValueType());
+    public void dummyIntegerSettingShouldReturnValidValueType() {
+        Assert.assertEquals(Integer.class, dummyIntegerSetting.getValueType());
     }
 
     @Test
-    public void shouldCallApplyWithValidValue() {
-        dummySetting.update(123);
-        verify(dummySetting).apply(123L);
+    public void dummyIntegerSettingShouldCallApplyWithValidValue() {
+        dummyIntegerSetting.update(123);
+        verify(dummyIntegerSetting).apply(123);
+        Assert.assertEquals(Integer.valueOf(123), dummyIntegerSetting.getValue());
     }
 
-    private class DummySetting extends AbstractSetting<Long> {
+    private class DummyIntegerSetting extends AbstractSetting<Integer> {
+        private Integer value = null;
 
-        public DummySetting() {
-            super(Long.class, "dummy");
+        public DummyIntegerSetting() {
+            super(Integer.class, "dummyInteger");
+        }
+
+        @Override
+        public Integer getValue() {
+            return value;
+        }
+
+        @Override
+        protected void apply(Integer value) {
+            this.value = value;
+        }
+    }
+
+    @Test
+    public void dummyLongSettingShouldThrowExceptionIfTypeIsNotValid() {
+        boolean exceptionThrown = false;
+        try {
+            dummyLongSetting.update("test");
+        } catch (UiAutomator2Exception e) {
+            exceptionThrown = true;
+        }
+        Assert.assertTrue(exceptionThrown);
+    }
+
+    @Test
+    public void dummyLongSettingShouldNotThrowExceptionIfApplyFailed() {
+        doThrow(new UiAutomator2Exception("error")).when(dummyLongSetting).apply(anyLong());
+        boolean exceptionThrown = false;
+        try {
+            dummyLongSetting.update(10L);
+        } catch (Exception e) {
+            exceptionThrown = true;
+        }
+        Assert.assertFalse(exceptionThrown);
+    }
+
+    @Test
+    public void dummyLongSettingShouldReturnValidValueType() {
+        Assert.assertEquals(Long.class, dummyLongSetting.getValueType());
+    }
+
+    @Test
+    public void dummyLongSettingShouldCallApplyWithValidValue() {
+        dummyLongSetting.update(123L);
+        verify(dummyLongSetting).apply(123L);
+        Assert.assertEquals(Long.valueOf(123), dummyLongSetting.getValue());
+    }
+
+    private class DummyLongSetting extends AbstractSetting<Long> {
+        private Long value = null;
+
+        public DummyLongSetting() {
+            super(Long.class, "dummyLong");
         }
 
         @Override
         public Long getValue() {
-            return 123L;
+            return value;
         }
 
         @Override
         protected void apply(Long value) {
-            // do nothing
+            this.value = value;
         }
     }
-
 }

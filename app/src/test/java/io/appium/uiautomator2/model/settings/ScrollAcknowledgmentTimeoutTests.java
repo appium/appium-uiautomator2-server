@@ -34,7 +34,6 @@ import static org.mockito.Mockito.when;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Configurator.class})
 public class ScrollAcknowledgmentTimeoutTests {
-
     private ScrollAcknowledgmentTimeout scrollAcknowledgmentTimeout;
 
     @Mock
@@ -60,13 +59,13 @@ public class ScrollAcknowledgmentTimeoutTests {
 
     @Test
     public void shouldBeAbleToSetScrollAcknowledgmentTimeout() {
-        scrollAcknowledgmentTimeout.update(123);
-        verify(configurator).setScrollAcknowledgmentTimeout(123);
+        scrollAcknowledgmentTimeout.update(123L);
+        verify(configurator).setScrollAcknowledgmentTimeout(123L);
     }
 
     @Test
     public void shouldBeAbleToGetScrollAcknowledgmentTimeout() {
-        when(configurator.getScrollAcknowledgmentTimeout()).thenReturn((long) 123);
+        when(configurator.getScrollAcknowledgmentTimeout()).thenReturn(123L);
         Assert.assertEquals(Long.valueOf(123), scrollAcknowledgmentTimeout.getValue());
     }
 }
