@@ -10,3 +10,5 @@ app/build
 *.log
 apks/
 package-lock.json*
+.settings
+.classpath
