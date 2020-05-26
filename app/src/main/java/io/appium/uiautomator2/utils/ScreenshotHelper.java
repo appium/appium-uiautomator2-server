@@ -41,8 +41,8 @@ import io.appium.uiautomator2.common.exceptions.TakeScreenshotException;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
-import static android.graphics.Bitmap.CompressFormat.PNG;
 import static android.graphics.Bitmap.CompressFormat.JPEG;
+import static android.graphics.Bitmap.CompressFormat.PNG;
 import static android.util.DisplayMetrics.DENSITY_DEFAULT;
 
 public class ScreenshotHelper {

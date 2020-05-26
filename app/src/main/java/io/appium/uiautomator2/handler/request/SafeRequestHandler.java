@@ -16,10 +16,11 @@
 
 package io.appium.uiautomator2.handler.request;
 
-import com.google.gson.JsonSyntaxException;
-
 import androidx.test.uiautomator.StaleObjectException;
 import androidx.test.uiautomator.UiObjectNotFoundException;
+
+import com.google.gson.JsonSyntaxException;
+
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;

@@ -19,7 +19,6 @@ import android.view.InputEvent;
 import android.view.MotionEvent.PointerCoords;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
-
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.TrackScrollEvents;
 import io.appium.uiautomator2.utils.Logger;

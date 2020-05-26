@@ -17,11 +17,13 @@
 package io.appium.uiautomator2.model.api;
 
 import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
-import io.appium.uiautomator2.model.AndroidElement;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.appium.uiautomator2.model.AndroidElement;
 
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 import static io.appium.uiautomator2.utils.w3c.ElementConstants.JWP_ELEMENT_ID_KEY_NAME;

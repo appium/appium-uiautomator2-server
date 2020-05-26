@@ -16,11 +16,12 @@
 
 package io.appium.uiautomator2.model;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.util.Map;
 import java.util.UUID;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import io.appium.uiautomator2.common.exceptions.NoSuchDriverException;
 
 public class AppiumUIA2Driver {

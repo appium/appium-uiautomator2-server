@@ -17,13 +17,15 @@
 package io.appium.uiautomator2.utils.w3c;
 
 import com.google.gson.reflect.TypeToken;
-import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+
+import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toObject;
 import static org.hamcrest.CoreMatchers.equalTo;

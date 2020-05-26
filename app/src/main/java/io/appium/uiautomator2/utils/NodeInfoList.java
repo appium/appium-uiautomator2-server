@@ -18,11 +18,11 @@ package io.appium.uiautomator2.utils;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 public class NodeInfoList {
 

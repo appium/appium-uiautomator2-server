@@ -16,12 +16,13 @@
 
 package io.appium.uiautomator2.utils;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
+
+import java.util.List;
+import java.util.regex.Pattern;
+
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;

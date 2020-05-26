@@ -16,14 +16,13 @@
 
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.model.api.SessionDetailsModel;
-
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AccessibilityScrollData;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
+import io.appium.uiautomator2.model.api.SessionDetailsModel;
 
 public class GetSessionDetails extends SafeRequestHandler {
     public GetSessionDetails(String mappedUri) {

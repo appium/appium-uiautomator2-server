@@ -17,12 +17,13 @@
 package io.appium.uiautomator2.model.api;
 
 import com.google.gson.annotations.SerializedName;
-import io.appium.uiautomator2.model.RequiredField;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import io.appium.uiautomator2.model.RequiredField;
 
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 

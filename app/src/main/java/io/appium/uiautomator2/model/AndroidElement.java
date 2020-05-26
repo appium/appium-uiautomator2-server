@@ -18,10 +18,10 @@ package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
 
-import java.util.List;
-
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
+
+import java.util.List;
 
 public interface AndroidElement {
 

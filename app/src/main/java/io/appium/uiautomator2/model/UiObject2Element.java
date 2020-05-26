@@ -20,15 +20,15 @@ import android.graphics.Rect;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import java.util.List;
-import java.util.UUID;
-
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
+
+import java.util.List;
+import java.util.UUID;
 
 import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;

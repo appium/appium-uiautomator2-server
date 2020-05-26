@@ -16,9 +16,9 @@
 
 package io.appium.uiautomator2.utils;
 
-import java.util.regex.Pattern;
-
 import androidx.annotation.Nullable;
+
+import java.util.regex.Pattern;
 
 public abstract class XMLHelpers {
     // XML 1.0 Legal Characters (http://stackoverflow.com/a/4237934/347155)

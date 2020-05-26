@@ -19,6 +19,7 @@ package io.appium.uiautomator2.utils;
 import android.graphics.Rect;
 
 import androidx.test.uiautomator.UiDevice;
+
 import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.model.Point;
 

@@ -16,10 +16,10 @@
 
 package io.appium.uiautomator2.model.api;
 
+import java.util.List;
+
 import io.appium.uiautomator2.model.api.network.BluetoothInfoModel;
 import io.appium.uiautomator2.model.api.network.NetworkInfoModel;
-
-import java.util.List;
 
 public class DeviceInfoModel extends BaseModel {
     public String androidId;

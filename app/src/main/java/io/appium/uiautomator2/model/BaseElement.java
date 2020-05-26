@@ -17,13 +17,14 @@
 package io.appium.uiautomator2.model;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
-import io.appium.uiautomator2.common.exceptions.NoSuchAttributeException;
-import io.appium.uiautomator2.model.api.ElementModel;
-import io.appium.uiautomator2.model.api.ElementRectModel;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import io.appium.uiautomator2.common.exceptions.NoSuchAttributeException;
+import io.appium.uiautomator2.model.api.ElementModel;
+import io.appium.uiautomator2.model.api.ElementRectModel;
 
 public abstract class BaseElement implements AndroidElement {
     protected static final String ATTRIBUTE_PREFIX = "attribute/";

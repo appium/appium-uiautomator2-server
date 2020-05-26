@@ -1,16 +1,17 @@
 package io.appium.uiautomator2.core;
 
 
-import java.io.InvalidClassException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
+
+import java.io.InvalidClassException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import io.appium.uiautomator2.utils.Logger;
 
 public class UiObjectChildGenerator implements Iterable<Object> {

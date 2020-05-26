@@ -20,7 +20,8 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Base64;
 
-import io.appium.uiautomator2.unittest.test.internal.TestUtils;
+import androidx.test.uiautomator.UiDevice;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,11 +33,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.test.uiautomator.UiDevice;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.unittest.test.internal.BaseTest;
 import io.appium.uiautomator2.unittest.test.internal.Response;
 import io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices;
+import io.appium.uiautomator2.unittest.test.internal.TestUtils;
 import io.appium.uiautomator2.utils.Device;
 
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.getJsonObjectCountInJsonArray;
@@ -50,9 +51,9 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getSettings;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.rotateScreen;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.screenshot;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToClassName;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToElement;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToText;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToClassName;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.setRotation;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.updateSetting;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.updateSettings;

@@ -17,31 +17,30 @@
 package io.appium.uiautomator2.handler;
 
 import androidx.test.uiautomator.UiObject;
-import androidx.test.uiautomator.UiScrollable;
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.model.AndroidElement;
-import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.KnownElements;
-import io.appium.uiautomator2.model.api.ScrollToModel;
 import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 
+import java.util.Arrays;
+import java.util.List;
+
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.AndroidElement;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
+import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.api.ScrollToModel;
 import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
 import io.appium.uiautomator2.utils.Logger;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_ACCESSIBILITY_ID;
 import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_ANDROID_UIAUTOMATOR;
 import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_CLASS;
 import static io.appium.uiautomator2.utils.Device.scrollToElement;
-
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 

@@ -16,10 +16,10 @@
 
 package io.appium.uiautomator2.model.api;
 
-import io.appium.uiautomator2.model.RequiredField;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import io.appium.uiautomator2.model.RequiredField;
 
 public class SettingsModel extends BaseModel {
     @RequiredField

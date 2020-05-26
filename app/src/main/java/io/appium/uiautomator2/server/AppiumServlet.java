@@ -16,12 +16,13 @@
 
 package io.appium.uiautomator2.server;
 
+import androidx.annotation.Nullable;
+
 import java.net.URLDecoder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import androidx.annotation.Nullable;
 import io.appium.uiautomator2.handler.AcceptAlert;
 import io.appium.uiautomator2.handler.CaptureScreenshot;
 import io.appium.uiautomator2.handler.Clear;
@@ -42,9 +43,9 @@ import io.appium.uiautomator2.handler.GetDeviceSize;
 import io.appium.uiautomator2.handler.GetElementAttribute;
 import io.appium.uiautomator2.handler.GetElementScreenshot;
 import io.appium.uiautomator2.handler.GetName;
+import io.appium.uiautomator2.handler.GetOrientation;
 import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.handler.GetRotation;
-import io.appium.uiautomator2.handler.GetOrientation;
 import io.appium.uiautomator2.handler.GetSessionDetails;
 import io.appium.uiautomator2.handler.GetSessions;
 import io.appium.uiautomator2.handler.GetSettings;
@@ -59,11 +60,11 @@ import io.appium.uiautomator2.handler.NewSession;
 import io.appium.uiautomator2.handler.OpenNotification;
 import io.appium.uiautomator2.handler.PressBack;
 import io.appium.uiautomator2.handler.PressKeyCode;
-import io.appium.uiautomator2.handler.SetOrientation;
 import io.appium.uiautomator2.handler.ScrollTo;
 import io.appium.uiautomator2.handler.ScrollToElement;
 import io.appium.uiautomator2.handler.SendKeysToElement;
 import io.appium.uiautomator2.handler.SetClipboard;
+import io.appium.uiautomator2.handler.SetOrientation;
 import io.appium.uiautomator2.handler.SetRotation;
 import io.appium.uiautomator2.handler.Source;
 import io.appium.uiautomator2.handler.Status;

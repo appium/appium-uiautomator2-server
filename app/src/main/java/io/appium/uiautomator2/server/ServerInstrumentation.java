@@ -29,7 +29,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.Configurator;
 
 import io.appium.uiautomator2.common.exceptions.SessionRemovedException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.ShutdownOnPowerDisconnect;
 import io.appium.uiautomator2.server.mjpeg.MjpegScreenshotServer;

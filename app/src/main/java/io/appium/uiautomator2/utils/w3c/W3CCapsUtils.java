@@ -16,14 +16,14 @@
 
 package io.appium.uiautomator2.utils.w3c;
 
-import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
-import io.appium.uiautomator2.utils.Logger;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
+import io.appium.uiautomator2.utils.Logger;
 
 public class W3CCapsUtils {
     public static final String FIRST_MATCH_KEY = "firstMatch";

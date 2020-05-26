@@ -18,17 +18,16 @@ package io.appium.uiautomator2.handler;
 
 import android.view.MotionEvent.PointerCoords;
 
-import io.appium.uiautomator2.model.api.touch.appium.TouchGestureModel;
-import io.appium.uiautomator2.model.api.touch.appium.TouchActionsModel;
-import io.appium.uiautomator2.model.api.touch.appium.TouchLocationModel;
+import java.util.List;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-
-import java.util.List;
+import io.appium.uiautomator2.model.api.touch.appium.TouchActionsModel;
+import io.appium.uiautomator2.model.api.touch.appium.TouchGestureModel;
+import io.appium.uiautomator2.model.api.touch.appium.TouchLocationModel;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 

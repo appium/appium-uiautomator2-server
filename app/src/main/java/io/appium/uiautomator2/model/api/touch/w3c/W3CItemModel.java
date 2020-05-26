@@ -1,9 +1,9 @@
 package io.appium.uiautomator2.model.api.touch.w3c;
 
+import java.util.List;
+
 import io.appium.uiautomator2.model.RequiredField;
 import io.appium.uiautomator2.model.api.BaseModel;
-
-import java.util.List;
 
 public class W3CItemModel extends BaseModel {
     @RequiredField

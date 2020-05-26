@@ -16,11 +16,12 @@
 
 package io.appium.uiautomator2.model;
 
+import androidx.annotation.Nullable;
+import androidx.test.uiautomator.UiSelector;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.annotation.Nullable;
-import androidx.test.uiautomator.UiSelector;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Logger;

@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import androidx.test.uiautomator.UiDevice;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +27,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import androidx.test.uiautomator.UiDevice;
 import io.appium.uiautomator2.utils.Device;
 
 import static org.mockito.Matchers.anyBoolean;

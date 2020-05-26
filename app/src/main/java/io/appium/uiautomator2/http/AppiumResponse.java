@@ -21,12 +21,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.google.gson.JsonSyntaxException;
-import io.appium.uiautomator2.model.api.server.ErrorModel;
-import io.appium.uiautomator2.model.api.server.ResponseModel;
 
 import java.nio.charset.StandardCharsets;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.model.api.server.ErrorModel;
+import io.appium.uiautomator2.model.api.server.ResponseModel;
 import io.appium.uiautomator2.utils.Logger;
 import io.netty.handler.codec.http.HttpResponseStatus;
 

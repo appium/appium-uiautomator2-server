@@ -17,12 +17,17 @@
 package io.appium.uiautomator2.handler.request;
 
 import androidx.annotation.Nullable;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.server.AppiumServlet;

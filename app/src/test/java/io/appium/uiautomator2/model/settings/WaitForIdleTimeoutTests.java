@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import androidx.test.uiautomator.Configurator;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,8 +26,6 @@ import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import androidx.test.uiautomator.Configurator;
 
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.verify;

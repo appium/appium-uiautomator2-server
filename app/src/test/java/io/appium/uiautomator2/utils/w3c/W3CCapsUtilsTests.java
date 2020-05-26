@@ -17,7 +17,7 @@
 package io.appium.uiautomator2.utils.w3c;
 
 import com.google.gson.reflect.TypeToken;
-import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +25,8 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
+
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toObject;
 import static org.junit.Assert.assertEquals;

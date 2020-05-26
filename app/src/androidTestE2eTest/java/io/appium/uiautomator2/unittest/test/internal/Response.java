@@ -16,11 +16,13 @@
 package io.appium.uiautomator2.unittest.test.internal;
 
 import androidx.annotation.Nullable;
-import io.netty.handler.codec.http.HttpResponseStatus;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class Response {
 

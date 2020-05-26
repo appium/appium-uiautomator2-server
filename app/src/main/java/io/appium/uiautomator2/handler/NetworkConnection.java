@@ -2,14 +2,13 @@
 
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.model.api.NetworkConnectionModel;
-import io.appium.uiautomator2.utils.WifiHandler;
-
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.NetworkConnectionEnum;
+import io.appium.uiautomator2.model.api.NetworkConnectionModel;
+import io.appium.uiautomator2.utils.WifiHandler;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 

@@ -23,19 +23,19 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 
 import androidx.annotation.Nullable;
-import io.appium.uiautomator2.model.api.DeviceInfoModel;
-import io.appium.uiautomator2.model.api.network.BluetoothInfoModel;
-import io.appium.uiautomator2.model.api.network.NetworkCapabilitiesModel;
-import io.appium.uiautomator2.model.api.network.NetworkInfoModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.api.DeviceInfoModel;
+import io.appium.uiautomator2.model.api.network.BluetoothInfoModel;
+import io.appium.uiautomator2.model.api.network.NetworkCapabilitiesModel;
+import io.appium.uiautomator2.model.api.network.NetworkInfoModel;
 import io.appium.uiautomator2.utils.DeviceInfoHelper;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;

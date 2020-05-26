@@ -20,9 +20,8 @@ import android.app.UiAutomation;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
 
-import java.lang.Math;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import io.appium.uiautomator2.common.exceptions.TakeScreenshotException;

@@ -21,20 +21,21 @@ import android.os.Build;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import androidx.annotation.Nullable;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+
 import com.google.gson.JsonSyntaxException;
-import io.appium.uiautomator2.model.api.ElementModel;
-import io.appium.uiautomator2.model.api.touch.w3c.W3CGestureModel;
-import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.Nullable;
-import androidx.test.uiautomator.UiObjectNotFoundException;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
+import io.appium.uiautomator2.model.api.ElementModel;
+import io.appium.uiautomator2.model.api.touch.w3c.W3CGestureModel;
+import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
 
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_DURATION_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_ORIGIN_POINTER;

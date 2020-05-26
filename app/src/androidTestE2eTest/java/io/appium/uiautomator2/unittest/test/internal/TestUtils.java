@@ -19,6 +19,10 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.Until;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,9 +30,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Iterator;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.Until;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.unittest.test.Config;
 import io.appium.uiautomator2.utils.Device;

@@ -16,10 +16,10 @@
 
 package io.appium.uiautomator2.model.api.touch.appium;
 
+import java.util.List;
+
 import io.appium.uiautomator2.model.RequiredField;
 import io.appium.uiautomator2.model.api.BaseModel;
-
-import java.util.List;
 
 public class TouchActionsModel extends BaseModel {
     @RequiredField

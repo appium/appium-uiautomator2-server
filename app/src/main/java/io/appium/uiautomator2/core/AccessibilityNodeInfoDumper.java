@@ -24,7 +24,8 @@ import android.view.Display;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import io.appium.uiautomator2.utils.StringHelpers;
+import androidx.annotation.Nullable;
+
 import org.apache.commons.io.IOUtils;
 import org.jdom2.Document;
 import org.jdom2.filter.Filters;
@@ -40,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Semaphore;
 
-import androidx.annotation.Nullable;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
@@ -50,6 +50,7 @@ import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
+import io.appium.uiautomator2.utils.StringHelpers;
 
 import static io.appium.uiautomator2.model.UiAutomationElement.rebuildForNewRoots;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;

@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.handler.request.BaseRequestHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -25,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import io.appium.uiautomator2.handler.request.BaseRequestHandler;
 import io.appium.uiautomator2.http.IHttpRequest;
 
 import static org.junit.Assert.assertEquals;

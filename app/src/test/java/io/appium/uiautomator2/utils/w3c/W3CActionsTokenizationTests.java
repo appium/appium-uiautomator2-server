@@ -20,12 +20,14 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.google.gson.reflect.TypeToken;
-import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Test;
 
 import java.util.List;
+
+import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toObject;
 import static org.hamcrest.CoreMatchers.equalTo;

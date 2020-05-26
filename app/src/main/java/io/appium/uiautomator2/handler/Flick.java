@@ -16,10 +16,6 @@
 
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.model.api.ElementModel;
-import io.appium.uiautomator2.model.api.FlickByOffsetModel;
-import io.appium.uiautomator2.model.api.FlickBySpeedModel;
-
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -29,9 +25,12 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.model.Point;
+import io.appium.uiautomator2.model.Session;
+import io.appium.uiautomator2.model.api.ElementModel;
+import io.appium.uiautomator2.model.api.FlickByOffsetModel;
+import io.appium.uiautomator2.model.api.FlickBySpeedModel;
+import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;

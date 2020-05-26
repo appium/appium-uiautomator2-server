@@ -16,19 +16,18 @@
 
 package io.appium.uiautomator2.handler;
 
+import java.util.Map;
+
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.common.exceptions.SessionNotCreatedException;
-import io.appium.uiautomator2.model.api.SessionModel;
-import io.appium.uiautomator2.utils.w3c.W3CCapsUtils;
-
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.NotificationListener;
+import io.appium.uiautomator2.model.api.SessionModel;
 import io.appium.uiautomator2.utils.Logger;
-
-import java.util.Map;
+import io.appium.uiautomator2.utils.w3c.W3CCapsUtils;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 

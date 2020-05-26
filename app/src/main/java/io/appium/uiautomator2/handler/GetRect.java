@@ -16,8 +16,6 @@
 
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.model.api.ElementRectModel;
-
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -27,6 +25,7 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
+import io.appium.uiautomator2.model.api.ElementRectModel;
 
 /**
  * This handler is used to get the boundaries of elements that support it.

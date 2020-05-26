@@ -16,13 +16,13 @@
 
 package io.appium.uiautomator2.unittest.test;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
 import org.json.JSONException;
 import org.junit.Test;
 
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.unittest.test.internal.BaseTest;
 import io.appium.uiautomator2.unittest.test.internal.Response;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.acceptAlert;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.dismissAlert;

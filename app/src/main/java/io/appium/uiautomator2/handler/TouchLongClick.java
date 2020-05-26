@@ -19,6 +19,7 @@ package io.appium.uiautomator2.handler;
 import android.os.SystemClock;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
+
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.InteractionController;
 import io.appium.uiautomator2.utils.Logger;
