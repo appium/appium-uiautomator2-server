@@ -79,12 +79,9 @@ public class CustomUiDevice {
             this.METHOD_FIND_MATCHES = method(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
             this.uiObject2Constructor = UiObject2.class.getDeclaredConstructors()[0];
             this.uiObject2Constructor.setAccessible(true);
-        } catch (Error error) {
-            Logger.error("ERROR", "error", error);
-            throw error;
-        } catch (UiAutomator2Exception error) {
-            Logger.error("ERROR", "error", error);
-            throw new Error(error);
+        } catch (Exception e) {
+            Logger.error("Cannot create CustomUiDevice instance", e);
+            throw e;
         }
     }
 

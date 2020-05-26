@@ -41,8 +41,9 @@ public enum NetworkConnectionEnum {
                 return "DATA Only";
             case 6:
                 return "All Network ON";
+            default:
+                return "UNKNOWN(" + this.getNetworkTypeValue() + ")";
         }
-        return "UNKNOWN(" + this.getNetworkTypeValue() + ")";
     }
 
 }

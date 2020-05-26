@@ -46,11 +46,12 @@ public enum ScreenOrientation {
                 return ROTATION_180;
             case 270:
                 return ROTATION_270;
+            default:
+                throw new IllegalArgumentException(
+                        String.format("Orientation value is not supported for %s degrees. " +
+                                "Only 0, 90, 180 and 270 degrees could be translated into " +
+                                "a valid screen orientation", degrees));
         }
-        throw new IllegalArgumentException(
-                String.format("Orientation value is not supported for %s degrees. " +
-                        "Only 0, 90, 180 and 270 degrees could be translated into " +
-                        "a valid screen orientation", degrees));
     }
 
     public static ScreenOrientation ofString(String abbr) {
@@ -59,11 +60,12 @@ public enum ScreenOrientation {
                 return ROTATION_270;
             case PORTRAIT:
                 return ROTATION_0;
+            default:
+                throw new IllegalArgumentException(
+                        String.format("Orientation value '%s' is not supported. " +
+                                "Only '%s' and '%s' values could be translated into " +
+                                "a valid screen orientation", abbr, LANDSCAPE, PORTRAIT));
         }
-        throw new IllegalArgumentException(
-                String.format("Orientation value '%s' is not supported. " +
-                        "Only '%s' and '%s' values could be translated into " +
-                        "a valid screen orientation", abbr, LANDSCAPE, PORTRAIT));
     }
 
     @Override

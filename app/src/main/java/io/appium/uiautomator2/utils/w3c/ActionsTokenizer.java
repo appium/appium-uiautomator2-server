@@ -106,8 +106,9 @@ public class ActionsTokenizer {
                     return MotionEvent.BUTTON_STYLUS_SECONDARY;
                 }
                 return MotionEvent.BUTTON_SECONDARY;
+            default:
+                return button;
         }
-        return button;
     }
 
 
@@ -160,19 +161,17 @@ public class ActionsTokenizer {
     }
 
     private static int actionToToolType(final W3CItemModel item) {
-        if (item.parameters != null) {
-            if (item.parameters.pointerType != null) {
-                switch (item.parameters.pointerType) {
-                    case POINTER_TYPE_MOUSE:
-                        return MotionEvent.TOOL_TYPE_MOUSE;
-                    case POINTER_TYPE_PEN:
-                        return MotionEvent.TOOL_TYPE_STYLUS;
-                    case POINTER_TYPE_TOUCH:
-                        return MotionEvent.TOOL_TYPE_FINGER;
-                    default:
-                        // use default
-                        break;
-                }
+        if (item.parameters != null && item.parameters.pointerType != null) {
+            switch (item.parameters.pointerType) {
+                case POINTER_TYPE_MOUSE:
+                    return MotionEvent.TOOL_TYPE_MOUSE;
+                case POINTER_TYPE_PEN:
+                    return MotionEvent.TOOL_TYPE_STYLUS;
+                case POINTER_TYPE_TOUCH:
+                    return MotionEvent.TOOL_TYPE_FINGER;
+                default:
+                    // use default
+                    break;
             }
         }
         return MotionEvent.TOOL_TYPE_FINGER;
@@ -499,7 +498,7 @@ public class ActionsTokenizer {
      *
      * @param preprocessedItems a valid W3C actions chain
      * @return tokenized chain of events
-     * @throws JsonSyntaxException if the given json has invalid format
+     * @throws JsonSyntaxException   if the given json has invalid format
      * @throws ActionsParseException if the given actions chain cannot be tokenized properly
      */
     public ActionTokens tokenize(List<W3CItemModel> preprocessedItems) {

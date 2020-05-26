@@ -122,21 +122,19 @@ public class ActionsPreprocessor {
                         ACTION_TYPES, ACTION_KEY_TYPE, actionType, actionId));
             }
 
-            if (actionItem.parameters != null) {
-                if (actionItem.parameters.pointerType != null) {
-                    if (!POINTER_TYPES.contains(actionItem.parameters.pointerType)) {
-                        throw new ActionsParseException(String.format(
-                                "Only %s values are supported for %s key. " +
-                                        "'%s' is passed instead for action '%s'",
-                                POINTER_TYPES, PARAMETERS_KEY_POINTER_TYPE,
-                                actionItem.parameters.pointerType, actionId));
-                    }
-                    pointerTypes.add(actionItem.parameters.pointerType);
-                    if (!actionType.equals(ACTION_TYPE_POINTER)) {
-                        throw new ActionsParseException(String.format(
-                                "%s parameter is only supported for action type '%s' in '%s' action",
-                                PARAMETERS_KEY_POINTER_TYPE, ACTION_TYPE_POINTER, actionId));
-                    }
+            if (actionItem.parameters != null && actionItem.parameters.pointerType != null) {
+                if (!POINTER_TYPES.contains(actionItem.parameters.pointerType)) {
+                    throw new ActionsParseException(String.format(
+                            "Only %s values are supported for %s key. " +
+                                    "'%s' is passed instead for action '%s'",
+                            POINTER_TYPES, PARAMETERS_KEY_POINTER_TYPE,
+                            actionItem.parameters.pointerType, actionId));
+                }
+                pointerTypes.add(actionItem.parameters.pointerType);
+                if (!actionType.equals(ACTION_TYPE_POINTER)) {
+                    throw new ActionsParseException(String.format(
+                            "%s parameter is only supported for action type '%s' in '%s' action",
+                            PARAMETERS_KEY_POINTER_TYPE, ACTION_TYPE_POINTER, actionId));
                 }
             }
 
