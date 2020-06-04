@@ -9,7 +9,6 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
-
     private final List<io.appium.uiautomator2.http.IHttpServlet> handlers;
 
     public ServerInitializer(List<io.appium.uiautomator2.http.IHttpServlet> handlers) {
@@ -19,6 +18,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     public void initChannel(SocketChannel ch) {
         ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast("idleStateHandler", new KeepAliveStateHandler());
         pipeline.addLast("codec", new HttpServerCodec());
         pipeline.addLast("aggregator", new HttpObjectAggregator(65536));
         pipeline.addLast("io/appium/uiautomator2/handler", new io.appium.uiautomator2.http.ServerHandler(handlers));
