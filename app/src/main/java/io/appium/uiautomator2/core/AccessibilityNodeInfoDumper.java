@@ -83,10 +83,6 @@ public class AccessibilityNodeInfoDumper {
         this(null, null);
     }
 
-    public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root) {
-        this(root, null);
-    }
-
     public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root,
                                        @Nullable Set<Attribute> includedAttributes) {
         this.root = root;
@@ -226,6 +222,7 @@ public class AccessibilityNodeInfoDumper {
             final NodeInfoList matchedNodes = new NodeInfoList();
             final long timeStarted = SystemClock.uptimeMillis();
             for (org.jdom2.Attribute uiElementId : expr.evaluate(document)) {
+                @SuppressWarnings("rawtypes")
                 final UiElement uiElement = uiElementsMapping.get(uiElementId.getIntValue());
                 if (uiElement == null || uiElement.getNode() == null) {
                     continue;
