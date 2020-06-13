@@ -39,6 +39,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
@@ -74,15 +75,22 @@ public class AccessibilityNodeInfoDumper {
     private final AccessibilityNodeInfo root;
     @Nullable
     private SparseArray<UiElement<?, ?>> uiElementsMapping = null;
+    private final Set<Attribute> includedAttributes;
     private boolean shouldAddDisplayInfo;
     private XmlSerializer serializer;
 
     public AccessibilityNodeInfoDumper() {
-        this(null);
+        this(null, null);
     }
 
     public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root) {
+        this(root, null);
+    }
+
+    public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root,
+                                       @Nullable Set<Attribute> includedAttributes) {
         this.root = root;
+        this.includedAttributes = includedAttributes;
     }
 
     private void addDisplayInfo() throws IOException {
@@ -126,7 +134,8 @@ public class AccessibilityNodeInfoDumper {
         serializer.startTag(NAMESPACE, nodeName);
 
         for (Attribute attr : uiElement.attributeKeys()) {
-            if (!attr.isExposableToXml()) {
+            if (!attr.isExposableToXml()
+                    || includedAttributes != null && !includedAttributes.contains(attr)) {
                 continue;
             }
             Object value = uiElement.get(attr);

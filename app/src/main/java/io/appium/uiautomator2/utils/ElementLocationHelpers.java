@@ -16,11 +16,15 @@
 
 package io.appium.uiautomator2.utils;
 
+import android.view.accessibility.AccessibilityNodeInfo;
+
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -82,8 +86,28 @@ public class ElementLocationHelpers {
         return locator;
     }
 
-    public static NodeInfoList getXPathNodeMatch(final String expression, @Nullable AndroidElement element, boolean multiple) {
-        return new AccessibilityNodeInfoDumper(element == null ? null : fromUiObject(element.getUiObject()))
+    @Nullable
+    private static Set<Attribute> extractQueriedAttributes(String xpathExpression) {
+        if (xpathExpression.contains("@*")) {
+            return null;
+        }
+
+        Set<Attribute> result = new HashSet<>();
+        for (Attribute attr : Attribute.values()) {
+            if (xpathExpression.contains("@" + attr.toString())) {
+                result.add(attr);
+            }
+        }
+        return result;
+    }
+
+    public static NodeInfoList getXPathNodeMatch(
+            final String expression, @Nullable AndroidElement element, boolean multiple) {
+        AccessibilityNodeInfo root = element == null ? null : fromUiObject(element.getUiObject());
+        // We are trying to be smart here and only include the actually queried
+        // attributes into the source XML document. This allows to improve performance a lot
+        // time while building this document.
+        return new AccessibilityNodeInfoDumper(root, extractQueriedAttributes(expression))
                 .findNodes(expression, multiple);
     }
 
