@@ -75,6 +75,7 @@ public class AccessibilityNodeInfoDumper {
     private final AccessibilityNodeInfo root;
     @Nullable
     private SparseArray<UiElement<?, ?>> uiElementsMapping = null;
+    @Nullable
     private final Set<Attribute> includedAttributes;
     private boolean shouldAddDisplayInfo;
     private XmlSerializer serializer;
@@ -222,8 +223,7 @@ public class AccessibilityNodeInfoDumper {
             final NodeInfoList matchedNodes = new NodeInfoList();
             final long timeStarted = SystemClock.uptimeMillis();
             for (org.jdom2.Attribute uiElementId : expr.evaluate(document)) {
-                @SuppressWarnings("rawtypes")
-                final UiElement uiElement = uiElementsMapping.get(uiElementId.getIntValue());
+                @SuppressWarnings("rawtypes") final UiElement uiElement = uiElementsMapping.get(uiElementId.getIntValue());
                 if (uiElement == null || uiElement.getNode() == null) {
                     continue;
                 }
