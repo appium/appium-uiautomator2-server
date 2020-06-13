@@ -105,8 +105,8 @@ public class ElementLocationHelpers {
             final String expression, @Nullable AndroidElement element, boolean multiple) {
         AccessibilityNodeInfo root = element == null ? null : fromUiObject(element.getUiObject());
         // We are trying to be smart here and only include the actually queried
-        // attributes into the source XML document. This allows to improve performance a lot
-        // time while building this document.
+        // attributes into the source XML document. This allows to improve the performance a lot
+        // while building this document.
         return new AccessibilityNodeInfoDumper(root, extractQueriedAttributes(expression))
                 .findNodes(expression, multiple);
     }
