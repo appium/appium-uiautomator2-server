@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Attribute;
@@ -42,6 +41,7 @@ import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
 
+import static io.appium.uiautomator2.core.AccessibilityNodeInfoGetter.fromUiObject;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
@@ -76,7 +76,7 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
-    public String getText() throws UiObjectNotFoundException {
+    public String getText() {
         // By convention the text is replaced with an empty string if it equals to null
         return ElementHelpers.getText(element);
     }
@@ -139,21 +139,21 @@ public class UiObjectElement extends BaseElement {
                 result = element.isSelected();
                 break;
             case DISPLAYED:
-                result = element.exists() && AccessibilityNodeInfoHelpers.isVisible(AccessibilityNodeInfoGetter.fromUiObject(element));
+                result = element.exists() && AccessibilityNodeInfoHelpers.isVisible(fromUiObject(element));
                 break;
             case PASSWORD:
-                result = AccessibilityNodeInfoHelpers.isPassword(AccessibilityNodeInfoGetter.fromUiObject(element));
+                result = AccessibilityNodeInfoHelpers.isPassword(fromUiObject(element));
                 break;
             case BOUNDS:
-                result = element.getVisibleBounds().toShortString();
+                result = AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element)).toShortString();
                 break;
             case PACKAGE: {
-                result = AccessibilityNodeInfoHelpers.getPackageName(AccessibilityNodeInfoGetter.fromUiObject(element));
+                result = AccessibilityNodeInfoHelpers.getPackageName(fromUiObject(element));
                 break;
             }
             case SELECTION_END:
             case SELECTION_START:
-                Range<Integer> selectionRange = AccessibilityNodeInfoHelpers.getSelectionRange(AccessibilityNodeInfoGetter.fromUiObject(element));
+                Range<Integer> selectionRange = AccessibilityNodeInfoHelpers.getSelectionRange(fromUiObject(element));
                 result = selectionRange == null ? null
                         : (dstAttribute == Attribute.SELECTION_END ? selectionRange.getUpper() : selectionRange.getLower());
                 break;
@@ -210,7 +210,7 @@ public class UiObjectElement extends BaseElement {
              * as an alternative creating UiObject2 with UiObject's AccessibilityNodeInfo
              * and finding the child element on UiObject2.
              */
-            AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+            AccessibilityNodeInfo nodeInfo = fromUiObject(element);
             Object uiObject2 = CustomUiDevice.getInstance().findObject(nodeInfo);
             return (uiObject2 instanceof UiObject2)
                     ? ((UiObject2) uiObject2).findObject((BySelector) selector) : null;
@@ -226,7 +226,7 @@ public class UiObjectElement extends BaseElement {
              * as an alternative creating UiObject2 with UiObject's AccessibilityNodeInfo
              * and finding the child elements on UiObject2.
              */
-            AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+            AccessibilityNodeInfo nodeInfo = fromUiObject(element);
             UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo);
             if (uiObject2 == null) {
                 throw new ElementNotFoundException();

@@ -19,7 +19,7 @@ package io.appium.uiautomator2.model.settings;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.utils.Logger;
 
-public abstract class AbstractSetting<T> implements ISetting {
+public abstract class AbstractSetting<T> implements ISetting<T> {
 
     private final Class<T> valueType;
     private final String settingName;

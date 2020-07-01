@@ -86,7 +86,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
             attributes.put(Attribute.SELECTION_END, selectionRange.getUpper());
         }
         put(attributes, Attribute.SELECTED, node.isSelected());
-        put(attributes, Attribute.BOUNDS, AccessibilityNodeInfoHelpers.getVisibleBounds(node).toShortString());
+        put(attributes, Attribute.BOUNDS, AccessibilityNodeInfoHelpers.getBounds(node).toShortString());
         put(attributes, Attribute.DISPLAYED, node.isVisibleToUser());
         // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
         this.attributes = Collections.unmodifiableMap(attributes);

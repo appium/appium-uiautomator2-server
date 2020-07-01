@@ -33,6 +33,7 @@ public enum Settings {
     WAIT_FOR_SELECTOR_TIMEOUT(new WaitForSelectorTimeout()),
     NORMALIZE_TAG_NAMES(new NormalizeTagNames()),
     SHUTDOWN_ON_POWER_DISCONNECT(new ShutdownOnPowerDisconnect()),
+    SIMPLE_BOUNDS_CALCULATION(new SimpleBoundsCalculation()),
     TRACK_SCROLL_EVENTS(new TrackScrollEvents()),
     WAKE_LOCK_TIMEOUT(new WakeLockTimeout()),
     SERVER_PORT(new ServerPort()),
@@ -42,13 +43,13 @@ public enum Settings {
     MJPEG_SERVER_SCREENSHOT_QUALITY(new MjpegServerScreenshotQuality()),
     MJPEG_BILINEAR_FILTERING(new MjpegBilinearFiltering());
 
-    private final ISetting setting;
+    private final ISetting<?> setting;
 
-    Settings(ISetting setting) {
+    Settings(ISetting<?> setting) {
         this.setting = setting;
     }
 
-    public ISetting getSetting() {
+    public ISetting<?> getSetting() {
         return setting;
     }
 

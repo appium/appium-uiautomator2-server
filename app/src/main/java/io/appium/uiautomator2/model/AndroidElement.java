@@ -37,7 +37,7 @@ public interface AndroidElement {
 
     boolean longClick() throws UiObjectNotFoundException;
 
-    String getText() throws UiObjectNotFoundException;
+    String getText();
 
     String getName() throws UiObjectNotFoundException;
 

@@ -30,7 +30,6 @@ import androidx.test.uiautomator.UiSelector;
 import java.util.List;
 import java.util.UUID;
 
-import io.appium.uiautomator2.core.AccessibilityNodeInfoGetter;
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Attribute;
@@ -38,6 +37,7 @@ import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
 
+import static io.appium.uiautomator2.core.AccessibilityNodeInfoGetter.fromUiObject;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
@@ -71,7 +71,7 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
-    public String getText() throws UiObjectNotFoundException {
+    public String getText() {
         // By convention the text is replaced with an empty string if it equals to null
         return ElementHelpers.getText(element);
     }
@@ -134,21 +134,22 @@ public class UiObject2Element extends BaseElement {
                 result = element.isSelected();
                 break;
             case DISPLAYED:
-                result = AccessibilityNodeInfoHelpers.isVisible(AccessibilityNodeInfoGetter.fromUiObject(element));
+                result = AccessibilityNodeInfoHelpers.isVisible(fromUiObject(element));
                 break;
             case PASSWORD:
-                result = AccessibilityNodeInfoHelpers.isPassword(AccessibilityNodeInfoGetter.fromUiObject(element));
+                result = AccessibilityNodeInfoHelpers.isPassword(fromUiObject(element));
                 break;
             case BOUNDS:
-                result = element.getVisibleBounds().toShortString();
+                result = AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element)).toShortString();
                 break;
             case PACKAGE:
-                result = AccessibilityNodeInfoHelpers.getPackageName(AccessibilityNodeInfoGetter.fromUiObject(element));
+                result = AccessibilityNodeInfoHelpers.getPackageName(fromUiObject(element));
                 break;
             case SELECTION_END:
             case SELECTION_START:
-                Range<Integer> selectionRange = AccessibilityNodeInfoHelpers.getSelectionRange(AccessibilityNodeInfoGetter.fromUiObject(element));
-                result = selectionRange == null ? null
+                Range<Integer> selectionRange = AccessibilityNodeInfoHelpers.getSelectionRange(fromUiObject(element));
+                result = selectionRange == null
+                        ? null
                         : (dstAttribute == Attribute.SELECTION_END ? selectionRange.getUpper() : selectionRange.getLower());
                 break;
             default:
@@ -204,14 +205,14 @@ public class UiObject2Element extends BaseElement {
              * as an alternative creating UiObject with UiObject2's AccessibilityNodeInfo
              * and finding the child element on UiObject.
              */
-            AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+            AccessibilityNodeInfo nodeInfo = fromUiObject(element);
 
             UiSelector uiSelector = new UiSelector();
             CustomUiSelector customUiSelector = new CustomUiSelector(uiSelector);
             uiSelector = customUiSelector.getUiSelector(nodeInfo);
             Object uiObject = CustomUiDevice.getInstance().findObject(uiSelector);
             if (uiObject instanceof UiObject) {
-                AccessibilityNodeInfoGetter.fromUiObject(element);
+                fromUiObject(element);
                 return ((UiObject) uiObject).getChild((UiSelector) selector);
             }
             return null;
@@ -227,7 +228,7 @@ public class UiObject2Element extends BaseElement {
              * as an alternative creating UiObject with UiObject2's AccessibilityNodeInfo
              * and finding the child elements on UiObject.
              */
-            AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
+            AccessibilityNodeInfo nodeInfo = fromUiObject(element);
 
             UiSelector uiSelector = new UiSelector();
             CustomUiSelector customUiSelector = new CustomUiSelector(uiSelector);
