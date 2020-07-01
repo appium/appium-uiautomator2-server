@@ -95,14 +95,14 @@ public class AccessibilityNodeInfoHelpers {
         SimpleBoundsCalculation sbcSetting =
                 (SimpleBoundsCalculation) Settings.SIMPLE_BOUNDS_CALCULATION.getSetting();
         if (sbcSetting.getValue()) {
-            UiDevice uiDevice = getUiDevice();
-            Rect screenRect = new Rect(0, 0, uiDevice.getDisplayWidth(), uiDevice.getDisplayHeight());
-            return getBounds(node, screenRect, 0);
+            Rect rect = new Rect();
+            node.getBoundsInScreen(rect);
+            return rect;
         }
 
-        Rect rect = new Rect();
-        node.getBoundsInScreen(rect);
-        return rect;
+        UiDevice uiDevice = getUiDevice();
+        Rect screenRect = new Rect(0, 0, uiDevice.getDisplayWidth(), uiDevice.getDisplayHeight());
+        return getBounds(node, screenRect, 0);
     }
 
     /**
@@ -133,14 +133,15 @@ public class AccessibilityNodeInfoHelpers {
 
         // Find the visible bounds of our first scrollable ancestor
         AccessibilityNodeInfo ancestor;
+        int currentDepth = depth;
         for (ancestor = node.getParent();
-             ancestor != null && ++depth < MAX_DEPTH;
+             ancestor != null && ++currentDepth < MAX_DEPTH;
              ancestor = ancestor.getParent()) {
             // If this ancestor is scrollable
             if (ancestor.isScrollable()) {
                 // Trim any portion of the bounds that are hidden by the non-visible portion of our
                 // ancestor
-                Rect ancestorRect = getBounds(ancestor, displayRect, depth);
+                Rect ancestorRect = getBounds(ancestor, displayRect, currentDepth);
                 ret.intersect(ancestorRect);
                 break;
             }
