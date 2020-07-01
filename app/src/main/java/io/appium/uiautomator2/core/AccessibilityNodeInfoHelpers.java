@@ -131,15 +131,14 @@ public class AccessibilityNodeInfoHelpers {
         AccessibilityNodeInfo ancestor;
         int currentDepth = depth;
         for (ancestor = node.getParent(); ancestor != null && ++currentDepth < MAX_DEPTH; ancestor = ancestor.getParent()) {
-            if (!ancestor.isScrollable()) {
-                continue;
-            }
             // If this ancestor is scrollable
-            // Trim any portion of the bounds that are hidden by the non-visible portion of our
-            // ancestor
-            Rect ancestorRect = getBounds(ancestor, displayRect, currentDepth);
-            ret.intersect(ancestorRect);
-            break;
+            if (ancestor.isScrollable()) {
+                // Trim any portion of the bounds that are hidden by the non-visible portion of our
+                // ancestor
+                Rect ancestorRect = getBounds(ancestor, displayRect, currentDepth);
+                ret.intersect(ancestorRect);
+                break;
+            }
         }
 
         return ret;
