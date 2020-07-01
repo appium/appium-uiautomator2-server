@@ -84,18 +84,14 @@ public class AccessibilityNodeInfoHelpers {
     /**
      * Returns the node's bounds clipped to the size of the display
      *
-     * @return null if node is null, else a Rect containing visible bounds
+     * @return Empty Rect if node is null, else a Rect containing visible bounds
      */
-    @SuppressLint("CheckResult")
     public static Rect getBounds(@Nullable AccessibilityNodeInfo node) {
+        Rect rect = new Rect();
         if (node == null) {
-            return null;
+            return rect;
         }
-
-        SimpleBoundsCalculation sbcSetting =
-                (SimpleBoundsCalculation) Settings.SIMPLE_BOUNDS_CALCULATION.getSetting();
-        if (sbcSetting.getValue()) {
-            Rect rect = new Rect();
+        if (((SimpleBoundsCalculation) Settings.SIMPLE_BOUNDS_CALCULATION.getSetting()).getValue()) {
             node.getBoundsInScreen(rect);
             return rect;
         }
@@ -109,16 +105,16 @@ public class AccessibilityNodeInfoHelpers {
      * Returns the node's bounds clipped to the size of the display, limited by the MAX_DEPTH
      * The implementation is borrowed from `getVisibleBounds` method of `UiObject2` class
      *
-     * @return null if node is null, else a Rect containing visible bounds
+     * @return Empty rect if node is null, else a Rect containing visible bounds
      */
     @SuppressLint("CheckResult")
     private static Rect getBounds(@Nullable AccessibilityNodeInfo node, Rect displayRect, int depth) {
+        Rect ret = new Rect();
         if (node == null) {
-            return null;
+            return ret;
         }
 
         // Get the object bounds in screen coordinates
-        Rect ret = new Rect();
         node.getBoundsInScreen(ret);
 
         // Trim any portion of the bounds that are not on the screen
@@ -134,17 +130,16 @@ public class AccessibilityNodeInfoHelpers {
         // Find the visible bounds of our first scrollable ancestor
         AccessibilityNodeInfo ancestor;
         int currentDepth = depth;
-        for (ancestor = node.getParent();
-             ancestor != null && ++currentDepth < MAX_DEPTH;
-             ancestor = ancestor.getParent()) {
-            // If this ancestor is scrollable
-            if (ancestor.isScrollable()) {
-                // Trim any portion of the bounds that are hidden by the non-visible portion of our
-                // ancestor
-                Rect ancestorRect = getBounds(ancestor, displayRect, currentDepth);
-                ret.intersect(ancestorRect);
-                break;
+        for (ancestor = node.getParent(); ancestor != null && ++currentDepth < MAX_DEPTH; ancestor = ancestor.getParent()) {
+            if (!ancestor.isScrollable()) {
+                continue;
             }
+            // If this ancestor is scrollable
+            // Trim any portion of the bounds that are hidden by the non-visible portion of our
+            // ancestor
+            Rect ancestorRect = getBounds(ancestor, displayRect, currentDepth);
+            ret.intersect(ancestorRect);
+            break;
         }
 
         return ret;

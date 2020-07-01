@@ -41,7 +41,6 @@ import static io.appium.uiautomator2.core.AccessibilityNodeInfoGetter.fromUiObje
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
-import static java.util.Objects.requireNonNull;
 
 public class UiObject2Element extends BaseElement {
 
@@ -141,7 +140,7 @@ public class UiObject2Element extends BaseElement {
                 result = AccessibilityNodeInfoHelpers.isPassword(fromUiObject(element));
                 break;
             case BOUNDS:
-                result = requireNonNull(AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element))).toShortString();
+                result = AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element)).toShortString();
                 break;
             case PACKAGE:
                 result = AccessibilityNodeInfoHelpers.getPackageName(fromUiObject(element));
