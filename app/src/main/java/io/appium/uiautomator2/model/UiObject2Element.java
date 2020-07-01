@@ -41,6 +41,7 @@ import static io.appium.uiautomator2.core.AccessibilityNodeInfoGetter.fromUiObje
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
+import static java.util.Objects.requireNonNull;
 
 public class UiObject2Element extends BaseElement {
 
@@ -140,7 +141,7 @@ public class UiObject2Element extends BaseElement {
                 result = AccessibilityNodeInfoHelpers.isPassword(fromUiObject(element));
                 break;
             case BOUNDS:
-                result = AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element)).toShortString();
+                result = requireNonNull(AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element))).toShortString();
                 break;
             case PACKAGE:
                 result = AccessibilityNodeInfoHelpers.getPackageName(fromUiObject(element));
@@ -206,16 +207,13 @@ public class UiObject2Element extends BaseElement {
              * and finding the child element on UiObject.
              */
             AccessibilityNodeInfo nodeInfo = fromUiObject(element);
-
             UiSelector uiSelector = new UiSelector();
             CustomUiSelector customUiSelector = new CustomUiSelector(uiSelector);
             uiSelector = customUiSelector.getUiSelector(nodeInfo);
             Object uiObject = CustomUiDevice.getInstance().findObject(uiSelector);
-            if (uiObject instanceof UiObject) {
-                fromUiObject(element);
-                return ((UiObject) uiObject).getChild((UiSelector) selector);
-            }
-            return null;
+            return uiObject instanceof UiObject
+                ? ((UiObject) uiObject).getChild((UiSelector) selector)
+                : null;
         }
         return element.findObject((BySelector) selector);
     }

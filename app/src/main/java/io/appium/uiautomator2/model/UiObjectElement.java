@@ -46,6 +46,7 @@ import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeExc
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
+import static java.util.Objects.requireNonNull;
 
 public class UiObjectElement extends BaseElement {
 
@@ -145,7 +146,7 @@ public class UiObjectElement extends BaseElement {
                 result = AccessibilityNodeInfoHelpers.isPassword(fromUiObject(element));
                 break;
             case BOUNDS:
-                result = AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element)).toShortString();
+                result = requireNonNull(AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element))).toShortString();
                 break;
             case PACKAGE: {
                 result = AccessibilityNodeInfoHelpers.getPackageName(fromUiObject(element));
@@ -213,7 +214,8 @@ public class UiObjectElement extends BaseElement {
             AccessibilityNodeInfo nodeInfo = fromUiObject(element);
             Object uiObject2 = CustomUiDevice.getInstance().findObject(nodeInfo);
             return (uiObject2 instanceof UiObject2)
-                    ? ((UiObject2) uiObject2).findObject((BySelector) selector) : null;
+                    ? ((UiObject2) uiObject2).findObject((BySelector) selector)
+                    : null;
         }
         return element.getChild((UiSelector) selector);
     }
