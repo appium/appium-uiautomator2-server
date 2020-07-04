@@ -60,19 +60,15 @@ public class FindElement extends SafeRequestHandler {
         final String method = model.strategy;
         final String selector = model.selector;
         final String contextId = model.context;
-
-        Logger.info(String.format("Find element command using '%s' with selector '%s'.", method, selector));
+        if (contextId == null) {
+            Logger.info(String.format("method: '%s', selector: '%s'", method, selector));
+        } else {
+            Logger.info(String.format("method: '%s', selector: '%s', contextId: '%s'",
+                    method, selector, contextId));
+        }
 
         final By by = new NativeAndroidBySelector().pickFrom(method, selector);
-
-        final Object element;
-        try {
-            element = isBlank(contextId)
-                    ? this.findElement(by)
-                    : this.findElement(by, contextId);
-        } catch (ClassNotFoundException e) {
-            throw new UiAutomator2Exception(e);
-        }
+        final Object element = isBlank(contextId) ? this.findElement(by) : this.findElement(by, contextId);
         if (element == null) {
             throw new ElementNotFoundException();
         }
@@ -112,8 +108,7 @@ public class FindElement extends SafeRequestHandler {
     }
 
     @Nullable
-    private Object findElement(By by, String contextId) throws ClassNotFoundException,
-            UiAutomator2Exception, UiObjectNotFoundException {
+    private Object findElement(By by, String contextId) throws UiAutomator2Exception, UiObjectNotFoundException {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         AndroidElement element = session.getKnownElements().getElementFromCache(contextId);
         if (element == null) {

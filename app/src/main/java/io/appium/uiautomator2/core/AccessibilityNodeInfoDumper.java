@@ -45,6 +45,7 @@ import java.util.concurrent.Semaphore;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
+import io.appium.uiautomator2.model.UiAutomationElement;
 import io.appium.uiautomator2.model.UiElement;
 import io.appium.uiautomator2.model.settings.NormalizeTagNames;
 import io.appium.uiautomator2.model.settings.Settings;
@@ -174,7 +175,7 @@ public class AccessibilityNodeInfoDumper {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             final UiElement<?, ?> xpathRoot = root == null
                     ? rebuildForNewRoots(getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage())
-                    : rebuildForNewRoots(new AccessibilityNodeInfo[]{root});
+                    : new UiAutomationElement(root, 0);
             serializeUiElement(xpathRoot, 0);
             serializer.endDocument();
             Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",
@@ -223,7 +224,7 @@ public class AccessibilityNodeInfoDumper {
             final NodeInfoList matchedNodes = new NodeInfoList();
             final long timeStarted = SystemClock.uptimeMillis();
             for (org.jdom2.Attribute uiElementId : expr.evaluate(document)) {
-                @SuppressWarnings("rawtypes") final UiElement uiElement = uiElementsMapping.get(uiElementId.getIntValue());
+                UiElement<?, ?> uiElement = uiElementsMapping.get(uiElementId.getIntValue());
                 if (uiElement == null || uiElement.getNode() == null) {
                     continue;
                 }
@@ -233,7 +234,7 @@ public class AccessibilityNodeInfoDumper {
                     break;
                 }
             }
-            Logger.debug(String.format("Took %sms to retrieve %s matches for '%s' XPath query",
+            Logger.info(String.format("Took %sms to retrieve %s matches for '%s' XPath query",
                     SystemClock.uptimeMillis() - timeStarted, matchedNodes.size(), xpathSelector));
             return matchedNodes;
         } catch (JDOMParseException e) {

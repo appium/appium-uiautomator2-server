@@ -380,6 +380,18 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     @Test
+    public void findElementWithContextId10() {
+        //parent element - By.androidUiAutomator (UiObject)
+        Response response = findElement(By.androidUiAutomator("new UiSelector().resourceId" +
+                "(\"android:id/list\")"));
+        String contextId = response.getElementId();
+
+        //child element - relative By.xpath
+        response = findElement(By.xpath("./*"), contextId);
+        assertTrue(response.isSuccessful());
+    }
+
+    @Test
     public void findElementWithAttributes() throws JSONException {
         scrollToText("Views");
         Response response = findElement(By.accessibilityId("Views"));

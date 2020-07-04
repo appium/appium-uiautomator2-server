@@ -68,16 +68,18 @@ public class FindElements extends SafeRequestHandler {
         final String method = model.strategy;
         final String selector = model.selector;
         final String contextId = model.context;
-
-        Logger.info(String.format("Find elements command using '%s' with selector '%s'.", method, selector));
+        if (contextId == null) {
+            Logger.info(String.format("method: '%s', selector: '%s'", method, selector));
+        } else {
+            Logger.info(String.format("method: '%s', selector: '%s', contextId: '%s'",
+                    method, selector, contextId));
+        }
 
         By by = new NativeAndroidBySelector().pickFrom(method, selector);
 
         final List<?> elements;
         try {
-            elements = isBlank(contextId)
-                    ? this.findElements(by)
-                    : this.findElements(by, contextId);
+            elements = isBlank(contextId) ? this.findElements(by) : this.findElements(by, contextId);
 
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             for (Object element : elements) {
@@ -88,10 +90,8 @@ public class FindElements extends SafeRequestHandler {
             }
             return new AppiumResponse(getSessionId(request), result);
         } catch (ElementNotFoundException ignored) {
-            /* For findElements up on no Element. instead of throwing exception unlike in findElement,
-               empty array should be return. for more info refer:
-               https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#sessionsessionidelements
-              */
+            // Return an empty array:
+            // https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#sessionsessionidelements
             return new AppiumResponse(getSessionId(request), result);
         }
     }

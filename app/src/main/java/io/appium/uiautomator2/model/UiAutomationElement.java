@@ -59,7 +59,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
      * {@link AccessibilityNodeInfo} is updated, a new {@code UiAutomationElement}
      * instance will be created in
      */
-    private UiAutomationElement(AccessibilityNodeInfo node, int index) {
+    public UiAutomationElement(AccessibilityNodeInfo node, int index) {
         super(checkNotNull(node));
 
         Map<Attribute, Object> attributes = new LinkedHashMap<>();
