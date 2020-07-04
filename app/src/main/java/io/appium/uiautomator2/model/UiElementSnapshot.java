@@ -65,30 +65,30 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
         Map<Attribute, Object> attributes = new LinkedHashMap<>();
         // The same sequence will be used for node attributes in xml page source
-        put(attributes, Attribute.INDEX, index);
-        put(attributes, Attribute.PACKAGE, charSequenceToNullableString(node.getPackageName()));
-        put(attributes, Attribute.CLASS, charSequenceToNullableString(node.getClassName()));
-        put(attributes, Attribute.TEXT, AccessibilityNodeInfoHelpers.getText(node, true));
-        put(attributes, Attribute.ORIGINAL_TEXT, AccessibilityNodeInfoHelpers.getText(node, false));
-        put(attributes, Attribute.CONTENT_DESC, charSequenceToNullableString(node.getContentDescription()));
-        put(attributes, Attribute.RESOURCE_ID, node.getViewIdResourceName());
-        put(attributes, Attribute.CHECKABLE, node.isCheckable());
-        put(attributes, Attribute.CHECKED, node.isChecked());
-        put(attributes, Attribute.CLICKABLE, node.isClickable());
-        put(attributes, Attribute.ENABLED, node.isEnabled());
-        put(attributes, Attribute.FOCUSABLE, node.isFocusable());
-        put(attributes, Attribute.FOCUSED, node.isFocused());
-        put(attributes, Attribute.LONG_CLICKABLE, node.isLongClickable());
-        put(attributes, Attribute.PASSWORD, node.isPassword());
-        put(attributes, Attribute.SCROLLABLE, node.isScrollable());
+        setAttribute(attributes, Attribute.INDEX, index);
+        setAttribute(attributes, Attribute.PACKAGE, charSequenceToNullableString(node.getPackageName()));
+        setAttribute(attributes, Attribute.CLASS, charSequenceToNullableString(node.getClassName()));
+        setAttribute(attributes, Attribute.TEXT, AccessibilityNodeInfoHelpers.getText(node, true));
+        setAttribute(attributes, Attribute.ORIGINAL_TEXT, AccessibilityNodeInfoHelpers.getText(node, false));
+        setAttribute(attributes, Attribute.CONTENT_DESC, charSequenceToNullableString(node.getContentDescription()));
+        setAttribute(attributes, Attribute.RESOURCE_ID, node.getViewIdResourceName());
+        setAttribute(attributes, Attribute.CHECKABLE, node.isCheckable());
+        setAttribute(attributes, Attribute.CHECKED, node.isChecked());
+        setAttribute(attributes, Attribute.CLICKABLE, node.isClickable());
+        setAttribute(attributes, Attribute.ENABLED, node.isEnabled());
+        setAttribute(attributes, Attribute.FOCUSABLE, node.isFocusable());
+        setAttribute(attributes, Attribute.FOCUSED, node.isFocused());
+        setAttribute(attributes, Attribute.LONG_CLICKABLE, node.isLongClickable());
+        setAttribute(attributes, Attribute.PASSWORD, node.isPassword());
+        setAttribute(attributes, Attribute.SCROLLABLE, node.isScrollable());
         Range<Integer> selectionRange = AccessibilityNodeInfoHelpers.getSelectionRange(node);
         if (selectionRange != null) {
             attributes.put(Attribute.SELECTION_START, selectionRange.getLower());
             attributes.put(Attribute.SELECTION_END, selectionRange.getUpper());
         }
-        put(attributes, Attribute.SELECTED, node.isSelected());
-        put(attributes, Attribute.BOUNDS, AccessibilityNodeInfoHelpers.getBounds(node).toShortString());
-        put(attributes, Attribute.DISPLAYED, node.isVisibleToUser());
+        setAttribute(attributes, Attribute.SELECTED, node.isSelected());
+        setAttribute(attributes, Attribute.BOUNDS, AccessibilityNodeInfoHelpers.getBounds(node).toShortString());
+        setAttribute(attributes, Attribute.DISPLAYED, node.isVisibleToUser());
         // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
         this.attributes = Collections.unmodifiableMap(attributes);
         this.children = buildChildren(node);
@@ -97,14 +97,20 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     private UiElementSnapshot(String hierarchyClassName, AccessibilityNodeInfo[] childNodes, int index) {
         super(null);
         Map<Attribute, Object> attribs = new LinkedHashMap<>();
-        put(attribs, Attribute.INDEX, index);
-        put(attribs, Attribute.CLASS, hierarchyClassName);
+        setAttribute(attribs, Attribute.INDEX, index);
+        setAttribute(attribs, Attribute.CLASS, hierarchyClassName);
         this.attributes = Collections.unmodifiableMap(attribs);
         List<UiElementSnapshot> children = new ArrayList<>();
         for (AccessibilityNodeInfo childNode : childNodes) {
             children.add(new UiElementSnapshot(childNode, children.size()));
         }
         this.children = children;
+    }
+
+    private static void setAttribute(Map<Attribute, Object> attribs, Attribute key, Object value) {
+        if (value != null) {
+            attribs.put(key, value);
+        }
     }
 
     private int getDepth() {
@@ -145,12 +151,6 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             cache.put(rawElement, element);
         }
         return element;
-    }
-
-    private void put(Map<Attribute, Object> attribs, Attribute key, Object value) {
-        if (value != null) {
-            attribs.put(key, value);
-        }
     }
 
     private void addToastMsgToRoot(CharSequence tokenMSG) {

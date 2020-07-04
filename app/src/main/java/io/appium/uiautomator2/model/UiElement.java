@@ -35,8 +35,6 @@ import io.appium.uiautomator2.utils.Attribute;
  * @param <E> the type of the concrete subclass of UiElement
  */
 public abstract class UiElement<R, E extends UiElement<R, E>> {
-    // These two attribute names are used for debugging only.
-    // The two constants are used internally and must match to-uiautomator.xsl.
     private final AccessibilityNodeInfo node;
 
     public UiElement(AccessibilityNodeInfo node) {
