@@ -18,6 +18,8 @@ package io.appium.uiautomator2.server;
 
 import androidx.annotation.Nullable;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -281,7 +283,11 @@ public class AppiumServlet implements IHttpServlet {
 
         String id = getParameter(mappedUri, request.uri(), ":id");
         if (id != null) {
-            request.data().put(ELEMENT_ID_KEY, StandardCharsets.UTF_8.name());
+            try {
+                request.data().put(ELEMENT_ID_KEY, URLDecoder.decode(id, StandardCharsets.UTF_8.name()));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
         }
         for (int elementIdx = SECOND_ELEMENT_IDX; elementIdx < MAX_ELEMENTS + SECOND_ELEMENT_IDX; ++elementIdx) {
             String elementId = getParameter(mappedUri, request.uri(), ":id" + elementIdx);
