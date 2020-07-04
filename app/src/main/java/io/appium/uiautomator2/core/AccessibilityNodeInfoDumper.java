@@ -43,6 +43,7 @@ import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
+import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.UiAutomationElement;
@@ -175,7 +176,11 @@ public class AccessibilityNodeInfoDumper {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             final UiElement<?, ?> xpathRoot = root == null
                     ? rebuildForNewRoots(getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage())
-                    : new UiAutomationElement(root, 0);
+                    : UiAutomationElement.getCachedElement(root);
+            if (xpathRoot == null) {
+                throw new StaleElementReferenceException(
+                        String.format("The element %s does not exist in DOM anymore", root));
+            }
             serializeUiElement(xpathRoot, 0);
             serializer.endDocument();
             Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",

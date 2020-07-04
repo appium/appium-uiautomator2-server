@@ -36,6 +36,7 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.internal.util.Checks.checkNotNull;
 import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
@@ -59,7 +60,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
      * {@link AccessibilityNodeInfo} is updated, a new {@code UiAutomationElement}
      * instance will be created in
      */
-    public UiAutomationElement(AccessibilityNodeInfo node, int index) {
+    private UiAutomationElement(AccessibilityNodeInfo node, int index) {
         super(checkNotNull(node));
 
         Map<Attribute, Object> attributes = new LinkedHashMap<>();
@@ -129,9 +130,9 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     }
 
     @Nullable
-    public static UiAutomationElement getCachedElement(AccessibilityNodeInfo rawElement, AccessibilityNodeInfo[] windowRoots) {
+    public static UiAutomationElement getCachedElement(AccessibilityNodeInfo rawElement) {
         if (cache.get(rawElement) == null) {
-            rebuildForNewRoots(windowRoots);
+            rebuildForNewRoots(getCachedWindowRoots());
         }
         return cache.get(rawElement);
     }
