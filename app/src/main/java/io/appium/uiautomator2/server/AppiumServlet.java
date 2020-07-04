@@ -307,7 +307,7 @@ public class AppiumServlet implements IHttpServlet {
             try {
                 return URLDecoder.decode(currentSections[i], StandardCharsets.UTF_8.name());
             } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         }
         return null;
