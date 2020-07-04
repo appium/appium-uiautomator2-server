@@ -46,7 +46,7 @@ import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
-import io.appium.uiautomator2.model.UiAutomationElement;
+import io.appium.uiautomator2.model.UiElementSnapshot;
 import io.appium.uiautomator2.model.UiElement;
 import io.appium.uiautomator2.model.settings.NormalizeTagNames;
 import io.appium.uiautomator2.model.settings.Settings;
@@ -55,7 +55,7 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.StringHelpers;
 
-import static io.appium.uiautomator2.model.UiAutomationElement.rebuildForNewRoots;
+import static io.appium.uiautomator2.model.UiElementSnapshot.rebuildForNewRoots;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
 import static io.appium.uiautomator2.utils.XMLHelpers.toSafeString;
@@ -176,7 +176,7 @@ public class AccessibilityNodeInfoDumper {
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             final UiElement<?, ?> xpathRoot = root == null
                     ? rebuildForNewRoots(getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage())
-                    : UiAutomationElement.getCachedElement(root);
+                    : UiElementSnapshot.getFromCache(root);
             if (xpathRoot == null) {
                 throw new StaleElementReferenceException(
                         String.format("The element %s does not exist in DOM anymore", root));

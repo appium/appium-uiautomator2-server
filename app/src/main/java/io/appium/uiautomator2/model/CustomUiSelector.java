@@ -34,27 +34,27 @@ public class CustomUiSelector {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        UiAutomationElement uiAutomationElement = UiAutomationElement.getCachedElement(node);
-        if (uiAutomationElement == null) {
+        UiElementSnapshot uiElementSnapshot = UiElementSnapshot.getFromCache(node);
+        if (uiElementSnapshot == null) {
             throw new IllegalArgumentException(String.format("The '%s' node is not found in the cache", node));
         }
-        put(Attribute.PACKAGE, uiAutomationElement.getPackageName());
-        put(Attribute.CLASS, uiAutomationElement.getClassName());
+        put(Attribute.PACKAGE, uiElementSnapshot.getPackageName());
+        put(Attribute.CLASS, uiElementSnapshot.getClassName());
         // For proper selector matching it is important to not replace nulls with empty strings
-        put(Attribute.TEXT, uiAutomationElement.getOriginalText());
-        put(Attribute.CONTENT_DESC, uiAutomationElement.getContentDescription());
-        put(Attribute.RESOURCE_ID, uiAutomationElement.getResourceId());
-        put(Attribute.CHECKABLE, uiAutomationElement.isCheckable());
-        put(Attribute.CHECKED, uiAutomationElement.isChecked());
-        put(Attribute.CLICKABLE, uiAutomationElement.isClickable());
-        put(Attribute.ENABLED, uiAutomationElement.isEnabled());
-        put(Attribute.FOCUSABLE, uiAutomationElement.isFocusable());
-        put(Attribute.FOCUSED, uiAutomationElement.isFocused());
-        put(Attribute.LONG_CLICKABLE, uiAutomationElement.isLongClickable());
-        put(Attribute.PASSWORD, uiAutomationElement.isPassword());
-        put(Attribute.SCROLLABLE, uiAutomationElement.isScrollable());
-        put(Attribute.SELECTED, uiAutomationElement.isSelected());
-        put(Attribute.INDEX, uiAutomationElement.getIndex());
+        put(Attribute.TEXT, uiElementSnapshot.getOriginalText());
+        put(Attribute.CONTENT_DESC, uiElementSnapshot.getContentDescription());
+        put(Attribute.RESOURCE_ID, uiElementSnapshot.getResourceId());
+        put(Attribute.CHECKABLE, uiElementSnapshot.isCheckable());
+        put(Attribute.CHECKED, uiElementSnapshot.isChecked());
+        put(Attribute.CLICKABLE, uiElementSnapshot.isClickable());
+        put(Attribute.ENABLED, uiElementSnapshot.isEnabled());
+        put(Attribute.FOCUSABLE, uiElementSnapshot.isFocusable());
+        put(Attribute.FOCUSED, uiElementSnapshot.isFocused());
+        put(Attribute.LONG_CLICKABLE, uiElementSnapshot.isLongClickable());
+        put(Attribute.PASSWORD, uiElementSnapshot.isPassword());
+        put(Attribute.SCROLLABLE, uiElementSnapshot.isScrollable());
+        put(Attribute.SELECTED, uiElementSnapshot.isSelected());
+        put(Attribute.INDEX, uiElementSnapshot.getIndex());
 
         return selector;
     }

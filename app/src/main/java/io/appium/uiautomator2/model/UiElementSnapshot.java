@@ -44,14 +44,14 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableS
  * A UiElement that gets attributes via the Accessibility API.
  */
 @TargetApi(18)
-public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAutomationElement> {
+public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElementSnapshot> {
     private final static String ROOT_NODE_NAME = "hierarchy";
     // https://github.com/appium/appium/issues/12545
     private final static int MAX_DEPTH = 70;
 
-    private final static Map<AccessibilityNodeInfo, UiAutomationElement> cache = new WeakHashMap<>();
+    private final static Map<AccessibilityNodeInfo, UiElementSnapshot> cache = new WeakHashMap<>();
     private final Map<Attribute, Object> attributes;
-    private final List<UiAutomationElement> children;
+    private final List<UiElementSnapshot> children;
     private int depth = 0;
 
     /**
@@ -60,7 +60,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
      * {@link AccessibilityNodeInfo} is updated, a new {@code UiAutomationElement}
      * instance will be created in
      */
-    private UiAutomationElement(AccessibilityNodeInfo node, int index) {
+    private UiElementSnapshot(AccessibilityNodeInfo node, int index) {
         super(checkNotNull(node));
 
         Map<Attribute, Object> attributes = new LinkedHashMap<>();
@@ -94,15 +94,15 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         this.children = buildChildren(node);
     }
 
-    private UiAutomationElement(String hierarchyClassName, AccessibilityNodeInfo[] childNodes, int index) {
+    private UiElementSnapshot(String hierarchyClassName, AccessibilityNodeInfo[] childNodes, int index) {
         super(null);
         Map<Attribute, Object> attribs = new LinkedHashMap<>();
         put(attribs, Attribute.INDEX, index);
         put(attribs, Attribute.CLASS, hierarchyClassName);
         this.attributes = Collections.unmodifiableMap(attribs);
-        List<UiAutomationElement> children = new ArrayList<>();
+        List<UiElementSnapshot> children = new ArrayList<>();
         for (AccessibilityNodeInfo childNode : childNodes) {
-            children.add(new UiAutomationElement(childNode, children.size()));
+            children.add(new UiElementSnapshot(childNode, children.size()));
         }
         this.children = children;
     }
@@ -115,13 +115,13 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         this.depth = depth;
     }
 
-    public static UiAutomationElement rebuildForNewRoots(AccessibilityNodeInfo[] roots) {
+    public static UiElementSnapshot rebuildForNewRoots(AccessibilityNodeInfo[] roots) {
         return rebuildForNewRoots(roots, Collections.<CharSequence>emptyList());
     }
 
-    public static UiAutomationElement rebuildForNewRoots(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs) {
+    public static UiElementSnapshot rebuildForNewRoots(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs) {
         cache.clear();
-        UiAutomationElement root = new UiAutomationElement(ROOT_NODE_NAME, roots, 0);
+        UiElementSnapshot root = new UiElementSnapshot(ROOT_NODE_NAME, roots, 0);
         for (CharSequence toastMSG : toastMSGs) {
             Logger.debug(String.format("Adding toast message to root: %s", toastMSG));
             root.addToastMsgToRoot(toastMSG);
@@ -130,17 +130,17 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
     }
 
     @Nullable
-    public static UiAutomationElement getCachedElement(AccessibilityNodeInfo rawElement) {
+    public static UiElementSnapshot getFromCache(AccessibilityNodeInfo rawElement) {
         if (cache.get(rawElement) == null) {
             rebuildForNewRoots(getCachedWindowRoots());
         }
         return cache.get(rawElement);
     }
 
-    private static UiAutomationElement getOrCreateElement(AccessibilityNodeInfo rawElement, int index, int depth) {
-        UiAutomationElement element = cache.get(rawElement);
+    private static UiElementSnapshot getFromCacheOrCreate(AccessibilityNodeInfo rawElement, int index, int depth) {
+        UiElementSnapshot element = cache.get(rawElement);
         if (element == null) {
-            element = new UiAutomationElement(rawElement, index);
+            element = new UiElementSnapshot(rawElement, index);
             element.setDepth(depth);
             cache.put(rawElement, element);
         }
@@ -160,10 +160,10 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
         node.setPackageName("com.android.settings");
         setField("mSealed", true, node);
 
-        this.children.add(new UiAutomationElement(node, this.children.size()));
+        this.children.add(new UiElementSnapshot(node, this.children.size()));
     }
 
-    private List<UiAutomationElement> buildChildren(AccessibilityNodeInfo node) {
+    private List<UiElementSnapshot> buildChildren(AccessibilityNodeInfo node) {
         final int childCount = node.getChildCount();
         if (childCount == 0 || getDepth() >= MAX_DEPTH) {
             if (getDepth() >= MAX_DEPTH) {
@@ -173,7 +173,7 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
             return Collections.emptyList();
         }
 
-        List<UiAutomationElement> children = new ArrayList<>(childCount);
+        List<UiElementSnapshot> children = new ArrayList<>(childCount);
         boolean areInvisibleElementsAllowed = AppiumUIA2Driver
                 .getInstance()
                 .getSessionOrThrow()
@@ -182,14 +182,14 @@ public class UiAutomationElement extends UiElement<AccessibilityNodeInfo, UiAuto
             AccessibilityNodeInfo child = node.getChild(i);
             //Ignore if element is not visible on the screen
             if (child != null && (child.isVisibleToUser() || areInvisibleElementsAllowed)) {
-                children.add(getOrCreateElement(child, i, getDepth() + 1));
+                children.add(getFromCacheOrCreate(child, i, getDepth() + 1));
             }
         }
         return children;
     }
 
     @Override
-    public List<UiAutomationElement> getChildren() {
+    public List<UiElementSnapshot> getChildren() {
         return children;
     }
 
