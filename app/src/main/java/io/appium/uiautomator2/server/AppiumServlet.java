@@ -283,11 +283,7 @@ public class AppiumServlet implements IHttpServlet {
 
         String id = getParameter(mappedUri, request.uri(), ":id");
         if (id != null) {
-            try {
-                request.data().put(ELEMENT_ID_KEY, URLDecoder.decode(id, StandardCharsets.UTF_8.name()));
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
+            request.data().put(ELEMENT_ID_KEY, id);
         }
         for (int elementIdx = SECOND_ELEMENT_IDX; elementIdx < MAX_ELEMENTS + SECOND_ELEMENT_IDX; ++elementIdx) {
             String elementId = getParameter(mappedUri, request.uri(), ":id" + elementIdx);
@@ -305,8 +301,13 @@ public class AppiumServlet implements IHttpServlet {
             return null;
         }
         for (int i = 0; i < currentSections.length; i++) {
-            if (configuredSections[i].contains(param)) {
-                return currentSections[i];
+            if (!configuredSections[i].contains(param)) {
+                continue;
+            }
+            try {
+                return URLDecoder.decode(currentSections[i], StandardCharsets.UTF_8.name());
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
             }
         }
         return null;
