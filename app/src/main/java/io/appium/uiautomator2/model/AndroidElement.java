@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -44,6 +45,10 @@ public interface AndroidElement {
     String getAttribute(String attr) throws UiObjectNotFoundException;
 
     boolean setText(final String text);
+
+    AccessibilityNodeInfo.RangeInfo getRangeInfo();
+
+    void setProgress(final float value);
 
     String getId();
 

@@ -27,6 +27,7 @@ import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiDevice;
 
+import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
 import io.appium.uiautomator2.utils.Logger;
@@ -148,19 +149,22 @@ public class AccessibilityNodeInfoHelpers {
      * Perform accessibility action ACTION_SET_PROGRESS on the node
      *
      * @param value desired progress value
-     * @return true if action performed successfully
+     * @throws InvalidElementStateException if there was a failure while setting the progress value
      */
     @TargetApi(Build.VERSION_CODES.N)
-    public static boolean setProgressValue(final AccessibilityNodeInfo node, final float value) {
+    public static void setProgressValue(final AccessibilityNodeInfo node, final float value) {
         if (!node.getActionList().contains(AccessibilityAction.ACTION_SET_PROGRESS)) {
-            Logger.debug("The element does not support ACTION_SET_PROGRESS action.");
-            return false;
+            throw new InvalidElementStateException(
+                    String.format("The element '%s' does not support ACTION_SET_PROGRESS. " +
+                            "Did you locate a proper one?", node));
         }
-        Logger.debug(String.format(
-                "Trying to perform ACTION_SET_PROGRESS accessibility action with value %s", value));
         final Bundle args = new Bundle();
         args.putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, value);
-        return node.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args);
+        if (!node.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args)) {
+            throw new InvalidElementStateException(
+                    String.format("ACTION_SET_PROGRESS has failed on the element '%s'. " +
+                            "Did you locate a proper one?", node));
+        }
     }
 
     /**

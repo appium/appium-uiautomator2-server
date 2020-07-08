@@ -172,6 +172,17 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
+    @Nullable
+    public AccessibilityNodeInfo.RangeInfo getRangeInfo() {
+        return ElementHelpers.getRangeInfo(element);
+    }
+
+    @Override
+    public void setProgress(float value) {
+        ElementHelpers.setProgress(element, value);
+    }
+
+    @Override
     public By getBy() {
         return by;
     }
