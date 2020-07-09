@@ -41,8 +41,7 @@ public abstract class Device {
     }
 
     public static AndroidElement getAndroidElement(String id, Object element, boolean isSingleMatch,
-                                                   @Nullable By by, @Nullable String contextId)
-            throws UiAutomator2Exception {
+                                                   @Nullable By by, @Nullable String contextId) {
         if (element instanceof UiObject2) {
             return new UiObject2Element(id, (UiObject2) element, isSingleMatch, by, contextId);
         } else if (element instanceof UiObject) {
@@ -53,7 +52,7 @@ public abstract class Device {
     }
 
     public static AndroidElement getAndroidElement(String id, Object element, boolean isSingleMatch,
-                                                   @Nullable By by) throws UiAutomator2Exception {
+                                                   @Nullable By by) {
         return getAndroidElement(id, element, isSingleMatch, by, null);
     }
 
@@ -93,25 +92,23 @@ public abstract class Device {
         return getUiDevice().pressBack();
     }
 
-    /**
-     * reason for explicit method, in some cases google UiAutomator2 throwing exception
-     * while calling waitForIdle() which is causing appium UiAutomator2 server to fall in
-     * unexpected behaviour.
-     * for more info please refer
-     * https://code.google.com/p/android/issues/detail?id=73297
-     */
     public static void waitForIdle() {
-        final WaitForIdleTimeout idleTimeout =
-                (WaitForIdleTimeout) Settings.WAIT_FOR_IDLE_TIMEOUT.getSetting();
-        waitForIdle(idleTimeout.getValue());
-    }
+        long timeoutMs = ((WaitForIdleTimeout) Settings.WAIT_FOR_IDLE_TIMEOUT.getSetting()).getValue();
+        if (timeoutMs <= 0) {
+            Logger.info("Idle timeout is not greater than zero. Skipping the wait");
+            return;
+        }
 
-    public static void waitForIdle(long timeInMS) {
-        Logger.info(String.format("Waiting up to %sms for device to be idle", timeInMS));
+        Logger.info(String.format("Waiting up to %sms for the device to be idle", timeoutMs));
         try {
-            getUiDevice().waitForIdle(timeInMS);
+            /*
+             * In some cases UiAutomator2 framework is throwing an exception
+             * while calling UiDevice.waitForIdle(), which causes the server to unexpectedly fail.
+             * For more info please refer https://code.google.com/p/android/issues/detail?id=73297
+             */
+            getUiDevice().waitForIdle(timeoutMs);
         } catch (Exception e) {
-            Logger.error(String.format("Unable wait %sms for AUT to idle", timeInMS));
+            Logger.error(String.format("Unable to wait %sms for the device to idle", timeoutMs), e);
         }
     }
 }
