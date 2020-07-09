@@ -99,7 +99,7 @@ public abstract class Device {
             return;
         }
 
-        Logger.info(String.format("Waiting up to %sms for the device to be idle", timeoutMs));
+        Logger.info(String.format("Waiting up to %sms for the device to idle", timeoutMs));
         try {
             /*
              * In some cases UiAutomator2 framework is throwing an exception
