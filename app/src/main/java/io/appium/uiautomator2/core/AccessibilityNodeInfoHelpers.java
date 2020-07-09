@@ -156,7 +156,7 @@ public class AccessibilityNodeInfoHelpers {
         if (!node.getActionList().contains(AccessibilityAction.ACTION_SET_PROGRESS)) {
             throw new InvalidElementStateException(
                     String.format("The element '%s' does not support ACTION_SET_PROGRESS. " +
-                            "Did you locate a proper one?", node));
+                            "Did you interact with the correct element?", node));
         }
 
         float valueToSet = value;
@@ -174,7 +174,7 @@ public class AccessibilityNodeInfoHelpers {
         if (!node.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args)) {
             throw new InvalidElementStateException(
                     String.format("ACTION_SET_PROGRESS has failed on the element '%s'. " +
-                            "Did you locate a proper one?", node));
+                            "Did you interact with the correct element?", node));
         }
     }
 
