@@ -158,8 +158,19 @@ public class AccessibilityNodeInfoHelpers {
                     String.format("The element '%s' does not support ACTION_SET_PROGRESS. " +
                             "Did you locate a proper one?", node));
         }
+
+        float valueToSet = value;
+        AccessibilityNodeInfo.RangeInfo rangeInfo = node.getRangeInfo();
+        if (rangeInfo != null) {
+            if (value < rangeInfo.getMin()) {
+                valueToSet = rangeInfo.getMin();
+            }
+            if (value > rangeInfo.getMax()) {
+                valueToSet = rangeInfo.getMax();
+            }
+        }
         final Bundle args = new Bundle();
-        args.putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, value);
+        args.putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, valueToSet);
         if (!node.performAction(AccessibilityAction.ACTION_SET_PROGRESS.getId(), args)) {
             throw new InvalidElementStateException(
                     String.format("ACTION_SET_PROGRESS has failed on the element '%s'. " +

@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -46,7 +45,7 @@ public interface AndroidElement {
 
     boolean setText(final String text);
 
-    AccessibilityNodeInfo.RangeInfo getRangeInfo();
+    boolean canSetProgress();
 
     void setProgress(final float value);
 

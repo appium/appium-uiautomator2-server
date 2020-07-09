@@ -56,6 +56,7 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.UiObject2Element;
 
+import static android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction.ACTION_SET_PROGRESS;
 import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -111,14 +112,16 @@ public abstract class ElementHelpers {
         return result;
     }
 
-    @Nullable
-    public static AccessibilityNodeInfo.RangeInfo getRangeInfo(Object element) {
+    public static boolean canSetProgress(Object element) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return false;
+        }
+
         AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
         if (nodeInfo == null) {
             throw new ElementNotFoundException();
         }
-
-        return nodeInfo.getRangeInfo();
+        return nodeInfo.getActionList().contains(ACTION_SET_PROGRESS);
     }
 
     /**

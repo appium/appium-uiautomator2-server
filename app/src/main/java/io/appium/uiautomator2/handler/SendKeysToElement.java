@@ -16,9 +16,6 @@
 
 package io.appium.uiautomator2.handler;
 
-import android.os.Build;
-import android.view.accessibility.AccessibilityNodeInfo;
-
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -48,25 +45,15 @@ public class SendKeysToElement extends SafeRequestHandler {
     }
 
     private static boolean setProgress(AndroidElement element, SendKeysModel model) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        if (!element.canSetProgress()) {
             return false;
         }
-        AccessibilityNodeInfo.RangeInfo rangeInfo = element.getRangeInfo();
-        if (rangeInfo == null) {
-            return false;
-        }
-        Logger.info(String.format("Element has range info: %s", rangeInfo));
+
         float value;
         try {
             value = Float.parseFloat(model.text);
         } catch (NumberFormatException | NullPointerException e) {
             throw new IllegalArgumentException(String.format("Cannot convert '%s' to float", model.text));
-        }
-        if (value < rangeInfo.getMin()) {
-            value = rangeInfo.getMin();
-        }
-        if (value > rangeInfo.getMax()) {
-            value = rangeInfo.getMax();
         }
         Logger.info(String.format("Setting the progress value to %s", value));
         element.setProgress(value);

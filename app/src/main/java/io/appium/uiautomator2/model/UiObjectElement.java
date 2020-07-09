@@ -172,9 +172,8 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
-    @Nullable
-    public AccessibilityNodeInfo.RangeInfo getRangeInfo() {
-        return ElementHelpers.getRangeInfo(element);
+    public boolean canSetProgress() {
+        return ElementHelpers.canSetProgress(element);
     }
 
     @Override

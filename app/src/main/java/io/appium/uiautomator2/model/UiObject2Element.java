@@ -167,14 +167,13 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
-    @Nullable
-    public AccessibilityNodeInfo.RangeInfo getRangeInfo() {
-        return ElementHelpers.getRangeInfo(element);
+    public void setProgress(float value) {
+        ElementHelpers.setProgress(element, value);
     }
 
     @Override
-    public void setProgress(float value) {
-        ElementHelpers.setProgress(element, value);
+    public boolean canSetProgress() {
+        return ElementHelpers.canSetProgress(element);
     }
 
     @Override
