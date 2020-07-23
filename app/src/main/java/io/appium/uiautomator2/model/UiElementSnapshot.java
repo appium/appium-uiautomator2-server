@@ -43,11 +43,12 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableS
 public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElementSnapshot> {
     private final static String ROOT_NODE_NAME = "hierarchy";
     // https://github.com/appium/appium/issues/12545
-    private final static int MAX_DEPTH = 70;
+    private final static int DEFAULT_MAX_DEPTH = 70;
 
     private final Map<Attribute, Object> attributes;
     private final List<UiElementSnapshot> children;
     private int depth = 0;
+    private int maxDepth = DEFAULT_MAX_DEPTH;
 
     /**
      * A snapshot of all attributes is taken at construction. The attributes of a
@@ -55,8 +56,9 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
      * {@link AccessibilityNodeInfo} is updated, a new {@code UiAutomationElement}
      * instance will be created in
      */
-    private UiElementSnapshot(AccessibilityNodeInfo node, int index) {
+    private UiElementSnapshot(AccessibilityNodeInfo node, int index, int maxDepth) {
         super(checkNotNull(node));
+        this.maxDepth = maxDepth;
 
         Map<Attribute, Object> attributes = new LinkedHashMap<>();
         // The same sequence will be used for node attributes in xml page source
@@ -89,6 +91,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         this.children = buildChildren(node);
     }
 
+    private UiElementSnapshot(AccessibilityNodeInfo node, int index) {
+        this(node, index, DEFAULT_MAX_DEPTH);
+    }
+
     private UiElementSnapshot(String hierarchyClassName, AccessibilityNodeInfo[] childNodes, int index) {
         super(null);
         Map<Attribute, Object> attribs = new LinkedHashMap<>();
@@ -116,6 +122,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         this.depth = depth;
     }
 
+    public int getMaxDepth() {
+        return this.maxDepth;
+    }
+
     public static UiElementSnapshot take(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs) {
         UiElementSnapshot root = new UiElementSnapshot(ROOT_NODE_NAME, roots, 0);
         for (CharSequence toastMSG : toastMSGs) {
@@ -125,12 +135,16 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         return root;
     }
 
-    public static UiElementSnapshot take(AccessibilityNodeInfo rawElement) {
-        return new UiElementSnapshot(rawElement, 0);
+    public static UiElementSnapshot take(AccessibilityNodeInfo rootElement) {
+        return new UiElementSnapshot(rootElement, 0);
     }
 
-    private static UiElementSnapshot makeNode(AccessibilityNodeInfo rawElement, int index, int depth) {
-        UiElementSnapshot snapshot = new UiElementSnapshot(rawElement, index);
+    public static UiElementSnapshot take(AccessibilityNodeInfo rootElement, int maxDepth) {
+        return new UiElementSnapshot(rootElement, 0, maxDepth);
+    }
+
+    private static UiElementSnapshot makeNode(AccessibilityNodeInfo rootElement, int index, int depth) {
+        UiElementSnapshot snapshot = new UiElementSnapshot(rootElement, index);
         snapshot.setDepth(depth);
         return snapshot;
     }
@@ -147,10 +161,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
     private List<UiElementSnapshot> buildChildren(AccessibilityNodeInfo node) {
         final int childCount = node.getChildCount();
-        if (childCount == 0 || getDepth() >= MAX_DEPTH) {
-            if (getDepth() >= MAX_DEPTH) {
-                Logger.warn(String.format("Skipping building children of '%s' because the maximum " +
-                        "recursion depth (%s) has been reached", node, MAX_DEPTH));
+        if (childCount == 0 || (getMaxDepth() >= 0 && getDepth() >= getMaxDepth())) {
+            if (getDepth() >= getMaxDepth()) {
+                Logger.info(String.format("Skipping building children of '%s' because the maximum " +
+                        "recursion depth (%s) has been reached", node, getMaxDepth()));
             }
             return Collections.emptyList();
         }

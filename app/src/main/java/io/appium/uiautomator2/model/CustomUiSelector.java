@@ -34,7 +34,7 @@ public class CustomUiSelector {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        UiElementSnapshot uiElementSnapshot = UiElementSnapshot.take(node);
+        UiElementSnapshot uiElementSnapshot = UiElementSnapshot.take(node, 0);
         put(Attribute.PACKAGE, uiElementSnapshot.getPackageName());
         put(Attribute.CLASS, uiElementSnapshot.getClassName());
         // For proper selector matching it is important to not replace nulls with empty strings
