@@ -43,7 +43,6 @@ import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
-import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.UiElementSnapshot;
@@ -55,7 +54,6 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.StringHelpers;
 
-import static io.appium.uiautomator2.model.UiElementSnapshot.rebuildForNewRoots;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
 import static io.appium.uiautomator2.utils.XMLHelpers.toSafeString;
@@ -175,12 +173,8 @@ public class AccessibilityNodeInfoDumper {
             serializer.startDocument(XML_ENCODING, true);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             final UiElement<?, ?> xpathRoot = root == null
-                    ? rebuildForNewRoots(getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage())
-                    : UiElementSnapshot.getFromCache(root);
-            if (xpathRoot == null) {
-                throw new StaleElementReferenceException(
-                        String.format("The element %s does not exist in DOM anymore", root));
-            }
+                    ? UiElementSnapshot.take(getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage())
+                    : UiElementSnapshot.take(root);
             serializeUiElement(xpathRoot, 0);
             serializer.endDocument();
             Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",

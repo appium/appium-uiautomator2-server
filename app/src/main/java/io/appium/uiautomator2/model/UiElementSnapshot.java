@@ -21,14 +21,11 @@ import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
 import io.appium.uiautomator2.utils.Attribute;
@@ -36,7 +33,6 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.internal.util.Checks.checkNotNull;
 import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
-import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
@@ -49,7 +45,6 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     // https://github.com/appium/appium/issues/12545
     private final static int MAX_DEPTH = 70;
 
-    private final static Map<AccessibilityNodeInfo, UiElementSnapshot> cache = new WeakHashMap<>();
     private final Map<Attribute, Object> attributes;
     private final List<UiElementSnapshot> children;
     private int depth = 0;
@@ -121,12 +116,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         this.depth = depth;
     }
 
-    public static UiElementSnapshot rebuildForNewRoots(AccessibilityNodeInfo[] roots) {
-        return rebuildForNewRoots(roots, Collections.<CharSequence>emptyList());
-    }
-
-    public static UiElementSnapshot rebuildForNewRoots(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs) {
-        cache.clear();
+    public static UiElementSnapshot take(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs) {
         UiElementSnapshot root = new UiElementSnapshot(ROOT_NODE_NAME, roots, 0);
         for (CharSequence toastMSG : toastMSGs) {
             Logger.debug(String.format("Adding toast message to root: %s", toastMSG));
@@ -135,22 +125,14 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         return root;
     }
 
-    @Nullable
-    public static UiElementSnapshot getFromCache(AccessibilityNodeInfo rawElement) {
-        if (cache.get(rawElement) == null) {
-            rebuildForNewRoots(getCachedWindowRoots());
-        }
-        return cache.get(rawElement);
+    public static UiElementSnapshot take(AccessibilityNodeInfo rawElement) {
+        return new UiElementSnapshot(rawElement, 0);
     }
 
-    private static UiElementSnapshot getFromCacheOrCreate(AccessibilityNodeInfo rawElement, int index, int depth) {
-        UiElementSnapshot element = cache.get(rawElement);
-        if (element == null) {
-            element = new UiElementSnapshot(rawElement, index);
-            element.setDepth(depth);
-            cache.put(rawElement, element);
-        }
-        return element;
+    private static UiElementSnapshot makeNode(AccessibilityNodeInfo rawElement, int index, int depth) {
+        UiElementSnapshot snapshot = new UiElementSnapshot(rawElement, index);
+        snapshot.setDepth(depth);
+        return snapshot;
     }
 
     private void addToastMsgToRoot(CharSequence tokenMSG) {
@@ -182,7 +164,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             AccessibilityNodeInfo child = node.getChild(i);
             //Ignore if element is not visible on the screen
             if (child != null && (child.isVisibleToUser() || areInvisibleElementsAllowed)) {
-                children.add(getFromCacheOrCreate(child, i, getDepth() + 1));
+                children.add(makeNode(child, i, getDepth() + 1));
             }
         }
         return children;

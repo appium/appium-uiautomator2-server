@@ -34,10 +34,7 @@ public class CustomUiSelector {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        UiElementSnapshot uiElementSnapshot = UiElementSnapshot.getFromCache(node);
-        if (uiElementSnapshot == null) {
-            throw new IllegalArgumentException(String.format("The '%s' node is not found in the cache", node));
-        }
+        UiElementSnapshot uiElementSnapshot = UiElementSnapshot.take(node);
         put(Attribute.PACKAGE, uiElementSnapshot.getPackageName());
         put(Attribute.CLASS, uiElementSnapshot.getClassName());
         // For proper selector matching it is important to not replace nulls with empty strings
