@@ -64,8 +64,8 @@ public abstract class BaseTouchAction extends SafeRequestHandler {
                 throw new IllegalArgumentException(
                         "Both x and y coordinates must be provided without element id set");
             }
-            clickX = params.x;
-            clickY = params.y;
+            clickX = (int) Math.round(params.x);
+            clickY = (int) Math.round(params.y);
         }
 
         executeEvent();
