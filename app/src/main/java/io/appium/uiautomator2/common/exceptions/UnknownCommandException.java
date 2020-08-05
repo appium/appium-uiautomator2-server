@@ -20,7 +20,8 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class UnknownCommandException extends UiAutomator2Exception {
     public UnknownCommandException() {
-        super("The requested resource could not be found, or a request was received using an HTTP method that is not supported by the mapped resource");
+        super("The requested resource could not be found, or a request was received " +
+                "using an HTTP method that is not supported by the mapped resource");
     }
 
     public UnknownCommandException(String message) {

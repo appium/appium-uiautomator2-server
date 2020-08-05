@@ -83,7 +83,6 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.http.IHttpResponse;
 import io.appium.uiautomator2.http.IHttpServlet;
-import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class AppiumServlet implements IHttpServlet {
 
@@ -244,15 +243,12 @@ public class AppiumServlet implements IHttpServlet {
         } else if ("DELETE".equals(request.method())) {
             handler = findMatcher(request, deleteHandler);
         }
-        handleRequest(request, response, handler);
+        if (handler != null) {
+            handleRequest(request, response, handler);
+        }
     }
 
-    private void handleRequest(IHttpRequest request, IHttpResponse response,
-                               @Nullable BaseRequestHandler handler) {
-        if (handler == null) {
-            response.setStatus(HttpResponseStatus.NOT_FOUND.code()).end();
-            return;
-        }
+    private void handleRequest(IHttpRequest request, IHttpResponse response, BaseRequestHandler handler) {
         addHandlerAttributesToRequest(request, handler.getMappedUri());
         AppiumResponse result = handler.handle(request);
         handleResponse(response, result);

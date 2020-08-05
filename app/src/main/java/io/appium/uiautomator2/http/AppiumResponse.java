@@ -38,7 +38,7 @@ public class AppiumResponse {
     private final String sessionId;
     private final HttpResponseStatus httpStatus;
 
-    public AppiumResponse(String sessionId, @Nullable Object value) {
+    public AppiumResponse(@Nullable String sessionId, @Nullable Object value) {
         this.sessionId = sessionId;
         this.value = value;
         if (value instanceof Throwable) {
