@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model.settings;
 
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.utils.Logger;
 
 public abstract class AbstractSetting<T> implements ISetting<T> {
@@ -64,7 +64,7 @@ public abstract class AbstractSetting<T> implements ISetting<T> {
         } catch (ClassCastException e) {
             String errorMsg = String.format("Invalid setting value type. Got: %s. Expected: %s.",
                     value.getClass().getName(), valueType.getName());
-            throw new UiAutomator2Exception(errorMsg);
+            throw new InvalidArgumentException(errorMsg);
         }
     }
 }
