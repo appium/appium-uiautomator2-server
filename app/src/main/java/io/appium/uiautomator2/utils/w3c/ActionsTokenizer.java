@@ -22,7 +22,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
-import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import com.google.gson.JsonSyntaxException;
 
@@ -207,7 +206,7 @@ public class ActionsTokenizer {
                         "The element with id '%s' has zero width/height in the action item '%s' of action '%s'",
                         elementId, gesture, actionId));
             }
-        } catch (NullPointerException | UiObjectNotFoundException e) {
+        } catch (NullPointerException e) {
             throw new ActionsParseException(String.format(
                     "An unknown element id '%s' is set for the action item '%s' of action '%s'",
                     elementId, gesture, actionId));
