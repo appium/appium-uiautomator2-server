@@ -145,7 +145,7 @@ public class UiObjectElement extends BaseElement {
                 result = AccessibilityNodeInfoHelpers.isPassword(fromUiObject(element));
                 break;
             case BOUNDS:
-                result = AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element)).toShortString();
+                result = getBounds().toShortString();
                 break;
             case PACKAGE: {
                 result = AccessibilityNodeInfoHelpers.getPackageName(fromUiObject(element));
@@ -207,8 +207,8 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
-    public Rect getBounds() throws UiObjectNotFoundException {
-        return element.getVisibleBounds();
+    public Rect getBounds() {
+        return AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element));
     }
 
     @Nullable
@@ -315,7 +315,7 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
-    public Point getAbsolutePosition(final Point offset) throws UiObjectNotFoundException {
+    public Point getAbsolutePosition(final Point offset) {
         final Rect bounds = this.getBounds();
         Logger.debug("Element bounds: " + bounds.toShortString());
         return PositionHelper.getAbsolutePosition(new Point(bounds.left, bounds.top), bounds, offset, false);

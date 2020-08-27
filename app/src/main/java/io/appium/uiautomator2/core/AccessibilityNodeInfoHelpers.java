@@ -131,7 +131,9 @@ public class AccessibilityNodeInfoHelpers {
         // Find the visible bounds of our first scrollable ancestor
         AccessibilityNodeInfo ancestor;
         int currentDepth = depth;
-        for (ancestor = node.getParent(); ancestor != null && ++currentDepth < MAX_DEPTH; ancestor = ancestor.getParent()) {
+        for (ancestor = node.getParent();
+             ancestor != null && ancestor != node && ++currentDepth < MAX_DEPTH;
+             ancestor = ancestor.getParent()) {
             // If this ancestor is scrollable
             if (ancestor.isScrollable()) {
                 // Trim any portion of the bounds that are hidden by the non-visible portion of our

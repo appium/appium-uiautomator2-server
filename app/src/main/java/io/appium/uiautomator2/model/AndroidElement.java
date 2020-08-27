@@ -51,7 +51,7 @@ public interface AndroidElement {
 
     String getId();
 
-    Rect getBounds() throws UiObjectNotFoundException;
+    Rect getBounds();
 
     Object getChild(final Object sel) throws UiObjectNotFoundException;
 

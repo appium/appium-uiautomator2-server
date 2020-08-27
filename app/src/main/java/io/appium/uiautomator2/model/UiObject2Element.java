@@ -140,7 +140,7 @@ public class UiObject2Element extends BaseElement {
                 result = AccessibilityNodeInfoHelpers.isPassword(fromUiObject(element));
                 break;
             case BOUNDS:
-                result = AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element)).toShortString();
+                result = getBounds().toShortString();
                 break;
             case PACKAGE:
                 result = AccessibilityNodeInfoHelpers.getPackageName(fromUiObject(element));
@@ -203,7 +203,7 @@ public class UiObject2Element extends BaseElement {
 
     @Override
     public Rect getBounds() {
-        return element.getVisibleBounds();
+        return AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element));
     }
 
     @Nullable
@@ -221,8 +221,8 @@ public class UiObject2Element extends BaseElement {
             uiSelector = customUiSelector.getUiSelector(nodeInfo);
             Object uiObject = CustomUiDevice.getInstance().findObject(uiSelector);
             return uiObject instanceof UiObject
-                ? ((UiObject) uiObject).getChild((UiSelector) selector)
-                : null;
+                    ? ((UiObject) uiObject).getChild((UiSelector) selector)
+                    : null;
         }
         return element.findObject((BySelector) selector);
     }
