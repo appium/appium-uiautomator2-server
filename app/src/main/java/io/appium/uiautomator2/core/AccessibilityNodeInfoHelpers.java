@@ -143,7 +143,7 @@ public class AccessibilityNodeInfoHelpers {
                 // ancestor
                 Rect ancestorRect = getBounds(ancestor, displayRect, currentDepth);
                 ret.intersect(ancestorRect);
-                break;
+                return ret;
             }
             ancestors.add(ancestor);
             ancestor = node.getParent();
