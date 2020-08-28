@@ -34,7 +34,7 @@ import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
 
-import static io.appium.uiautomator2.core.AccessibilityNodeInfoGetter.fromUiObject;
+import static io.appium.uiautomator2.core.AxNodeExtractor.toAxNode;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class ElementLocationHelpers {
@@ -103,7 +103,7 @@ public class ElementLocationHelpers {
 
     public static NodeInfoList getXPathNodeMatch(
             final String expression, @Nullable AndroidElement element, boolean multiple) {
-        AccessibilityNodeInfo root = element == null ? null : fromUiObject(element.getUiObject());
+        AccessibilityNodeInfo root = element == null ? null : toAxNode(element.getUiObject());
         // We are trying to be smart here and only include the actually queried
         // attributes into the source XML document. This allows to improve the performance a lot
         // while building this document.

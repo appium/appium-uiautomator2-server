@@ -37,7 +37,7 @@ import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
 
-import static io.appium.uiautomator2.core.AccessibilityNodeInfoGetter.fromUiObject;
+import static io.appium.uiautomator2.core.AxNodeExtractor.toAxNode;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
@@ -61,7 +61,7 @@ public class UiObject2Element extends BaseElement {
 
     @Override
     public void click() {
-        AccessibilityNodeInfoHelpers.click(fromUiObject(element));
+        AccessibilityNodeInfoHelpers.click(toAxNode(element));
     }
 
     @Override
@@ -134,20 +134,20 @@ public class UiObject2Element extends BaseElement {
                 result = element.isSelected();
                 break;
             case DISPLAYED:
-                result = AccessibilityNodeInfoHelpers.isVisible(fromUiObject(element));
+                result = AccessibilityNodeInfoHelpers.isVisible(toAxNode(element));
                 break;
             case PASSWORD:
-                result = AccessibilityNodeInfoHelpers.isPassword(fromUiObject(element));
+                result = AccessibilityNodeInfoHelpers.isPassword(toAxNode(element));
                 break;
             case BOUNDS:
                 result = getBounds().toShortString();
                 break;
             case PACKAGE:
-                result = AccessibilityNodeInfoHelpers.getPackageName(fromUiObject(element));
+                result = AccessibilityNodeInfoHelpers.getPackageName(toAxNode(element));
                 break;
             case SELECTION_END:
             case SELECTION_START:
-                Range<Integer> selectionRange = AccessibilityNodeInfoHelpers.getSelectionRange(fromUiObject(element));
+                Range<Integer> selectionRange = AccessibilityNodeInfoHelpers.getSelectionRange(toAxNode(element));
                 result = selectionRange == null
                         ? null
                         : (dstAttribute == Attribute.SELECTION_END ? selectionRange.getUpper() : selectionRange.getLower());
@@ -203,7 +203,7 @@ public class UiObject2Element extends BaseElement {
 
     @Override
     public Rect getBounds() {
-        return AccessibilityNodeInfoHelpers.getBounds(fromUiObject(element));
+        return AccessibilityNodeInfoHelpers.getBounds(toAxNode(element));
     }
 
     @Nullable
@@ -215,7 +215,7 @@ public class UiObject2Element extends BaseElement {
              * as an alternative creating UiObject with UiObject2's AccessibilityNodeInfo
              * and finding the child element on UiObject.
              */
-            AccessibilityNodeInfo nodeInfo = fromUiObject(element);
+            AccessibilityNodeInfo nodeInfo = toAxNode(element);
             UiSelector uiSelector = new UiSelector();
             CustomUiSelector customUiSelector = new CustomUiSelector(uiSelector);
             uiSelector = customUiSelector.getUiSelector(nodeInfo);
@@ -235,7 +235,7 @@ public class UiObject2Element extends BaseElement {
              * as an alternative creating UiObject with UiObject2's AccessibilityNodeInfo
              * and finding the child elements on UiObject.
              */
-            AccessibilityNodeInfo nodeInfo = fromUiObject(element);
+            AccessibilityNodeInfo nodeInfo = toAxNode(element);
 
             UiSelector uiSelector = new UiSelector();
             CustomUiSelector customUiSelector = new CustomUiSelector(uiSelector);

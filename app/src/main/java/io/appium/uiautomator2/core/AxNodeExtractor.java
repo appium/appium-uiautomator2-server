@@ -30,18 +30,15 @@ import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
-/**
- * Static helper class for getting {@link AccessibilityNodeInfo} instances.
- */
-public abstract class AccessibilityNodeInfoGetter {
+public abstract class AxNodeExtractor {
 
     @Nullable
-    public static AccessibilityNodeInfo fromUiObjectNullable(Object object) {
+    public static AccessibilityNodeInfo toNullableAxNode(Object object) {
         return getAxNode(object);
     }
 
     @NonNull
-    public static AccessibilityNodeInfo fromUiObject(Object object) {
+    public static AccessibilityNodeInfo toAxNode(Object object) {
         AccessibilityNodeInfo result = getAxNode(object);
         if (result == null) {
             throw new StaleElementReferenceException();
@@ -59,6 +56,7 @@ public abstract class AccessibilityNodeInfoGetter {
             return (AccessibilityNodeInfo) invoke(method(UiObject.class,
                     "findAccessibilityNodeInfo", long.class), object, timeout);
         }
-        throw new UiAutomator2Exception("Unknown object type: " + object.getClass().getName());
+        throw new IllegalArgumentException(String.format("Unknown object type '%s'",
+                object == null ? null : object.getClass().getName()));
     }
 }
