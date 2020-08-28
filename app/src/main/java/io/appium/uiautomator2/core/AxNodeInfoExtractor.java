@@ -25,21 +25,20 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
-public abstract class AxNodeExtractor {
+public abstract class AxNodeInfoExtractor {
 
     @Nullable
-    public static AccessibilityNodeInfo toNullableAxNode(Object object) {
-        return getAxNode(object);
+    public static AccessibilityNodeInfo toNullableAxNodeInfo(Object object) {
+        return extractAxNodeInfo(object);
     }
 
     @NonNull
-    public static AccessibilityNodeInfo toAxNode(Object object) {
-        AccessibilityNodeInfo result = getAxNode(object);
+    public static AccessibilityNodeInfo toAxNodeInfo(Object object) {
+        AccessibilityNodeInfo result = extractAxNodeInfo(object);
         if (result == null) {
             throw new StaleElementReferenceException();
         }
@@ -47,7 +46,7 @@ public abstract class AxNodeExtractor {
     }
 
     @Nullable
-    private static AccessibilityNodeInfo getAxNode(Object object) {
+    private static AccessibilityNodeInfo extractAxNodeInfo(Object object) {
         if (object instanceof UiObject2) {
             return (AccessibilityNodeInfo) invoke(method(UiObject2.class,
                     "getAccessibilityNodeInfo"), object);

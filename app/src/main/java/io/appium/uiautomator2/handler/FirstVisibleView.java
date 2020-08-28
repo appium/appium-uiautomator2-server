@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
-import io.appium.uiautomator2.core.AxNodeExtractor;
+import io.appium.uiautomator2.core.AxNodeInfoExtractor;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -60,7 +60,7 @@ public class FirstVisibleView extends SafeRequestHandler {
             }
             for (UiObject2 childObject : childObjects) {
                 try {
-                    if (AxNodeExtractor.toNullableAxNode(childObject) != null) {
+                    if (AxNodeInfoExtractor.toNullableAxNodeInfo(childObject) != null) {
                         firstObject = childObject;
                         break;
                     }
