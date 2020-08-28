@@ -33,7 +33,7 @@ public interface AndroidElement {
 
     void clear() throws UiObjectNotFoundException;
 
-    void click() throws UiObjectNotFoundException;
+    void click();
 
     boolean longClick() throws UiObjectNotFoundException;
 

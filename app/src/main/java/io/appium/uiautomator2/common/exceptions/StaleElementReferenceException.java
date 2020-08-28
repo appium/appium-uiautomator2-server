@@ -27,6 +27,10 @@ public class StaleElementReferenceException extends UiAutomator2Exception {
         super(message);
     }
 
+    public StaleElementReferenceException() {
+        super("The referenced element is no longer attached to the DOM");
+    }
+
     @Override
     public String getError() {
         return "stale element reference";

@@ -16,8 +16,6 @@
 
 package io.appium.uiautomator2.handler;
 
-import androidx.test.uiautomator.UiObjectNotFoundException;
-
 import java.util.NoSuchElementException;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -35,7 +33,7 @@ public class Click extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         AndroidElement element = session.getKnownElements()
                 .getElementFromCache(getElementId(request));

@@ -85,17 +85,28 @@ public class AccessibilityNodeInfoHelpers {
         return charSequenceToString(nodeInfo.getText(), replaceNull);
     }
 
+    public static boolean click(AccessibilityNodeInfo node) {
+        InteractionController ic = UiAutomatorBridge.getInstance().getInteractionController();
+        Rect bounds = getBounds(node, false);
+        return ic.clickNoSync(bounds.centerX(), bounds.centerY());
+    }
+
+    public static Rect getBounds(@Nullable AccessibilityNodeInfo node) {
+        return getBounds(node, true);
+    }
+
     /**
      * Returns the node's bounds clipped to the size of the display
      *
      * @return Empty Rect if node is null, else a Rect containing visible bounds
      */
-    public static Rect getBounds(@Nullable AccessibilityNodeInfo node) {
+    public static Rect getBounds(@Nullable AccessibilityNodeInfo node, boolean respectSimpleBoundsCalc) {
         Rect rect = new Rect();
         if (node == null) {
             return rect;
         }
-        if (((SimpleBoundsCalculation) Settings.SIMPLE_BOUNDS_CALCULATION.getSetting()).getValue()) {
+        if (respectSimpleBoundsCalc &&
+                ((SimpleBoundsCalculation) Settings.SIMPLE_BOUNDS_CALCULATION.getSetting()).getValue()) {
             node.getBoundsInScreen(rect);
             return rect;
         }

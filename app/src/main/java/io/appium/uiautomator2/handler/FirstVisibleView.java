@@ -60,7 +60,7 @@ public class FirstVisibleView extends SafeRequestHandler {
             }
             for (UiObject2 childObject : childObjects) {
                 try {
-                    if (AccessibilityNodeInfoGetter.fromUiObject(childObject) != null) {
+                    if (AccessibilityNodeInfoGetter.fromUiObjectNullable(childObject) != null) {
                         firstObject = childObject;
                         break;
                     }

@@ -18,12 +18,14 @@ package io.appium.uiautomator2.core;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 
+import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
-import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
@@ -32,35 +34,31 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.method;
  * Static helper class for getting {@link AccessibilityNodeInfo} instances.
  */
 public abstract class AccessibilityNodeInfoGetter {
-    private static final long TIME_IN_MS = 10000;
 
-    /**
-     * Gets the {@link AccessibilityNodeInfo} associated with the given {@link UiObject2}
-     */
     @Nullable
+    public static AccessibilityNodeInfo fromUiObjectNullable(Object object) {
+        return getAxNode(object);
+    }
+
+    @NonNull
     public static AccessibilityNodeInfo fromUiObject(Object object) {
-        return fromUiObject(object, TIME_IN_MS);
+        AccessibilityNodeInfo result = getAxNode(object);
+        if (result == null) {
+            throw new StaleElementReferenceException();
+        }
+        return result;
     }
 
     @Nullable
-    public static AccessibilityNodeInfo fromUiObject(Object object, long timeout) {
+    private static AccessibilityNodeInfo getAxNode(Object object) {
         if (object instanceof UiObject2) {
             return (AccessibilityNodeInfo) invoke(method(UiObject2.class,
                     "getAccessibilityNodeInfo"), object);
         } else if (object instanceof UiObject) {
+            long timeout = Configurator.getInstance().getWaitForSelectorTimeout();
             return (AccessibilityNodeInfo) invoke(method(UiObject.class,
                     "findAccessibilityNodeInfo", long.class), object, timeout);
         }
         throw new UiAutomator2Exception("Unknown object type: " + object.getClass().getName());
-    }
-
-    @Nullable
-    public static AccessibilityNodeInfo fromUiObjectDefaultTimeout(Object object) {
-        long timeout = TIME_IN_MS;
-        if (object instanceof UiObject) {
-            timeout = (long) ReflectionUtils.getField(UiObject.class,
-                    "WAIT_FOR_SELECTOR_TIMEOUT", object);
-        }
-        return fromUiObject(object, timeout);
     }
 }

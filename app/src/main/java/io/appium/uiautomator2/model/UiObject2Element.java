@@ -61,7 +61,7 @@ public class UiObject2Element extends BaseElement {
 
     @Override
     public void click() {
-        element.click();
+        AccessibilityNodeInfoHelpers.click(fromUiObject(element));
     }
 
     @Override

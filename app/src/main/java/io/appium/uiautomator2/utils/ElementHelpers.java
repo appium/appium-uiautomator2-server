@@ -118,9 +118,6 @@ public abstract class ElementHelpers {
         }
 
         AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-        if (nodeInfo == null) {
-            throw new ElementNotFoundException();
-        }
         return nodeInfo.getActionList().contains(ACTION_SET_PROGRESS);
     }
 
@@ -135,9 +132,6 @@ public abstract class ElementHelpers {
         // Per framework convention, setText(null) means clearing it
         String textToSend = toNonNullString(text);
         AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-        if (nodeInfo == null) {
-            throw new ElementNotFoundException();
-        }
 
         /*
          * Below Android 7.0 (API level 24) calling setText() throws
@@ -156,9 +150,6 @@ public abstract class ElementHelpers {
 
     public static void setProgress(final Object element, float value) {
         AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(element);
-        if (nodeInfo == null) {
-            throw new ElementNotFoundException();
-        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             throw new IllegalStateException("Setting progress is not supported on Android API below 24");
         }
@@ -221,16 +212,7 @@ public abstract class ElementHelpers {
 
     private static Rect getElementBoundsInScreen(Object uiObject) {
         Logger.debug("Getting bounds in screen for an AndroidElement");
-        AccessibilityNodeInfo nodeInfo = null;
-
-        try {
-            nodeInfo = AccessibilityNodeInfoGetter.fromUiObjectDefaultTimeout(uiObject);
-        } catch (UiAutomator2Exception ignored) {
-        }
-
-        if (nodeInfo == null) {
-            throw new UiAutomator2Exception("Could not find accessibility node info for the view");
-        }
+        AccessibilityNodeInfo nodeInfo = AccessibilityNodeInfoGetter.fromUiObject(uiObject);
 
         Rect rect = new Rect();
         nodeInfo.getBoundsInScreen(rect);
@@ -245,6 +227,7 @@ public abstract class ElementHelpers {
         // now scroll a bit back and forth in the view to populate the lastScrollData we need
         int x1 = bounds.centerX();
         int y1 = bounds.centerY() + MINI_SWIPE_PIXELS;
+        //noinspection UnnecessaryLocalVariable
         int x2 = x1;
         int y2 = y1 - (MINI_SWIPE_PIXELS * 2);
         int yMargin = (int) Math.floor(bounds.height() * SWIPE_DEAD_ZONE_PCT);

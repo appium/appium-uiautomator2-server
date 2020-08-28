@@ -35,6 +35,7 @@ public class InteractionController {
     private static final String METHOD_TOUCH_DOWN = "touchDown";
     private static final String METHOD_TOUCH_UP = "touchUp";
     private static final String METHOD_TOUCH_MOVE = "touchMove";
+    private static final String METHOD_CLICK_NO_SYNC = "clickNoSync";
     private final Object interactionController;
 
     public InteractionController(Object interactionController) {
@@ -127,6 +128,11 @@ public class InteractionController {
         return (Boolean) invoke(method(CLASS_INTERACTION_CONTROLLER,
                 METHOD_PERFORM_MULTI_POINTER_GESTURE, PointerCoords[][].class),
                 interactionController, (Object) pcs);
+    }
+
+    public boolean clickNoSync(int x, int y) {
+        return (Boolean) invoke(method(CLASS_INTERACTION_CONTROLLER,
+                METHOD_CLICK_NO_SYNC, int.class, int.class), interactionController, x, y);
     }
 
     public Boolean performMultiPointerGesture(final PointerCoords[][] pcs) throws UiAutomator2Exception {
