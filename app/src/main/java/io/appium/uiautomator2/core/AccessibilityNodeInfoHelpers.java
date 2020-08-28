@@ -146,7 +146,7 @@ public class AccessibilityNodeInfoHelpers {
                 return ret;
             }
             ancestors.add(ancestor);
-            ancestor = node.getParent();
+            ancestor = ancestor.getParent();
         }
 
         return ret;
