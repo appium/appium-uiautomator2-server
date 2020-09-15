@@ -45,6 +45,7 @@ import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getConstructor;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
@@ -77,8 +78,7 @@ public class CustomUiDevice {
             this.ByMatcherClass = ReflectionUtils.getClass("androidx.test.uiautomator.ByMatcher");
             this.METHOD_FIND_MATCH = method(ByMatcherClass, "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
             this.METHOD_FIND_MATCHES = method(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
-            this.uiObject2Constructor = UiObject2.class.getDeclaredConstructors()[0];
-            this.uiObject2Constructor.setAccessible(true);
+            this.uiObject2Constructor = getConstructor(UiObject2.class, UiDevice.class, BySelector.class, AccessibilityNodeInfo.class);
         } catch (Exception e) {
             Logger.error("Cannot create CustomUiDevice instance", e);
             throw e;

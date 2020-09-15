@@ -18,10 +18,12 @@ package io.appium.uiautomator2.model.internal;
 
 import android.graphics.Point;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import io.appium.uiautomator2.utils.ReflectionUtils;
+
+import static io.appium.uiautomator2.utils.ReflectionUtils.getConstructor;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 
@@ -37,16 +39,13 @@ public class GestureController {
 
     private synchronized static Class<?> getPointerGestureClass() {
         if (pointerGestureClass == null) {
-            try {
-                pointerGestureClass = Class.forName(POINTER_GESTURE_CLASS);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalStateException(String.format("Cannot access %s class", POINTER_GESTURE_CLASS), e);
-            }
+            pointerGestureClass = ReflectionUtils.getClass(POINTER_GESTURE_CLASS);
         }
         return pointerGestureClass;
     }
 
     private void performGesture(Object... gestures) {
+        @SuppressWarnings("RedundantArrayCreation")
         Method performGestureMethod = method(wrappedInstance.getClass(), "performGesture",
                 new Class<?>[] { getPointerGestureClass() });
         invoke(performGestureMethod, wrappedInstance, gestures);
@@ -56,9 +55,8 @@ public class GestureController {
         // new PointerGesture(point).pause(0);
         Object gesture;
         try {
-            Constructor<?> constructor = getPointerGestureClass().getConstructor(Point.class);
-            gesture = constructor.newInstance(point);
-        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            gesture = getConstructor(getPointerGestureClass(), Point.class).newInstance(point);
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new IllegalStateException(String.format("Cannot perform click gesture at %s", point), e);
         }
         Method pauseMethod = method(getPointerGestureClass(), "pause", long.class);
