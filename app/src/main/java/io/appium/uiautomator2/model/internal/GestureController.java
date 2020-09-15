@@ -19,6 +19,7 @@ package io.appium.uiautomator2.model.internal;
 import android.graphics.Point;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -31,11 +32,14 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.method;
 public class GestureController {
     private static final String POINTER_GESTURE_CLASS = "androidx.test.uiautomator.PointerGesture";
 
-    private Object wrappedInstance;
     private static Class<?> pointerGestureClass;
+    private static Constructor<?> pointerGestureConstructor;
+    private final Object wrappedInstance;
+    private final Method performGestureMethod;
 
     GestureController(Object wrappedInstance) {
         this.wrappedInstance = wrappedInstance;
+        this.performGestureMethod = extractPerformGestureMethod(wrappedInstance);
     }
 
     private synchronized static Class<?> getPointerGestureClass() {
@@ -45,27 +49,37 @@ public class GestureController {
         return pointerGestureClass;
     }
 
-    private void performGesture(Object... gestures) {
-        Method[] methods = wrappedInstance.getClass().getMethods();
-        for (Method method : methods) {
+    private static Method extractPerformGestureMethod(Object wrappedInstance) {
+        for (Method method : wrappedInstance.getClass().getDeclaredMethods()) {
             if (method.getName().equals("performGesture")) {
                 method.setAccessible(true);
-                Object args = Array.newInstance(getPointerGestureClass(), gestures.length);
-                for (int i = 0; i < gestures.length; ++i) {
-                    Array.set(args, i, gestures[i]);
-                }
-                invoke(method, wrappedInstance, args);
-                return;
+                return method;
             }
         }
-        throw new IllegalStateException(String.format("Cannot perform '%s' gesture", gestures));
+        throw new IllegalStateException(String.format("Cannot retrieve performGesture method from %s",
+                wrappedInstance.getClass().getCanonicalName()));
+    }
+
+    private synchronized Constructor<?> getPointerGestureConstructor() {
+        if (pointerGestureConstructor == null) {
+            pointerGestureConstructor = getConstructor(getPointerGestureClass(), Point.class);
+        }
+        return pointerGestureConstructor;
+    }
+
+    private void performGesture(Object... gestures) {
+        Object args = Array.newInstance(getPointerGestureClass(), gestures.length);
+        for (int i = 0; i < gestures.length; ++i) {
+            Array.set(args, i, gestures[i]);
+        }
+        invoke(performGestureMethod, wrappedInstance, args);
     }
 
     public void click(Point point) {
         // new PointerGesture(point).pause(0);
         Object gesture;
         try {
-            gesture = getConstructor(getPointerGestureClass(), Point.class).newInstance(point);
+            gesture = getPointerGestureConstructor().newInstance(point);
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new IllegalStateException(String.format("Cannot perform click gesture at %s", point), e);
         }
