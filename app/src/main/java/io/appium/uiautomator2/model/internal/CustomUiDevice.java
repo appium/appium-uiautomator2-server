@@ -101,12 +101,18 @@ public class CustomUiDevice {
     }
 
     @Nullable
-    private UiObject2 toUiObject2(Object selector, AccessibilityNodeInfo node)
-            throws IllegalAccessException, InvocationTargetException, InstantiationException {
+    private UiObject2 toUiObject2(Object selector, AccessibilityNodeInfo node) {
         Object[] constructorParams = {getUiDevice(), selector, node};
         long end = SystemClock.uptimeMillis() + UIOBJECT2_CREATION_TIMEOUT;
         while (true) {
-            Object object2 = uiObject2Constructor.newInstance(constructorParams);
+            Object object2;
+            try {
+                object2 = uiObject2Constructor.newInstance(constructorParams);
+            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                String msg = String.format("Cannot create UiObject2 instance with '%s' selector", selector);
+                Logger.error(msg, e);
+                throw new UiAutomator2Exception(msg, e);
+            }
             if (object2 instanceof UiObject2) {
                 return (UiObject2) object2;
             }
@@ -141,13 +147,15 @@ public class CustomUiDevice {
         } else {
             throw new InvalidSelectorException("Selector of type " + selector.getClass().getName() + " not supported");
         }
-        try {
-            return node == null ? null : toUiObject2(selector, node);
-        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            final String msg = "Error while creating UiObject2 object";
-            Logger.error(String.format("%s: %s", msg, e.getMessage()));
-            throw new UiAutomator2Exception(msg, e);
+        return node == null ? null : toUiObject2(selector, node);
+    }
+
+    public GestureController getGestureController() {
+        UiObject2 dummyElement = toUiObject2(null, null);
+        if (dummyElement == null) {
+            throw new IllegalStateException("Cannot create dummy UiObject2 instance");
         }
+        return new GestureController(getField("mGestureController", dummyElement));
     }
 
     /**
@@ -167,15 +175,9 @@ public class CustomUiDevice {
             throw new InvalidSelectorException("Selector of type " + selector.getClass().getName() + " not supported");
         }
         for (AccessibilityNodeInfo node : axNodesList) {
-            try {
-                UiObject2 uiObject2 = toUiObject2(toSelector(node), node);
-                if (uiObject2 != null) {
-                    ret.add(uiObject2);
-                }
-            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                final String msg = "Error while creating UiObject2 object";
-                Logger.error(String.format("%s: %s", msg, e.getMessage()));
-                throw new UiAutomator2Exception(msg, e);
+            UiObject2 uiObject2 = toUiObject2(toSelector(node), node);
+            if (uiObject2 != null) {
+                ret.add(uiObject2);
             }
         }
 

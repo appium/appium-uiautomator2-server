@@ -17,6 +17,7 @@ package io.appium.uiautomator2.core;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
 import io.appium.uiautomator2.utils.Logger;
@@ -85,10 +87,10 @@ public class AccessibilityNodeInfoHelpers {
         return charSequenceToString(nodeInfo.getText(), replaceNull);
     }
 
-    public static boolean click(AccessibilityNodeInfo node) {
-        InteractionController ic = UiAutomatorBridge.getInstance().getInteractionController();
+    public static void click(AccessibilityNodeInfo node) {
         Rect bounds = getBounds(node);
-        return ic.clickNoSync(bounds.centerX(), bounds.centerY());
+        CustomUiDevice.getInstance().getGestureController()
+                .click(new Point(bounds.centerX(), bounds.centerY()));
     }
 
     /**
