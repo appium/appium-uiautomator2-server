@@ -34,9 +34,9 @@ public class ReflectionUtils {
 
     public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... parameterTypes) {
         try {
-          Constructor<?> result = clazz.getConstructor(parameterTypes);
-          result.setAccessible(true);
-          return result;
+            Constructor<?> result = clazz.getDeclaredConstructor(parameterTypes);
+            result.setAccessible(true);
+            return result;
         } catch (NoSuchMethodException e) {
             throw new UiAutomator2Exception(
                     String.format("Cannot find %s class constructor", clazz.getCanonicalName()), e);
@@ -74,13 +74,13 @@ public class ReflectionUtils {
         }
     }
 
-    public static Object invoke(final Method method, final Object object, final Object... parameters){
+    public static Object invoke(final Method method, final Object object, final Object... parameters) {
         try {
             return method.invoke(object, parameters);
         } catch (final Exception e) {
-            final String msg = String.format("error while invoking method %s on object %s with parameters %s",
+            String msg = String.format("error while invoking method %s on object %s with parameters %s",
                     method, object, Arrays.toString(parameters));
-            Logger.error(msg + " " + e.getMessage());
+            Logger.error(msg, e);
             throw new UiAutomator2Exception(msg, e);
         }
     }
@@ -91,9 +91,9 @@ public class ReflectionUtils {
             method.setAccessible(true);
             return method;
         } catch (final Exception e) {
-            final String msg = String.format("error while getting method %s from class %s with parameter types %s",
-                    methodName, clazz, Arrays.toString(parameterTypes));
-            Logger.error(msg + " " + e.getMessage());
+            String msg = String.format("error while getting method %s from class %s with parameter types %s",
+                    methodName, clazz.getCanonicalName(), Arrays.toString(parameterTypes));
+            Logger.error(msg, e);
             throw new UiAutomator2Exception(msg, e);
         }
     }

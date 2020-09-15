@@ -45,6 +45,7 @@ import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getConstructor;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.method;
@@ -64,25 +65,13 @@ public class CustomUiDevice {
     private final Instrumentation mInstrumentation;
     private final Object API_LEVEL_ACTUAL;
 
-    /**
-     * UiDevice in android open source project will Support multi-window searches for API level 21,
-     * which has not been implemented in UiAutomatorViewer capture layout hierarchy, to be in sync
-     * with UiAutomatorViewer customizing getWindowRoots() method to skip the multi-window search
-     * based user passed property
-     */
     private CustomUiDevice() {
-        try {
-            this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
-            this.API_LEVEL_ACTUAL = getField(UiDevice.class, FIELD_API_LEVEL_ACTUAL, Device.getUiDevice());
-            this.ByMatcherClass = ReflectionUtils.getClass("androidx.test.uiautomator.ByMatcher");
-            this.METHOD_FIND_MATCH = method(ByMatcherClass, "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
-            this.METHOD_FIND_MATCHES = method(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
-            this.uiObject2Constructor = UiObject2.class.getDeclaredConstructors()[0];
-            this.uiObject2Constructor.setAccessible(true);
-        } catch (Exception e) {
-            Logger.error("Cannot create CustomUiDevice instance", e);
-            throw e;
-        }
+        this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
+        this.API_LEVEL_ACTUAL = getField(UiDevice.class, FIELD_API_LEVEL_ACTUAL, Device.getUiDevice());
+        this.ByMatcherClass = ReflectionUtils.getClass("androidx.test.uiautomator.ByMatcher");
+        this.METHOD_FIND_MATCH = method(ByMatcherClass, "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
+        this.METHOD_FIND_MATCHES = method(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
+        this.uiObject2Constructor = getConstructor(UiObject2.class, UiDevice.class, BySelector.class, AccessibilityNodeInfo.class);
     }
 
     public static synchronized CustomUiDevice getInstance() {

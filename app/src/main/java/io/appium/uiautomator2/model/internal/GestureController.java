@@ -45,10 +45,17 @@ public class GestureController {
     }
 
     private void performGesture(Object... gestures) {
-        @SuppressWarnings("RedundantArrayCreation")
-        Method performGestureMethod = method(wrappedInstance.getClass(), "performGesture",
-                new Class<?>[] { getPointerGestureClass() });
-        invoke(performGestureMethod, wrappedInstance, gestures);
+        Method[] methods = wrappedInstance.getClass().getMethods();
+        for (Method method : methods) {
+            if (!method.getName().equals("performGesture")) {
+                continue;
+            }
+
+            method.setAccessible(true);
+            invoke(method, wrappedInstance, gestures);
+            return;
+        }
+        throw new IllegalStateException(String.format("Cannot perform '%s' gesture", gestures));
     }
 
     public void click(Point point) {
