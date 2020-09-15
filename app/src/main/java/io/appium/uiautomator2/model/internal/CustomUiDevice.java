@@ -64,6 +64,7 @@ public class CustomUiDevice {
     private final Constructor<?> uiObject2Constructor;
     private final Instrumentation mInstrumentation;
     private final Object API_LEVEL_ACTUAL;
+    private GestureController gestureController;
 
     private CustomUiDevice() {
         this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
@@ -139,12 +140,15 @@ public class CustomUiDevice {
         return node == null ? null : toUiObject2(selector, node);
     }
 
-    public GestureController getGestureController() {
-        UiObject2 dummyElement = toUiObject2(null, null);
-        if (dummyElement == null) {
-            throw new IllegalStateException("Cannot create dummy UiObject2 instance");
+    public synchronized GestureController getGestureController() {
+        if (gestureController == null) {
+            UiObject2 dummyElement = toUiObject2(null, null);
+            if (dummyElement == null) {
+                throw new IllegalStateException("Cannot create dummy UiObject2 instance");
+            }
+            gestureController = new GestureController(getField("mGestureController", dummyElement));
         }
-        return new GestureController(getField("mGestureController", dummyElement));
+        return gestureController;
     }
 
     /**
