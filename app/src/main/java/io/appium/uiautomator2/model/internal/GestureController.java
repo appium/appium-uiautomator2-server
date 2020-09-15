@@ -18,6 +18,7 @@ package io.appium.uiautomator2.model.internal;
 
 import android.graphics.Point;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -47,13 +48,15 @@ public class GestureController {
     private void performGesture(Object... gestures) {
         Method[] methods = wrappedInstance.getClass().getMethods();
         for (Method method : methods) {
-            if (!method.getName().equals("performGesture")) {
-                continue;
+            if (method.getName().equals("performGesture")) {
+                method.setAccessible(true);
+                Object args = Array.newInstance(getPointerGestureClass(), gestures.length);
+                for (int i = 0; i < gestures.length; ++i) {
+                    Array.set(args, i, gestures[i]);
+                }
+                invoke(method, wrappedInstance, args);
+                return;
             }
-
-            method.setAccessible(true);
-            invoke(method, wrappedInstance, gestures);
-            return;
         }
         throw new IllegalStateException(String.format("Cannot perform '%s' gesture", gestures));
     }
