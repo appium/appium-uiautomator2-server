@@ -69,11 +69,13 @@ public class AppiumResponse {
         response.setContentType("application/json");
         response.setEncoding(StandardCharsets.UTF_8);
         response.setStatus(getHttpStatus().code());
+        boolean isError = value instanceof Throwable;
         try {
-            Object val = (value instanceof Throwable) ? formatException((Throwable) value) : value;
+            Object val = isError ? formatException((Throwable) value) : value;
             ResponseModel responseModel = new ResponseModel(val, sessionId);
             final String responseString = toJsonString(responseModel);
-            Logger.info(String.format("AppiumResponse: %s", abbreviate(responseString, 300)));
+            Logger.info(String.format("AppiumResponse: %s",
+                    isError ? responseString : abbreviate(responseString, 300)));
             response.setContent(responseString);
         } catch (JsonSyntaxException e) {
             Logger.error("Unable to create JSON Object", e);
