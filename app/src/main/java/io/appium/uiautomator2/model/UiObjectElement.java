@@ -226,7 +226,11 @@ public class UiObjectElement extends BaseElement {
                     ? ((UiObject2) uiObject2).findObject((BySelector) selector)
                     : null;
         }
-        return element.getChild((UiSelector) selector);
+        UiObject result = element.getChild((UiSelector) selector);
+        if (result != null && !result.exists()) {
+            return null;
+        }
+        return result;
     }
 
     @Override

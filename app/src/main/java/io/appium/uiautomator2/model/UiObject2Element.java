@@ -220,9 +220,14 @@ public class UiObject2Element extends BaseElement {
             CustomUiSelector customUiSelector = new CustomUiSelector(uiSelector);
             uiSelector = customUiSelector.getUiSelector(nodeInfo);
             Object uiObject = CustomUiDevice.getInstance().findObject(uiSelector);
-            return uiObject instanceof UiObject
-                    ? ((UiObject) uiObject).getChild((UiSelector) selector)
-                    : null;
+            if (!(uiObject instanceof UiObject)) {
+                return null;
+            }
+            UiObject result = ((UiObject) uiObject).getChild((UiSelector) selector);
+            if (result != null && !result.exists()) {
+                return null;
+            }
+            return result;
         }
         return element.findObject((BySelector) selector);
     }
