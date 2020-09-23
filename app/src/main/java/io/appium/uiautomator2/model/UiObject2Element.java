@@ -65,9 +65,8 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
-    public boolean longClick() {
-        element.longClick();
-        return true;
+    public void longClick() {
+        AccessibilityNodeInfoHelpers.longClick(toAxNodeInfo(element));
     }
 
     @Override

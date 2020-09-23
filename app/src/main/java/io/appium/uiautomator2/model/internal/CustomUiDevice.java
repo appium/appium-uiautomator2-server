@@ -146,7 +146,8 @@ public class CustomUiDevice {
             if (dummyElement == null) {
                 throw new IllegalStateException("Cannot create dummy UiObject2 instance");
             }
-            gestureController = new GestureController(getField("mGestureController", dummyElement));
+            Gestures gestures = new Gestures(getField("mGestures", dummyElement));
+            gestureController = new GestureController(getField("mGestureController", dummyElement), gestures);
         }
         return gestureController;
     }

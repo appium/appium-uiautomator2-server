@@ -71,8 +71,8 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
-    public boolean longClick() throws UiObjectNotFoundException {
-        return element.longClick();
+    public void longClick() {
+        AccessibilityNodeInfoHelpers.longClick(toAxNodeInfo(element));
     }
 
     @Override

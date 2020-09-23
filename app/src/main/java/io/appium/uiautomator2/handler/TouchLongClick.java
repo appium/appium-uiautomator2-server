@@ -18,11 +18,8 @@ package io.appium.uiautomator2.handler;
 
 import android.os.SystemClock;
 
-import androidx.test.uiautomator.UiObjectNotFoundException;
-
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.InteractionController;
-import io.appium.uiautomator2.utils.Logger;
 
 public class TouchLongClick extends BaseTouchAction {
     private static final int DEFAULT_DURATION_MS = 2000;
@@ -42,7 +39,7 @@ public class TouchLongClick extends BaseTouchAction {
     }
 
     @Override
-    protected void executeEvent() throws UiObjectNotFoundException {
+    protected void executeEvent() {
         int duration = params.duration != null
                 ? (int) Math.round(params.duration)
                 : DEFAULT_DURATION_MS;
@@ -56,13 +53,6 @@ public class TouchLongClick extends BaseTouchAction {
             throw new InvalidElementStateException(
                     String.format("Cannot perform %s action at (%s, %s)", getName(), clickX, clickY));
         }
-
-        // if correctLongClick failed and we have an element
-        // then uiautomator's longClick is used as a fallback.
-        Logger.debug("Falling back to broken longClick");
-        if (!element.longClick()) {
-            throw new InvalidElementStateException(
-                    String.format("Cannot perform %s action at %s element", getName(), element.getBy()));
-        }
+        element.longClick();
     }
 }

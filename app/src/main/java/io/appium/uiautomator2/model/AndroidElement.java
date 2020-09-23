@@ -35,7 +35,7 @@ public interface AndroidElement {
 
     void click();
 
-    boolean longClick() throws UiObjectNotFoundException;
+    void longClick();
 
     String getText();
 

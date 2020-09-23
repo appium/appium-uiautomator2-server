@@ -93,6 +93,12 @@ public class AccessibilityNodeInfoHelpers {
                 .click(new Point(bounds.centerX(), bounds.centerY()));
     }
 
+    public static void longClick(AccessibilityNodeInfo node) {
+        Rect bounds = getBounds(node);
+        CustomUiDevice.getInstance().getGestureController()
+                .longClick(new Point(bounds.centerX(), bounds.centerY()));
+    }
+
     /**
      * Returns the node's bounds clipped to the size of the display
      *
