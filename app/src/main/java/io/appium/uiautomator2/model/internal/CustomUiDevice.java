@@ -18,7 +18,6 @@ package io.appium.uiautomator2.model.internal;
 
 import android.app.Instrumentation;
 import android.os.SystemClock;
-import android.util.DisplayMetrics;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;

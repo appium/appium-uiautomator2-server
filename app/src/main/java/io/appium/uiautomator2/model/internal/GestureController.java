@@ -134,15 +134,17 @@ public class GestureController {
 
         Direction swipeDirection = Direction.reverse(direction);
         int scrollSpeed = speed == null ? Gestures.getDefaultScrollSpeed() : checkSpeed(speed);
-        for (float swipePercent = percent; swipePercent > 0.0f; swipePercent -= 1.0f) {
+        float swipePercent = percent;
+        while (swipePercent > 0.0f) {
             float segment = Math.min(swipePercent, 1.0f);
-            PointerGesture swipe = gestures.swipe(area, swipeDirection, segment, scrollSpeed)
-                    .pause(250);
+            PointerGesture swipe = gestures.swipe(area, swipeDirection, segment, scrollSpeed).pause(250);
 
             // Perform the gesture and return early if we reached the end
             if (performGestureAndWait(Until.scrollFinished(direction), Gestures.getScrollTimeout(), swipe)) {
                 return false;
             }
+
+            swipePercent -= 1.0f;
         }
         // We never reached the end
         return true;
