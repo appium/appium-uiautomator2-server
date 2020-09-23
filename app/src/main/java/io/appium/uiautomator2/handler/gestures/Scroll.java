@@ -37,7 +37,7 @@ public class Scroll extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         ScrollModel scrollModel = toModel(request, ScrollModel.class);
-        final String elementId = scrollModel.getUnifiedId();
+        final String elementId = scrollModel.origin == null ? null : scrollModel.origin.getUnifiedId();
         final boolean result;
         if (elementId == null) {
             result = CustomUiDevice.getInstance().getGestureController()

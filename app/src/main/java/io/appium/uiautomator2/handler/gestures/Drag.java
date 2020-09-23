@@ -40,16 +40,10 @@ public class Drag extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         DragModel dragModel = toModel(request, DragModel.class);
-        final String elementId = dragModel.getUnifiedId();
+        final String elementId = dragModel.origin == null ? null : dragModel.origin.getUnifiedId();
         if (elementId == null) {
-            if (dragModel.startX == null && dragModel.startY != null
-                    || dragModel.startX != null && dragModel.startY == null) {
-                throw new IllegalArgumentException("Both startX and startY coordinates must be set");
-            }
             CustomUiDevice.getInstance().getGestureController().drag(
-                    dragModel.getNativeStartPoint(),
-                    dragModel.getNativeEndPoint(),
-                    dragModel.speed);
+                    dragModel.getNativeStartPoint(), dragModel.getNativeEndPoint(), dragModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             AndroidElement element = session.getKnownElements().getElementFromCache(elementId);

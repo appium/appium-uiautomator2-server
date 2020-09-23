@@ -37,7 +37,7 @@ public class Swipe extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         SwipeModel swipeModel = toModel(request, SwipeModel.class);
-        final String elementId = swipeModel.getUnifiedId();
+        final String elementId = swipeModel.origin == null ? null : swipeModel.origin.getUnifiedId();
         if (elementId == null) {
             CustomUiDevice.getInstance().getGestureController()
                     .swipe(swipeModel.getArea(), swipeModel.getDirection(), swipeModel.percent, swipeModel.speed);

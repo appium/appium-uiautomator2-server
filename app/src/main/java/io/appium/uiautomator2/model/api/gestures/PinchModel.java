@@ -3,9 +3,11 @@ package io.appium.uiautomator2.model.api.gestures;
 import android.graphics.Rect;
 
 import io.appium.uiautomator2.model.RequiredField;
+import io.appium.uiautomator2.model.api.BaseModel;
 import io.appium.uiautomator2.model.api.ElementModel;
 
-public class PinchModel extends ElementModel {
+public class PinchModel extends BaseModel {
+    public ElementModel origin;
     public Double startX;
     public Double startY;
     public Double width;

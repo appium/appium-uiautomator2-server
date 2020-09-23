@@ -40,7 +40,7 @@ public class LongClick extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         LongClickModel longClickModel = toModel(request, LongClickModel.class);
-        final String elementId = longClickModel.getUnifiedId();
+        final String elementId = longClickModel.origin == null ? null : longClickModel.origin.getUnifiedId();
         if (elementId == null) {
             if (longClickModel.x == null && longClickModel.y != null
                     || longClickModel.x != null && longClickModel.y == null) {

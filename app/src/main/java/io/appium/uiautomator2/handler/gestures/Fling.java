@@ -37,7 +37,7 @@ public class Fling extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         FlingModel flingModel = toModel(request, FlingModel.class);
-        final String elementId = flingModel.getUnifiedId();
+        final String elementId = flingModel.origin == null ? null : flingModel.origin.getUnifiedId();
         final boolean result;
         if (elementId == null) {
             result = CustomUiDevice.getInstance().getGestureController()

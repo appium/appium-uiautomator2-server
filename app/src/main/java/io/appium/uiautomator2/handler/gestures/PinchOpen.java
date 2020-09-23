@@ -37,7 +37,7 @@ public class PinchOpen extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         PinchModel pinchModel = toModel(request, PinchModel.class);
-        final String elementId = pinchModel.getUnifiedId();
+        final String elementId = pinchModel.origin == null ? null : pinchModel.origin.getUnifiedId();
         if (elementId == null) {
             CustomUiDevice.getInstance().getGestureController()
                     .pinchOpen(pinchModel.getArea(), pinchModel.percent, pinchModel.speed);

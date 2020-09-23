@@ -7,9 +7,11 @@ import androidx.test.uiautomator.Direction;
 import java.util.Arrays;
 
 import io.appium.uiautomator2.model.RequiredField;
+import io.appium.uiautomator2.model.api.BaseModel;
 import io.appium.uiautomator2.model.api.ElementModel;
 
-public class ScrollModel extends ElementModel {
+public class ScrollModel extends BaseModel {
+    public ElementModel origin;
     public Double startX;
     public Double startY;
     public Double width;
