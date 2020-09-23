@@ -145,6 +145,14 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new SetClipboard("/wd/hub/session/:sessionId/appium/device/set_clipboard"));
         register(postHandler, new AcceptAlert("/wd/hub/session/:sessionId/alert/accept"));
         register(postHandler, new DismissAlert("/wd/hub/session/:sessionId/alert/dismiss"));
+
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.Drag("/wd/hub/session/:sessionId/appium/gestures/drag"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.Fling("/wd/hub/session/:sessionId/appium/gestures/fling"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.LongClick("/wd/hub/session/:sessionId/appium/gestures/long_click"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.PinchClose("/wd/hub/session/:sessionId/appium/gestures/pinch_close"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.PinchOpen("/wd/hub/session/:sessionId/appium/gestures/pinch_open"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.Scroll("/wd/hub/session/:sessionId/appium/gestures/scroll"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.Swipe("/wd/hub/session/:sessionId/appium/gestures/swipe"));
     }
 
     private void registerGetHandler() {

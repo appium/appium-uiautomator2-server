@@ -46,7 +46,7 @@ import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.NoSuchAttributeException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.AxNodeInfoExtractor;
-import io.appium.uiautomator2.core.AccessibilityNodeInfoHelpers;
+import io.appium.uiautomator2.core.AxNodeInfoHelpers;
 import io.appium.uiautomator2.core.EventRegister;
 import io.appium.uiautomator2.core.ReturningRunnable;
 import io.appium.uiautomator2.core.UiObjectChildGenerator;
@@ -139,7 +139,7 @@ public abstract class ElementHelpers {
          * if text length is greater than getMaxTextLength()
          */
         if (Build.VERSION.SDK_INT < 24) {
-            textToSend = AccessibilityNodeInfoHelpers.truncateTextToMaxLength(nodeInfo, textToSend);
+            textToSend = AxNodeInfoHelpers.truncateTextToMaxLength(nodeInfo, textToSend);
         }
 
         Logger.debug("Sending text to element: " + textToSend);
@@ -153,7 +153,7 @@ public abstract class ElementHelpers {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             throw new IllegalStateException("Setting progress is not supported on Android API below 24");
         }
-        AccessibilityNodeInfoHelpers.setProgressValue(nodeInfo, value);
+        AxNodeInfoHelpers.setProgressValue(nodeInfo, value);
     }
 
     public static AndroidElement findElement(final BySelector ui2BySelector) throws UiAutomator2Exception {
@@ -191,7 +191,7 @@ public abstract class ElementHelpers {
             }
         }
 
-        return AccessibilityNodeInfoHelpers.getText(AxNodeInfoExtractor.toAxNodeInfo(element), replaceNull);
+        return AxNodeInfoHelpers.getText(AxNodeInfoExtractor.toAxNodeInfo(element), replaceNull);
     }
 
     public static String getContentSize(AndroidElement element) throws UiObjectNotFoundException {

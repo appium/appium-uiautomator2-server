@@ -59,4 +59,8 @@ public class Point {
     public String toString() {
         return "[x=" + x + ", y=" + y + "]";
     }
+
+    public android.graphics.Point toNativePoint() {
+        return new android.graphics.Point(x.intValue(), y.intValue());
+    }
 }

@@ -26,6 +26,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
 import androidx.annotation.Nullable;
+import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
 
 import java.util.HashSet;
@@ -44,7 +45,7 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
 /**
  * This class contains static helper methods to work with {@link AccessibilityNodeInfo}
  */
-public class AccessibilityNodeInfoHelpers {
+public class AxNodeInfoHelpers {
     // https://github.com/appium/appium/issues/12892
     private final static int MAX_DEPTH = 70;
 
@@ -87,16 +88,85 @@ public class AccessibilityNodeInfoHelpers {
         return charSequenceToString(nodeInfo.getText(), replaceNull);
     }
 
+    private static Point getCenterPoint(Rect bounds) {
+        return new Point(bounds.centerX(), bounds.centerY());
+    }
+
+    private static Rect getBoundsForGestures(AccessibilityNodeInfo node) {
+        Rect bounds = getBounds(node);
+        bounds.left = bounds.left + 5;
+        bounds.top = bounds.top + 5;
+        bounds.right = bounds.right - 5;
+        bounds.bottom = bounds.bottom - 5;
+        return bounds;
+    }
+
     public static void click(AccessibilityNodeInfo node) {
         Rect bounds = getBounds(node);
-        CustomUiDevice.getInstance().getGestureController()
-                .click(new Point(bounds.centerX(), bounds.centerY()));
+        CustomUiDevice.getInstance().getGestureController().click(getCenterPoint(bounds));
     }
 
     public static void longClick(AccessibilityNodeInfo node) {
+        longClick(node, null);
+    }
+
+    public static void longClick(AccessibilityNodeInfo node, @Nullable Long durationMs) {
         Rect bounds = getBounds(node);
-        CustomUiDevice.getInstance().getGestureController()
-                .longClick(new Point(bounds.centerX(), bounds.centerY()));
+        CustomUiDevice.getInstance().getGestureController().longClick(getCenterPoint(bounds), durationMs);
+    }
+
+    public static void drag(AccessibilityNodeInfo node, Point end) {
+        drag(node, end, null);
+    }
+
+    public static void drag(AccessibilityNodeInfo node, Point end, @Nullable Integer speed) {
+        Rect bounds = getBounds(node);
+        CustomUiDevice.getInstance().getGestureController().drag(getCenterPoint(bounds), end, speed);
+    }
+
+    public static void pinchClose(AccessibilityNodeInfo node, float percent) {
+        pinchClose(node, percent, null);
+    }
+
+    public static void pinchClose(AccessibilityNodeInfo node, float percent, @Nullable Integer speed) {
+        Rect bounds = getBoundsForGestures(node);
+        CustomUiDevice.getInstance().getGestureController().pinchClose(bounds, percent, speed);
+    }
+
+    public static void pinchOpen(AccessibilityNodeInfo node, float percent) {
+        pinchOpen(node, percent, null);
+    }
+
+    public static void pinchOpen(AccessibilityNodeInfo node, float percent, @Nullable Integer speed) {
+        Rect bounds = getBoundsForGestures(node);
+        CustomUiDevice.getInstance().getGestureController().pinchOpen(bounds, percent, speed);
+    }
+
+    public static void swipe(AccessibilityNodeInfo node, Direction direction, float percent) {
+        swipe(node, direction, percent, null);
+    }
+
+    public static void swipe(AccessibilityNodeInfo node, Direction direction, float percent, @Nullable Integer speed) {
+        Rect bounds = getBoundsForGestures(node);
+        CustomUiDevice.getInstance().getGestureController().swipe(bounds, direction, percent, speed);
+    }
+
+    public static boolean scroll(AccessibilityNodeInfo node, Direction direction, float percent) {
+        return scroll(node, direction, percent, null);
+    }
+
+    public static boolean scroll(AccessibilityNodeInfo node, Direction direction, float percent, @Nullable Integer speed) {
+        Rect bounds = getBoundsForGestures(node);
+        return CustomUiDevice.getInstance().getGestureController().scroll(bounds, direction, percent, speed);
+    }
+
+    public static boolean fling(AccessibilityNodeInfo node, Direction direction) {
+        return fling(node, direction, null);
+    }
+
+    public static boolean fling(AccessibilityNodeInfo node, Direction direction, @Nullable Integer speed) {
+        Rect bounds = getBoundsForGestures(node);
+        return CustomUiDevice.getInstance().getGestureController().fling(bounds, direction, speed);
     }
 
     /**

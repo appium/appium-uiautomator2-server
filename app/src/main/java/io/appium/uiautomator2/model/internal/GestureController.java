@@ -17,7 +17,15 @@
 package io.appium.uiautomator2.model.internal;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.view.ViewConfiguration;
+
+import androidx.annotation.Nullable;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.EventCondition;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.Until;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -55,11 +63,105 @@ public class GestureController {
         invoke(performGestureMethod, wrappedInstance, args);
     }
 
+    private static UiDevice getDevice() {
+        return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+    }
+
+    private class GestureRunnable implements Runnable {
+        private PointerGesture[] mGestures;
+
+        public GestureRunnable(PointerGesture[] gestures) {
+            mGestures = gestures;
+        }
+
+        @Override
+        public void run() {
+            performGesture(mGestures);
+        }
+    }
+
+    private <R> R performGestureAndWait(EventCondition<R> condition, long timeout, PointerGesture... gestures) {
+        return getDevice().performActionAndWait(new GestureRunnable(gestures), condition, timeout);
+    }
+
     public void click(Point point) {
         performGesture(new PointerGesture(point).pause(0L));
     }
 
-    public void longClick(Point point) {
-        performGesture(new PointerGesture(point).pause(ViewConfiguration.getLongPressTimeout()));
+    public void longClick(Point point, @Nullable Long durationMs) {
+        performGesture(new PointerGesture(point)
+                .pause(durationMs == null ? ViewConfiguration.getLongPressTimeout() : durationMs));
+    }
+
+    private static int checkSpeed(int speed) {
+        if (speed < 0) {
+            throw new IllegalArgumentException("Speed cannot be negative");
+        }
+        return speed;
+    }
+
+    private static float checkPercent(float percent) {
+        if (percent < 0.0f || percent > 1.0f) {
+            throw new IllegalArgumentException("Percent must be between 0.0f and 1.0f");
+        }
+        return percent;
+    }
+
+    public void drag(Point start, Point end, @Nullable Integer speed) {
+        int dragSpeed = speed == null ? Gestures.getDefaultDragSpeed() : checkSpeed(speed);
+        performGesture(gestures.drag(start, end, dragSpeed));
+    }
+
+    public void pinchClose(Rect area, float percent, @Nullable Integer speed) {
+        int pinchSpeed = speed == null ? Gestures.getDefaultPinchSpeed() : checkSpeed(speed);
+        performGesture(gestures.pinchClose(area, checkPercent(percent), pinchSpeed));
+    }
+
+    public void pinchOpen(Rect area, float percent, @Nullable Integer speed) {
+        int pinchSpeed = speed == null ? Gestures.getDefaultPinchSpeed() : checkSpeed(speed);
+        performGesture(gestures.pinchOpen(area, checkPercent(percent), pinchSpeed));
+    }
+
+    public void swipe(Rect area, Direction direction, float percent, @Nullable Integer speed) {
+        int swipeSpeed = speed == null ? Gestures.getDefaultSwipeSpeed() : checkSpeed(speed);
+        performGesture(gestures.swipe(area, direction, checkPercent(percent), swipeSpeed));
+    }
+
+    public boolean scroll(Rect area, Direction direction, float percent, @Nullable Integer speed) {
+        if (percent < 0.0f) {
+            throw new IllegalArgumentException("Percent must be greater than 0.0f");
+        }
+
+        Direction swipeDirection = Direction.reverse(direction);
+        int scrollSpeed = speed == null ? Gestures.getDefaultScrollSpeed() : checkSpeed(speed);
+        for (float swipePercent = percent; swipePercent > 0.0f; swipePercent -= 1.0f) {
+            float segment = Math.min(swipePercent, 1.0f);
+            PointerGesture swipe = gestures.swipe(area, swipeDirection, segment, scrollSpeed)
+                    .pause(250);
+
+            // Perform the gesture and return early if we reached the end
+            if (performGestureAndWait(Until.scrollFinished(direction), Gestures.getScrollTimeout(), swipe)) {
+                return false;
+            }
+        }
+        // We never reached the end
+        return true;
+    }
+
+    public boolean fling(Rect area, Direction direction, @Nullable Integer speed) {
+        ViewConfiguration vc = ViewConfiguration.get(InstrumentationRegistry.getInstrumentation().getContext());
+        int minVelocity = vc.getScaledMinimumFlingVelocity();
+        int flingSpeed = speed == null ? Gestures.getDefaultFlingSpeed() : speed;
+        if (flingSpeed < minVelocity) {
+            throw new IllegalArgumentException(String.format(
+                    "Speed %s is less than the minimum fling velocity %s", speed, minVelocity));
+        }
+
+        // To fling, we swipe in the opposite direction
+        Direction swipeDirection = Direction.reverse(direction);
+        PointerGesture swipe = gestures.swipe(area, swipeDirection, 1.0f, flingSpeed);
+
+        // Perform the gesture and return true if we did not reach the end
+        return !performGestureAndWait(Until.scrollFinished(direction), Gestures.getFlingTimeout(), swipe);
     }
 }
