@@ -39,8 +39,12 @@ public class PinchOpen extends SafeRequestHandler {
         PinchModel pinchModel = toModel(request, PinchModel.class);
         final String elementId = pinchModel.origin == null ? null : pinchModel.origin.getUnifiedId();
         if (elementId == null) {
+            if (pinchModel.area == null) {
+                throw new IllegalArgumentException("The pinch area coordinates must be provided if " +
+                        "element is not set");
+            }
             CustomUiDevice.getInstance().getGestureController()
-                    .pinchOpen(pinchModel.getArea(), pinchModel.percent, pinchModel.speed);
+                    .pinchOpen(pinchModel.area.toNativeRect(), pinchModel.percent, pinchModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             AndroidElement element = session.getKnownElements().getElementFromCache(elementId);

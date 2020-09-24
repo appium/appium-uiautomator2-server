@@ -89,8 +89,11 @@ public class GestureController {
     }
 
     public void longClick(Point point, @Nullable Long durationMs) {
-        performGesture(new PointerGesture(point)
-                .pause(durationMs == null ? ViewConfiguration.getLongPressTimeout() : durationMs));
+        long duration = durationMs == null ? ViewConfiguration.getLongPressTimeout() : durationMs;
+        if (duration < 0) {
+            throw new IllegalArgumentException("Long click duration cannot be negative");
+        }
+        performGesture(new PointerGesture(point).pause(duration));
     }
 
     private static int checkSpeed(int speed) {

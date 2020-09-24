@@ -15,14 +15,43 @@
  */
 package io.appium.uiautomator2.unittest.test.internal.commands;
 
+import android.graphics.Rect;
+
+import androidx.annotation.Nullable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.appium.uiautomator2.model.Point;
 import io.appium.uiautomator2.unittest.test.internal.Client;
 import io.appium.uiautomator2.unittest.test.internal.Response;
 
 @SuppressWarnings("JavaDoc")
 public class ElementCommands {
+
+    private static final String W3C_ELEMENT_ID_KEY_NAME = "element-6066-11e4-a52e-4f735466cecf";
+
+    private static JSONObject toOrigin(String elementId) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(W3C_ELEMENT_ID_KEY_NAME, elementId);
+        return jsonObject;
+    }
+
+    private static JSONObject toPoint(Point point) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("x", point.x);
+        jsonObject.put("y", point.y);
+        return jsonObject;
+    }
+
+    private static JSONObject toArea(Rect rect) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("left", rect.left);
+        jsonObject.put("top", rect.top);
+        jsonObject.put("width", rect.width());
+        jsonObject.put("height", rect.height());
+        return jsonObject;
+    }
 
     /**
      * performs click on the given element
@@ -36,6 +65,197 @@ public class ElementCommands {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("element", elementId);
         return Client.post("/element/" + elementId + "/click", jsonObject);
+    }
+
+    /**
+     * performs long click gesture
+     * POST /appium/gestures/long_click
+     *
+     * @param elementId
+     * @param offset
+     * @param duration
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response longClick(@Nullable String elementId, @Nullable Point offset,
+                                     @Nullable Long duration) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        if (elementId != null) {
+            jsonObject.put("origin", toOrigin(elementId));
+        }
+        if (offset != null) {
+            jsonObject.put("offset", toPoint(offset));
+        }
+        if (duration != null) {
+            jsonObject.put("duration", duration);
+        }
+        return Client.post("/appium/gestures/long_click", jsonObject);
+    }
+
+    /**
+     * performs drag gesture
+     * POST /appium/gestures/drag
+     *
+     * @param elementId
+     * @param start
+     * @param end
+     * @param speed
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response drag(@Nullable String elementId, @Nullable Point start,
+                                Point end, @Nullable Integer speed) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        if (elementId != null) {
+            jsonObject.put("origin", toOrigin(elementId));
+        }
+        if (start != null) {
+            jsonObject.put("start", toPoint(start));
+        }
+        jsonObject.put("end", toPoint(end));
+        if (speed != null) {
+            jsonObject.put("speed", speed);
+        }
+        return Client.post("/appium/gestures/drag", jsonObject);
+    }
+
+    /**
+     * performs fling gesture
+     * POST /appium/gestures/fling
+     *
+     * @param elementId
+     * @param area
+     * @param direction
+     * @param speed
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response fling(@Nullable String elementId, @Nullable Rect area,
+                                 String direction, @Nullable Integer speed) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        if (elementId != null) {
+            jsonObject.put("origin", toOrigin(elementId));
+        }
+        if (area != null) {
+            jsonObject.put("area", toArea(area));
+        }
+        jsonObject.put("direction", direction);
+        if (speed != null) {
+            jsonObject.put("speed", speed);
+        }
+        return Client.post("/appium/gestures/fling", jsonObject);
+    }
+
+    /**
+     * performs pinch close gesture
+     * POST /appium/gestures/pinch_close
+     *
+     * @param elementId
+     * @param area
+     * @param percent
+     * @param speed
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response pinchClose(@Nullable String elementId, @Nullable Rect area,
+                                      float percent, @Nullable Integer speed) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        if (elementId != null) {
+            jsonObject.put("origin", toOrigin(elementId));
+        }
+        if (area != null) {
+            jsonObject.put("area", toArea(area));
+        }
+        jsonObject.put("percent", percent);
+        if (speed != null) {
+            jsonObject.put("speed", speed);
+        }
+        return Client.post("/appium/gestures/pinch_close", jsonObject);
+    }
+
+    /**
+     * performs pinch open gesture
+     * POST /appium/gestures/pinch_open
+     *
+     * @param elementId
+     * @param area
+     * @param percent
+     * @param speed
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response pinchOpen(@Nullable String elementId, @Nullable Rect area,
+                                     float percent, @Nullable Integer speed) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        if (elementId != null) {
+            jsonObject.put("origin", toOrigin(elementId));
+        }
+        if (area != null) {
+            jsonObject.put("area", toArea(area));
+        }
+        jsonObject.put("percent", percent);
+        if (speed != null) {
+            jsonObject.put("speed", speed);
+        }
+        return Client.post("/appium/gestures/pinch_open", jsonObject);
+    }
+
+    /**
+     * performs scroll gesture
+     * POST /appium/gestures/scroll
+     *
+     * @param elementId
+     * @param area
+     * @param percent
+     * @param direction
+     * @param speed
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response scroll(@Nullable String elementId, @Nullable Rect area,
+                                  float percent, String direction, @Nullable Integer speed) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        if (elementId != null) {
+            jsonObject.put("origin", toOrigin(elementId));
+        }
+        if (area != null) {
+            jsonObject.put("area", toArea(area));
+        }
+        jsonObject.put("percent", percent);
+        jsonObject.put("direction", direction);
+        if (speed != null) {
+            jsonObject.put("speed", speed);
+        }
+        return Client.post("/appium/gestures/scroll", jsonObject);
+    }
+
+    /**
+     * performs swipe gesture
+     * POST /appium/gestures/swipe
+     *
+     * @param elementId
+     * @param area
+     * @param percent
+     * @param direction
+     * @param speed
+     * @return Response from UiAutomator2 server
+     * @throws JSONException
+     */
+    public static Response swipe(@Nullable String elementId, @Nullable Rect area,
+                                 float percent, String direction, @Nullable Integer speed) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        if (elementId != null) {
+            jsonObject.put("origin", toOrigin(elementId));
+        }
+        if (area != null) {
+            jsonObject.put("area", toArea(area));
+        }
+        jsonObject.put("percent", percent);
+        jsonObject.put("direction", direction);
+        if (speed != null) {
+            jsonObject.put("speed", speed);
+        }
+        return Client.post("/appium/gestures/swipe", jsonObject);
     }
 
     /**
@@ -57,9 +277,9 @@ public class ElementCommands {
     /**
      * Send a keycode with particular parameters
      *
-     * @param keyCode Android key code
+     * @param keyCode   Android key code
      * @param metaState the state of meta keys
-     * @param flags KeyEvent flags
+     * @param flags     KeyEvent flags
      * @return Response from UiAutomator2 server
      * @throws JSONException
      */

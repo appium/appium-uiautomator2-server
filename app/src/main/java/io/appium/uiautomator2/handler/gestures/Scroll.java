@@ -40,9 +40,12 @@ public class Scroll extends SafeRequestHandler {
         final String elementId = scrollModel.origin == null ? null : scrollModel.origin.getUnifiedId();
         final boolean result;
         if (elementId == null) {
+            if (scrollModel.area == null) {
+                throw new IllegalArgumentException("The scroll area coordinates must be provided if " +
+                        "element is not set");
+            }
             result = CustomUiDevice.getInstance().getGestureController()
-                    .scroll(scrollModel.getArea(), scrollModel.getDirection(), scrollModel.percent, scrollModel.speed);
-
+                    .scroll(scrollModel.area.toNativeRect(), scrollModel.getDirection(), scrollModel.percent, scrollModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             AndroidElement element = session.getKnownElements().getElementFromCache(elementId);

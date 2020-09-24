@@ -39,8 +39,12 @@ public class Swipe extends SafeRequestHandler {
         SwipeModel swipeModel = toModel(request, SwipeModel.class);
         final String elementId = swipeModel.origin == null ? null : swipeModel.origin.getUnifiedId();
         if (elementId == null) {
+            if (swipeModel.area == null) {
+                throw new IllegalArgumentException("The swipe area coordinates must be provided if " +
+                        "element is not set");
+            }
             CustomUiDevice.getInstance().getGestureController()
-                    .swipe(swipeModel.getArea(), swipeModel.getDirection(), swipeModel.percent, swipeModel.speed);
+                    .swipe(swipeModel.area.toNativeRect(), swipeModel.getDirection(), swipeModel.percent, swipeModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             AndroidElement element = session.getKnownElements().getElementFromCache(elementId);

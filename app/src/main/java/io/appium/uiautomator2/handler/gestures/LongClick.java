@@ -42,12 +42,12 @@ public class LongClick extends SafeRequestHandler {
         LongClickModel longClickModel = toModel(request, LongClickModel.class);
         final String elementId = longClickModel.origin == null ? null : longClickModel.origin.getUnifiedId();
         if (elementId == null) {
-            if (longClickModel.x == null && longClickModel.y != null
-                    || longClickModel.x != null && longClickModel.y == null) {
-                throw new IllegalArgumentException("Both x and y coordinates must be set");
+            if (longClickModel.offset == null) {
+                throw new IllegalArgumentException("Long click offset coordinates must be provided " +
+                        "if element is not set");
             }
             CustomUiDevice.getInstance().getGestureController().longClick(
-                    longClickModel.toNativePoint(),
+                    longClickModel.offset.toNativePoint(),
                     longClickModel.duration == null ? null : longClickModel.duration.longValue()
             );
         } else {
@@ -56,20 +56,19 @@ public class LongClick extends SafeRequestHandler {
             if (element == null) {
                 throw new ElementNotFoundException();
             }
-            if (longClickModel.x == null && longClickModel.y == null) {
+            if (longClickModel.offset == null) {
                 if (longClickModel.duration == null) {
                     element.longClick();
                 } else {
                     element.longClick(longClickModel.duration.longValue());
                 }
-            } else if (longClickModel.x != null && longClickModel.y != null) {
+            } else {
                 Rect bounds = element.getBounds();
-                CustomUiDevice.getInstance().getGestureController().longClick(
-                        new Point(bounds.left + longClickModel.x.intValue(), bounds.top + longClickModel.y.intValue()),
+                Point location = new Point(bounds.left + longClickModel.offset.x.intValue(),
+                        bounds.top + longClickModel.offset.y.intValue());
+                CustomUiDevice.getInstance().getGestureController().longClick(location,
                         longClickModel.duration == null ? null : longClickModel.duration.longValue()
                 );
-            } else {
-                throw new IllegalArgumentException("Both x and y coordinates must be set");
             }
         }
 

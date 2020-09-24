@@ -42,24 +42,26 @@ public class Drag extends SafeRequestHandler {
         DragModel dragModel = toModel(request, DragModel.class);
         final String elementId = dragModel.origin == null ? null : dragModel.origin.getUnifiedId();
         if (elementId == null) {
+            if (dragModel.start == null) {
+                throw new IllegalArgumentException("The starting point coordinates must be provided if " +
+                        "element is not set");
+            }
             CustomUiDevice.getInstance().getGestureController().drag(
-                    dragModel.getNativeStartPoint(), dragModel.getNativeEndPoint(), dragModel.speed);
+                    dragModel.start.toNativePoint(), dragModel.end.toNativePoint(), dragModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
             if (element == null) {
                 throw new ElementNotFoundException();
             }
-            if (dragModel.startX == null && dragModel.startY == null) {
-                element.drag(dragModel.getEndPoint(), dragModel.speed);
-            } else if (dragModel.startX != null && dragModel.startY != null) {
-                Rect bounds = element.getBounds();
-                Point start = new Point(bounds.left + dragModel.startX.intValue(),
-                        bounds.top + dragModel.startY.intValue());
-                CustomUiDevice.getInstance().getGestureController().drag(start, dragModel.getNativeEndPoint(),
-                        dragModel.speed);
+            if (dragModel.start == null) {
+                element.drag(dragModel.end.toPoint(), dragModel.speed);
             } else {
-                throw new IllegalArgumentException("Both startX and startY coordinates must be set");
+                Rect bounds = element.getBounds();
+                Point start = new Point(bounds.left + dragModel.start.x.intValue(),
+                        bounds.top + dragModel.start.y.intValue());
+                CustomUiDevice.getInstance().getGestureController().drag(start, dragModel.end.toNativePoint(),
+                        dragModel.speed);
             }
         }
 

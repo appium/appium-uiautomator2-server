@@ -40,8 +40,12 @@ public class Fling extends SafeRequestHandler {
         final String elementId = flingModel.origin == null ? null : flingModel.origin.getUnifiedId();
         final boolean result;
         if (elementId == null) {
+            if (flingModel.area == null) {
+                throw new IllegalArgumentException("The fling area coordinates must be provided if " +
+                        "element is not set");
+            }
             result = CustomUiDevice.getInstance().getGestureController()
-                    .fling(flingModel.getArea(), flingModel.getDirection(), flingModel.speed);
+                    .fling(flingModel.area.toNativeRect(), flingModel.getDirection(), flingModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
             AndroidElement element = session.getKnownElements().getElementFromCache(elementId);

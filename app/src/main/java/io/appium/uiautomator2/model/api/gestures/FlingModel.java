@@ -1,7 +1,5 @@
 package io.appium.uiautomator2.model.api.gestures;
 
-import android.graphics.Rect;
-
 import androidx.test.uiautomator.Direction;
 
 import java.util.Arrays;
@@ -12,29 +10,12 @@ import io.appium.uiautomator2.model.api.ElementModel;
 
 public class FlingModel extends BaseModel {
     public ElementModel origin;
-    public Double startX;
-    public Double startY;
-    public Double width;
-    public Double height;
+    public RectModel area;
     @RequiredField
     public String direction;
     public Integer speed;
 
     public FlingModel() {}
-
-    public Rect getArea() {
-        if (startX == null || startY == null) {
-            throw new IllegalArgumentException("Both startX and startY coordinates of the fling area must be set");
-        }
-        if (width == null || height == null) {
-            throw new IllegalArgumentException("Both width and height of the fling area must be set");
-        }
-        if (width <= 0 || height <= 0) {
-            throw new IllegalArgumentException("Both width and height of the fling area must be greater than zero");
-        }
-        return new Rect(startX.intValue(), startY.intValue(),
-                startX.intValue() + width.intValue(), startY.intValue() + height.intValue());
-    }
 
     public Direction getDirection() {
         try {
