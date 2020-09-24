@@ -26,7 +26,6 @@ import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getConstructor;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
-import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 
 public class PointerGesture {
     private static final String POINTER_GESTURE_CLASS = "androidx.test.uiautomator.PointerGesture";
