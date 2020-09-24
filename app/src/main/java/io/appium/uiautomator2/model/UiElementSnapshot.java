@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.appium.uiautomator2.core.AxNodeInfoHelpers;
+import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 
@@ -65,8 +65,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         setAttribute(attributes, Attribute.INDEX, index);
         setAttribute(attributes, Attribute.PACKAGE, charSequenceToNullableString(node.getPackageName()));
         setAttribute(attributes, Attribute.CLASS, charSequenceToNullableString(node.getClassName()));
-        setAttribute(attributes, Attribute.TEXT, AxNodeInfoHelpers.getText(node, true));
-        setAttribute(attributes, Attribute.ORIGINAL_TEXT, AxNodeInfoHelpers.getText(node, false));
+        setAttribute(attributes, Attribute.TEXT, AxNodeInfoHelper.getText(node, true));
+        setAttribute(attributes, Attribute.ORIGINAL_TEXT, AxNodeInfoHelper.getText(node, false));
         setAttribute(attributes, Attribute.CONTENT_DESC, charSequenceToNullableString(node.getContentDescription()));
         setAttribute(attributes, Attribute.RESOURCE_ID, node.getViewIdResourceName());
         setAttribute(attributes, Attribute.CHECKABLE, node.isCheckable());
@@ -78,13 +78,13 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         setAttribute(attributes, Attribute.LONG_CLICKABLE, node.isLongClickable());
         setAttribute(attributes, Attribute.PASSWORD, node.isPassword());
         setAttribute(attributes, Attribute.SCROLLABLE, node.isScrollable());
-        Range<Integer> selectionRange = AxNodeInfoHelpers.getSelectionRange(node);
+        Range<Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
         if (selectionRange != null) {
             attributes.put(Attribute.SELECTION_START, selectionRange.getLower());
             attributes.put(Attribute.SELECTION_END, selectionRange.getUpper());
         }
         setAttribute(attributes, Attribute.SELECTED, node.isSelected());
-        setAttribute(attributes, Attribute.BOUNDS, AxNodeInfoHelpers.getBounds(node).toShortString());
+        setAttribute(attributes, Attribute.BOUNDS, AxNodeInfoHelper.getBounds(node).toShortString());
         setAttribute(attributes, Attribute.DISPLAYED, node.isVisibleToUser());
         // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
         this.attributes = Collections.unmodifiableMap(attributes);

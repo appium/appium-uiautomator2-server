@@ -15,8 +15,6 @@ public class FlingModel extends BaseModel {
     public String direction;
     public Integer speed;
 
-    public FlingModel() {}
-
     public Direction getDirection() {
         try {
             return Direction.valueOf(direction.toUpperCase());

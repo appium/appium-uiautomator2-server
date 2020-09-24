@@ -10,6 +10,4 @@ public class PinchModel extends BaseModel {
     @RequiredField
     public Float percent;
     public Integer speed;
-
-    public PinchModel() {}
 }

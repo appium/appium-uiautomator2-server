@@ -17,8 +17,6 @@ public class SwipeModel extends BaseModel {
     public Float percent;
     public Integer speed;
 
-    public SwipeModel() {}
-
     public Direction getDirection() {
         try {
             return Direction.valueOf(direction.toUpperCase());

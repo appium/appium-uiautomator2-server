@@ -45,7 +45,7 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
 /**
  * This class contains static helper methods to work with {@link AccessibilityNodeInfo}
  */
-public class AxNodeInfoHelpers {
+public class AxNodeInfoHelper {
     // https://github.com/appium/appium/issues/12892
     private final static int MAX_DEPTH = 70;
 
@@ -94,6 +94,11 @@ public class AxNodeInfoHelpers {
 
     private static Rect getBoundsForGestures(AccessibilityNodeInfo node) {
         Rect bounds = getBounds(node);
+        // The default margin values are copied from UiObject2 class:
+        // private int mMarginLeft   = 5;
+        // private int mMarginTop    = 5;
+        // private int mMarginRight  = 5;
+        // private int mMarginBottom = 5;
         bounds.left = bounds.left + 5;
         bounds.top = bounds.top + 5;
         bounds.right = bounds.right - 5;

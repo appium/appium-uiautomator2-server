@@ -10,6 +10,4 @@ public class DragModel extends BaseModel {
     @RequiredField
     public PointModel end;
     public Integer speed;
-
-    public DragModel() {}
 }

@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.core.AxNodeInfoHelpers;
+import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Device;
@@ -68,77 +68,77 @@ public class UiObjectElement extends BaseElement {
 
     @Override
     public void click() {
-        AxNodeInfoHelpers.click(toAxNodeInfo(element));
+        AxNodeInfoHelper.click(toAxNodeInfo(element));
     }
 
     @Override
     public void longClick() {
-        AxNodeInfoHelpers.longClick(toAxNodeInfo(element));
+        AxNodeInfoHelper.longClick(toAxNodeInfo(element));
     }
 
     @Override
     public void longClick(long durationMs) {
-        AxNodeInfoHelpers.longClick(toAxNodeInfo(element), durationMs);
+        AxNodeInfoHelper.longClick(toAxNodeInfo(element), durationMs);
     }
 
     @Override
     public void drag(Point dest) {
-        AxNodeInfoHelpers.drag(toAxNodeInfo(element), dest.toNativePoint());
+        AxNodeInfoHelper.drag(toAxNodeInfo(element), dest.toNativePoint());
     }
 
     @Override
     public void drag(Point dest, @Nullable Integer speed) {
-        AxNodeInfoHelpers.drag(toAxNodeInfo(element), dest.toNativePoint(), speed);
+        AxNodeInfoHelper.drag(toAxNodeInfo(element), dest.toNativePoint(), speed);
     }
 
     @Override
     public void pinchClose(float percent) {
-        AxNodeInfoHelpers.pinchClose(toAxNodeInfo(element), percent);
+        AxNodeInfoHelper.pinchClose(toAxNodeInfo(element), percent);
     }
 
     @Override
     public void pinchClose(float percent, @Nullable Integer speed) {
-        AxNodeInfoHelpers.pinchClose(toAxNodeInfo(element), percent, speed);
+        AxNodeInfoHelper.pinchClose(toAxNodeInfo(element), percent, speed);
     }
 
     @Override
     public void pinchOpen(float percent) {
-        AxNodeInfoHelpers.pinchOpen(toAxNodeInfo(element), percent);
+        AxNodeInfoHelper.pinchOpen(toAxNodeInfo(element), percent);
     }
 
     @Override
     public void pinchOpen(float percent, @Nullable Integer speed) {
-        AxNodeInfoHelpers.pinchOpen(toAxNodeInfo(element), percent, speed);
+        AxNodeInfoHelper.pinchOpen(toAxNodeInfo(element), percent, speed);
     }
 
     @Override
     public void swipe(Direction direction, float percent) {
-        AxNodeInfoHelpers.swipe(toAxNodeInfo(element), direction, percent);
+        AxNodeInfoHelper.swipe(toAxNodeInfo(element), direction, percent);
     }
 
     @Override
     public void swipe(Direction direction, float percent, @Nullable Integer speed) {
-        AxNodeInfoHelpers.swipe(toAxNodeInfo(element), direction, percent, speed);
+        AxNodeInfoHelper.swipe(toAxNodeInfo(element), direction, percent, speed);
     }
 
     @Override
     public boolean scroll(Direction direction, float percent) {
-        return AxNodeInfoHelpers.scroll(toAxNodeInfo(element), direction, percent);
+        return AxNodeInfoHelper.scroll(toAxNodeInfo(element), direction, percent);
     }
 
     @Override
     public boolean scroll(Direction direction, float percent, @Nullable Integer speed) {
-        return AxNodeInfoHelpers.scroll(toAxNodeInfo(element), direction, percent, speed);
+        return AxNodeInfoHelper.scroll(toAxNodeInfo(element), direction, percent, speed);
     }
 
     @Override
     public boolean fling(Direction direction) {
-        return AxNodeInfoHelpers.fling(toAxNodeInfo(element), direction);
+        return AxNodeInfoHelper.fling(toAxNodeInfo(element), direction);
     }
 
     @Override
     public boolean fling(Direction direction, @Nullable Integer speed) {
-        return AxNodeInfoHelpers.fling(toAxNodeInfo(element), direction, speed);
+        return AxNodeInfoHelper.fling(toAxNodeInfo(element), direction, speed);
     }
 
     @Override
@@ -205,21 +205,21 @@ public class UiObjectElement extends BaseElement {
                 result = element.isSelected();
                 break;
             case DISPLAYED:
-                result = element.exists() && AxNodeInfoHelpers.isVisible(toAxNodeInfo(element));
+                result = element.exists() && AxNodeInfoHelper.isVisible(toAxNodeInfo(element));
                 break;
             case PASSWORD:
-                result = AxNodeInfoHelpers.isPassword(toAxNodeInfo(element));
+                result = AxNodeInfoHelper.isPassword(toAxNodeInfo(element));
                 break;
             case BOUNDS:
                 result = getBounds().toShortString();
                 break;
             case PACKAGE: {
-                result = AxNodeInfoHelpers.getPackageName(toAxNodeInfo(element));
+                result = AxNodeInfoHelper.getPackageName(toAxNodeInfo(element));
                 break;
             }
             case SELECTION_END:
             case SELECTION_START:
-                Range<Integer> selectionRange = AxNodeInfoHelpers.getSelectionRange(toAxNodeInfo(element));
+                Range<Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(toAxNodeInfo(element));
                 result = selectionRange == null ? null
                         : (dstAttribute == Attribute.SELECTION_END ? selectionRange.getUpper() : selectionRange.getLower());
                 break;
@@ -274,7 +274,7 @@ public class UiObjectElement extends BaseElement {
 
     @Override
     public Rect getBounds() {
-        return AxNodeInfoHelpers.getBounds(toAxNodeInfo(element));
+        return AxNodeInfoHelper.getBounds(toAxNodeInfo(element));
     }
 
     @Nullable

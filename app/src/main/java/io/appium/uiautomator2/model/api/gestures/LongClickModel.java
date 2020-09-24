@@ -7,6 +7,4 @@ public class LongClickModel extends BaseModel {
     public ElementModel origin;
     public PointModel offset;
     public Double duration;
-
-    public LongClickModel() {}
 }

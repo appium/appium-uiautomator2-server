@@ -4,15 +4,12 @@ import android.graphics.Point;
 
 import io.appium.uiautomator2.model.RequiredField;
 import io.appium.uiautomator2.model.api.BaseModel;
-import io.appium.uiautomator2.model.api.ElementModel;
 
 public class PointModel extends BaseModel {
     @RequiredField
     public Double x;
     @RequiredField
     public Double y;
-
-    public PointModel() {}
 
     public Point toNativePoint() {
         return new Point(x.intValue(), y.intValue());

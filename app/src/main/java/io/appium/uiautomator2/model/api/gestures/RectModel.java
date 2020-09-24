@@ -15,8 +15,6 @@ public class RectModel extends BaseModel {
     @RequiredField
     public Double height;
 
-    public RectModel() {}
-
     public Rect toNativeRect() {
         if (width < 0) {
             throw new IllegalArgumentException("Rectangle width must not be negative");

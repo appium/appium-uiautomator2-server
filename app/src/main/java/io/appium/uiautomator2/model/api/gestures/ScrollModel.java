@@ -17,8 +17,6 @@ public class ScrollModel extends BaseModel {
     public Float percent;
     public Integer speed;
 
-    public ScrollModel() {}
-
     public Direction getDirection() {
         try {
             return Direction.valueOf(direction.toUpperCase());
