@@ -102,10 +102,12 @@ public class Gestures {
     }
 
     public static long getScrollTimeout() {
-        return (long) getField(UiObject2.class, "SCROLL_TIMEOUT", null);
+        // UiObject2.SCROLL_TIMEOUT
+        return 1000L;
     }
 
     public static long getFlingTimeout() {
-        return (long) getField(UiObject2.class,"FLING_TIMEOUT", null);
+        // UiObject2.FLING_TIMEOUT
+        return 5000L;
     }
 }

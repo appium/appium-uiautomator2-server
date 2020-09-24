@@ -104,7 +104,7 @@ public class ElementCommands {
      * @throws JSONException
      */
     public static Response drag(@Nullable String elementId, @Nullable Point start,
-                                Point end, @Nullable Integer speed) throws JSONException {
+                                @Nullable Point end, @Nullable Integer speed) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         if (elementId != null) {
             jsonObject.put("origin", toOrigin(elementId));
@@ -112,7 +112,9 @@ public class ElementCommands {
         if (start != null) {
             jsonObject.put("start", toPoint(start));
         }
-        jsonObject.put("end", toPoint(end));
+        if (end != null) {
+            jsonObject.put("end", toPoint(end));
+        }
         if (speed != null) {
             jsonObject.put("speed", speed);
         }
