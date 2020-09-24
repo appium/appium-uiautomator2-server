@@ -61,7 +61,7 @@ import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
 import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
-import static io.appium.uiautomator2.utils.ReflectionUtils.method;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
 import static io.appium.uiautomator2.utils.StringHelpers.toNonNullString;
 
@@ -93,7 +93,7 @@ public abstract class ElementHelpers {
      */
     public static List<Object> dedupe(List<Object> elements) {
         try {
-            findAccessibilityNodeInfo = method(UiObject.class, "findAccessibilityNodeInfo", long.class);
+            findAccessibilityNodeInfo = getMethod(UiObject.class, "findAccessibilityNodeInfo", long.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -26,7 +26,7 @@ import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getConstructor;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
-import static io.appium.uiautomator2.utils.ReflectionUtils.method;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 
 public class PointerGesture {
     private static final String POINTER_GESTURE_CLASS = "androidx.test.uiautomator.PointerGesture";
@@ -62,7 +62,7 @@ public class PointerGesture {
     }
 
     public PointerGesture pause(long ms) {
-        Method pauseMethod = method(getWrappedClass(), "pause", long.class);
+        Method pauseMethod = ReflectionUtils.getMethod(getWrappedClass(), "pause", long.class);
         invoke(pauseMethod, wrappedInstance, ms);
         return this;
     }

@@ -25,7 +25,7 @@ import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.utils.Device;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
-import static io.appium.uiautomator2.utils.ReflectionUtils.method;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 
 public class UiAutomatorBridge {
     private static UiAutomatorBridge INSTANCE = null;
@@ -40,20 +40,20 @@ public class UiAutomatorBridge {
     }
 
     public InteractionController getInteractionController() throws UiAutomator2Exception {
-        return new InteractionController(invoke(method(UiDevice.class, "getInteractionController"),
+        return new InteractionController(invoke(getMethod(UiDevice.class, "getInteractionController"),
                 Device.getUiDevice()));
     }
 
     public AccessibilityNodeInfo getAccessibilityRootNode() throws UiAutomator2Exception {
-        Object queryController = invoke(method(UiDevice.class, "getQueryController"), Device.getUiDevice());
-        return (AccessibilityNodeInfo) invoke(method(queryController.getClass(), "getRootNode"), queryController);
+        Object queryController = invoke(getMethod(UiDevice.class, "getQueryController"), Device.getUiDevice());
+        return (AccessibilityNodeInfo) invoke(getMethod(queryController.getClass(), "getRootNode"), queryController);
     }
 
     public UiAutomation getUiAutomation() {
-        return (UiAutomation) invoke(method(UiDevice.class, "getUiAutomation"), Device.getUiDevice());
+        return (UiAutomation) invoke(getMethod(UiDevice.class, "getUiAutomation"), Device.getUiDevice());
     }
 
     public Display getDefaultDisplay() throws UiAutomator2Exception {
-        return (Display) invoke(method(UiDevice.class, "getDefaultDisplay"), Device.getUiDevice());
+        return (Display) invoke(getMethod(UiDevice.class, "getDefaultDisplay"), Device.getUiDevice());
     }
 }

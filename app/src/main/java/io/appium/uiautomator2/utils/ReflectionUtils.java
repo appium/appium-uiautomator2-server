@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.utils;
 
+import androidx.annotation.Nullable;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -43,15 +45,16 @@ public class ReflectionUtils {
         }
     }
 
-    public static Object getField(final Class<?> clazz, final String fieldName, final Object object) {
+    public static Object getField(final Class<?> clazz, final String fieldName,
+                                  @Nullable final Object object) {
         try {
-            final Field field = clazz.getDeclaredField(fieldName);
+            Field field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
             return field.get(object);
-        } catch (final Exception e) {
-            final String msg = String.format("error while getting field %s from object %s", fieldName, object);
-            Logger.error(msg + " " + e.getMessage());
-            throw new UiAutomator2Exception(msg, e);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new UiAutomator2Exception(
+                    String.format("Cannot get field %s from object %s (class %s)",
+                            fieldName, object, clazz.getCanonicalName()), e);
         }
     }
 
@@ -68,7 +71,7 @@ public class ReflectionUtils {
             Field declaredField = dstObject.getClass().getDeclaredField(fieldName);
             declaredField.setAccessible(true);
             declaredField.set(dstObject, value);
-        } catch (Exception e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new UiAutomator2Exception(String.format("Cannot set %s's field '%s' to '%s'",
                     dstObject.getClass().getSimpleName(), fieldName, value), e);
         }
@@ -77,28 +80,24 @@ public class ReflectionUtils {
     public static Object invoke(final Method method, final Object object, final Object... parameters) {
         try {
             return method.invoke(object, parameters);
-        } catch (final Exception e) {
-            String msg = String.format("error while invoking method %s on object %s with parameters %s",
-                    method, object, Arrays.toString(parameters));
-            Logger.error(msg, e);
-            throw new UiAutomator2Exception(msg, e);
+        } catch (Exception e) {
+            throw new UiAutomator2Exception(String.format("Cannot invoke method %s on object %s with parameters %s",
+                    method, object, Arrays.toString(parameters)), e);
         }
     }
 
-    public static Method method(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
+    public static Method getMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
         try {
             final Method method = clazz.getDeclaredMethod(methodName, parameterTypes);
             method.setAccessible(true);
             return method;
-        } catch (final Exception e) {
-            String msg = String.format("error while getting method %s from class %s with parameter types %s",
-                    methodName, clazz.getCanonicalName(), Arrays.toString(parameterTypes));
-            Logger.error(msg, e);
-            throw new UiAutomator2Exception(msg, e);
+        } catch (NoSuchMethodException e) {
+            throw new UiAutomator2Exception(String.format("Cannot get method %s from class %s with parameter types %s",
+                    methodName, clazz.getCanonicalName(), Arrays.toString(parameterTypes)), e);
         }
     }
 
-    public static Method method(final String className, final String method, final Class<?>... parameterTypes) {
-        return method(getClass(className), method, parameterTypes);
+    public static Method getMethod(final String className, final String method, final Class<?>... parameterTypes) {
+        return getMethod(getClass(className), method, parameterTypes);
     }
 }

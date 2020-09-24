@@ -27,7 +27,7 @@ import androidx.test.uiautomator.UiObject2;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
-import static io.appium.uiautomator2.utils.ReflectionUtils.method;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 
 public abstract class AxNodeInfoExtractor {
 
@@ -48,11 +48,11 @@ public abstract class AxNodeInfoExtractor {
     @Nullable
     private static AccessibilityNodeInfo extractAxNodeInfo(Object object) {
         if (object instanceof UiObject2) {
-            return (AccessibilityNodeInfo) invoke(method(UiObject2.class,
+            return (AccessibilityNodeInfo) invoke(getMethod(UiObject2.class,
                     "getAccessibilityNodeInfo"), object);
         } else if (object instanceof UiObject) {
             long timeout = Configurator.getInstance().getWaitForSelectorTimeout();
-            return (AccessibilityNodeInfo) invoke(method(UiObject.class,
+            return (AccessibilityNodeInfo) invoke(getMethod(UiObject.class,
                     "findAccessibilityNodeInfo", long.class), object, timeout);
         }
         throw new IllegalArgumentException(String.format("Unknown object type '%s'",

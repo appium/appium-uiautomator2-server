@@ -45,7 +45,7 @@ import io.appium.uiautomator2.utils.PositionHelper;
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
-import static io.appium.uiautomator2.utils.ReflectionUtils.method;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class UiObjectElement extends BaseElement {
@@ -404,7 +404,7 @@ public class UiObjectElement extends BaseElement {
              * The returned string matches exactly what is displayed in the
              * UiAutomater inspector.
              */
-            AccessibilityNodeInfo node = (AccessibilityNodeInfo) invoke(method(element.getClass(), "findAccessibilityNodeInfo", long.class),
+            AccessibilityNodeInfo node = (AccessibilityNodeInfo) invoke(getMethod(element.getClass(), "findAccessibilityNodeInfo", long.class),
                     element, Configurator.getInstance().getWaitForSelectorTimeout());
 
             if (node == null) {

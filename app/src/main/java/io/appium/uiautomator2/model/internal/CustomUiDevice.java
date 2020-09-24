@@ -48,7 +48,7 @@ import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getConstructor;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
-import static io.appium.uiautomator2.utils.ReflectionUtils.method;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 
 public class CustomUiDevice {
     private static final int CHANGE_ORIENTATION_TIMEOUT_MS = 2000;
@@ -70,8 +70,8 @@ public class CustomUiDevice {
         this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
         this.API_LEVEL_ACTUAL = getField(UiDevice.class, FIELD_API_LEVEL_ACTUAL, Device.getUiDevice());
         this.ByMatcherClass = ReflectionUtils.getClass("androidx.test.uiautomator.ByMatcher");
-        this.METHOD_FIND_MATCH = method(ByMatcherClass, "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
-        this.METHOD_FIND_MATCHES = method(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
+        this.METHOD_FIND_MATCH = getMethod(ByMatcherClass, "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
+        this.METHOD_FIND_MATCHES = getMethod(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
         this.uiObject2Constructor = getConstructor(UiObject2.class, UiDevice.class, BySelector.class, AccessibilityNodeInfo.class);
     }
 

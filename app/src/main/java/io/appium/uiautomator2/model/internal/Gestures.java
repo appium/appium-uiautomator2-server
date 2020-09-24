@@ -24,14 +24,13 @@ import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
-import static io.appium.uiautomator2.utils.ReflectionUtils.method;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 
 public class Gestures {
     private final Object wrappedInstance;
@@ -41,7 +40,7 @@ public class Gestures {
     }
 
     public PointerGesture drag(Point start, Point end, int speed) {
-        Method dragMethod = method(wrappedInstance.getClass(), "drag",
+        Method dragMethod = getMethod(wrappedInstance.getClass(), "drag",
                 Point.class, Point.class, int.class);
         return new PointerGesture(invoke(dragMethod, wrappedInstance, start, end, speed));
     }
@@ -55,19 +54,19 @@ public class Gestures {
     }
 
     public PointerGesture[] pinchClose(Rect area, float percent, int speed) {
-        Method pinchCloseMethod = method(wrappedInstance.getClass(), "pinchClose",
+        Method pinchCloseMethod = getMethod(wrappedInstance.getClass(), "pinchClose",
                 Rect.class, float.class, int.class);
         return toGesturesArray(invoke(pinchCloseMethod, wrappedInstance, area, percent, speed));
     }
 
     public PointerGesture[] pinchOpen(Rect area, float percent, int speed) {
-        Method pinchOpenMethod = method(wrappedInstance.getClass(), "pinchOpen",
+        Method pinchOpenMethod = getMethod(wrappedInstance.getClass(), "pinchOpen",
                 Rect.class, float.class, int.class);
         return toGesturesArray(invoke(pinchOpenMethod, wrappedInstance, area, percent, speed));
     }
 
     public PointerGesture swipe(Rect area, Direction direction, float percent, int speed) {
-        Method swipeRectMethod = method(wrappedInstance.getClass(), "swipeRect",
+        Method swipeRectMethod = getMethod(wrappedInstance.getClass(), "swipeRect",
                 Rect.class, Direction.class, float.class, int.class);
         return new PointerGesture(invoke(swipeRectMethod, wrappedInstance, area, direction, percent, speed));
     }
@@ -79,15 +78,7 @@ public class Gestures {
 
     private static int getSpeedValue(String gestureName) {
         String fieldName = String.format("DEFAULT_%s_SPEED", gestureName.toUpperCase());
-        try {
-            Field field = UiObject2.class.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return field.getInt(null);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new IllegalStateException(
-                    String.format("Cannot retrieve %s field value of %s",
-                            fieldName, UiObject2.class.getCanonicalName()), e);
-        }
+        return (int) getField(UiObject2.class, fieldName, null);
     }
 
     public static int getDefaultDragSpeed() {
@@ -111,10 +102,10 @@ public class Gestures {
     }
 
     public static long getScrollTimeout() {
-        return (long) getField("SCROLL_TIMEOUT", UiObject2.class);
+        return (long) getField(UiObject2.class, "SCROLL_TIMEOUT", null);
     }
 
     public static long getFlingTimeout() {
-        return (long) getField("FLING_TIMEOUT", UiObject2.class);
+        return (long) getField(UiObject2.class,"FLING_TIMEOUT", null);
     }
 }
