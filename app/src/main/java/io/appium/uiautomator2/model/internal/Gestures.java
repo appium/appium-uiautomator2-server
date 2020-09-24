@@ -24,6 +24,7 @@ import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,16 @@ public class Gestures {
     }
 
     private static int getSpeedValue(String gestureName) {
-        return (int) getField(String.format("DEFAULT_%s_SPEED", gestureName.toUpperCase()), UiObject2.class);
+        String fieldName = String.format("DEFAULT_%s_SPEED", gestureName.toUpperCase());
+        try {
+            Field field = UiObject2.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return field.getInt(null);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new IllegalStateException(
+                    String.format("Cannot retrieve %s field value of %s",
+                            fieldName, UiObject2.class.getCanonicalName()), e);
+        }
     }
 
     public static int getDefaultDragSpeed() {
