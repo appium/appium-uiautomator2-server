@@ -71,8 +71,8 @@ public class AXWindowHelpers {
                  * "java.lang.IllegalStateException: Cannot perform this action on a sealed instance."
                  * Ignore it and try to re-get root node.
                  */
-                Logger.info("An exception was caught while invoking " +
-                        "the root in the active window. Ignoring it", e);
+                Logger.info("An exception was caught while looking for " +
+                        "the root of the active window. Ignoring it", e);
             }
         }
         throw new UiAutomator2Exception(String.format(
