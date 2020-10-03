@@ -30,7 +30,7 @@ import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.settings.Settings;
 
 public class AXWindowHelpers {
-    private static final long AX_ROOT_RETRIEVAL_TIMEOUT = 10000;
+    private static final long AX_ROOT_RETRIEVAL_TIMEOUT_MS = 10000;
     private static AccessibilityNodeInfo[] cachedWindowRoots = null;
 
     /**
@@ -47,7 +47,7 @@ public class AXWindowHelpers {
             // it is fine
             // ignore
         } catch (Exception e) {
-            Logger.error("Failed to clear Accessibility Node cache.", e);
+            Logger.warn("Failed to clear Accessibility Node cache", e);
         }
     }
 
@@ -58,8 +58,8 @@ public class AXWindowHelpers {
     }
 
     private static AccessibilityNodeInfo getActiveWindowRoot() {
-        long end = SystemClock.uptimeMillis() + AX_ROOT_RETRIEVAL_TIMEOUT;
-        while (end > SystemClock.uptimeMillis()) {
+        long start = SystemClock.uptimeMillis();
+        while (SystemClock.uptimeMillis() - start < AX_ROOT_RETRIEVAL_TIMEOUT_MS) {
             try {
                 AccessibilityNodeInfo root = UiAutomatorBridge.getInstance().getAccessibilityRootNode();
                 if (root != null) {
@@ -71,13 +71,15 @@ public class AXWindowHelpers {
                  * "java.lang.IllegalStateException: Cannot perform this action on a sealed instance."
                  * Ignore it and try to re-get root node.
                  */
-                Logger.debug(String.format("'%s' exception was caught while invoking " +
-                        "getRootAccessibilityNodeInActiveWindow() - ignoring it", e.getMessage()));
+                Logger.info("An exception was caught while invoking " +
+                        "the root in the active window. Ignoring it", e);
             }
         }
         throw new UiAutomator2Exception(String.format(
-                "Timed out after %d milliseconds waiting for root AccessibilityNodeInfo",
-                AX_ROOT_RETRIEVAL_TIMEOUT));
+                "Timed out after %dms waiting for the root AccessibilityNodeInfo in the active window. " +
+                        "Make sure the active window is not constantly hogging the main UI thread " +
+                        "(e.g. the application is being idle long enough), so the accessibility " +
+                        "manager could do its work", SystemClock.uptimeMillis() - start));
     }
 
     private static AccessibilityNodeInfo[] getWindowRoots() {
@@ -89,7 +91,7 @@ public class AXWindowHelpers {
         for (AccessibilityWindowInfo window : windows) {
             AccessibilityNodeInfo root = window.getRoot();
             if (root == null) {
-                Logger.debug(String.format("Skipping null root node for window: %s", window.toString()));
+                Logger.info(String.format("Skipping null root node for window: %s", window.toString()));
                 continue;
             }
             result.add(root);
