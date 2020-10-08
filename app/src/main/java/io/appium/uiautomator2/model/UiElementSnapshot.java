@@ -38,6 +38,7 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableS
 
 /**
  * A UiElement that gets attributes via the Accessibility API.
+ * https://android.googlesource.com/platform/frameworks/testing/+/476328047e3f82d6d9be8ab23f502a670613f94c/uiautomator/library/src/com/android/uiautomator/core/AccessibilityNodeInfoDumper.java
  */
 @TargetApi(18)
 public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElementSnapshot> {
@@ -118,8 +119,9 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         return this.depth;
     }
 
-    private void setDepth(int depth) {
+    private UiElementSnapshot setDepth(int depth) {
         this.depth = depth;
+        return this;
     }
 
     public int getMaxDepth() {
@@ -143,10 +145,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         return new UiElementSnapshot(rootElement, 0, maxDepth);
     }
 
-    private static UiElementSnapshot makeNode(AccessibilityNodeInfo rootElement, int index, int depth) {
-        UiElementSnapshot snapshot = new UiElementSnapshot(rootElement, index);
-        snapshot.setDepth(depth);
-        return snapshot;
+    private static UiElementSnapshot take(AccessibilityNodeInfo rootElement, int index, int depth) {
+        return new UiElementSnapshot(rootElement, index).setDepth(depth);
     }
 
     private void addToastMsgToRoot(CharSequence tokenMSG) {
@@ -170,16 +170,20 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         }
 
         List<UiElementSnapshot> children = new ArrayList<>(childCount);
-        boolean areInvisibleElementsAllowed = AppiumUIA2Driver
-                .getInstance()
-                .getSessionOrThrow()
+        boolean areInvisibleElementsAllowed = AppiumUIA2Driver.getInstance().getSessionOrThrow()
                 .getCapability(ALLOW_INVISIBLE_ELEMENTS.toString(), false);
-        for (int i = 0; i < childCount; i++) {
-            AccessibilityNodeInfo child = node.getChild(i);
-            //Ignore if element is not visible on the screen
-            if (child != null && (child.isVisibleToUser() || areInvisibleElementsAllowed)) {
-                children.add(makeNode(child, i, getDepth() + 1));
+        for (int index = 0; index < childCount; index++) {
+            AccessibilityNodeInfo child = node.getChild(index);
+            if (child == null) {
+                Logger.info(String.format("The child node #%s of %s is null", index, node));
+                continue;
             }
+
+            // Ignore if the element is not visible on the screen
+            if (areInvisibleElementsAllowed || child.isVisibleToUser()) {
+                children.add(take(child, index, getDepth() + 1));
+            }
+            child.recycle();
         }
         return children;
     }
