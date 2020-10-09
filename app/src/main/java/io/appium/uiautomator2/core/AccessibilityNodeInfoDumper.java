@@ -131,8 +131,7 @@ public class AccessibilityNodeInfoDumper {
         serializer.startTag(NAMESPACE, nodeName);
 
         for (Attribute attr : uiElement.attributeKeys()) {
-            if (!attr.isExposableToXml()
-                    || includedAttributes != null && !includedAttributes.contains(attr)) {
+            if (!attr.isExposableToXml()) {
                 continue;
             }
             Object value = uiElement.get(attr);
@@ -173,8 +172,8 @@ public class AccessibilityNodeInfoDumper {
             serializer.startDocument(XML_ENCODING, true);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             final UiElement<?, ?> xpathRoot = root == null
-                    ? UiElementSnapshot.take(getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage())
-                    : UiElementSnapshot.take(root);
+                    ? UiElementSnapshot.take(getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage(), includedAttributes)
+                    : UiElementSnapshot.take(root, includedAttributes);
             serializeUiElement(xpathRoot, 0);
             serializer.endDocument();
             Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",
