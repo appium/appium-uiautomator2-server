@@ -68,7 +68,7 @@ public class AccessibilityNodeInfoDumper {
     private static final String XML_ENCODING = "UTF-8";
     private static final XPathFactory XPATH = XPathFactory.instance();
     private static final SAXBuilder SAX_BUILDER = new SAXBuilder();
-    private final Semaphore RESOURCES_GUARD = new Semaphore(1);
+    private static final Semaphore RESOURCES_GUARD = new Semaphore(1);
 
     @Nullable
     private final AccessibilityNodeInfo root;
