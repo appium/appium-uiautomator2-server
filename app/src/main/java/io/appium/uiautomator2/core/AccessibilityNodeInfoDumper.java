@@ -67,7 +67,7 @@ public class AccessibilityNodeInfoDumper {
     private static final String XML_ENCODING = "UTF-8";
     private static final XPathFactory XPATH = XPathFactory.instance();
     private static final SAXBuilder SAX_BUILDER = new SAXBuilder();
-    private static final Semaphore RESOURCES_GUARD = new Semaphore(1);
+    private final Semaphore RESOURCES_GUARD = new Semaphore(1);
 
     @Nullable
     private final AccessibilityNodeInfo root;
@@ -206,8 +206,8 @@ public class AccessibilityNodeInfoDumper {
             final Document document = SAX_BUILDER.build(xmlStream);
             final XPathExpression<org.jdom2.Attribute> expr = XPATH
                     .compile(String.format("(%s)/@%s", xpathSelector, UI_ELEMENT_INDEX), Filters.attribute());
-            final long timeStarted = SystemClock.uptimeMillis();
             final NodeInfoList matchedNodes = new NodeInfoList();
+            final long timeStarted = SystemClock.uptimeMillis();
             for (org.jdom2.Attribute uiElementId : expr.evaluate(document)) {
                 UiElement<?, ?> uiElement = uiElementsMapping.get(uiElementId.getIntValue());
                 if (uiElement == null || uiElement.getNode() == null) {
