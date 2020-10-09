@@ -65,35 +65,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             this.includedAttributes.add(Attribute.CLASS);
             this.includedAttributes.addAll(includedAttributes);
         }
-
-        Map<Attribute, Object> attributes = new LinkedHashMap<>();
-        // The same sequence will be used for node attributes in xml page source
-        setAttribute(attributes, Attribute.INDEX, index);
-        setAttribute(attributes, Attribute.PACKAGE, charSequenceToNullableString(node.getPackageName()));
-        setAttribute(attributes, Attribute.CLASS, charSequenceToNullableString(node.getClassName()));
-        setAttribute(attributes, Attribute.TEXT, AxNodeInfoHelper.getText(node, true));
-        setAttribute(attributes, Attribute.ORIGINAL_TEXT, AxNodeInfoHelper.getText(node, false));
-        setAttribute(attributes, Attribute.CONTENT_DESC, charSequenceToNullableString(node.getContentDescription()));
-        setAttribute(attributes, Attribute.RESOURCE_ID, node.getViewIdResourceName());
-        setAttribute(attributes, Attribute.CHECKABLE, node.isCheckable());
-        setAttribute(attributes, Attribute.CHECKED, node.isChecked());
-        setAttribute(attributes, Attribute.CLICKABLE, node.isClickable());
-        setAttribute(attributes, Attribute.ENABLED, node.isEnabled());
-        setAttribute(attributes, Attribute.FOCUSABLE, node.isFocusable());
-        setAttribute(attributes, Attribute.FOCUSED, node.isFocused());
-        setAttribute(attributes, Attribute.LONG_CLICKABLE, node.isLongClickable());
-        setAttribute(attributes, Attribute.PASSWORD, node.isPassword());
-        setAttribute(attributes, Attribute.SCROLLABLE, node.isScrollable());
-        Range<Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
-        if (selectionRange != null) {
-            attributes.put(Attribute.SELECTION_START, selectionRange.getLower());
-            attributes.put(Attribute.SELECTION_END, selectionRange.getUpper());
-        }
-        setAttribute(attributes, Attribute.SELECTED, node.isSelected());
-        setAttribute(attributes, Attribute.BOUNDS, AxNodeInfoHelper.getBounds(node).toShortString());
-        setAttribute(attributes, Attribute.DISPLAYED, node.isVisibleToUser());
-        // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
-        this.attributes = Collections.unmodifiableMap(attributes);
+        this.attributes = collectAttributes(node, index);
         this.children = buildChildren(node);
     }
 
@@ -115,10 +87,91 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         this.children = children;
     }
 
+    private boolean shouldIncludeAttribute(Attribute key) {
+        return includedAttributes.isEmpty() || includedAttributes.contains(key);
+    }
+
     private void setAttribute(Map<Attribute, Object> attribs, Attribute key, Object value) {
-        if (value != null && (includedAttributes.isEmpty() || includedAttributes.contains(key))) {
+        if (value != null) {
             attribs.put(key, value);
         }
+    }
+
+    private Map<Attribute, Object> collectAttributes(AccessibilityNodeInfo node, int index) {
+        Map<Attribute, Object> result = new LinkedHashMap<>();
+        // The same sequence will be used for node attributes in xml page source
+        if (shouldIncludeAttribute(Attribute.INDEX)) {
+            setAttribute(result, Attribute.INDEX, index);
+        }
+        if (shouldIncludeAttribute(Attribute.PACKAGE)) {
+            setAttribute(result, Attribute.PACKAGE, charSequenceToNullableString(node.getPackageName()));
+        }
+        if (shouldIncludeAttribute(Attribute.CLASS)) {
+            setAttribute(result, Attribute.CLASS, charSequenceToNullableString(node.getClassName()));
+        }
+        if (shouldIncludeAttribute(Attribute.TEXT)) {
+            setAttribute(result, Attribute.TEXT, AxNodeInfoHelper.getText(node, true));
+        }
+        if (shouldIncludeAttribute(Attribute.ORIGINAL_TEXT)) {
+            setAttribute(result, Attribute.ORIGINAL_TEXT, AxNodeInfoHelper.getText(node, false));
+        }
+        if (shouldIncludeAttribute(Attribute.CONTENT_DESC)) {
+            setAttribute(result, Attribute.CONTENT_DESC,
+                    charSequenceToNullableString(node.getContentDescription()));
+        }
+        if (shouldIncludeAttribute(Attribute.RESOURCE_ID)) {
+            setAttribute(result, Attribute.RESOURCE_ID, node.getViewIdResourceName());
+        }
+        if (shouldIncludeAttribute(Attribute.CHECKABLE)) {
+            setAttribute(result, Attribute.CHECKABLE, node.isCheckable());
+        }
+        if (shouldIncludeAttribute(Attribute.CHECKED)) {
+            setAttribute(result, Attribute.CHECKED, node.isChecked());
+        }
+        if (shouldIncludeAttribute(Attribute.CLICKABLE)) {
+            setAttribute(result, Attribute.CLICKABLE, node.isClickable());
+        }
+        if (shouldIncludeAttribute(Attribute.ENABLED)) {
+            setAttribute(result, Attribute.ENABLED, node.isEnabled());
+        }
+        if (shouldIncludeAttribute(Attribute.FOCUSABLE)) {
+            setAttribute(result, Attribute.FOCUSABLE, node.isFocusable());
+        }
+        if (shouldIncludeAttribute(Attribute.FOCUSED)) {
+            setAttribute(result, Attribute.FOCUSED, node.isFocused());
+        }
+        if (shouldIncludeAttribute(Attribute.LONG_CLICKABLE)) {
+            setAttribute(result, Attribute.LONG_CLICKABLE, node.isLongClickable());
+        }
+        if (shouldIncludeAttribute(Attribute.PASSWORD)) {
+            setAttribute(result, Attribute.PASSWORD, node.isPassword());
+        }
+        if (shouldIncludeAttribute(Attribute.SCROLLABLE)) {
+            setAttribute(result, Attribute.SCROLLABLE, node.isScrollable());
+        }
+        if (shouldIncludeAttribute(Attribute.SELECTION_START)
+                || shouldIncludeAttribute(Attribute.SELECTION_END)) {
+            Range<Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
+            if (selectionRange != null) {
+                if (shouldIncludeAttribute(Attribute.SELECTION_START)) {
+                    result.put(Attribute.SELECTION_START, selectionRange.getLower());
+                }
+                if (shouldIncludeAttribute(Attribute.SELECTION_END)) {
+                    result.put(Attribute.SELECTION_END, selectionRange.getUpper());
+                }
+            }
+        }
+        if (shouldIncludeAttribute(Attribute.SELECTED)) {
+            setAttribute(result, Attribute.SELECTED, node.isSelected());
+        }
+        if (shouldIncludeAttribute(Attribute.BOUNDS)) {
+            setAttribute(result, Attribute.BOUNDS, AxNodeInfoHelper.getBounds(node).toShortString());
+        }
+        if (shouldIncludeAttribute(Attribute.DISPLAYED)) {
+            setAttribute(result, Attribute.DISPLAYED, node.isVisibleToUser());
+        }
+        // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
+        return Collections.unmodifiableMap(result);
     }
 
     private int getDepth() {
