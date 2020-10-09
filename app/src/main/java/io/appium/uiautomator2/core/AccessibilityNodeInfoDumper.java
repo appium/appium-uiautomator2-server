@@ -203,7 +203,15 @@ public class AccessibilityNodeInfoDumper {
 
     public NodeInfoList findNodes(String xpathSelector, boolean multiple) {
         // TODO: Remove this before merge
-        Logger.info(String.format("Source XML: %s", dumpToXml()));
+        String xml;
+        try (InputStream xmlStream = toStream(true)) {
+            xml = IOUtils.toString(xmlStream, XML_ENCODING);
+        } catch (IOException e) {
+            throw new UiAutomator2Exception(e);
+        } finally {
+            uiElementsMapping.clear();
+        }
+        Logger.info(String.format("Source XML: %s", xml));
 
         try {
             XPATH.compile(xpathSelector, Filters.element());
