@@ -101,7 +101,7 @@ public class NotificationListener implements OnAccessibilityEventListener {
     @NonNull
     public List<CharSequence> getToastMessage() {
         if (!toastMessage.isEmpty() && currentTimeMillis() - recentToastTimestamp > getToastClearTimeout()) {
-            Logger.debug("Clearing toast message: " + toastMessage);
+            Logger.info("Clearing toast message: " + toastMessage);
             toastMessage.clear();
         }
         return toastMessage;

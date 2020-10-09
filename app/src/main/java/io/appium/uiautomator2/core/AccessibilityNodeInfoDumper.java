@@ -202,6 +202,9 @@ public class AccessibilityNodeInfoDumper {
     }
 
     public NodeInfoList findNodes(String xpathSelector, boolean multiple) {
+        // TODO: Remove this before merge
+        Logger.info(String.format("Source XML: %s", dumpToXml()));
+
         try {
             XPATH.compile(xpathSelector, Filters.element());
         } catch (IllegalArgumentException e) {
