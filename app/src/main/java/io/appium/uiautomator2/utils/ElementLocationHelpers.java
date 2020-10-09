@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -107,8 +108,21 @@ public class ElementLocationHelpers {
         // We are trying to be smart here and only include the actually queried
         // attributes into the source XML document. This allows to improve the performance a lot
         // while building this document.
-        return new AccessibilityNodeInfoDumper(root, extractQueriedAttributes(expression))
-                .findNodes(expression, multiple);
+        Set<Attribute> includedAttributes = extractQueriedAttributes(expression);
+        List<String> includedAttributeNames = new ArrayList<>();
+        if (includedAttributes == null) {
+            for (Attribute includedAttribute : Attribute.values()) {
+                if (includedAttribute.isExposableToXml()) {
+                    includedAttributeNames.add(includedAttribute.name());
+                }
+            }
+        } else {
+            for (Attribute includedAttribute : includedAttributes) {
+                includedAttributeNames.add(includedAttribute.name());
+            }
+        }
+        Logger.info(String.format("The following attributes will be included to the page source: %s", includedAttributeNames));
+        return new AccessibilityNodeInfoDumper(root, includedAttributes).findNodes(expression, multiple);
     }
 
     @Nullable

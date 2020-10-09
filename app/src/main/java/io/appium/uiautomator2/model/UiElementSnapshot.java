@@ -136,12 +136,12 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
     public static UiElementSnapshot take(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs,
                                          @Nullable Set<Attribute> includedAttributes) {
-        UiElementSnapshot root = new UiElementSnapshot(ROOT_NODE_NAME, roots, 0, includedAttributes);
+        UiElementSnapshot uiRoot = new UiElementSnapshot(ROOT_NODE_NAME, roots, 0, includedAttributes);
         for (CharSequence toastMSG : toastMSGs) {
-            Logger.debug(String.format("Adding toast message to root: %s", toastMSG));
-            root.addToastMsgToRoot(toastMSG);
+            Logger.info(String.format("Adding toast message to root: %s", toastMSG));
+            uiRoot.addToastMsg(toastMSG);
         }
-        return root;
+        return uiRoot;
     }
 
     public static UiElementSnapshot take(AccessibilityNodeInfo rootElement,
@@ -158,13 +158,13 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         return new UiElementSnapshot(rootElement, index, includedAttributes).setDepth(depth);
     }
 
-    private void addToastMsgToRoot(CharSequence tokenMSG) {
+    private void addToastMsg(CharSequence tokenMSG) {
         AccessibilityNodeInfo node = AccessibilityNodeInfo.obtain();
         node.setText(tokenMSG);
         node.setClassName(Toast.class.getName());
         node.setPackageName("com.android.settings");
         setField("mSealed", true, node);
-        this.children.add(new UiElementSnapshot(node, this.children.size(), includedAttributes));
+        this.children.add(new UiElementSnapshot(node, this.children.size(), 0, includedAttributes));
     }
 
     private List<UiElementSnapshot> buildChildren(AccessibilityNodeInfo node) {
