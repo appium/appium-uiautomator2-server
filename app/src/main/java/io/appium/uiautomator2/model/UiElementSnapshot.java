@@ -165,7 +165,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         node.setPackageName("com.android.settings");
         node.setVisibleToUser(true);
         setField("mSealed", true, node);
-        this.children.add(new UiElementSnapshot(node, this.children.size(), 0, includedAttributes));
+        this.children.add(new UiElementSnapshot(node, this.children.size(), 0, null));
     }
 
     private List<UiElementSnapshot> buildChildren(AccessibilityNodeInfo node) {

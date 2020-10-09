@@ -39,7 +39,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
@@ -175,16 +174,6 @@ public class AccessibilityNodeInfoDumper {
         }
     }
 
-    private void performCleanup(@Nullable List<AccessibilityNodeInfo> excludedNodes) {
-        for (int index = 0; index < uiElementsMapping.size(); ++index) {
-            AccessibilityNodeInfo node = uiElementsMapping.valueAt(index).getNode();
-            if (node != null && (excludedNodes == null || !excludedNodes.contains(node))) {
-                node.recycle();
-            }
-        }
-        uiElementsMapping.clear();
-    }
-
     public String dumpToXml() {
         try {
             RESOURCES_GUARD.acquire();
@@ -196,23 +185,12 @@ public class AccessibilityNodeInfoDumper {
         } catch (IOException e) {
             throw new UiAutomator2Exception(e);
         } finally {
-            performCleanup(null);
+            uiElementsMapping.clear();
             RESOURCES_GUARD.release();
         }
     }
 
     public NodeInfoList findNodes(String xpathSelector, boolean multiple) {
-        // TODO: Remove this before merge
-        String xml;
-        try (InputStream xmlStream = toStream(true)) {
-            xml = IOUtils.toString(xmlStream, XML_ENCODING);
-        } catch (IOException e) {
-            throw new UiAutomator2Exception(e);
-        } finally {
-            uiElementsMapping.clear();
-        }
-        Logger.info(String.format("Source XML: %s", xml));
-
         try {
             XPATH.compile(xpathSelector, Filters.element());
         } catch (IllegalArgumentException e) {
@@ -224,12 +202,12 @@ public class AccessibilityNodeInfoDumper {
         } catch (InterruptedException e) {
             throw new UiAutomator2Exception(e);
         }
-        final NodeInfoList matchedNodes = new NodeInfoList();
         try (InputStream xmlStream = toStream(true)) {
             final Document document = SAX_BUILDER.build(xmlStream);
             final XPathExpression<org.jdom2.Attribute> expr = XPATH
                     .compile(String.format("(%s)/@%s", xpathSelector, UI_ELEMENT_INDEX), Filters.attribute());
             final long timeStarted = SystemClock.uptimeMillis();
+            final NodeInfoList matchedNodes = new NodeInfoList();
             for (org.jdom2.Attribute uiElementId : expr.evaluate(document)) {
                 UiElement<?, ?> uiElement = uiElementsMapping.get(uiElementId.getIntValue());
                 if (uiElement == null || uiElement.getNode() == null) {
@@ -251,7 +229,7 @@ public class AccessibilityNodeInfoDumper {
         } catch (Exception e) {
             throw new UiAutomator2Exception(e);
         } finally {
-            performCleanup(matchedNodes.getAll());
+            uiElementsMapping.clear();
             RESOURCES_GUARD.release();
         }
     }
