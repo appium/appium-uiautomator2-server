@@ -28,35 +28,25 @@ import java.util.Set;
 import io.appium.uiautomator2.utils.Attribute;
 
 public class UiSelectorHelper {
-    private static final Set<Attribute> MATCHING_ATTRIBUTES = new HashSet<>(
-            Arrays.asList(Attribute.PACKAGE, Attribute.CLASS, Attribute.ORIGINAL_TEXT,
-                    Attribute.CONTENT_DESC, Attribute.RESOURCE_ID, Attribute.CHECKABLE,
-                    Attribute.CHECKED, Attribute.CLICKABLE, Attribute.ENABLED, Attribute.FOCUSABLE,
-                    Attribute.FOCUSED, Attribute.LONG_CLICKABLE, Attribute.PASSWORD, Attribute.SCROLLABLE,
-                    Attribute.SELECTED, Attribute.INDEX)
-    );
+    private static final Attribute[] MATCHING_ATTRIBUTES = new Attribute[]{
+            Attribute.PACKAGE, Attribute.CLASS,
+            // For proper selector matching it is important to not replace nulls with empty strings
+            Attribute.ORIGINAL_TEXT,
+            Attribute.CONTENT_DESC, Attribute.RESOURCE_ID, Attribute.CHECKABLE,
+            Attribute.CHECKED, Attribute.CLICKABLE, Attribute.ENABLED, Attribute.FOCUSABLE,
+            Attribute.FOCUSED, Attribute.LONG_CLICKABLE, Attribute.PASSWORD, Attribute.SCROLLABLE,
+            Attribute.SELECTED, Attribute.INDEX
+    };
+    private static final Set<Attribute> MATCHING_ATTRIBUTES_SET = new HashSet<>(
+            Arrays.asList(MATCHING_ATTRIBUTES));
 
     private UiSelector selector;
 
     private UiSelectorHelper(UiSelector selector, UiElementSnapshot uiElementSnapshot) {
         this.selector = selector;
-        addSearchCriteria(Attribute.PACKAGE, uiElementSnapshot.getPackageName());
-        addSearchCriteria(Attribute.CLASS, uiElementSnapshot.getClassName());
-        // For proper selector matching it is important to not replace nulls with empty strings
-        addSearchCriteria(Attribute.TEXT, uiElementSnapshot.getOriginalText());
-        addSearchCriteria(Attribute.CONTENT_DESC, uiElementSnapshot.getContentDescription());
-        addSearchCriteria(Attribute.RESOURCE_ID, uiElementSnapshot.getResourceId());
-        addSearchCriteria(Attribute.CHECKABLE, uiElementSnapshot.isCheckable());
-        addSearchCriteria(Attribute.CHECKED, uiElementSnapshot.isChecked());
-        addSearchCriteria(Attribute.CLICKABLE, uiElementSnapshot.isClickable());
-        addSearchCriteria(Attribute.ENABLED, uiElementSnapshot.isEnabled());
-        addSearchCriteria(Attribute.FOCUSABLE, uiElementSnapshot.isFocusable());
-        addSearchCriteria(Attribute.FOCUSED, uiElementSnapshot.isFocused());
-        addSearchCriteria(Attribute.LONG_CLICKABLE, uiElementSnapshot.isLongClickable());
-        addSearchCriteria(Attribute.PASSWORD, uiElementSnapshot.isPassword());
-        addSearchCriteria(Attribute.SCROLLABLE, uiElementSnapshot.isScrollable());
-        addSearchCriteria(Attribute.SELECTED, uiElementSnapshot.isSelected());
-        addSearchCriteria(Attribute.INDEX, uiElementSnapshot.getIndex());
+        for (Attribute attr : MATCHING_ATTRIBUTES) {
+            addSearchCriteria(attr, uiElementSnapshot.get(attr));
+        }
     }
 
     /**
@@ -64,7 +54,7 @@ public class UiSelectorHelper {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public static UiSelector toUiSelector(AccessibilityNodeInfo node) {
-        UiElementSnapshot uiElementSnapshot = UiElementSnapshot.take(node, 0, MATCHING_ATTRIBUTES);
+        UiElementSnapshot uiElementSnapshot = UiElementSnapshot.take(node, 0, MATCHING_ATTRIBUTES_SET);
         return new UiSelectorHelper(new UiSelector(), uiElementSnapshot).selector;
     }
 
@@ -80,7 +70,7 @@ public class UiSelectorHelper {
             case CLASS:
                 selector = selector.className((String) value);
                 break;
-            case TEXT:
+            case ORIGINAL_TEXT:
                 selector = selector.text((String) value);
                 break;
             case CONTENT_DESC:
