@@ -20,9 +20,21 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.test.uiautomator.UiSelector;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import io.appium.uiautomator2.utils.Attribute;
 
 public class CustomUiSelector {
+    private static final Set<Attribute> MATCHING_ATTRIBUTES = new HashSet<>(
+            Arrays.asList(Attribute.PACKAGE, Attribute.CLASS, Attribute.ORIGINAL_TEXT,
+                    Attribute.CONTENT_DESC, Attribute.RESOURCE_ID, Attribute.CHECKABLE,
+                    Attribute.CHECKED, Attribute.CLICKABLE, Attribute.ENABLED, Attribute.FOCUSABLE,
+                    Attribute.FOCUSED, Attribute.LONG_CLICKABLE, Attribute.PASSWORD, Attribute.SCROLLABLE,
+                    Attribute.SELECTED, Attribute.INDEX)
+    );
+
     private UiSelector selector;
 
     CustomUiSelector(UiSelector selector) {
@@ -34,7 +46,7 @@ public class CustomUiSelector {
      * @return UiSelector object, based on UiAutomationElement attributes
      */
     public UiSelector getUiSelector(AccessibilityNodeInfo node) {
-        UiElementSnapshot uiElementSnapshot = UiElementSnapshot.take(node, 0);
+        UiElementSnapshot uiElementSnapshot = UiElementSnapshot.take(node, 0, MATCHING_ATTRIBUTES);
         put(Attribute.PACKAGE, uiElementSnapshot.getPackageName());
         put(Attribute.CLASS, uiElementSnapshot.getClassName());
         // For proper selector matching it is important to not replace nulls with empty strings

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.appium.uiautomator2.core;
 
 import android.annotation.SuppressLint;
@@ -192,6 +193,19 @@ public class AxNodeInfoHelper {
         UiDevice uiDevice = getUiDevice();
         Rect screenRect = new Rect(0, 0, uiDevice.getDisplayWidth(), uiDevice.getDisplayHeight());
         return getBounds(node, screenRect, 0);
+    }
+
+    public static int calculateIndex(AccessibilityNodeInfo node) {
+        AccessibilityNodeInfo parent = node.getParent();
+        if (parent == null) {
+            return 0;
+        }
+        for (int index = 0; index < parent.getChildCount(); ++index) {
+            if (node.equals(parent.getChild(index))) {
+                return index;
+            }
+        }
+        return 0;
     }
 
     /**

@@ -53,12 +53,13 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     private final Set<Attribute> includedAttributes = new HashSet<>();
     private final Map<Attribute, Object> attributes;
     private final List<UiElementSnapshot> children;
-    private int depth = 0;
-    private int maxDepth = DEFAULT_MAX_DEPTH;
+    private final int depth;
+    private final int maxDepth;
 
-    private UiElementSnapshot(AccessibilityNodeInfo node, int index, int maxDepth,
+    private UiElementSnapshot(AccessibilityNodeInfo node, int index, int depth, int maxDepth,
                               @Nullable Set<Attribute> includedAttributes) {
         super(checkNotNull(node));
+        this.depth = depth;
         this.maxDepth = maxDepth;
         if (includedAttributes != null) {
             // Class name attribute should always be there
@@ -69,20 +70,25 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         this.children = buildChildren(node);
     }
 
-    private UiElementSnapshot(AccessibilityNodeInfo node, int index, @Nullable Set<Attribute> includedAttributes) {
-        this(node, index, DEFAULT_MAX_DEPTH, includedAttributes);
+    private UiElementSnapshot(AccessibilityNodeInfo node, int index, int depth,
+                              @Nullable Set<Attribute> includedAttributes) {
+        this(node, index, depth, DEFAULT_MAX_DEPTH, includedAttributes);
     }
 
     private UiElementSnapshot(String hierarchyClassName, AccessibilityNodeInfo[] childNodes, int index,
                               @Nullable Set<Attribute> includedAttributes) {
         super(null);
+        this.depth = 0;
+        this.maxDepth = DEFAULT_MAX_DEPTH;
         Map<Attribute, Object> attribs = new LinkedHashMap<>();
         setAttribute(attribs, Attribute.INDEX, index);
         setAttribute(attribs, Attribute.CLASS, hierarchyClassName);
         this.attributes = Collections.unmodifiableMap(attribs);
         List<UiElementSnapshot> children = new ArrayList<>(childNodes.length);
         for (int childNodeIdx = 0; childNodeIdx < childNodes.length; ++childNodeIdx) {
-            children.add(new UiElementSnapshot(childNodes[childNodeIdx], childNodeIdx, includedAttributes));
+            UiElementSnapshot child = new UiElementSnapshot(childNodes[childNodeIdx],  childNodeIdx,
+                    this.depth + 1, includedAttributes);
+            children.add(child);
         }
         this.children = children;
     }
@@ -174,19 +180,6 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         return Collections.unmodifiableMap(result);
     }
 
-    private int getDepth() {
-        return this.depth;
-    }
-
-    private UiElementSnapshot setDepth(int depth) {
-        this.depth = depth;
-        return this;
-    }
-
-    public int getMaxDepth() {
-        return this.maxDepth;
-    }
-
     public static UiElementSnapshot take(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs,
                                          @Nullable Set<Attribute> includedAttributes) {
         UiElementSnapshot uiRoot = new UiElementSnapshot(ROOT_NODE_NAME, roots, 0, includedAttributes);
@@ -199,16 +192,19 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
     public static UiElementSnapshot take(AccessibilityNodeInfo rootElement,
                                          @Nullable Set<Attribute> includedAttributes) {
-        return new UiElementSnapshot(rootElement, 0, includedAttributes);
+        return new UiElementSnapshot(rootElement, AxNodeInfoHelper.calculateIndex(rootElement), 0,
+                includedAttributes);
     }
 
-    public static UiElementSnapshot take(AccessibilityNodeInfo rootElement, int maxDepth) {
-        return new UiElementSnapshot(rootElement, 0, maxDepth, null);
+    public static UiElementSnapshot take(AccessibilityNodeInfo rootElement, int maxDepth,
+                                         @Nullable Set<Attribute> includedAttributes) {
+        return new UiElementSnapshot(rootElement, AxNodeInfoHelper.calculateIndex(rootElement), 0,
+                maxDepth, includedAttributes);
     }
 
     private static UiElementSnapshot take(AccessibilityNodeInfo rootElement, int index, int depth,
                                           @Nullable Set<Attribute> includedAttributes) {
-        return new UiElementSnapshot(rootElement, index, includedAttributes).setDepth(depth);
+        return new UiElementSnapshot(rootElement, index, depth, includedAttributes);
     }
 
     private void addToastMsg(CharSequence tokenMSG) {
@@ -223,10 +219,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
     private List<UiElementSnapshot> buildChildren(AccessibilityNodeInfo node) {
         final int childCount = node.getChildCount();
-        if (childCount == 0 || (getMaxDepth() >= 0 && getDepth() >= getMaxDepth())) {
-            if (getDepth() >= getMaxDepth()) {
+        if (childCount == 0 || (maxDepth >= 0 && depth >= maxDepth)) {
+            if (depth >= maxDepth) {
                 Logger.info(String.format("Skipping building children of '%s' because the maximum " +
-                        "recursion depth (%s) has been reached", node, getMaxDepth()));
+                        "recursion depth (%s) has been reached", node, maxDepth));
             }
             return Collections.emptyList();
         }
@@ -243,7 +239,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
             // Ignore if the element is not visible on the screen
             if (areInvisibleElementsAllowed || child.isVisibleToUser()) {
-                children.add(take(child, index, getDepth() + 1, includedAttributes));
+                children.add(take(child, index, depth + 1, includedAttributes));
             }
         }
         return children;
@@ -251,7 +247,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
     @Override
     public List<UiElementSnapshot> getChildren() {
-        return children;
+        return Collections.unmodifiableList(children);
     }
 
     @Override
