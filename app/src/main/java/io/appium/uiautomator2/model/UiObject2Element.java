@@ -281,9 +281,7 @@ public class UiObject2Element extends BaseElement {
              * and finding the child element on UiObject.
              */
             AccessibilityNodeInfo nodeInfo = toAxNodeInfo(element);
-            UiSelector uiSelector = new UiSelector();
-            CustomUiSelector customUiSelector = new CustomUiSelector(uiSelector);
-            uiSelector = customUiSelector.getUiSelector(nodeInfo);
+            UiSelector uiSelector = UiSelectorHelper.toUiSelector(nodeInfo);
             Object uiObject = CustomUiDevice.getInstance().findObject(uiSelector);
             if (!(uiObject instanceof UiObject)) {
                 return null;
@@ -306,10 +304,7 @@ public class UiObject2Element extends BaseElement {
              * and finding the child elements on UiObject.
              */
             AccessibilityNodeInfo nodeInfo = toAxNodeInfo(element);
-
-            UiSelector uiSelector = new UiSelector();
-            CustomUiSelector customUiSelector = new CustomUiSelector(uiSelector);
-            uiSelector = customUiSelector.getUiSelector(nodeInfo);
+            UiSelector uiSelector = UiSelectorHelper.toUiSelector(nodeInfo);
             UiObject uiObject = (UiObject) CustomUiDevice.getInstance().findObject(uiSelector);
             String id = UUID.randomUUID().toString();
             AndroidElement androidElement = getAndroidElement(id, uiObject, true, by, getContextId());

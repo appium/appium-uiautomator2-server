@@ -18,6 +18,7 @@ package io.appium.uiautomator2.model;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiSelector;
 
 import java.util.Arrays;
@@ -26,7 +27,7 @@ import java.util.Set;
 
 import io.appium.uiautomator2.utils.Attribute;
 
-public class CustomUiSelector {
+public class UiSelectorHelper {
     private static final Set<Attribute> MATCHING_ATTRIBUTES = new HashSet<>(
             Arrays.asList(Attribute.PACKAGE, Attribute.CLASS, Attribute.ORIGINAL_TEXT,
                     Attribute.CONTENT_DESC, Attribute.RESOURCE_ID, Attribute.CHECKABLE,
@@ -37,41 +38,41 @@ public class CustomUiSelector {
 
     private UiSelector selector;
 
-    CustomUiSelector(UiSelector selector) {
+    private UiSelectorHelper(UiSelector selector, UiElementSnapshot uiElementSnapshot) {
         this.selector = selector;
+        addSearchCriteria(Attribute.PACKAGE, uiElementSnapshot.getPackageName());
+        addSearchCriteria(Attribute.CLASS, uiElementSnapshot.getClassName());
+        // For proper selector matching it is important to not replace nulls with empty strings
+        addSearchCriteria(Attribute.TEXT, uiElementSnapshot.getOriginalText());
+        addSearchCriteria(Attribute.CONTENT_DESC, uiElementSnapshot.getContentDescription());
+        addSearchCriteria(Attribute.RESOURCE_ID, uiElementSnapshot.getResourceId());
+        addSearchCriteria(Attribute.CHECKABLE, uiElementSnapshot.isCheckable());
+        addSearchCriteria(Attribute.CHECKED, uiElementSnapshot.isChecked());
+        addSearchCriteria(Attribute.CLICKABLE, uiElementSnapshot.isClickable());
+        addSearchCriteria(Attribute.ENABLED, uiElementSnapshot.isEnabled());
+        addSearchCriteria(Attribute.FOCUSABLE, uiElementSnapshot.isFocusable());
+        addSearchCriteria(Attribute.FOCUSED, uiElementSnapshot.isFocused());
+        addSearchCriteria(Attribute.LONG_CLICKABLE, uiElementSnapshot.isLongClickable());
+        addSearchCriteria(Attribute.PASSWORD, uiElementSnapshot.isPassword());
+        addSearchCriteria(Attribute.SCROLLABLE, uiElementSnapshot.isScrollable());
+        addSearchCriteria(Attribute.SELECTED, uiElementSnapshot.isSelected());
+        addSearchCriteria(Attribute.INDEX, uiElementSnapshot.getIndex());
     }
 
     /**
      * @param node the source accessibility node
      * @return UiSelector object, based on UiAutomationElement attributes
      */
-    public UiSelector getUiSelector(AccessibilityNodeInfo node) {
+    public static UiSelector toUiSelector(AccessibilityNodeInfo node) {
         UiElementSnapshot uiElementSnapshot = UiElementSnapshot.take(node, 0, MATCHING_ATTRIBUTES);
-        put(Attribute.PACKAGE, uiElementSnapshot.getPackageName());
-        put(Attribute.CLASS, uiElementSnapshot.getClassName());
-        // For proper selector matching it is important to not replace nulls with empty strings
-        put(Attribute.TEXT, uiElementSnapshot.getOriginalText());
-        put(Attribute.CONTENT_DESC, uiElementSnapshot.getContentDescription());
-        put(Attribute.RESOURCE_ID, uiElementSnapshot.getResourceId());
-        put(Attribute.CHECKABLE, uiElementSnapshot.isCheckable());
-        put(Attribute.CHECKED, uiElementSnapshot.isChecked());
-        put(Attribute.CLICKABLE, uiElementSnapshot.isClickable());
-        put(Attribute.ENABLED, uiElementSnapshot.isEnabled());
-        put(Attribute.FOCUSABLE, uiElementSnapshot.isFocusable());
-        put(Attribute.FOCUSED, uiElementSnapshot.isFocused());
-        put(Attribute.LONG_CLICKABLE, uiElementSnapshot.isLongClickable());
-        put(Attribute.PASSWORD, uiElementSnapshot.isPassword());
-        put(Attribute.SCROLLABLE, uiElementSnapshot.isScrollable());
-        put(Attribute.SELECTED, uiElementSnapshot.isSelected());
-        put(Attribute.INDEX, uiElementSnapshot.getIndex());
-
-        return selector;
+        return new UiSelectorHelper(new UiSelector(), uiElementSnapshot).selector;
     }
 
-    private void put(Attribute key, Object value) {
+    private void addSearchCriteria(Attribute key, @Nullable Object value) {
         if (value == null) {
             return;
         }
+
         switch (key) {
             case PACKAGE:
                 selector = selector.packageName((String) value);
@@ -83,7 +84,7 @@ public class CustomUiSelector {
                 selector = selector.text((String) value);
                 break;
             case CONTENT_DESC:
-                selector = selector.descriptionContains((String) value);
+                selector = selector.description((String) value);
                 break;
             case RESOURCE_ID:
                 selector = selector.resourceId((String) value);

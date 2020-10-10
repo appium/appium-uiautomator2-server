@@ -77,10 +77,6 @@ public class AccessibilityNodeInfoDumper {
     private boolean shouldAddDisplayInfo;
     private XmlSerializer serializer;
 
-    public AccessibilityNodeInfoDumper() {
-        this(null, null);
-    }
-
     public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root,
                                        @Nullable Set<Attribute> includedAttributes) {
         this.root = root;
