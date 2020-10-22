@@ -16,18 +16,11 @@
 
 package io.appium.uiautomator2.model;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-
 import io.appium.uiautomator2.utils.Device;
-
-import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
-import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+import io.appium.uiautomator2.utils.Logger;
 
 public enum ScreenRotation {
     ROTATION_0, ROTATION_90, ROTATION_180, ROTATION_270;
-
-    public static final String LANDSCAPE = "LANDSCAPE";
-    public static final String PORTRAIT = "PORTRAIT";
 
     public static ScreenRotation current() {
         int rotation = Device.getUiDevice().getDisplayRotation();
@@ -58,59 +51,49 @@ public enum ScreenRotation {
     }
 
     public static ScreenRotation ofOrientation(String abbr) {
-        int currentOrientation = getOrientationFromConfig();
+        ScreenOrientation currentOrientation = ScreenOrientation.current();
         ScreenRotation currentRotation = current();
-        switch (abbr.toUpperCase()) {
-            case LANDSCAPE:
-                if (currentOrientation == ORIENTATION_LANDSCAPE) {
-                    if (currentRotation == ROTATION_90) {
-                        return ROTATION_270;
-                    }
-                    if (currentRotation == ROTATION_180) {
-                        return ROTATION_0;
-                    }
-                    return currentRotation;
+        if (currentOrientation == null) {
+            Logger.warn(String.format("The current screen orientation is unknown. " +
+                    "Assuming it based on the current rotation value %s", currentRotation.name()));
+            currentOrientation = currentRotation == ROTATION_0 || currentRotation == ROTATION_180
+                    ? ScreenOrientation.PORTRAIT
+                    : ScreenOrientation.LANDSCAPE;
+        }
+        if (ScreenOrientation.LANDSCAPE.name().equalsIgnoreCase(abbr)) {
+            if (currentOrientation == ScreenOrientation.LANDSCAPE) {
+                if (currentRotation == ROTATION_90) {
+                    return ROTATION_270;
                 }
+                if (currentRotation == ROTATION_180) {
+                    return ROTATION_0;
+                }
+                return currentRotation;
+            }
 
-                return currentRotation == ROTATION_270 || currentRotation == ROTATION_90
+            return currentRotation == ROTATION_270 || currentRotation == ROTATION_90
                     ? ROTATION_0
                     : ROTATION_270;
-            case PORTRAIT:
-                if (currentOrientation != ORIENTATION_LANDSCAPE) {
-                    if (currentRotation == ROTATION_90) {
-                        return ROTATION_270;
-                    }
-                    if (currentRotation == ROTATION_180) {
-                        return ROTATION_0;
-                    }
-                    return currentRotation;
+        } else if (ScreenOrientation.PORTRAIT.name().equalsIgnoreCase(abbr)) {
+            if (currentOrientation != ScreenOrientation.LANDSCAPE) {
+                if (currentRotation == ROTATION_90) {
+                    return ROTATION_270;
                 }
+                if (currentRotation == ROTATION_180) {
+                    return ROTATION_0;
+                }
+                return currentRotation;
+            }
 
-                return currentRotation == ROTATION_270 || currentRotation == ROTATION_90
-                        ? ROTATION_0
-                        : ROTATION_270;
-            default:
-                throw new IllegalArgumentException(
-                        String.format("Orientation value '%s' is not supported. " +
-                                "Only '%s' and '%s' values could be translated into " +
-                                "a valid screen orientation", abbr, LANDSCAPE, PORTRAIT));
+            return currentRotation == ROTATION_270 || currentRotation == ROTATION_90
+                    ? ROTATION_0
+                    : ROTATION_270;
+        } else {
+            throw new IllegalArgumentException(
+                    String.format("Orientation value '%s' is not supported. " +
+                                    "Only '%s' and '%s' values could be translated into " +
+                                    "a valid screen orientation", abbr,
+                            ScreenOrientation.LANDSCAPE.name(), ScreenOrientation.PORTRAIT.name()));
         }
-    }
-
-    public String toOrientation() {
-        int orientation = getOrientationFromConfig();
-        switch (orientation) {
-            case ORIENTATION_PORTRAIT:
-                return PORTRAIT;
-            case ORIENTATION_LANDSCAPE:
-                return LANDSCAPE;
-            default:
-                return String.format("UNKNOWN(%s/%s)", orientation, current().ordinal());
-        }
-    }
-
-    private static int getOrientationFromConfig() {
-        return InstrumentationRegistry.getInstrumentation()
-                .getContext().getResources().getConfiguration().orientation;
     }
 }

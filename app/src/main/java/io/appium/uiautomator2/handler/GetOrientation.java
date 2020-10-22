@@ -19,7 +19,9 @@ package io.appium.uiautomator2.handler;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.ScreenOrientation;
 import io.appium.uiautomator2.model.ScreenRotation;
+import io.appium.uiautomator2.utils.Logger;
 
 public class GetOrientation extends SafeRequestHandler {
 
@@ -29,6 +31,15 @@ public class GetOrientation extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        return new AppiumResponse(getSessionId(request), ScreenRotation.current().toOrientation());
+        ScreenOrientation orientation = ScreenOrientation.current();
+        ScreenRotation rotation = ScreenRotation.current();
+        if (orientation == null) {
+            Logger.warn(String.format("The current screen orientation is unknown. " +
+                    "Assuming it based on the current rotation value %s", rotation.name()));
+            orientation = rotation == ScreenRotation.ROTATION_0 || rotation == ScreenRotation.ROTATION_180
+                    ? ScreenOrientation.PORTRAIT
+                    : ScreenOrientation.LANDSCAPE;
+        }
+        return new AppiumResponse(getSessionId(request), orientation.name());
     }
 }
