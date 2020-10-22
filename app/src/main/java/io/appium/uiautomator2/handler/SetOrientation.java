@@ -19,10 +19,14 @@ package io.appium.uiautomator2.handler;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.ScreenOrientation;
 import io.appium.uiautomator2.model.ScreenRotation;
 import io.appium.uiautomator2.model.api.OrientationModel;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.model.settings.UseResourcesForOrientationDetection;
+import io.appium.uiautomator2.utils.Logger;
 
+import static io.appium.uiautomator2.model.settings.Settings.USE_RESOURCES_FOR_ORIENTATION_DETECTION;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
 public class SetOrientation extends SafeRequestHandler {
@@ -33,7 +37,18 @@ public class SetOrientation extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         OrientationModel model = toModel(request, OrientationModel.class);
-        CustomUiDevice.getInstance().setRotationSync(ScreenRotation.ofOrientation(model.orientation));
-        return new AppiumResponse(getSessionId(request), ScreenRotation.current().name());
+        ScreenRotation rotation = CustomUiDevice.getInstance()
+                .setRotationSync(ScreenRotation.ofOrientation(model.orientation));
+        String result = rotation.toOrientation().name();
+        if (((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()) {
+            ScreenOrientation orientation = ScreenOrientation.current();
+            if (orientation != null) {
+                result = orientation.name();
+            } else {
+                Logger.warn(String.format("The current screen orientation is unknown. " +
+                        "Assuming it based on the current rotation value %s", rotation.name()));
+            }
+        }
+        return new AppiumResponse(getSessionId(request), result);
     }
 }
