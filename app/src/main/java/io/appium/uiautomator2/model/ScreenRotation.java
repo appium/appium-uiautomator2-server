@@ -75,13 +75,13 @@ public enum ScreenRotation {
                                     "a valid screen orientation", abbr,
                             ScreenOrientation.LANDSCAPE.name(), ScreenOrientation.PORTRAIT.name()));
         }
-        ScreenRotation currentRotation = current();
 
         if (!((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()) {
             return desiredOrientation == ScreenOrientation.LANDSCAPE ? ROTATION_270 : ROTATION_0;
         }
 
         ScreenOrientation currentOrientation = ScreenOrientation.current();
+        ScreenRotation currentRotation = current();
         if (Objects.equals(desiredOrientation, currentOrientation)) {
             // Align the resulting rotation if the screen already has the desired orientation
             return align(currentRotation);
