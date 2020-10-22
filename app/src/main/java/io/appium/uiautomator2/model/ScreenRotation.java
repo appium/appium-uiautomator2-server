@@ -67,9 +67,7 @@ public enum ScreenRotation {
         ScreenRotation currentRotation = current();
 
         if (!((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()) {
-            return desiredOrientation == ScreenOrientation.LANDSCAPE
-                    ? ROTATION_270
-                    : ROTATION_0;
+            return desiredOrientation == ScreenOrientation.LANDSCAPE ? ROTATION_270 : ROTATION_0;
         }
 
         ScreenOrientation currentOrientation = ScreenOrientation.current();
