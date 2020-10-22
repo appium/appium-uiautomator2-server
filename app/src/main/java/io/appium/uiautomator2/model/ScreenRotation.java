@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.model;
 
+import java.util.Objects;
+
 import io.appium.uiautomator2.model.settings.UseResourcesForOrientationDetection;
 import io.appium.uiautomator2.utils.Device;
 
@@ -80,7 +82,7 @@ public enum ScreenRotation {
         }
 
         ScreenOrientation currentOrientation = ScreenOrientation.current();
-        if (desiredOrientation == currentOrientation) {
+        if (Objects.equals(desiredOrientation, currentOrientation)) {
             // Align the resulting rotation if the screen already has the desired orientation
             return align(currentRotation);
         }
