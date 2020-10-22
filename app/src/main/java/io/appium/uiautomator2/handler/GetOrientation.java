@@ -33,10 +33,8 @@ public class GetOrientation extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        ScreenRotation rotation = ScreenRotation.current();
-        if (!((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()) {
-            return new AppiumResponse(getSessionId(request), rotation.toOrientation().name());
-        }
-        return new AppiumResponse(getSessionId(request), ScreenOrientation.current().name());
+        return ((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()
+                ? new AppiumResponse(getSessionId(request), ScreenOrientation.current().name())
+                : new AppiumResponse(getSessionId(request), ScreenRotation.current().toOrientation().name());
     }
 }
