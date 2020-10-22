@@ -35,6 +35,6 @@ public class SetOrientation extends SafeRequestHandler {
         OrientationModel model = toModel(request, OrientationModel.class);
         ScreenRotation desired = CustomUiDevice.getInstance()
                 .setRotationSync(ScreenRotation.ofOrientation(model.orientation));
-        return new AppiumResponse(getSessionId(request), desired.toString());
+        return new AppiumResponse(getSessionId(request), desired.toOrientation());
     }
 }
