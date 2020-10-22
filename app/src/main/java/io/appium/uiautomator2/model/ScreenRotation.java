@@ -52,6 +52,16 @@ public enum ScreenRotation {
         }
     }
 
+    private static ScreenRotation align(ScreenRotation value) {
+        if (value == ROTATION_90) {
+            return ROTATION_270;
+        }
+        if (value == ROTATION_180) {
+            return ROTATION_0;
+        }
+        return value;
+    }
+
     public static ScreenRotation ofOrientation(String abbr) {
         ScreenOrientation desiredOrientation;
         try {
@@ -72,28 +82,14 @@ public enum ScreenRotation {
         ScreenOrientation currentOrientation = ScreenOrientation.current();
         if (desiredOrientation == ScreenOrientation.LANDSCAPE) {
             if (currentOrientation == ScreenOrientation.LANDSCAPE) {
-                if (currentRotation == ROTATION_90) {
-                    return ROTATION_270;
-                }
-                if (currentRotation == ROTATION_180) {
-                    return ROTATION_0;
-                }
-                return currentRotation;
+                return align(currentRotation);
             }
         } else {
             if (currentOrientation != ScreenOrientation.LANDSCAPE) {
-                if (currentRotation == ROTATION_90) {
-                    return ROTATION_270;
-                }
-                if (currentRotation == ROTATION_180) {
-                    return ROTATION_0;
-                }
-                return currentRotation;
+                return align(currentRotation);
             }
         }
-        return currentRotation == ROTATION_270 || currentRotation == ROTATION_90
-                ? ROTATION_0
-                : ROTATION_270;
+        return currentRotation == ROTATION_270 || currentRotation == ROTATION_90 ? ROTATION_0 : ROTATION_270;
     }
 
     public ScreenOrientation toOrientation() {
