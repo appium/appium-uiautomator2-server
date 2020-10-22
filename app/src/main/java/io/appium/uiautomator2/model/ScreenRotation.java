@@ -80,9 +80,8 @@ public enum ScreenRotation {
         }
 
         ScreenOrientation currentOrientation = ScreenOrientation.current();
-        if (desiredOrientation == ScreenOrientation.LANDSCAPE && currentOrientation == ScreenOrientation.LANDSCAPE
-          || desiredOrientation == ScreenOrientation.PORTRAIT && currentOrientation == ScreenOrientation.PORTRAIT) {
-            // Align the current rotation if the screen already has the desired orientation
+        if (desiredOrientation == currentOrientation) {
+            // Align the resulting rotation if the screen already has the desired orientation
             return align(currentRotation);
         }
         // Otherwise apply both align and flip to the resulting rotation value
