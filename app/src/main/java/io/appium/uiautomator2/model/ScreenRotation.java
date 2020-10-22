@@ -18,7 +18,6 @@ package io.appium.uiautomator2.model;
 
 import io.appium.uiautomator2.model.settings.UseResourcesForOrientationDetection;
 import io.appium.uiautomator2.utils.Device;
-import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.model.settings.Settings.USE_RESOURCES_FOR_ORIENTATION_DETECTION;
 
@@ -72,9 +71,7 @@ public enum ScreenRotation {
 
         ScreenOrientation currentOrientation = ScreenOrientation.current();
         if (currentOrientation == null) {
-            Logger.warn(String.format("The current screen orientation is unknown. " +
-                    "Assuming it based on the current rotation value %s", currentRotation.name()));
-            currentOrientation = currentRotation.toOrientation();
+            throw new IllegalStateException("The current screen orientation cannot be retrieved from resources");
         }
         if (desiredOrientation == ScreenOrientation.LANDSCAPE) {
             if (currentOrientation == ScreenOrientation.LANDSCAPE) {

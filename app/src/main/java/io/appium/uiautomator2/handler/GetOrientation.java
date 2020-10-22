@@ -22,7 +22,6 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.ScreenOrientation;
 import io.appium.uiautomator2.model.ScreenRotation;
 import io.appium.uiautomator2.model.settings.UseResourcesForOrientationDetection;
-import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.model.settings.Settings.USE_RESOURCES_FOR_ORIENTATION_DETECTION;
 
@@ -40,9 +39,7 @@ public class GetOrientation extends SafeRequestHandler {
         }
         ScreenOrientation orientation = ScreenOrientation.current();
         if (orientation == null) {
-            Logger.warn(String.format("The current screen orientation is unknown. " +
-                    "Assuming it based on the current rotation value %s", rotation.name()));
-            orientation = rotation.toOrientation();
+            throw new IllegalStateException("The current screen orientation cannot be retrieved from resources");
         }
         return new AppiumResponse(getSessionId(request), orientation.name());
     }

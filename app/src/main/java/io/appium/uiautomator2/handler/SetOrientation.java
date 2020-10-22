@@ -24,7 +24,6 @@ import io.appium.uiautomator2.model.ScreenRotation;
 import io.appium.uiautomator2.model.api.OrientationModel;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.settings.UseResourcesForOrientationDetection;
-import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.model.settings.Settings.USE_RESOURCES_FOR_ORIENTATION_DETECTION;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
@@ -42,12 +41,10 @@ public class SetOrientation extends SafeRequestHandler {
         String result = rotation.toOrientation().name();
         if (((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()) {
             ScreenOrientation orientation = ScreenOrientation.current();
-            if (orientation != null) {
-                result = orientation.name();
-            } else {
-                Logger.warn(String.format("The current screen orientation is unknown. " +
-                        "Assuming it based on the current rotation value %s", rotation.name()));
+            if (orientation == null) {
+                throw new IllegalStateException("The current screen orientation cannot be retrieved from resources");
             }
+            result = orientation.name();
         }
         return new AppiumResponse(getSessionId(request), result);
     }
