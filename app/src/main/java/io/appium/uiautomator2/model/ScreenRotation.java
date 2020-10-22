@@ -16,8 +16,11 @@
 
 package io.appium.uiautomator2.model;
 
+import io.appium.uiautomator2.model.settings.UseResourcesForOrientationDetection;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
+
+import static io.appium.uiautomator2.model.settings.Settings.USE_RESOURCES_FOR_ORIENTATION_DETECTION;
 
 public enum ScreenRotation {
     ROTATION_0, ROTATION_90, ROTATION_180, ROTATION_270;
@@ -51,16 +54,31 @@ public enum ScreenRotation {
     }
 
     public static ScreenRotation ofOrientation(String abbr) {
-        ScreenOrientation currentOrientation = ScreenOrientation.current();
+        ScreenOrientation desiredOrientation;
+        try {
+            desiredOrientation = ScreenOrientation.valueOf(abbr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+                    String.format("Orientation value '%s' is not supported. " +
+                                    "Only '%s' and '%s' values could be translated into " +
+                                    "a valid screen orientation", abbr,
+                            ScreenOrientation.LANDSCAPE.name(), ScreenOrientation.PORTRAIT.name()));
+        }
         ScreenRotation currentRotation = current();
+
+        if (!((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()) {
+            return desiredOrientation == ScreenOrientation.LANDSCAPE
+                    ? ROTATION_270
+                    : ROTATION_0;
+        }
+
+        ScreenOrientation currentOrientation = ScreenOrientation.current();
         if (currentOrientation == null) {
             Logger.warn(String.format("The current screen orientation is unknown. " +
                     "Assuming it based on the current rotation value %s", currentRotation.name()));
-            currentOrientation = currentRotation == ROTATION_0 || currentRotation == ROTATION_180
-                    ? ScreenOrientation.PORTRAIT
-                    : ScreenOrientation.LANDSCAPE;
+            currentOrientation = currentRotation.toOrientation();
         }
-        if (ScreenOrientation.LANDSCAPE.name().equalsIgnoreCase(abbr)) {
+        if (desiredOrientation == ScreenOrientation.LANDSCAPE) {
             if (currentOrientation == ScreenOrientation.LANDSCAPE) {
                 if (currentRotation == ROTATION_90) {
                     return ROTATION_270;
@@ -70,11 +88,7 @@ public enum ScreenRotation {
                 }
                 return currentRotation;
             }
-
-            return currentRotation == ROTATION_270 || currentRotation == ROTATION_90
-                    ? ROTATION_0
-                    : ROTATION_270;
-        } else if (ScreenOrientation.PORTRAIT.name().equalsIgnoreCase(abbr)) {
+        } else {
             if (currentOrientation != ScreenOrientation.LANDSCAPE) {
                 if (currentRotation == ROTATION_90) {
                     return ROTATION_270;
@@ -84,16 +98,13 @@ public enum ScreenRotation {
                 }
                 return currentRotation;
             }
-
-            return currentRotation == ROTATION_270 || currentRotation == ROTATION_90
-                    ? ROTATION_0
-                    : ROTATION_270;
-        } else {
-            throw new IllegalArgumentException(
-                    String.format("Orientation value '%s' is not supported. " +
-                                    "Only '%s' and '%s' values could be translated into " +
-                                    "a valid screen orientation", abbr,
-                            ScreenOrientation.LANDSCAPE.name(), ScreenOrientation.PORTRAIT.name()));
         }
+        return currentRotation == ROTATION_270 || currentRotation == ROTATION_90
+                ? ROTATION_0
+                : ROTATION_270;
+    }
+
+    public ScreenOrientation toOrientation() {
+        return this == ROTATION_0 || this == ROTATION_180 ? ScreenOrientation.PORTRAIT : ScreenOrientation.LANDSCAPE;
     }
 }

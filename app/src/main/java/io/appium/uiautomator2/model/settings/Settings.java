@@ -41,7 +41,8 @@ public enum Settings {
     MJPEG_SERVER_FRAMERATE(new MjpegServerFramerate()),
     MJPEG_SCALING_FACTOR(new MjpegScalingFactor()),
     MJPEG_SERVER_SCREENSHOT_QUALITY(new MjpegServerScreenshotQuality()),
-    MJPEG_BILINEAR_FILTERING(new MjpegBilinearFiltering());
+    MJPEG_BILINEAR_FILTERING(new MjpegBilinearFiltering()),
+    USE_RESOURCES_FOR_ORIENTATION_DETECTION(new UseResourcesForOrientationDetection());
 
     private final ISetting<?> setting;
 
