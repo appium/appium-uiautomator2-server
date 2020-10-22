@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.model;
 
-import androidx.annotation.Nullable;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
@@ -25,7 +24,6 @@ import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 public enum ScreenOrientation {
     LANDSCAPE, PORTRAIT;
 
-    @Nullable
     public static ScreenOrientation current() {
         int orientation = asInteger();
         switch (orientation) {
@@ -34,7 +32,7 @@ public enum ScreenOrientation {
             case ORIENTATION_LANDSCAPE:
                 return LANDSCAPE;
             default:
-                return null;
+                throw new IllegalStateException("The current screen orientation cannot be retrieved from resources");
         }
     }
 

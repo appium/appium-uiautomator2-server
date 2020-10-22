@@ -37,10 +37,6 @@ public class GetOrientation extends SafeRequestHandler {
         if (!((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()) {
             return new AppiumResponse(getSessionId(request), rotation.toOrientation().name());
         }
-        ScreenOrientation orientation = ScreenOrientation.current();
-        if (orientation == null) {
-            throw new IllegalStateException("The current screen orientation cannot be retrieved from resources");
-        }
-        return new AppiumResponse(getSessionId(request), orientation.name());
+        return new AppiumResponse(getSessionId(request), ScreenOrientation.current().name());
     }
 }

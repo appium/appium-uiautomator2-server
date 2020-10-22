@@ -38,14 +38,9 @@ public class SetOrientation extends SafeRequestHandler {
         OrientationModel model = toModel(request, OrientationModel.class);
         ScreenRotation rotation = CustomUiDevice.getInstance()
                 .setRotationSync(ScreenRotation.ofOrientation(model.orientation));
-        String result = rotation.toOrientation().name();
-        if (((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()) {
-            ScreenOrientation orientation = ScreenOrientation.current();
-            if (orientation == null) {
-                throw new IllegalStateException("The current screen orientation cannot be retrieved from resources");
-            }
-            result = orientation.name();
-        }
+        String result = ((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()
+                ? ScreenOrientation.current().name()
+                : rotation.toOrientation().name();
         return new AppiumResponse(getSessionId(request), result);
     }
 }

@@ -70,9 +70,6 @@ public enum ScreenRotation {
         }
 
         ScreenOrientation currentOrientation = ScreenOrientation.current();
-        if (currentOrientation == null) {
-            throw new IllegalStateException("The current screen orientation cannot be retrieved from resources");
-        }
         if (desiredOrientation == ScreenOrientation.LANDSCAPE) {
             if (currentOrientation == ScreenOrientation.LANDSCAPE) {
                 if (currentRotation == ROTATION_90) {
