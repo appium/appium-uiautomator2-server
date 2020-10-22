@@ -19,7 +19,7 @@ package io.appium.uiautomator2.handler;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.ScreenOrientation;
+import io.appium.uiautomator2.model.ScreenRotation;
 
 public class GetOrientation extends SafeRequestHandler {
 
@@ -29,6 +29,6 @@ public class GetOrientation extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        return new AppiumResponse(getSessionId(request), ScreenOrientation.current().toString());
+        return new AppiumResponse(getSessionId(request), ScreenRotation.current().toOrientation());
     }
 }

@@ -37,7 +37,7 @@ import java.util.List;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
-import io.appium.uiautomator2.model.ScreenOrientation;
+import io.appium.uiautomator2.model.ScreenRotation;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
@@ -51,7 +51,7 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 
 public class CustomUiDevice {
-    private static final int CHANGE_ORIENTATION_TIMEOUT_MS = 2000;
+    private static final int CHANGE_ROTATION_TIMEOUT_MS = 2000;
 
     private static final String FIELD_M_INSTRUMENTATION = "mInstrumentation";
     private static final String FIELD_API_LEVEL_ACTUAL = "API_LEVEL_ACTUAL";
@@ -187,20 +187,20 @@ public class CustomUiDevice {
         return className == null ? null : By.clazz(className.toString());
     }
 
-    public ScreenOrientation setOrientationSync(ScreenOrientation desired) {
-        if (ScreenOrientation.current() == desired) {
+    public ScreenRotation setRotationSync(ScreenRotation desired) {
+        if (ScreenRotation.current() == desired) {
             return desired;
         }
 
         getInstrumentation().getUiAutomation().setRotation(desired.ordinal());
         long start = System.currentTimeMillis();
         do {
-            if (ScreenOrientation.current() == desired) {
+            if (ScreenRotation.current() == desired) {
                 return desired;
             }
             SystemClock.sleep(100);
-        } while (System.currentTimeMillis() - start < CHANGE_ORIENTATION_TIMEOUT_MS);
-        throw new InvalidElementStateException(String.format("Screen orientation cannot be changed to %s after %sms. " +
-                "Is it locked programmatically?", desired.toString(), CHANGE_ORIENTATION_TIMEOUT_MS));
+        } while (System.currentTimeMillis() - start < CHANGE_ROTATION_TIMEOUT_MS);
+        throw new InvalidElementStateException(String.format("Screen rotation cannot be changed to %s after %sms. " +
+                "Is it locked programmatically?", desired.toString(), CHANGE_ROTATION_TIMEOUT_MS));
     }
 }

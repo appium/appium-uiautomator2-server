@@ -19,7 +19,7 @@ package io.appium.uiautomator2.handler;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.ScreenOrientation;
+import io.appium.uiautomator2.model.ScreenRotation;
 import io.appium.uiautomator2.model.api.RotationModel;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
@@ -34,8 +34,8 @@ public class SetRotation extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) {
         RotationModel model = toModel(request, RotationModel.class);
         // `x` and `y` are ignored. We only care about `z`
-        ScreenOrientation desired = CustomUiDevice.getInstance()
-                .setOrientationSync(ScreenOrientation.ofDegrees(model.z));
+        ScreenRotation desired = CustomUiDevice.getInstance()
+                .setRotationSync(ScreenRotation.ofDegrees(model.z));
         return new AppiumResponse(getSessionId(request), desired.toString());
     }
 }
