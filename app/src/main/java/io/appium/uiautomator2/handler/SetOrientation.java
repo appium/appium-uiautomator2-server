@@ -36,8 +36,9 @@ public class SetOrientation extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         OrientationModel model = toModel(request, OrientationModel.class);
+        ScreenOrientation desiredOrientation = ScreenOrientation.ofString(model.orientation);
         ScreenRotation rotation = CustomUiDevice.getInstance()
-                .setRotationSync(ScreenRotation.ofOrientation(model.orientation));
+                .setRotationSync(ScreenRotation.ofOrientation(desiredOrientation));
         String result = ((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()
                 ? ScreenOrientation.current().name()
                 : rotation.toOrientation().name();

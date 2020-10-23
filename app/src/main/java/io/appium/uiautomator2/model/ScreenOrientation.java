@@ -24,6 +24,17 @@ import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 public enum ScreenOrientation {
     LANDSCAPE, PORTRAIT;
 
+    public static ScreenOrientation ofString(String abbr) {
+        try {
+            return ScreenOrientation.valueOf(abbr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+                    String.format("Orientation value '%s' is not supported. " +
+                                    "Only '%s' and '%s' values could be translated into " +
+                                    "a valid screen orientation", abbr, LANDSCAPE.name(), PORTRAIT.name()));
+        }
+    }
+
     public static ScreenOrientation current() {
         int orientation = asInteger();
         switch (orientation) {

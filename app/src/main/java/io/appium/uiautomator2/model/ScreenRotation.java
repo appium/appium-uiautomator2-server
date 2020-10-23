@@ -64,18 +64,7 @@ public enum ScreenRotation {
         return value;
     }
 
-    public static ScreenRotation ofOrientation(String abbr) {
-        ScreenOrientation desiredOrientation;
-        try {
-            desiredOrientation = ScreenOrientation.valueOf(abbr.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(
-                    String.format("Orientation value '%s' is not supported. " +
-                                    "Only '%s' and '%s' values could be translated into " +
-                                    "a valid screen orientation", abbr,
-                            ScreenOrientation.LANDSCAPE.name(), ScreenOrientation.PORTRAIT.name()));
-        }
-
+    public static ScreenRotation ofOrientation(ScreenOrientation desiredOrientation) {
         if (!((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()) {
             return desiredOrientation == ScreenOrientation.LANDSCAPE ? ROTATION_270 : ROTATION_0;
         }
