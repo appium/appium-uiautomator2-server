@@ -45,8 +45,8 @@ import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
 public class ScrollTo extends SafeRequestHandler {
-    private static final List<ElementsLookupStrategy> SUPPORTED_STRATEGIES =
-            Arrays.asList(BY_ACCESSIBILITY_ID, BY_CLASS, BY_UIAUTOMATOR);
+    private static final List<String> SUPPORTED_STRATEGIES =
+            Arrays.asList(BY_ACCESSIBILITY_ID.toString(), BY_CLASS.toString(), BY_UIAUTOMATOR.toString());
 
     public ScrollTo(String mappedUri) {
         super(mappedUri);
