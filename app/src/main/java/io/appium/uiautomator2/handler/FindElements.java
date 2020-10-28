@@ -39,7 +39,7 @@ import io.appium.uiautomator2.model.By.ById;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.api.FindElementModel;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
-import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
+import io.appium.uiautomator2.model.internal.ElementsLookupStrategy;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
@@ -75,7 +75,7 @@ public class FindElements extends SafeRequestHandler {
                     method, selector, contextId));
         }
 
-        By by = new NativeAndroidBySelector().pickFrom(method, selector);
+        final By by = ElementsLookupStrategy.ofName(method).toNativeSelector(selector);
 
         final List<?> elements;
         try {

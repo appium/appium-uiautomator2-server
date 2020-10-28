@@ -16,12 +16,6 @@
 
 package io.appium.uiautomator2.model;
 
-import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_ACCESSIBILITY_ID;
-import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_ANDROID_UIAUTOMATOR;
-import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_CLASS;
-import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_NATIVE_ID;
-import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_XPATH;
-
 /**
  * Mechanism used to locate elements within a document. In order to create your own locating
  * mechanisms, it is possible to subclass this class and override the protected methods as
@@ -89,8 +83,6 @@ public abstract class By {
 
     public abstract String getElementLocator();
 
-    public abstract String getElementStrategy();
-
     @Override
     public int hashCode() {
         return toString().hashCode();
@@ -115,11 +107,6 @@ public abstract class By {
         }
 
         @Override
-        public String getElementStrategy() {
-            return SELECTOR_NATIVE_ID;
-        }
-
-        @Override
         public String toString() {
             return "By.id: " + id;
         }
@@ -135,11 +122,6 @@ public abstract class By {
         @Override
         public String getElementLocator() {
             return clazz;
-        }
-
-        @Override
-        public String getElementStrategy() {
-            return SELECTOR_CLASS;
         }
 
         @Override
@@ -161,11 +143,6 @@ public abstract class By {
         }
 
         @Override
-        public String getElementStrategy() {
-            return SELECTOR_ACCESSIBILITY_ID;
-        }
-
-        @Override
         public String toString() {
             return "By.accessibilityId: " + accessibilityId;
         }
@@ -184,11 +161,6 @@ public abstract class By {
         }
 
         @Override
-        public String getElementStrategy() {
-            return SELECTOR_XPATH;
-        }
-
-        @Override
         public String toString() {
             return "By.xpath: " + xpathExpression;
         }
@@ -204,11 +176,6 @@ public abstract class By {
         @Override
         public String getElementLocator() {
             return expression;
-        }
-
-        @Override
-        public String getElementStrategy() {
-            return SELECTOR_ANDROID_UIAUTOMATOR;
         }
 
         @Override
@@ -232,9 +199,6 @@ public abstract class By {
 
             return "new UiSelector().text(\"" + textEscaped + "\")";
         }
-
-        @Override
-        public String getElementStrategy() { return SELECTOR_ANDROID_UIAUTOMATOR; }
 
         @Override
         public String toString() {

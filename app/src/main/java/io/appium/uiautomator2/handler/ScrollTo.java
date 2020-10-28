@@ -34,19 +34,19 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.KnownElements;
 import io.appium.uiautomator2.model.api.ScrollToModel;
-import io.appium.uiautomator2.model.internal.NativeAndroidBySelector;
+import io.appium.uiautomator2.model.internal.ElementsLookupStrategy;
 import io.appium.uiautomator2.utils.Logger;
 
-import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_ACCESSIBILITY_ID;
-import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_ANDROID_UIAUTOMATOR;
-import static io.appium.uiautomator2.model.internal.NativeAndroidBySelector.SELECTOR_CLASS;
+import static io.appium.uiautomator2.model.internal.ElementsLookupStrategy.BY_ACCESSIBILITY_ID;
+import static io.appium.uiautomator2.model.internal.ElementsLookupStrategy.BY_CLASS;
+import static io.appium.uiautomator2.model.internal.ElementsLookupStrategy.BY_UIAUTOMATOR;
 import static io.appium.uiautomator2.utils.Device.scrollToElement;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
 public class ScrollTo extends SafeRequestHandler {
-    private static final List<String> SUPPORTED_STRATEGIES =
-            Arrays.asList(SELECTOR_ACCESSIBILITY_ID, SELECTOR_CLASS, SELECTOR_ANDROID_UIAUTOMATOR);
+    private static final List<ElementsLookupStrategy> SUPPORTED_STRATEGIES =
+            Arrays.asList(BY_ACCESSIBILITY_ID, BY_CLASS, BY_UIAUTOMATOR);
 
     public ScrollTo(String mappedUri) {
         super(mappedUri);
@@ -57,7 +57,7 @@ public class ScrollTo extends SafeRequestHandler {
         ScrollToModel model = toModel(request, ScrollToModel.class);
         String strategy = model.params.strategy;
         String selector = model.params.selector;
-        By by = new NativeAndroidBySelector().pickFrom(strategy, selector);
+        final By by = ElementsLookupStrategy.ofName(strategy).toNativeSelector(selector);
         final UiSelector uiselector;
         if (by instanceof By.ByAccessibilityId) {
             uiselector = new UiSelector().description(selector);
