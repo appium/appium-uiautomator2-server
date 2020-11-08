@@ -3,6 +3,7 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd33cddf5f0b4ae2af8dbced5afe6b49)](https://app.codacy.com/app/dpgraham/appium-uiautomator2-server?utm_source=github.com&utm_medium=referral&utm_content=appium/appium-uiautomator2-server&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/appium/appium-uiautomator2-server.svg?branch=master)](https://travis-ci.org/appium/appium-uiautomator2-server)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fappium%2Fappium-uiautomator2-server&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=PAGE+VIEWS&edge_flat=false)](https://hits.seeyoufarm.com)
 
 A netty server that runs on the device listening for commands and executes using UiAutomator V2.
 
