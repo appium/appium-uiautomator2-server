@@ -24,6 +24,7 @@ import androidx.test.uiautomator.UiSelector;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -171,6 +172,13 @@ public class ElementsCache {
     }
 
     public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by, @Nullable String contextId) {
+        AndroidElement androidElement = toAndroidElement(element, isSingleMatch, by, contextId);
+        for (Map.Entry<String, AndroidElement> entry : cache.entrySet()) {
+            if (Objects.equals(androidElement, entry.getValue())) {
+                return entry.getValue();
+            }
+        }
+
         if (cache.size() >= maxSize) {
             // Delete the chunk of older cache entries to maintain the overall size of the cache
             int index = 0;
@@ -183,7 +191,6 @@ public class ElementsCache {
             }
         }
 
-        AndroidElement androidElement = toAndroidElement(element, isSingleMatch, by, contextId);
         assignAndroidElementId(androidElement, UUID.randomUUID().toString());
         cache.put(androidElement.getId(), androidElement);
         return androidElement;

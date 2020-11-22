@@ -31,6 +31,7 @@ import androidx.test.uiautomator.UiSelector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -441,5 +442,18 @@ public class UiObjectElement extends BaseElement {
 
         Logger.error("Destination should be either UiObject or UiObject2");
         return false;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof UiObjectElement)) {
+            return false;
+        }
+
+        UiObjectElement otherEl = (UiObjectElement)other;
+        return Objects.equals(this.element, otherEl.element)
+                && Objects.equals(by, otherEl.by)
+                && Objects.equals(contextId, otherEl.contextId)
+                && this.isSingleMatch == otherEl.isSingleMatch;
     }
 }

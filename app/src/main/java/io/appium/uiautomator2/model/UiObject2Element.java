@@ -29,6 +29,7 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -351,5 +352,18 @@ public class UiObject2Element extends BaseElement {
         coords = PositionHelper.getDeviceAbsPos(coords);
         element.drag(new android.graphics.Point(coords.x.intValue(), coords.y.intValue()), steps);
         return true;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof UiObject2Element)) {
+            return false;
+        }
+
+        UiObject2Element otherEl = (UiObject2Element)other;
+        return Objects.equals(this.element, otherEl.element)
+                && Objects.equals(by, otherEl.by)
+                && Objects.equals(contextId, otherEl.contextId)
+                && this.isSingleMatch == otherEl.isSingleMatch;
     }
 }
