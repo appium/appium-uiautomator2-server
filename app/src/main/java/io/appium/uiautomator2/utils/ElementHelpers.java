@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.NoSuchAttributeException;
@@ -58,7 +57,6 @@ import io.appium.uiautomator2.model.UiObject2Element;
 
 import static android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction.ACTION_SET_PROGRESS;
 import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
-import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
@@ -156,12 +154,13 @@ public abstract class ElementHelpers {
         AxNodeInfoHelper.setProgressValue(nodeInfo, value);
     }
 
-    public static AndroidElement findElement(final BySelector ui2BySelector) throws UiAutomator2Exception {
+    public static AndroidElement findElement(final BySelector ui2BySelector) {
         Object ui2Object = getInstance().findObject(ui2BySelector);
         if (ui2Object == null) {
             throw new ElementNotFoundException();
         }
-        return getAndroidElement(UUID.randomUUID().toString(), ui2Object, true);
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+        return session.getElementsCache().add(ui2Object, true);
     }
 
     public static NoSuchAttributeException generateNoAttributeException(@Nullable String attributeName) {
@@ -172,7 +171,6 @@ public abstract class ElementHelpers {
 
     @NonNull
     public static String getText(Object element) {
-        //noinspection ConstantConditions
         return getText(element, true);
     }
 
@@ -363,6 +361,7 @@ public abstract class ElementHelpers {
         return touchPadding / 2;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     private static boolean swipe(final int startX, final int startY, final int endX, final int endY) {
         Logger.debug(String.format("Swiping from [%s, %s] to [%s, %s]", startX, startY, endX, endY));
         return EventRegister.runAndRegisterScrollEvents(new ReturningRunnable<Boolean>() {

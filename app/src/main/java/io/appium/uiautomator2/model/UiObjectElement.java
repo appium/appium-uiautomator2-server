@@ -52,14 +52,12 @@ public class UiObjectElement extends BaseElement {
 
     private static final Pattern endsWithInstancePattern = Pattern.compile(".*INSTANCE=\\d+]$");
     private final UiObject element;
-    private final String id;
+    private String id;
     private final By by;
     private final String contextId;
     private final boolean isSingleMatch;
 
-    public UiObjectElement(String id, UiObject element, boolean isSingleMatch, By by,
-                           @Nullable String contextId) {
-        this.id = id;
+    public UiObjectElement(UiObject element, boolean isSingleMatch, By by, @Nullable String contextId) {
         this.element = element;
         this.by = by;
         this.contextId = contextId;
@@ -270,6 +268,10 @@ public class UiObjectElement extends BaseElement {
     @Override
     public String getId() {
         return this.id;
+    }
+
+    void setId(String id) {
+        this.id = id;
     }
 
     @Override

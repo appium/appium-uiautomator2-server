@@ -29,7 +29,6 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import java.util.List;
-import java.util.UUID;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -39,21 +38,17 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
-import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class UiObject2Element extends BaseElement {
-
     private final UiObject2 element;
-    private final String id;
+    private String id;
     private final By by;
     private final String contextId;
     private final boolean isSingleMatch;
 
-    public UiObject2Element(String id, UiObject2 element, boolean isSingleMatch, By by,
-                            @Nullable String contextId) {
-        this.id = id;
+    public UiObject2Element(UiObject2 element, boolean isSingleMatch, By by, @Nullable String contextId) {
         this.element = element;
         this.by = by;
         this.contextId = contextId;
@@ -266,6 +261,10 @@ public class UiObject2Element extends BaseElement {
         return this.id;
     }
 
+    void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public Rect getBounds() {
         return AxNodeInfoHelper.getBounds(toAxNodeInfo(element));
@@ -306,8 +305,7 @@ public class UiObject2Element extends BaseElement {
             AccessibilityNodeInfo nodeInfo = toAxNodeInfo(element);
             UiSelector uiSelector = UiSelectorHelper.toUiSelector(nodeInfo);
             UiObject uiObject = (UiObject) CustomUiDevice.getInstance().findObject(uiSelector);
-            String id = UUID.randomUUID().toString();
-            AndroidElement androidElement = getAndroidElement(id, uiObject, true, by, getContextId());
+            UiObjectElement androidElement = new UiObjectElement(uiObject, true, by, getContextId());
             return androidElement.getChildren(selector, by);
         }
         return element.findObjects((BySelector) selector);

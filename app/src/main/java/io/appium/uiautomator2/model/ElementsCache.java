@@ -18,10 +18,13 @@ package io.appium.uiautomator2.model;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiSelector;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
@@ -29,12 +32,13 @@ import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
-import static io.appium.uiautomator2.utils.Device.getAndroidElement;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 
 public class ElementsCache {
+    // The percentage of the overall cache size
+    // to cleanup if the cache reaches its maximum size
     private static final int LOAD_FACTOR = 30;
 
     private final int maxSize;
@@ -44,14 +48,27 @@ public class ElementsCache {
         this.maxSize = maxSize;
     }
 
-    @Nullable
-    private String getCacheKey(AndroidElement element) {
-        for (Map.Entry<String, AndroidElement> entry : cache.entrySet()) {
-            if (entry.getValue().equals(element)) {
-                return entry.getKey();
-            }
+    private static AndroidElement toAndroidElement(Object element, boolean isSingleMatch,
+                                                   @Nullable By by, @Nullable String contextId) {
+        if (element instanceof UiObject2) {
+            return new UiObject2Element((UiObject2) element, isSingleMatch, by, contextId);
+        } else if (element instanceof UiObject) {
+            return new UiObjectElement((UiObject) element, isSingleMatch, by, contextId);
+        } else {
+            throw new IllegalStateException(
+                    String.format("Unknown element type: %s", element.getClass().getName()));
         }
-        return null;
+    }
+
+    private static void assignAndroidElementId(AndroidElement element, String id) {
+        if (element instanceof UiObject2Element) {
+            ((UiObject2Element) element).setId(id);
+        } else if (element instanceof UiObjectElement) {
+            ((UiObjectElement) element).setId(id);
+        } else {
+            throw new IllegalStateException(
+                    String.format("Unknown element type: %s", element.getClass().getName()));
+        }
     }
 
     private void restoreCachedElement(AndroidElement element) {
@@ -110,8 +127,9 @@ public class ElementsCache {
             throw new StaleElementReferenceException(String.format(
                     "The element '%s' does not exist in DOM anymore", by));
         }
-        AndroidElement restoredElement = getAndroidElement(element.getId(), ui2Object,
+        AndroidElement restoredElement = toAndroidElement(ui2Object,
                 element.isSingleMatch(), element.getBy(), element.getContextId());
+        assignAndroidElementId(restoredElement, element.getId());
         cache.put(restoredElement.getId(), restoredElement);
     }
 
@@ -143,16 +161,20 @@ public class ElementsCache {
         return result;
     }
 
-    public String add(AndroidElement element) {
-        if (cache.containsValue(element)) {
-            return getCacheKey(element);
-        }
+    public AndroidElement add(Object element, boolean isSingleMatch) {
+        return add(element, isSingleMatch, null, null);
+    }
 
-        // Delete the chunk of older cache entries to maintain its size
+    public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by) {
+        return add(element, isSingleMatch, by, null);
+    }
+
+    public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by, @Nullable String contextId) {
         if (cache.size() >= maxSize) {
+            // Delete the chunk of older cache entries to maintain the overall size of the cache
             int index = 0;
             for (String key: cache.keySet()) {
-                if (index > cache.size() / 100.0 * LOAD_FACTOR) {
+                if (index > cache.size() * LOAD_FACTOR / 100) {
                     break;
                 }
                 cache.remove(key);
@@ -160,7 +182,9 @@ public class ElementsCache {
             }
         }
 
-        cache.put(element.getId(), element);
-        return element.getId();
+        AndroidElement androidElement = toAndroidElement(element, isSingleMatch, by, contextId);
+        assignAndroidElementId(androidElement, UUID.randomUUID().toString());
+        cache.put(androidElement.getId(), androidElement);
+        return androidElement;
     }
 }
