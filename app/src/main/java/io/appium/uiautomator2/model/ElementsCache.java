@@ -22,9 +22,11 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiSelector;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -142,25 +144,27 @@ public class ElementsCache {
                     String.format("A valid element identifier must be provided. Got '%s' instead", id));
         }
 
-        AndroidElement result = cache.get(id);
-        if (result != null) {
-            // It might be that cached UI object has been invalidated
-            // after AX cache reset has been performed. So we try to recreate
-            // the cached object automatically
-            // in order to avoid an unexpected StaleElementReferenceException
-            try {
-                result.getName();
-            } catch (Exception e) {
-                restore(result);
+        synchronized (cache) {
+            AndroidElement result = cache.get(id);
+            if (result != null) {
+                // It might be that cached UI object has been invalidated
+                // after AX cache reset has been performed. So we try to recreate
+                // the cached object automatically
+                // in order to avoid an unexpected StaleElementReferenceException
+                try {
+                    result.getName();
+                } catch (Exception e) {
+                    restore(result);
+                }
             }
+            result = cache.get(id);
+            if (result == null) {
+                throw new ElementNotFoundException(
+                        String.format("The element identified by '%s' is not present in the cache " +
+                                "or has expired. Try to find it again", id));
+            }
+            return result;
         }
-        result = cache.get(id);
-        if (result == null) {
-            throw new ElementNotFoundException(
-                    String.format("The element identified by '%s' is not present in the cache " +
-                            "or has expired. Try to find it again", id));
-        }
-        return result;
     }
 
     public AndroidElement add(Object element, boolean isSingleMatch) {
@@ -173,26 +177,32 @@ public class ElementsCache {
 
     public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by, @Nullable String contextId) {
         AndroidElement androidElement = toAndroidElement(element, isSingleMatch, by, contextId);
-        for (Map.Entry<String, AndroidElement> entry : cache.entrySet()) {
-            if (Objects.equals(androidElement, entry.getValue())) {
-                return entry.getValue();
-            }
-        }
-
-        if (cache.size() >= maxSize) {
-            // Delete the chunk of older cache entries to maintain the overall size of the cache
-            int index = 0;
-            for (String key: cache.keySet()) {
-                if (index > cache.size() * LOAD_FACTOR / 100) {
-                    break;
+        synchronized (cache) {
+            for (Map.Entry<String, AndroidElement> entry : cache.entrySet()) {
+                if (Objects.equals(androidElement, entry.getValue())) {
+                    return entry.getValue();
                 }
-                cache.remove(key);
-                ++index;
             }
-        }
 
-        assignAndroidElementId(androidElement, UUID.randomUUID().toString());
-        cache.put(androidElement.getId(), androidElement);
-        return androidElement;
+            if (cache.size() >= maxSize) {
+                // Delete the chunk of older cache entries to maintain the overall size of the cache
+                int index = 0;
+                Set<String> keysToRemove = new HashSet<>();
+                for (String key : cache.keySet()) {
+                    if (index > cache.size() * LOAD_FACTOR / 100) {
+                        break;
+                    }
+                    keysToRemove.add(key);
+                    ++index;
+                }
+                for (String key : keysToRemove) {
+                    cache.remove(key);
+                }
+            }
+
+            assignAndroidElementId(androidElement, UUID.randomUUID().toString());
+            cache.put(androidElement.getId(), androidElement);
+            return androidElement;
+        }
     }
 }
