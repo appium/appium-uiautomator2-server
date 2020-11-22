@@ -127,9 +127,9 @@ public class ElementsCache {
             throw new StaleElementReferenceException(String.format(
                     "The element '%s' does not exist in DOM anymore", by));
         }
+        cache.remove(element.getId());
         AndroidElement restoredElement = toAndroidElement(ui2Object,
                 element.isSingleMatch(), element.getBy(), element.getContextId());
-        cache.remove(element.getId());
         assignAndroidElementId(restoredElement, element.getId());
         cache.put(restoredElement.getId(), restoredElement);
     }
