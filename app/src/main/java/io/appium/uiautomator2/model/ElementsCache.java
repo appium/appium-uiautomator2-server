@@ -186,7 +186,7 @@ public class ElementsCache {
 
             if (cache.size() >= maxSize) {
                 int maxIndex = cache.size() * LOAD_FACTOR / 100;
-                Logger.info(String.format("The elements cache size reached its maximum value of %s. " +
+                Logger.info(String.format("The elements cache size has reached its maximum value of %s. " +
                         "Shrinking %s oldest elements from it", maxSize, maxIndex));
                 int index = 0;
                 Set<String> keysToRemove = new HashSet<>();
