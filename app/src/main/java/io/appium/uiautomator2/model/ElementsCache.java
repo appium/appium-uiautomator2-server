@@ -129,6 +129,7 @@ public class ElementsCache {
         }
         AndroidElement restoredElement = toAndroidElement(ui2Object,
                 element.isSingleMatch(), element.getBy(), element.getContextId());
+        cache.remove(element.getId());
         assignAndroidElementId(restoredElement, element.getId());
         cache.put(restoredElement.getId(), restoredElement);
     }
