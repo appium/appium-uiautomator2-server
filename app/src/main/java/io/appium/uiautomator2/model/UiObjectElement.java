@@ -449,6 +449,9 @@ public class UiObjectElement extends BaseElement {
         if (!(other instanceof UiObjectElement)) {
             return false;
         }
+        if (this == other) {
+            return true;
+        }
 
         UiObjectElement otherEl = (UiObjectElement)other;
         return Objects.equals(this.element, otherEl.element)
