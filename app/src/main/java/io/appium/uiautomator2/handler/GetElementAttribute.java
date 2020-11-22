@@ -2,7 +2,6 @@ package io.appium.uiautomator2.handler;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -21,10 +20,7 @@ public class GetElementAttribute extends SafeRequestHandler {
         String id = getElementId(request);
         String attributeName = getNameAttribute(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getKnownElements().getElementFromCache(id);
-        if (element == null) {
-            throw new ElementNotFoundException();
-        }
+        AndroidElement element = session.getElementsCache().getElementFromCache(id);
         String attribute = element.getAttribute(attributeName);
         return new AppiumResponse(getSessionId(request), attribute);
     }

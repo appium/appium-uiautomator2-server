@@ -76,7 +76,7 @@ public class FindElement extends SafeRequestHandler {
         String id = UUID.randomUUID().toString();
         AndroidElement androidElement = getAndroidElement(id, element, true, by, contextId);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        session.getKnownElements().add(androidElement);
+        session.getElementsCache().add(androidElement);
         return new AppiumResponse(getSessionId(request), androidElement.toModel());
     }
 
@@ -110,10 +110,7 @@ public class FindElement extends SafeRequestHandler {
     @Nullable
     private Object findElement(By by, String contextId) throws UiAutomator2Exception, UiObjectNotFoundException {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getKnownElements().getElementFromCache(contextId);
-        if (element == null) {
-            throw new ElementNotFoundException();
-        }
+        AndroidElement element = session.getElementsCache().getElementFromCache(contextId);
 
         if (by instanceof ById) {
             String locator = rewriteIdLocator((ById) by);

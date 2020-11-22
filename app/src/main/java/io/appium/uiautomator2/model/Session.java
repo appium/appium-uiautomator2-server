@@ -27,9 +27,11 @@ import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_
 
 public class Session {
     public static final String NO_ID = "None";
+    public static final int MAX_CACHE_SIZE = 500;
+
     private final Map<String, Object> capabilities = new HashMap<>();
     private final String sessionId;
-    private final KnownElements knownElements = new KnownElements();
+    private final ElementsCache elementsCache = new ElementsCache(MAX_CACHE_SIZE);
     private AccessibilityScrollData lastScrollData;
 
     Session(String sessionId, Map<String, Object> capabilities) {
@@ -87,7 +89,7 @@ public class Session {
         lastScrollData = scrollData;
     }
 
-    public KnownElements getKnownElements() {
-        return this.knownElements;
+    public ElementsCache getElementsCache() {
+        return this.elementsCache;
     }
 }

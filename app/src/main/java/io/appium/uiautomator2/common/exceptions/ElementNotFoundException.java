@@ -31,6 +31,10 @@ public class ElementNotFoundException extends UiAutomator2Exception {
         super(message, cause);
     }
 
+    public ElementNotFoundException(String message) {
+        super(message);
+    }
+
     @Override
     public String getError() {
         return "no such element";

@@ -18,14 +18,12 @@ package io.appium.uiautomator2.handler;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
-import io.appium.uiautomator2.utils.Logger;
 
 /**
  * This handler is used to get the size of elements that support it.
@@ -40,12 +38,7 @@ public class GetName extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getKnownElements().getElementFromCache(id);
-        if (element == null) {
-            throw new ElementNotFoundException();
-        }
-        String elementName = element.getContentDesc();
-        Logger.info("Element Name ", elementName);
-        return new AppiumResponse(getSessionId(request), elementName);
+        AndroidElement element = session.getElementsCache().getElementFromCache(id);
+        return new AppiumResponse(getSessionId(request), element.getContentDesc());
     }
 }

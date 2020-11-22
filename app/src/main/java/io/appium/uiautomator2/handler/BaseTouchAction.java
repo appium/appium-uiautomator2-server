@@ -21,7 +21,6 @@ import android.graphics.Rect;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.core.InteractionController;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -52,10 +51,7 @@ public abstract class BaseTouchAction extends SafeRequestHandler {
         final String elementId = params.getUnifiedId();
         if (elementId != null && params.x == null && params.y == null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            element = session.getKnownElements().getElementFromCache(elementId);
-            if (element == null) {
-                throw new ElementNotFoundException();
-            }
+            element = session.getElementsCache().getElementFromCache(elementId);
             final Rect bounds = element.getBounds();
             clickX = bounds.centerX();
             clickY = bounds.centerY();

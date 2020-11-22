@@ -32,7 +32,7 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
-import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.ElementsCache;
 import io.appium.uiautomator2.model.api.ScrollToModel;
 import io.appium.uiautomator2.model.internal.ElementsLookupStrategy;
 import io.appium.uiautomator2.utils.Logger;
@@ -73,11 +73,8 @@ public class ScrollTo extends SafeRequestHandler {
 
         UiScrollable origin = null;
         if (model.origin != null) {
-            KnownElements ke = AppiumUIA2Driver.getInstance().getSessionOrThrow().getKnownElements();
+            ElementsCache ke = AppiumUIA2Driver.getInstance().getSessionOrThrow().getElementsCache();
             AndroidElement element = ke.getElementFromCache(model.origin.getUnifiedId());
-            if (element == null) {
-                throw new ElementNotFoundException();
-            }
             if (!(element.getUiObject() instanceof UiObject)) {
                 throw new IllegalArgumentException("The given origin element must be a valid scrollable UiObject");
             }

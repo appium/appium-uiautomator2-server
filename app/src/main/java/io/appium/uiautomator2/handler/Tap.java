@@ -20,7 +20,6 @@ import android.graphics.Rect;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -54,11 +53,7 @@ public class Tap extends SafeRequestHandler {
             tapLocation = PositionHelper.getDeviceAbsPos(new Point(model.x, model.y));
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getKnownElements()
-                    .getElementFromCache(model.getUnifiedId());
-            if (element == null) {
-                throw new ElementNotFoundException();
-            }
+            AndroidElement element = session.getElementsCache().getElementFromCache(model.getUnifiedId());
             Rect bounds = element.getBounds();
             Point offset = (model.x != null && model.y != null)
                 ? new Point(model.x, model.y)

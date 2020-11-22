@@ -19,7 +19,6 @@ package io.appium.uiautomator2.handler.gestures;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -52,10 +51,7 @@ public class LongClick extends SafeRequestHandler {
             );
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
-            if (element == null) {
-                throw new ElementNotFoundException();
-            }
+            AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
             if (longClickModel.offset == null) {
                 if (longClickModel.duration == null) {
                     element.longClick();

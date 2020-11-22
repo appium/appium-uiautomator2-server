@@ -18,7 +18,6 @@ package io.appium.uiautomator2.handler;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -102,10 +101,7 @@ public class SendKeysToElement extends SafeRequestHandler {
         AndroidElement element;
         if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            element = session.getKnownElements().getElementFromCache(elementId);
-            if (element == null) {
-                throw new ElementNotFoundException();
-            }
+            element = session.getElementsCache().getElementFromCache(elementId);
         } else {
             //perform action on focused element
             element = findElement(focused(true));

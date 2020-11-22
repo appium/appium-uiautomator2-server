@@ -18,14 +18,13 @@ package io.appium.uiautomator2.handler;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.ElementsCache;
 import io.appium.uiautomator2.model.Point;
 import io.appium.uiautomator2.model.api.DragModel;
 import io.appium.uiautomator2.utils.Logger;
@@ -42,15 +41,9 @@ public class Drag extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         DragModel model = toModel(request, DragModel.class);
-        KnownElements ke = AppiumUIA2Driver.getInstance().getSessionOrThrow().getKnownElements();
+        ElementsCache ke = AppiumUIA2Driver.getInstance().getSessionOrThrow().getElementsCache();
         AndroidElement startElement = model.elementId == null ? null : ke.getElementFromCache(model.elementId);
-        if (model.elementId != null && startElement == null) {
-            throw new ElementNotFoundException();
-        }
         AndroidElement endElement = model.destElId == null ? null : ke.getElementFromCache(model.destElId);
-        if (model.destElId != null && endElement == null) {
-            throw new ElementNotFoundException();
-        }
         Point start = (model.startX != null && model.startY != null) ? new Point(model.startX, model.startY) : null;
         Point end = (model.endX != null && model.endY != null) ? new Point(model.endX, model.endY) : null;
 

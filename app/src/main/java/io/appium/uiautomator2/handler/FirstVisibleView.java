@@ -36,10 +36,7 @@ public class FirstVisibleView extends SafeRequestHandler {
         String elementId = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
 
-        AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
-        if (element == null) {
-            throw new ElementNotFoundException();
-        }
+        AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
         Object firstObject = null;
         if (element.getUiObject() instanceof UiObject) {
             UiObject uiObject = (UiObject) element.getUiObject();
@@ -75,7 +72,7 @@ public class FirstVisibleView extends SafeRequestHandler {
 
         String id = UUID.randomUUID().toString();
         AndroidElement androidElement = getAndroidElement(id, firstObject, false);
-        session.getKnownElements().add(androidElement);
+        session.getElementsCache().add(androidElement);
         return new AppiumResponse(getSessionId(request), androidElement.toModel());
     }
 }

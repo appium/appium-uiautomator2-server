@@ -18,7 +18,6 @@ package io.appium.uiautomator2.handler;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -51,10 +50,7 @@ public class Flick extends SafeRequestHandler {
         final String elementId = toModel(request, ElementModel.class).getUnifiedId();
         if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
-            if (element == null) {
-                throw new ElementNotFoundException();
-            }
+            AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
             start = element.getAbsolutePosition(start);
             FlickByOffsetModel model = toModel(request, FlickByOffsetModel.class);
             if (model.speed == 0) {

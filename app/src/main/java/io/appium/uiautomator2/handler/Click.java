@@ -16,8 +16,6 @@
 
 package io.appium.uiautomator2.handler;
 
-import java.util.NoSuchElementException;
-
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -35,11 +33,7 @@ public class Click extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getKnownElements()
-                .getElementFromCache(getElementId(request));
-        if (element == null) {
-            throw new NoSuchElementException();
-        }
+        AndroidElement element = session.getElementsCache().getElementFromCache(getElementId(request));
         element.click();
         Device.waitForIdle();
         return new AppiumResponse(getSessionId(request));

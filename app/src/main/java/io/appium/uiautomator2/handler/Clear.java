@@ -18,8 +18,6 @@ package io.appium.uiautomator2.handler;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import java.util.NoSuchElementException;
-
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -41,10 +39,7 @@ public class Clear extends SafeRequestHandler {
         String elementId = getElementId(request);
         if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            element = session.getKnownElements().getElementFromCache(elementId);
-            if (element == null) {
-                throw new NoSuchElementException();
-            }
+            element = session.getElementsCache().getElementFromCache(elementId);
         } else {
             //perform action on focused element
             element = findElement(focused(true));

@@ -16,12 +16,14 @@
 
 package io.appium.uiautomator2.model;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiSelector;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Logger;
@@ -32,10 +34,14 @@ import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMa
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 
-public class KnownElements {
-    private final Map<String, AndroidElement> cache = new HashMap<>();
+public class ElementsCache {
+    private static final int LOAD_FACTOR = 30;
 
-    KnownElements() {
+    private final int maxSize;
+    private final Map<String, AndroidElement> cache = new LinkedHashMap<>();
+
+    ElementsCache(int maxSize) {
+        this.maxSize = maxSize;
     }
 
     @Nullable
@@ -109,8 +115,13 @@ public class KnownElements {
         cache.put(restoredElement.getId(), restoredElement);
     }
 
-    @Nullable
-    public AndroidElement getElementFromCache(String id) {
+    @NonNull
+    public AndroidElement getElementFromCache(@Nullable String id) {
+        if (id == null) {
+            throw new IllegalArgumentException(
+                    String.format("A valid element identifier must be provided. Got '%s' instead", id));
+        }
+
         AndroidElement result = cache.get(id);
         if (result != null) {
             // It might be that cached UI object has been invalidated
@@ -123,13 +134,32 @@ public class KnownElements {
                 restoreCachedElement(result);
             }
         }
-        return cache.get(id);
+        result = cache.get(id);
+        if (result == null) {
+            throw new ElementNotFoundException(
+                    String.format("The element identified by '%s' is not present in the cache " +
+                            "or has expired. Try to find it again", id));
+        }
+        return result;
     }
 
     public String add(AndroidElement element) {
         if (cache.containsValue(element)) {
             return getCacheKey(element);
         }
+
+        // Delete the chunk of older cache entries to maintain its size
+        if (cache.size() >= maxSize) {
+            int index = 0;
+            for (String key: cache.keySet()) {
+                if (index > cache.size() / 100.0 * LOAD_FACTOR) {
+                    break;
+                }
+                cache.remove(key);
+                ++index;
+            }
+        }
+
         cache.put(element.getId(), element);
         return element.getId();
     }

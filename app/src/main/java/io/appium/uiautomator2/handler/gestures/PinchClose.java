@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.handler.gestures;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -47,10 +46,7 @@ public class PinchClose extends SafeRequestHandler {
                     .pinchClose(pinchModel.area.toNativeRect(), pinchModel.percent, pinchModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
-            if (element == null) {
-                throw new ElementNotFoundException();
-            }
+            AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
             element.pinchClose(pinchModel.percent, pinchModel.speed);
         }
 

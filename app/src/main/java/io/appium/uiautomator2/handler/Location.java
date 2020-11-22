@@ -2,9 +2,6 @@ package io.appium.uiautomator2.handler;
 
 import android.graphics.Rect;
 
-import androidx.test.uiautomator.UiObjectNotFoundException;
-
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -20,13 +17,10 @@ public class Location extends SafeRequestHandler {
     }
 
     @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
+    protected AppiumResponse safeHandle(IHttpRequest request) {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         String id = getElementId(request);
-        AndroidElement element = session.getKnownElements().getElementFromCache(id);
-        if (element == null) {
-            throw new ElementNotFoundException();
-        }
+        AndroidElement element = session.getElementsCache().getElementFromCache(id);
         final Rect bounds = element.getBounds();
         Logger.info("Element found at location " + "(" + bounds.left + "," + bounds.top + ")");
         return new AppiumResponse(getSessionId(request), new LocationModel(bounds.left, bounds.top));

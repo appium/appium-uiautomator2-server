@@ -4,7 +4,6 @@ import android.graphics.Rect;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -23,10 +22,7 @@ public class GetElementScreenshot extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getKnownElements().getElementFromCache(id);
-        if (element == null) {
-            throw new ElementNotFoundException();
-        }
+        AndroidElement element = session.getElementsCache().getElementFromCache(id);
         final Rect elementRect = element.getBounds();
         final String result = ScreenshotHelper.takeScreenshot(elementRect);
         return new AppiumResponse(getSessionId(request), result);

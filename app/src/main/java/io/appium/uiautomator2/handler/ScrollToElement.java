@@ -20,14 +20,13 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.KnownElements;
+import io.appium.uiautomator2.model.ElementsCache;
 
 import static java.util.Objects.requireNonNull;
 
@@ -40,15 +39,9 @@ public class ScrollToElement extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         String[] elementIds = getElementIds(request);
-        KnownElements ke = AppiumUIA2Driver.getInstance().getSessionOrThrow().getKnownElements();
+        ElementsCache ke = AppiumUIA2Driver.getInstance().getSessionOrThrow().getElementsCache();
         AndroidElement element = ke.getElementFromCache(elementIds[0]);
-        if (element == null) {
-            throw new ElementNotFoundException();
-        }
         AndroidElement scrollToElement = ke.getElementFromCache(elementIds[1]);
-        if (scrollToElement == null) {
-            throw new ElementNotFoundException();
-        }
 
         // attempt to get UiObjects from the container and scroll to element
         // if we can't, we have to error out, since scrollIntoView only works with UiObjects

@@ -18,7 +18,6 @@ package io.appium.uiautomator2.handler;
 
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.core.EventRegister;
 import io.appium.uiautomator2.core.ReturningRunnable;
@@ -62,10 +61,7 @@ public class Swipe extends SafeRequestHandler {
         Point absEndPos;
         if (model.elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getKnownElements().getElementFromCache(model.elementId);
-            if (element == null) {
-                throw new ElementNotFoundException();
-            }
+            AndroidElement element = session.getElementsCache().getElementFromCache(model.elementId);
             absStartPos = element.getAbsolutePosition(new Point(model.startX, model.startY));
             absEndPos = element.getAbsolutePosition(new Point(model.endX, model.endY));
             Logger.debug(String.format("Swiping the element %s from %s to %s in %s steps",

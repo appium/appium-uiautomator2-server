@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.handler.gestures;
 
-import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -48,10 +47,7 @@ public class Fling extends SafeRequestHandler {
                     .fling(flingModel.area.toNativeRect(), flingModel.getDirection(), flingModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getKnownElements().getElementFromCache(elementId);
-            if (element == null) {
-                throw new ElementNotFoundException();
-            }
+            AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
             result = element.fling(flingModel.getDirection(), flingModel.speed);
         }
 
