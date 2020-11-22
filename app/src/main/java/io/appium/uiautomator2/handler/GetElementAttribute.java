@@ -20,7 +20,7 @@ public class GetElementAttribute extends SafeRequestHandler {
         String id = getElementId(request);
         String attributeName = getNameAttribute(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getElementsCache().getElementFromCache(id);
+        AndroidElement element = session.getElementsCache().get(id);
         String attribute = element.getAttribute(attributeName);
         return new AppiumResponse(getSessionId(request), attribute);
     }

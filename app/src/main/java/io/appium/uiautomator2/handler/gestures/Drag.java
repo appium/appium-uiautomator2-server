@@ -49,7 +49,7 @@ public class Drag extends SafeRequestHandler {
                     dragModel.start.toNativePoint(), dragModel.end.toNativePoint(), dragModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
+            AndroidElement element = session.getElementsCache().get(elementId);
             if (dragModel.start == null) {
                 element.drag(dragModel.end.toPoint(), dragModel.speed);
             } else {

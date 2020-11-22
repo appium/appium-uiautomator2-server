@@ -61,7 +61,7 @@ public class Swipe extends SafeRequestHandler {
         Point absEndPos;
         if (model.elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getElementsCache().getElementFromCache(model.elementId);
+            AndroidElement element = session.getElementsCache().get(model.elementId);
             absStartPos = element.getAbsolutePosition(new Point(model.startX, model.startY));
             absEndPos = element.getAbsolutePosition(new Point(model.endX, model.endY));
             Logger.debug(String.format("Swiping the element %s from %s to %s in %s steps",

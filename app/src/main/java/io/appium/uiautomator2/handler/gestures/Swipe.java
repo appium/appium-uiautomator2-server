@@ -46,7 +46,7 @@ public class Swipe extends SafeRequestHandler {
                     .swipe(swipeModel.area.toNativeRect(), swipeModel.getDirection(), swipeModel.percent, swipeModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
+            AndroidElement element = session.getElementsCache().get(elementId);
             element.swipe(swipeModel.getDirection(), swipeModel.percent, swipeModel.speed);
         }
 

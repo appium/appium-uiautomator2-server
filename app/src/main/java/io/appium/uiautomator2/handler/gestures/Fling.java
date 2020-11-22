@@ -47,7 +47,7 @@ public class Fling extends SafeRequestHandler {
                     .fling(flingModel.area.toNativeRect(), flingModel.getDirection(), flingModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
+            AndroidElement element = session.getElementsCache().get(elementId);
             result = element.fling(flingModel.getDirection(), flingModel.speed);
         }
 

@@ -33,7 +33,7 @@ public class Click extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getElementsCache().getElementFromCache(getElementId(request));
+        AndroidElement element = session.getElementsCache().get(getElementId(request));
         element.click();
         Device.waitForIdle();
         return new AppiumResponse(getSessionId(request));

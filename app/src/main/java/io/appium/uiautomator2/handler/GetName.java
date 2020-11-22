@@ -38,7 +38,7 @@ public class GetName extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getElementsCache().getElementFromCache(id);
+        AndroidElement element = session.getElementsCache().get(id);
         return new AppiumResponse(getSessionId(request), element.getContentDesc());
     }
 }

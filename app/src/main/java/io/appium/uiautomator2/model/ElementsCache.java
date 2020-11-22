@@ -71,7 +71,7 @@ public class ElementsCache {
         }
     }
 
-    private void restoreCachedElement(AndroidElement element) {
+    private void restore(AndroidElement element) {
         final By by = element.getBy();
         if (by == null) {
             throw new StaleElementReferenceException(String.format(
@@ -87,7 +87,7 @@ public class ElementsCache {
         Logger.debug(String.format("Trying to restore the cached element '%s'", by));
         final AndroidElement searchRoot = element.getContextId() == null
                 ? null
-                : getElementFromCache(element.getContextId());
+                : get(element.getContextId());
         Object ui2Object = null;
         try {
             if (by instanceof By.ById) {
@@ -134,7 +134,7 @@ public class ElementsCache {
     }
 
     @NonNull
-    public AndroidElement getElementFromCache(@Nullable String id) {
+    public AndroidElement get(@Nullable String id) {
         if (id == null) {
             throw new IllegalArgumentException(
                     String.format("A valid element identifier must be provided. Got '%s' instead", id));
@@ -149,7 +149,7 @@ public class ElementsCache {
             try {
                 result.getName();
             } catch (Exception e) {
-                restoreCachedElement(result);
+                restore(result);
             }
         }
         result = cache.get(id);

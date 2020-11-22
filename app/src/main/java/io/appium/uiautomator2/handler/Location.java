@@ -20,7 +20,7 @@ public class Location extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         String id = getElementId(request);
-        AndroidElement element = session.getElementsCache().getElementFromCache(id);
+        AndroidElement element = session.getElementsCache().get(id);
         final Rect bounds = element.getBounds();
         Logger.info("Element found at location " + "(" + bounds.left + "," + bounds.top + ")");
         return new AppiumResponse(getSessionId(request), new LocationModel(bounds.left, bounds.top));

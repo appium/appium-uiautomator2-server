@@ -50,7 +50,7 @@ public class Flick extends SafeRequestHandler {
         final String elementId = toModel(request, ElementModel.class).getUnifiedId();
         if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
+            AndroidElement element = session.getElementsCache().get(elementId);
             start = element.getAbsolutePosition(start);
             FlickByOffsetModel model = toModel(request, FlickByOffsetModel.class);
             if (model.speed == 0) {

@@ -51,7 +51,7 @@ public abstract class BaseTouchAction extends SafeRequestHandler {
         final String elementId = params.getUnifiedId();
         if (elementId != null && params.x == null && params.y == null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            element = session.getElementsCache().getElementFromCache(elementId);
+            element = session.getElementsCache().get(elementId);
             final Rect bounds = element.getBounds();
             clickX = bounds.centerX();
             clickY = bounds.centerY();

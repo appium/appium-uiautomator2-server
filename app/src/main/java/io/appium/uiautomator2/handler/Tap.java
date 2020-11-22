@@ -53,7 +53,7 @@ public class Tap extends SafeRequestHandler {
             tapLocation = PositionHelper.getDeviceAbsPos(new Point(model.x, model.y));
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getElementsCache().getElementFromCache(model.getUnifiedId());
+            AndroidElement element = session.getElementsCache().get(model.getUnifiedId());
             Rect bounds = element.getBounds();
             Point offset = (model.x != null && model.y != null)
                 ? new Point(model.x, model.y)

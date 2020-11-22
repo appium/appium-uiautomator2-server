@@ -40,8 +40,8 @@ public class ScrollToElement extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         String[] elementIds = getElementIds(request);
         ElementsCache ke = AppiumUIA2Driver.getInstance().getSessionOrThrow().getElementsCache();
-        AndroidElement element = ke.getElementFromCache(elementIds[0]);
-        AndroidElement scrollToElement = ke.getElementFromCache(elementIds[1]);
+        AndroidElement element = ke.get(elementIds[0]);
+        AndroidElement scrollToElement = ke.get(elementIds[1]);
 
         // attempt to get UiObjects from the container and scroll to element
         // if we can't, we have to error out, since scrollIntoView only works with UiObjects

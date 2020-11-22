@@ -22,7 +22,7 @@ public class GetElementScreenshot extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getElementsCache().getElementFromCache(id);
+        AndroidElement element = session.getElementsCache().get(id);
         final Rect elementRect = element.getBounds();
         final String result = ScreenshotHelper.takeScreenshot(elementRect);
         return new AppiumResponse(getSessionId(request), result);

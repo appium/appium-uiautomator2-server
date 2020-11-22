@@ -39,7 +39,7 @@ public class GetSize extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) {
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getElementsCache().getElementFromCache(id);
+        AndroidElement element = session.getElementsCache().get(id);
         final Rect rect = element.getBounds();
         return new AppiumResponse(getSessionId(request), new SizeModel(
                 rect.width(),

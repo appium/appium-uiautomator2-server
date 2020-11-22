@@ -101,7 +101,7 @@ public class SendKeysToElement extends SafeRequestHandler {
         AndroidElement element;
         if (elementId != null) {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            element = session.getElementsCache().getElementFromCache(elementId);
+            element = session.getElementsCache().get(elementId);
         } else {
             //perform action on focused element
             element = findElement(focused(true));

@@ -37,7 +37,7 @@ public class GetRect extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) {
         String id = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getElementsCache().getElementFromCache(id);
+        AndroidElement element = session.getElementsCache().get(id);
         return new AppiumResponse(getSessionId(request), new ElementRectModel(element.getBounds()));
     }
 }

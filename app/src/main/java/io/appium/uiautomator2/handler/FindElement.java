@@ -105,7 +105,7 @@ public class FindElement extends SafeRequestHandler {
     @Nullable
     private Object findElement(By by, String contextId) throws UiAutomator2Exception, UiObjectNotFoundException {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        AndroidElement element = session.getElementsCache().getElementFromCache(contextId);
+        AndroidElement element = session.getElementsCache().get(contextId);
 
         if (by instanceof ById) {
             String locator = rewriteIdLocator((ById) by);

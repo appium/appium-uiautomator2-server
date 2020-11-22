@@ -47,7 +47,7 @@ public class Scroll extends SafeRequestHandler {
                     .scroll(scrollModel.area.toNativeRect(), scrollModel.getDirection(), scrollModel.percent, scrollModel.speed);
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
+            AndroidElement element = session.getElementsCache().get(elementId);
             result = element.scroll(scrollModel.getDirection(), scrollModel.percent, scrollModel.speed);
         }
 

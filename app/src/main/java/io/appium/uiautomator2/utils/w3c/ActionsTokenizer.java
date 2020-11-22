@@ -198,7 +198,7 @@ public class ActionsTokenizer {
         Rect bounds;
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         try {
-            final AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
+            final AndroidElement element = session.getElementsCache().get(elementId);
             bounds = element.getBounds();
             if (bounds.width() == 0 || bounds.height() == 0) {
                 throw new ActionsParseException(String.format(

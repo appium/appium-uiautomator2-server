@@ -33,7 +33,7 @@ public class FirstVisibleView extends SafeRequestHandler {
         String elementId = getElementId(request);
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
 
-        AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
+        AndroidElement element = session.getElementsCache().get(elementId);
         Object firstObject = null;
         if (element.getUiObject() instanceof UiObject) {
             UiObject uiObject = (UiObject) element.getUiObject();

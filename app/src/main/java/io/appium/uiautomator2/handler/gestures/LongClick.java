@@ -51,7 +51,7 @@ public class LongClick extends SafeRequestHandler {
             );
         } else {
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getElementsCache().getElementFromCache(elementId);
+            AndroidElement element = session.getElementsCache().get(elementId);
             if (longClickModel.offset == null) {
                 if (longClickModel.duration == null) {
                     element.longClick();

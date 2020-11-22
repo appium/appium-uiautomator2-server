@@ -42,8 +42,8 @@ public class Drag extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         DragModel model = toModel(request, DragModel.class);
         ElementsCache ke = AppiumUIA2Driver.getInstance().getSessionOrThrow().getElementsCache();
-        AndroidElement startElement = model.elementId == null ? null : ke.getElementFromCache(model.elementId);
-        AndroidElement endElement = model.destElId == null ? null : ke.getElementFromCache(model.destElId);
+        AndroidElement startElement = model.elementId == null ? null : ke.get(model.elementId);
+        AndroidElement endElement = model.destElId == null ? null : ke.get(model.destElId);
         Point start = (model.startX != null && model.startY != null) ? new Point(model.startX, model.startY) : null;
         Point end = (model.endX != null && model.endY != null) ? new Point(model.endX, model.endY) : null;
 
