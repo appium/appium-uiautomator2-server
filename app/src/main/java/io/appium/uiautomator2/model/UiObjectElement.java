@@ -21,7 +21,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.BySelector;
-import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -42,8 +41,6 @@ import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
-import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
-import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 
 public class UiObjectElement extends BaseElement {
     private static final Pattern endsWithInstancePattern = Pattern.compile(".*INSTANCE=\\d+]$");
@@ -196,13 +193,9 @@ public class UiObjectElement extends BaseElement {
     }
 
     private ArrayList<UiObject> getChildElements(final UiSelector sel) throws UiObjectNotFoundException {
-        boolean keepSearching = true;
         final String selectorString = sel.toString();
-        final boolean useIndex = selectorString.contains("CLASS_REGEX=");
-        final boolean endsWithInstance = endsWithInstancePattern.matcher(selectorString).matches();
         Logger.debug("getElements selector:" + selectorString);
         final ArrayList<UiObject> elements = new ArrayList<>();
-
         // If sel is UiSelector[CLASS=android.widget.Button, INSTANCE=0]
         // then invoking instance with a non-0 argument will corrupt the selector.
         //
@@ -210,7 +203,7 @@ public class UiObjectElement extends BaseElement {
         // UiSelector[CLASS=android.widget.Button, INSTANCE=1]
         //
         // The selector now points to an entirely different element.
-        if (endsWithInstance) {
+        if (endsWithInstancePattern.matcher(selectorString).matches()) {
             Logger.debug("Selector ends with instance.");
             // There's exactly one element when using instance.
             UiObject instanceObj = Device.getUiDevice().findObject(sel);
@@ -221,9 +214,10 @@ public class UiObjectElement extends BaseElement {
         }
 
         UiObject lastFoundObj;
-
+        final boolean useIndex = selectorString.contains("CLASS_REGEX=");
         UiSelector tmp;
         int counter = 0;
+        boolean keepSearching = true;
         while (keepSearching) {
             if (element == null) {
                 Logger.debug("Element] is null: (" + counter + ")");
@@ -251,32 +245,24 @@ public class UiObjectElement extends BaseElement {
         return elements;
     }
 
+    /**
+     * Unfortunately UiObject does not implement a getResourceId method.
+     * There is currently no way to determine the resource-id of a given
+     * element represented by UiObject. Until this support is added to
+     * UiAutomator, we try to match the implementation pattern that is
+     * already used by UiObject for getting attributes using reflection.
+     * The returned string matches exactly what is displayed in the
+     * UiAutomator inspector.
+     *
+     * @return Element resource identifier or an empty string in case of failure
+     */
     private String getResourceId() {
-        String resourceId = "";
-
         try {
-            /*
-             * Unfortunately UiObject does not implement a getResourceId method.
-             * There is currently no way to determine the resource-id of a given
-             * element represented by UiObject. Until this support is added to
-             * UiAutomater, we try to match the implementation pattern that is
-             * already used by UiObject for getting attributes using reflection.
-             * The returned string matches exactly what is displayed in the
-             * UiAutomater inspector.
-             */
-            AccessibilityNodeInfo node = (AccessibilityNodeInfo) invoke(getMethod(element.getClass(), "findAccessibilityNodeInfo", long.class),
-                    element, Configurator.getInstance().getWaitForSelectorTimeout());
-
-            if (node == null) {
-                throw new UiObjectNotFoundException(element.getSelector().toString());
-            }
-
-            resourceId = node.getViewIdResourceName();
-        } catch (final Exception e) {
-            Logger.error("Exception: " + e + " (" + e.getMessage() + ")");
+            return toAxNodeInfo(element).getViewIdResourceName();
+        } catch (Exception e) {
+            Logger.error(String.format("Cannot retrieve the resource identifier of '%s' element", getBy()), e);
+            return "";
         }
-
-        return resourceId;
     }
 
     @Override
