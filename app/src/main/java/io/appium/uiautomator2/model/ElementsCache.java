@@ -54,20 +54,11 @@ public class ElementsCache {
     private static AndroidElement toAndroidElement(Object element, boolean isSingleMatch,
                                                    @Nullable By by, @Nullable String contextId) {
         if (element instanceof UiObject2) {
-            return new UiObject2Element((UiObject2) element, isSingleMatch, by, contextId);
+            return new UiObject2Element((UiObject2) element, isSingleMatch, by, contextId)
+                    .withId(UUID.randomUUID().toString());
         } else if (element instanceof UiObject) {
-            return new UiObjectElement((UiObject) element, isSingleMatch, by, contextId);
-        } else {
-            throw new IllegalStateException(
-                    String.format("Unknown element type: %s", element.getClass().getName()));
-        }
-    }
-
-    private static void assignAndroidElementId(AndroidElement element, String id) {
-        if (element instanceof UiObject2Element) {
-            ((UiObject2Element) element).setId(id);
-        } else if (element instanceof UiObjectElement) {
-            ((UiObjectElement) element).setId(id);
+            return new UiObjectElement((UiObject) element, isSingleMatch, by, contextId)
+                    .withId(UUID.randomUUID().toString());
         } else {
             throw new IllegalStateException(
                     String.format("Unknown element type: %s", element.getClass().getName()));
@@ -133,15 +124,14 @@ public class ElementsCache {
         cache.remove(element.getId());
         AndroidElement restoredElement = toAndroidElement(ui2Object,
                 element.isSingleMatch(), element.getBy(), element.getContextId());
-        assignAndroidElementId(restoredElement, element.getId());
         cache.put(restoredElement.getId(), restoredElement);
     }
 
     @NonNull
-    public AndroidElement get(@Nullable String id) {
+    public AndroidElement get(String id) {
         if (id == null) {
             throw new IllegalArgumentException(
-                    String.format("A valid element identifier must be provided. Got '%s' instead", id));
+                    "A valid cached element identifier must be provided. Got null instead");
         }
 
         synchronized (cache) {
@@ -178,9 +168,9 @@ public class ElementsCache {
     public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by, @Nullable String contextId) {
         AndroidElement androidElement = toAndroidElement(element, isSingleMatch, by, contextId);
         synchronized (cache) {
-            for (Map.Entry<String, AndroidElement> entry : cache.entrySet()) {
-                if (Objects.equals(androidElement, entry.getValue())) {
-                    return entry.getValue();
+            for (AndroidElement cachedElement : cache.values()) {
+                if (Objects.equals(androidElement, cachedElement)) {
+                    return cachedElement;
                 }
             }
 
@@ -202,7 +192,6 @@ public class ElementsCache {
                 }
             }
 
-            assignAndroidElementId(androidElement, UUID.randomUUID().toString());
             cache.put(androidElement.getId(), androidElement);
             return androidElement;
         }

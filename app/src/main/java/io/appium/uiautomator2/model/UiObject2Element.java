@@ -262,8 +262,9 @@ public class UiObject2Element extends BaseElement {
         return this.id;
     }
 
-    void setId(String id) {
+    UiObject2Element withId(String id) {
         this.id = id;
+        return this;
     }
 
     @Override
