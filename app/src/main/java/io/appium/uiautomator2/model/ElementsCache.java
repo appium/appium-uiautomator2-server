@@ -33,6 +33,7 @@ import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
+import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
@@ -121,6 +122,7 @@ public class ElementsCache {
         cache.remove(element.getId());
         AndroidElement restoredElement = toAndroidElement(ui2Object,
                 element.isSingleMatch(), element.getBy(), element.getContextId());
+        ReflectionUtils.setField("id", element.getId(), restoredElement);
         cache.put(restoredElement.getId(), restoredElement);
     }
 
@@ -171,6 +173,9 @@ public class ElementsCache {
         synchronized (cache) {
             for (AndroidElement cachedElement : cache.values()) {
                 if (Objects.equals(androidElement, cachedElement)) {
+                    // refresh the cached element
+                    cache.remove(cachedElement.getId());
+                    cache.put(cachedElement.getId(), cachedElement);
                     return cachedElement;
                 }
             }
