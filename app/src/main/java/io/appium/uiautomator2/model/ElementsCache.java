@@ -63,7 +63,7 @@ public class ElementsCache {
         }
     }
 
-    private void restore(AndroidElement element) {
+    private AndroidElement restore(AndroidElement element) {
         final By by = element.getBy();
         if (by == null) {
             throw new StaleElementReferenceException(String.format(
@@ -119,11 +119,16 @@ public class ElementsCache {
             throw new StaleElementReferenceException(String.format(
                     "The element '%s' does not exist in DOM anymore", by));
         }
-        cache.remove(element.getId());
         AndroidElement restoredElement = toAndroidElement(ui2Object,
                 element.isSingleMatch(), element.getBy(), element.getContextId());
         ReflectionUtils.setField("id", element.getId(), restoredElement);
-        cache.put(restoredElement.getId(), restoredElement);
+        return bumpInCache(restoredElement);
+    }
+
+    private AndroidElement bumpInCache(AndroidElement element) {
+        cache.remove(element.getId());
+        cache.put(element.getId(), element);
+        return element;
     }
 
     @NonNull
@@ -136,27 +141,26 @@ public class ElementsCache {
         synchronized (cache) {
             // TODO: debug
             Logger.info(String.format("Elements in cache: %s", cache.keySet()));
-            AndroidElement result = cache.get(id);
-            if (result != null) {
+            AndroidElement resultElement = cache.get(id);
+            if (resultElement != null) {
                 // It might be that cached UI object has been invalidated
                 // after AX cache reset has been performed. So we try to recreate
                 // the cached object automatically
                 // in order to avoid an unexpected StaleElementReferenceException
                 try {
-                    result.getName();
+                    resultElement.getName();
                 } catch (Exception e) {
                     Logger.info(String.format("The element identified by '%s' has been reported as stale. " +
                             "Trying to restore it", id), e);
-                    restore(result);
-                    result = cache.get(id);
+                    resultElement = restore(resultElement);
                 }
             }
-            if (result == null) {
+            if (resultElement == null) {
                 throw new ElementNotFoundException(
                         String.format("The element identified by '%s' is not present in the cache " +
                                 "or has expired. Try to find it again", id));
             }
-            return result;
+            return bumpInCache(resultElement);
         }
     }
 
@@ -173,10 +177,7 @@ public class ElementsCache {
         synchronized (cache) {
             for (AndroidElement cachedElement : cache.values()) {
                 if (Objects.equals(androidElement, cachedElement)) {
-                    // refresh the cached element
-                    cache.remove(cachedElement.getId());
-                    cache.put(cachedElement.getId(), cachedElement);
-                    return cachedElement;
+                    return bumpInCache(cachedElement);
                 }
             }
 
