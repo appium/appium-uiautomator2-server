@@ -148,9 +148,9 @@ public class ElementsCache {
                     Logger.info(String.format("The element identified by '%s' has been reported as stale. " +
                             "Trying to restore it", id), e);
                     restore(result);
+                    result = cache.get(id);
                 }
             }
-            result = cache.get(id);
             if (result == null) {
                 throw new ElementNotFoundException(
                         String.format("The element identified by '%s' is not present in the cache " +
