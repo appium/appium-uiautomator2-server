@@ -32,6 +32,7 @@ import androidx.test.uiautomator.UiSelector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -50,10 +51,10 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class UiObjectElement extends BaseElement {
-
     private static final Pattern endsWithInstancePattern = Pattern.compile(".*INSTANCE=\\d+]$");
+
+    private final String id = UUID.randomUUID().toString();
     private final UiObject element;
-    private String id;
     private final By by;
     private final String contextId;
     private final boolean isSingleMatch;
@@ -269,11 +270,6 @@ public class UiObjectElement extends BaseElement {
     @Override
     public String getId() {
         return this.id;
-    }
-
-    UiObjectElement withId(String id) {
-        this.id = id;
-        return this;
     }
 
     @Override

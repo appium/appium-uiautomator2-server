@@ -30,6 +30,7 @@ import androidx.test.uiautomator.UiSelector;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -44,7 +45,7 @@ import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class UiObject2Element extends BaseElement {
     private final UiObject2 element;
-    private String id;
+    private final String id = UUID.randomUUID().toString();
     private final By by;
     private final String contextId;
     private final boolean isSingleMatch;
@@ -260,11 +261,6 @@ public class UiObject2Element extends BaseElement {
     @Override
     public String getId() {
         return this.id;
-    }
-
-    UiObject2Element withId(String id) {
-        this.id = id;
-        return this;
     }
 
     @Override

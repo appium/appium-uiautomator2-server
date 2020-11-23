@@ -27,7 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
@@ -54,11 +53,9 @@ public class ElementsCache {
     private static AndroidElement toAndroidElement(Object element, boolean isSingleMatch,
                                                    @Nullable By by, @Nullable String contextId) {
         if (element instanceof UiObject2) {
-            return new UiObject2Element((UiObject2) element, isSingleMatch, by, contextId)
-                    .withId(UUID.randomUUID().toString());
+            return new UiObject2Element((UiObject2) element, isSingleMatch, by, contextId);
         } else if (element instanceof UiObject) {
-            return new UiObjectElement((UiObject) element, isSingleMatch, by, contextId)
-                    .withId(UUID.randomUUID().toString());
+            return new UiObjectElement((UiObject) element, isSingleMatch, by, contextId);
         } else {
             throw new IllegalStateException(
                     String.format("Unknown element type: %s", element.getClass().getName()));
