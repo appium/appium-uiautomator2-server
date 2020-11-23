@@ -33,7 +33,6 @@ import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
-import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
@@ -53,14 +52,21 @@ public class ElementsCache {
 
     private static AndroidElement toAndroidElement(Object element, boolean isSingleMatch,
                                                    @Nullable By by, @Nullable String contextId) {
+        return toAndroidElement(element, isSingleMatch, by, contextId, null);
+    }
+
+    private static AndroidElement toAndroidElement(Object element, boolean isSingleMatch,
+                                                   @Nullable By by, @Nullable String contextId,
+                                                   @Nullable String id) {
         if (element instanceof UiObject2) {
-            return new UiObject2Element((UiObject2) element, isSingleMatch, by, contextId);
+            UiObject2Element result = new UiObject2Element((UiObject2) element, isSingleMatch, by, contextId);
+            return id == null ? result : result.withId(id);
         } else if (element instanceof UiObject) {
-            return new UiObjectElement((UiObject) element, isSingleMatch, by, contextId);
-        } else {
-            throw new IllegalStateException(
-                    String.format("Unknown element type: %s", element.getClass().getName()));
+            UiObjectElement result = new UiObjectElement((UiObject) element, isSingleMatch, by, contextId);
+            return id == null ? result : result.withId(id);
         }
+        throw new IllegalStateException(
+                String.format("Unknown element type: %s", element.getClass().getName()));
     }
 
     private AndroidElement restore(AndroidElement element) {
@@ -120,8 +126,7 @@ public class ElementsCache {
                     "The element '%s' does not exist in DOM anymore", by));
         }
         AndroidElement restoredElement = toAndroidElement(ui2Object,
-                element.isSingleMatch(), element.getBy(), element.getContextId());
-        ReflectionUtils.setField("id", element.getId(), restoredElement);
+                element.isSingleMatch(), element.getBy(), element.getContextId(), element.getId());
         return bumpInCache(restoredElement);
     }
 
@@ -139,9 +144,8 @@ public class ElementsCache {
         }
 
         synchronized (cache) {
-            // TODO: debug
-            Logger.info(String.format("Elements in cache: %s", cache.keySet()));
             AndroidElement resultElement = cache.get(id);
+            boolean isRestored = false;
             if (resultElement != null) {
                 // It might be that cached UI object has been invalidated
                 // after AX cache reset has been performed. So we try to recreate
@@ -150,9 +154,10 @@ public class ElementsCache {
                 try {
                     resultElement.getName();
                 } catch (Exception e) {
-                    Logger.info(String.format("The element identified by '%s' has been reported as stale. " +
-                            "Trying to restore it", id), e);
+                    Logger.info(String.format("The element identified by '%s' has been reported as stale (%s). " +
+                            "Trying to restore it", id, e.getMessage()));
                     resultElement = restore(resultElement);
+                    isRestored = true;
                 }
             }
             if (resultElement == null) {
@@ -160,7 +165,7 @@ public class ElementsCache {
                         String.format("The element identified by '%s' is not present in the cache " +
                                 "or has expired. Try to find it again", id));
             }
-            return bumpInCache(resultElement);
+            return isRestored ? resultElement : bumpInCache(resultElement);
         }
     }
 

@@ -47,6 +47,11 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
+    UiObject2Element withId(String id) {
+        return (UiObject2Element) super.withId(id);
+    }
+
+    @Override
     public String getName() {
         return element.getContentDescription();
     }

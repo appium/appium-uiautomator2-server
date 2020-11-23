@@ -40,7 +40,6 @@ import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 public abstract class BaseElement implements AndroidElement {
     protected static final String ATTRIBUTE_PREFIX = "attribute/";
 
-    @SuppressWarnings("FieldMayBeFinal")
     private String id = UUID.randomUUID().toString();
     private final By by;
     private final String contextId;
@@ -50,6 +49,11 @@ public abstract class BaseElement implements AndroidElement {
         this.by = by;
         this.contextId = contextId;
         this.isSingleMatch = isSingleMatch;
+    }
+
+    BaseElement withId(String id) {
+        this.id = id;
+        return this;
     }
 
     @Override

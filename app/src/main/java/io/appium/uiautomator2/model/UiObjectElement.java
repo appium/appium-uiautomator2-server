@@ -53,6 +53,11 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
+    UiObjectElement withId(String id) {
+        return (UiObjectElement) super.withId(id);
+    }
+
+    @Override
     public String getName() throws UiObjectNotFoundException {
         return element.getContentDescription();
     }
