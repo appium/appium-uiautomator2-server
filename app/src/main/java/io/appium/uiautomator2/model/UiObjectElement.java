@@ -77,7 +77,7 @@ public class UiObjectElement extends BaseElement {
                 result = element.getClassName();
                 break;
             case RESOURCE_ID:
-                result = getResourceId();
+                result = toAxNodeInfo(element).getViewIdResourceName();
                 break;
             case CONTENT_SIZE:
                 result = ElementHelpers.getContentSize(this);
@@ -243,26 +243,6 @@ public class UiObjectElement extends BaseElement {
             }
         }
         return elements;
-    }
-
-    /**
-     * Unfortunately UiObject does not implement a getResourceId method.
-     * There is currently no way to determine the resource-id of a given
-     * element represented by UiObject. Until this support is added to
-     * UiAutomator, we try to match the implementation pattern that is
-     * already used by UiObject for getting attributes using reflection.
-     * The returned string matches exactly what is displayed in the
-     * UiAutomator inspector.
-     *
-     * @return Element resource identifier or an empty string in case of failure
-     */
-    private String getResourceId() {
-        try {
-            return toAxNodeInfo(element).getViewIdResourceName();
-        } catch (Exception e) {
-            Logger.error(String.format("Cannot retrieve the resource identifier of '%s' element", getBy()), e);
-            return "";
-        }
     }
 
     @Override
