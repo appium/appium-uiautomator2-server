@@ -132,6 +132,8 @@ public class ElementsCache {
         }
 
         synchronized (cache) {
+            // TODO: debug
+            Logger.info(String.format("Elements in cache: %s", cache.keySet()));
             AndroidElement result = cache.get(id);
             if (result != null) {
                 // It might be that cached UI object has been invalidated
@@ -141,6 +143,8 @@ public class ElementsCache {
                 try {
                     result.getName();
                 } catch (Exception e) {
+                    Logger.info(String.format("The element identified by '%s' has been reported as stale. " +
+                            "Trying to restore it", id), e);
                     restore(result);
                 }
             }

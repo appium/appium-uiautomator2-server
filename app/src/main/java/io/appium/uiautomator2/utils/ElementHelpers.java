@@ -171,6 +171,7 @@ public abstract class ElementHelpers {
 
     @NonNull
     public static String getText(Object element) {
+        //noinspection ConstantConditions
         return getText(element, true);
     }
 
