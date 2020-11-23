@@ -16,21 +16,17 @@
 
 package io.appium.uiautomator2.model;
 
-import android.graphics.Rect;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.BySelector;
-import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -41,106 +37,28 @@ import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
-import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class UiObject2Element extends BaseElement {
     private final UiObject2 element;
-    private final String id = UUID.randomUUID().toString();
-    private final By by;
-    private final String contextId;
-    private final boolean isSingleMatch;
 
     public UiObject2Element(UiObject2 element, boolean isSingleMatch, By by, @Nullable String contextId) {
+        super(isSingleMatch, by, contextId);
         this.element = element;
-        this.by = by;
-        this.contextId = contextId;
-        this.isSingleMatch = isSingleMatch;
-    }
-
-    @Override
-    public void click() {
-        AxNodeInfoHelper.click(toAxNodeInfo(element));
-    }
-
-    @Override
-    public void longClick() {
-        AxNodeInfoHelper.longClick(toAxNodeInfo(element));
-    }
-
-    @Override
-    public void longClick(long durationMs) {
-        AxNodeInfoHelper.longClick(toAxNodeInfo(element), durationMs);
-    }
-
-    @Override
-    public void drag(Point dest) {
-        AxNodeInfoHelper.drag(toAxNodeInfo(element), dest.toNativePoint());
-    }
-
-    @Override
-    public void drag(Point dest, @Nullable Integer speed) {
-        AxNodeInfoHelper.drag(toAxNodeInfo(element), dest.toNativePoint(), speed);
-    }
-
-    @Override
-    public void pinchClose(float percent) {
-        AxNodeInfoHelper.pinchClose(toAxNodeInfo(element), percent);
-    }
-
-    @Override
-    public void pinchClose(float percent, @Nullable Integer speed) {
-        AxNodeInfoHelper.pinchClose(toAxNodeInfo(element), percent, speed);
-    }
-
-    @Override
-    public void pinchOpen(float percent) {
-        AxNodeInfoHelper.pinchOpen(toAxNodeInfo(element), percent);
-    }
-
-    @Override
-    public void pinchOpen(float percent, @Nullable Integer speed) {
-        AxNodeInfoHelper.pinchOpen(toAxNodeInfo(element), percent, speed);
-    }
-
-    @Override
-    public void swipe(Direction direction, float percent) {
-        AxNodeInfoHelper.swipe(toAxNodeInfo(element), direction, percent);
-    }
-
-    @Override
-    public void swipe(Direction direction, float percent, @Nullable Integer speed) {
-        AxNodeInfoHelper.swipe(toAxNodeInfo(element), direction, percent, speed);
-    }
-
-    @Override
-    public boolean scroll(Direction direction, float percent) {
-        return AxNodeInfoHelper.scroll(toAxNodeInfo(element), direction, percent);
-    }
-
-    @Override
-    public boolean scroll(Direction direction, float percent, @Nullable Integer speed) {
-        return AxNodeInfoHelper.scroll(toAxNodeInfo(element), direction, percent, speed);
-    }
-
-    @Override
-    public boolean fling(Direction direction) {
-        return AxNodeInfoHelper.fling(toAxNodeInfo(element), direction);
-    }
-
-    @Override
-    public boolean fling(Direction direction, @Nullable Integer speed) {
-        return AxNodeInfoHelper.fling(toAxNodeInfo(element), direction, speed);
-    }
-
-    @Override
-    public String getText() {
-        // By convention the text is replaced with an empty string if it equals to null
-        return ElementHelpers.getText(element);
     }
 
     @Override
     public String getName() {
         return element.getContentDescription();
+    }
+
+    @Override
+    public String getContentDesc() {
+        return element.getContentDescription();
+    }
+
+    @Override
+    public UiObject2 getUiObject() {
+        return element;
     }
 
     @Nullable
@@ -224,48 +142,8 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
-    public boolean setText(final String text) {
-        return ElementHelpers.setText(element, text);
-    }
-
-    @Override
-    public void setProgress(float value) {
-        ElementHelpers.setProgress(element, value);
-    }
-
-    @Override
-    public boolean canSetProgress() {
-        return ElementHelpers.canSetProgress(element);
-    }
-
-    @Override
-    public By getBy() {
-        return by;
-    }
-
-    @Override
-    public String getContextId() {
-        return isBlank(contextId) ? null : contextId;
-    }
-
-    @Override
-    public boolean isSingleMatch() {
-        return isSingleMatch;
-    }
-
-    @Override
     public void clear() {
         element.clear();
-    }
-
-    @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public Rect getBounds() {
-        return AxNodeInfoHelper.getBounds(toAxNodeInfo(element));
     }
 
     @Nullable
@@ -310,23 +188,6 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
-    public String getContentDesc() {
-        return element.getContentDescription();
-    }
-
-    @Override
-    public UiObject2 getUiObject() {
-        return element;
-    }
-
-    @Override
-    public Point getAbsolutePosition(final Point offset) {
-        final Rect bounds = this.getBounds();
-        Logger.debug("Element bounds: " + bounds.toShortString());
-        return PositionHelper.getAbsolutePosition(new Point(bounds.left, bounds.top), bounds, offset, false);
-    }
-
-    @Override
     public boolean dragTo(Object destObj, int steps) throws UiObjectNotFoundException {
         if (destObj instanceof UiObject) {
             int destX = ((UiObject) destObj).getBounds().centerX();
@@ -349,21 +210,5 @@ public class UiObject2Element extends BaseElement {
         coords = PositionHelper.getDeviceAbsPos(coords);
         element.drag(new android.graphics.Point(coords.x.intValue(), coords.y.intValue()), steps);
         return true;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof UiObject2Element)) {
-            return false;
-        }
-        if (this == other) {
-            return true;
-        }
-
-        UiObject2Element otherEl = (UiObject2Element)other;
-        return Objects.equals(this.element, otherEl.element)
-                && Objects.equals(by, otherEl.by)
-                && Objects.equals(contextId, otherEl.contextId)
-                && this.isSingleMatch == otherEl.isSingleMatch;
     }
 }

@@ -16,14 +16,12 @@
 
 package io.appium.uiautomator2.model;
 
-import android.graphics.Rect;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Configurator;
-import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -31,8 +29,6 @@ import androidx.test.uiautomator.UiSelector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -48,103 +44,15 @@ import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
-import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class UiObjectElement extends BaseElement {
     private static final Pattern endsWithInstancePattern = Pattern.compile(".*INSTANCE=\\d+]$");
 
-    private final String id = UUID.randomUUID().toString();
     private final UiObject element;
-    private final By by;
-    private final String contextId;
-    private final boolean isSingleMatch;
 
     public UiObjectElement(UiObject element, boolean isSingleMatch, By by, @Nullable String contextId) {
+        super(isSingleMatch, by, contextId);
         this.element = element;
-        this.by = by;
-        this.contextId = contextId;
-        this.isSingleMatch = isSingleMatch;
-    }
-
-    @Override
-    public void click() {
-        AxNodeInfoHelper.click(toAxNodeInfo(element));
-    }
-
-    @Override
-    public void longClick() {
-        AxNodeInfoHelper.longClick(toAxNodeInfo(element));
-    }
-
-    @Override
-    public void longClick(long durationMs) {
-        AxNodeInfoHelper.longClick(toAxNodeInfo(element), durationMs);
-    }
-
-    @Override
-    public void drag(Point dest) {
-        AxNodeInfoHelper.drag(toAxNodeInfo(element), dest.toNativePoint());
-    }
-
-    @Override
-    public void drag(Point dest, @Nullable Integer speed) {
-        AxNodeInfoHelper.drag(toAxNodeInfo(element), dest.toNativePoint(), speed);
-    }
-
-    @Override
-    public void pinchClose(float percent) {
-        AxNodeInfoHelper.pinchClose(toAxNodeInfo(element), percent);
-    }
-
-    @Override
-    public void pinchClose(float percent, @Nullable Integer speed) {
-        AxNodeInfoHelper.pinchClose(toAxNodeInfo(element), percent, speed);
-    }
-
-    @Override
-    public void pinchOpen(float percent) {
-        AxNodeInfoHelper.pinchOpen(toAxNodeInfo(element), percent);
-    }
-
-    @Override
-    public void pinchOpen(float percent, @Nullable Integer speed) {
-        AxNodeInfoHelper.pinchOpen(toAxNodeInfo(element), percent, speed);
-    }
-
-    @Override
-    public void swipe(Direction direction, float percent) {
-        AxNodeInfoHelper.swipe(toAxNodeInfo(element), direction, percent);
-    }
-
-    @Override
-    public void swipe(Direction direction, float percent, @Nullable Integer speed) {
-        AxNodeInfoHelper.swipe(toAxNodeInfo(element), direction, percent, speed);
-    }
-
-    @Override
-    public boolean scroll(Direction direction, float percent) {
-        return AxNodeInfoHelper.scroll(toAxNodeInfo(element), direction, percent);
-    }
-
-    @Override
-    public boolean scroll(Direction direction, float percent, @Nullable Integer speed) {
-        return AxNodeInfoHelper.scroll(toAxNodeInfo(element), direction, percent, speed);
-    }
-
-    @Override
-    public boolean fling(Direction direction) {
-        return AxNodeInfoHelper.fling(toAxNodeInfo(element), direction);
-    }
-
-    @Override
-    public boolean fling(Direction direction, @Nullable Integer speed) {
-        return AxNodeInfoHelper.fling(toAxNodeInfo(element), direction, speed);
-    }
-
-    @Override
-    public String getText() {
-        // By convention the text is replaced with an empty string if it equals to null
-        return ElementHelpers.getText(element);
     }
 
     @Override
@@ -233,48 +141,18 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
-    public boolean setText(final String text) {
-        return ElementHelpers.setText(element, text);
-    }
-
-    @Override
-    public boolean canSetProgress() {
-        return ElementHelpers.canSetProgress(element);
-    }
-
-    @Override
-    public void setProgress(float value) {
-        ElementHelpers.setProgress(element, value);
-    }
-
-    @Override
-    public By getBy() {
-        return by;
-    }
-
-    @Override
-    public String getContextId() {
-        return isBlank(contextId) ? null : contextId;
-    }
-
-    @Override
-    public boolean isSingleMatch() {
-        return isSingleMatch;
-    }
-
-    @Override
     public void clear() throws UiObjectNotFoundException {
         element.setText("");
     }
 
     @Override
-    public String getId() {
-        return this.id;
+    public String getContentDesc() throws UiObjectNotFoundException {
+        return element.getContentDescription();
     }
 
     @Override
-    public Rect getBounds() {
-        return AxNodeInfoHelper.getBounds(toAxNodeInfo(element));
+    public UiObject getUiObject() {
+        return element;
     }
 
     @Nullable
@@ -317,8 +195,7 @@ public class UiObjectElement extends BaseElement {
         return this.getChildElements((UiSelector) selector);
     }
 
-
-    public ArrayList<UiObject> getChildElements(final UiSelector sel) throws UiObjectNotFoundException {
+    private ArrayList<UiObject> getChildElements(final UiSelector sel) throws UiObjectNotFoundException {
         boolean keepSearching = true;
         final String selectorString = sel.toString();
         final boolean useIndex = selectorString.contains("CLASS_REGEX=");
@@ -374,24 +251,7 @@ public class UiObjectElement extends BaseElement {
         return elements;
     }
 
-    @Override
-    public String getContentDesc() throws UiObjectNotFoundException {
-        return element.getContentDescription();
-    }
-
-    @Override
-    public UiObject getUiObject() {
-        return element;
-    }
-
-    @Override
-    public Point getAbsolutePosition(final Point offset) {
-        final Rect bounds = this.getBounds();
-        Logger.debug("Element bounds: " + bounds.toShortString());
-        return PositionHelper.getAbsolutePosition(new Point(bounds.left, bounds.top), bounds, offset, false);
-    }
-
-    public String getResourceId() {
+    private String getResourceId() {
         String resourceId = "";
 
         try {
@@ -439,21 +299,5 @@ public class UiObjectElement extends BaseElement {
 
         Logger.error("Destination should be either UiObject or UiObject2");
         return false;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof UiObjectElement)) {
-            return false;
-        }
-        if (this == other) {
-            return true;
-        }
-
-        UiObjectElement otherEl = (UiObjectElement)other;
-        return Objects.equals(this.element, otherEl.element)
-                && Objects.equals(by, otherEl.by)
-                && Objects.equals(contextId, otherEl.contextId)
-                && this.isSingleMatch == otherEl.isSingleMatch;
     }
 }
