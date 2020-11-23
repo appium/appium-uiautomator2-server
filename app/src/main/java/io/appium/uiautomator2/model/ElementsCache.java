@@ -16,17 +16,15 @@
 
 package io.appium.uiautomator2.model;
 
+import android.util.LruCache;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiSelector;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
@@ -39,15 +37,10 @@ import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocat
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 
 public class ElementsCache {
-    // The percentage of the overall cache size
-    // to cleanup if the cache reaches its maximum size
-    private static final int LOAD_FACTOR = 30;
-
-    private final int maxSize;
-    private final Map<String, AndroidElement> cache = new LinkedHashMap<>();
+    private final LruCache<String, AndroidElement> cache;
 
     ElementsCache(int maxSize) {
-        this.maxSize = maxSize;
+        this.cache = new LruCache<>(maxSize);
     }
 
     private static AndroidElement toAndroidElement(Object element, boolean isSingleMatch,
@@ -127,13 +120,8 @@ public class ElementsCache {
         }
         AndroidElement restoredElement = toAndroidElement(ui2Object,
                 element.isSingleMatch(), element.getBy(), element.getContextId(), element.getId());
-        return bumpInCache(restoredElement);
-    }
-
-    private AndroidElement bumpInCache(AndroidElement element) {
-        cache.remove(element.getId());
-        cache.put(element.getId(), element);
-        return element;
+        cache.put(restoredElement.getId(), restoredElement);
+        return restoredElement;
     }
 
     @NonNull
@@ -145,7 +133,6 @@ public class ElementsCache {
 
         synchronized (cache) {
             AndroidElement resultElement = cache.get(id);
-            boolean isRestored = false;
             if (resultElement != null) {
                 // It might be that cached UI object has been invalidated
                 // after AX cache reset has been performed. So we try to recreate
@@ -157,7 +144,6 @@ public class ElementsCache {
                     Logger.info(String.format("The element identified by '%s' has been reported as stale (%s). " +
                             "Trying to restore it", id, e.getMessage()));
                     resultElement = restore(resultElement);
-                    isRestored = true;
                 }
             }
             if (resultElement == null) {
@@ -165,7 +151,7 @@ public class ElementsCache {
                         String.format("The element identified by '%s' is not present in the cache " +
                                 "or has expired. Try to find it again", id));
             }
-            return isRestored ? resultElement : bumpInCache(resultElement);
+            return resultElement;
         }
     }
 
@@ -180,27 +166,9 @@ public class ElementsCache {
     public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by, @Nullable String contextId) {
         AndroidElement androidElement = toAndroidElement(element, isSingleMatch, by, contextId);
         synchronized (cache) {
-            for (AndroidElement cachedElement : cache.values()) {
+            for (AndroidElement cachedElement : cache.snapshot().values()) {
                 if (Objects.equals(androidElement, cachedElement)) {
-                    return bumpInCache(cachedElement);
-                }
-            }
-
-            if (cache.size() >= maxSize) {
-                int maxIndex = cache.size() * LOAD_FACTOR / 100;
-                Logger.info(String.format("The elements cache size has reached its maximum value of %s. " +
-                        "Shrinking %s oldest elements from it", maxSize, maxIndex));
-                int index = 0;
-                Set<String> keysToRemove = new HashSet<>();
-                for (String key : cache.keySet()) {
-                    if (index > maxIndex) {
-                        break;
-                    }
-                    keysToRemove.add(key);
-                    ++index;
-                }
-                for (String key : keysToRemove) {
-                    cache.remove(key);
+                    return cache.get(cachedElement.getId());
                 }
             }
 
