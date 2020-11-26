@@ -1,0 +1,44 @@
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+parameters:
+  name: 'android_integration_tests'
+  vmImage: 'macOS-10.15'
+  sdkVersion: 28
+  platformVersion: 9.0
+  emuTag: default
+  testName: ''
+
+jobs:
+  - job: ${{ parameters.name }}
+    pool:
+      vmImage: ${{ parameters.vmImage }}
+    variables:
+      TERM: dumb
+      ANDROID_AVD: testemulator
+      ANDROID_SDK_VERSION: ${{ parameters.sdkVersion }}
+      PLATFORM_VERSION: ${{ parameters.platformVersion }}
+      EMU_TAG: ${{ parameters.emuTag }}
+    steps:
+    - script: bash .azure-templates/scripts/start-emulator.sh
+      displayName: Create and run Emulator
+    - script: |-
+        stdbuf -oL adb logcat -v time *:S appium:V appium-e2e-tests:V TestRunner:V *:E *:F > logcat.txt &
+        ./gradlew connectedE2eTestDebugAndroidTest \
+          -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.${{ parameters.testName }} \
+          -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices
+      displayName: Run Tests
+      env:
+        JAVA_HOME: $(JAVA_HOME_11_X64)
+        PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
+      displayName: Run tests
+    - script: |-
+        echo -e "----UIAUTOMATOR DUMPS----\n"
+        adb pull /sdcard/hierarchy .
+        for f in ./hierarchy/*.xml; do
+          echo -e "Hierarchy dump for $f\n"
+          cat "$f"
+        done
+
+        echo -e "\n\n----LOGCAT----\n"
+        cat logcat.txt
+      condition: always()
+      displayName: Show Logs

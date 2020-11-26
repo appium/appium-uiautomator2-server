@@ -1,0 +1,58 @@
+variables:
+  _FORCE_LOGS: 1
+  CI: true
+
+
+parameters:
+- name: integrationJobs
+  type: object
+  default:
+  - name: sdk30_e2e_tests
+    platformVersion: 11.0
+    sdkVersion: 30
+    emuTag: google_apis
+  - name: sdk28_e2e_tests
+    platformVersion: 9.0
+    sdkVersion: 28
+    emuTag: default
+  - name: sdk25_e2e_tests
+    platformVersion: 7.1
+    sdkVersion: 25
+    emuTag: default
+  - name: sdk22_e2e_tests
+    platformVersion: 5.1
+    sdkVersion: 22
+    emuTag: default
+- name: tests
+  type: object
+  default:
+  - name: AlertCommandsTest
+  - name: ActionsCommandsTest
+  - name: GestureCommandsTest
+  - name: DeviceCommandsTest
+  - name: ElementCommandsTest
+
+
+stages:
+- stage: Unit_Tests_And_Linters
+  jobs:
+  - job: Unit_Tests
+    pool:
+      vmImage: ubuntu-20.04
+    steps:
+    - script: ./gradlew testServerDebugUnitTest
+      env:
+        JAVA_HOME: $(JAVA_HOME_11_X64)
+        PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
+      displayName: Tests
+- stage: Integration_Tests
+  jobs:
+  - ${{ each job in parameters.integrationJobs }}:
+    - ${{ each test in parameters.tests }}:
+      - template: .azure-templates/integration-job.yml
+        parameters:
+          name: ${{ job.name }}
+          platformVersion: ${{ job.platformVersion }}
+          sdkVersion: ${{ job.sdkVersion }}
+          emuTag: ${{ job.emuTag }}
+          testName: ${{ test.name }}
