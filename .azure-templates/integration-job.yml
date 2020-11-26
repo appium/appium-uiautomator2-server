@@ -19,7 +19,7 @@ jobs:
       EMU_TAG: ${{ parameters.emuTag }}
     steps:
     - script: bash .azure-templates/scripts/start-emulator.sh
-      displayName: Create and run Emulator
+      displayName: Create And Run Emulator
     - script: |-
         stdbuf -oL adb logcat -v time *:S appium:V appium-e2e-tests:V TestRunner:V *:E *:F > logcat.txt &
         ./gradlew connectedE2eTestDebugAndroidTest \
@@ -28,7 +28,7 @@ jobs:
       env:
         JAVA_HOME: $(JAVA_HOME_11_X64)
         PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
-      displayName: Run tests
+      displayName: Run Tests
     - script: |-
         echo -e "----UIAUTOMATOR DUMPS----\n"
         adb pull /sdcard/hierarchy .
