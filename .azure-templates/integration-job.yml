@@ -21,7 +21,7 @@ jobs:
     - script: bash .azure-templates/scripts/start-emulator.sh
       displayName: Create And Run Emulator
     - script: |-
-        stdbuf -oL adb logcat -v time *:S appium:V appium-e2e-tests:V TestRunner:V *:E *:F > logcat.txt &
+        nohup adb logcat -v time *:S appium:V appium-e2e-tests:V TestRunner:V *:E *:F > logcat.txt &
         ./gradlew connectedE2eTestDebugAndroidTest \
           -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.${{ parameters.testName }} \
           -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices
@@ -30,14 +30,14 @@ jobs:
         PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
       displayName: Run Tests
     - script: |-
+        echo -e "\n\n----LOGCAT----\n"
+        cat logcat.txt
+
         echo -e "----UIAUTOMATOR DUMPS----\n"
-        adb pull /sdcard/hierarchy .
+        adb pull /sdcard/hierarchy . || true
         for f in ./hierarchy/*.xml; do
           echo -e "Hierarchy dump for $f\n"
           cat "$f"
         done
-
-        echo -e "\n\n----LOGCAT----\n"
-        cat logcat.txt
       condition: always()
       displayName: Show Logs
