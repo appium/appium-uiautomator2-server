@@ -25,7 +25,6 @@ jobs:
         ./gradlew connectedE2eTestDebugAndroidTest \
           -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.${{ parameters.testName }} \
           -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices
-      displayName: Run Tests
       env:
         JAVA_HOME: $(JAVA_HOME_11_X64)
         PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
