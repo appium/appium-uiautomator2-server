@@ -26,8 +26,8 @@ jobs:
           -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.${{ parameters.testName }} \
           -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices
       env:
-        JAVA_HOME: $(JAVA_HOME_11_X64)
-        PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
+        JAVA_HOME: $(JAVA_HOME_8_X64)
+        PATH: $(JAVA_HOME_8_X64)/bin:$(PATH)
       displayName: Run Tests
     - script: |-
         echo -e "\n\n----LOGCAT----\n"

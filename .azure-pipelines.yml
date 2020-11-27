@@ -6,19 +6,19 @@ parameters:
 - name: integrationJobs
   type: object
   default:
-  - name: sdk30_e2e_tests
+  - name: sdk30
     platformVersion: 11.0
     sdkVersion: 30
     emuTag: google_apis
-  - name: sdk28_e2e_tests
+  - name: sdk28
     platformVersion: 9.0
     sdkVersion: 28
     emuTag: default
-  - name: sdk25_e2e_tests
+  - name: sdk25
     platformVersion: 7.1
     sdkVersion: 25
     emuTag: default
-  - name: sdk22_e2e_tests
+  - name: sdk22
     platformVersion: 5.1
     sdkVersion: 22
     emuTag: default
@@ -41,8 +41,8 @@ stages:
     steps:
     - script: ./gradlew testServerDebugUnitTest
       env:
-        JAVA_HOME: $(JAVA_HOME_11_X64)
-        PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
+        JAVA_HOME: $(JAVA_HOME_8_X64)
+        PATH: $(JAVA_HOME_8_X64)/bin:$(PATH)
       displayName: Tests
 - stage: Integration_Tests
   jobs:
