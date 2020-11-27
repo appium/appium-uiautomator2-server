@@ -1,6 +1,7 @@
 variables:
   _FORCE_LOGS: 1
   CI: true
+  NODE_VERSION: 12.x
 
 parameters:
 - name: integrationJobs
@@ -10,10 +11,6 @@ parameters:
     platformVersion: 11.0
     sdkVersion: 30
     emuTag: google_apis
-  - name: sdk28
-    platformVersion: 9.0
-    sdkVersion: 28
-    emuTag: default
   - name: sdk25
     platformVersion: 7.1
     sdkVersion: 25

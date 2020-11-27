@@ -18,6 +18,11 @@ jobs:
       PLATFORM_VERSION: ${{ parameters.platformVersion }}
       EMU_TAG: ${{ parameters.emuTag }}
     steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(NODE_VERSION)
+    - script: npm install
+      displayName: Install Node Dependencies
     - script: bash .azure-templates/scripts/start-emulator.sh
       displayName: Create And Run Emulator
     - script: |-
