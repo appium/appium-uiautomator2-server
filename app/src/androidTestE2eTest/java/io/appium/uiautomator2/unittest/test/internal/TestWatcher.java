@@ -19,6 +19,7 @@ import android.os.Environment;
 
 import org.junit.runner.Description;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -27,10 +28,7 @@ import io.appium.uiautomator2.utils.Device;
 class TestWatcher extends org.junit.rules.TestWatcher {
 
     private static final String SCREENSHOT_FILE_EXTENSION = ".png";
-    private static final String HIERARCHY_FILE_EXTENSION = ".xml";
-
     private static final String SCREENSHOT_FOLDER = "screenshots";
-    private static final String HIERARCHY_FOLDER = "hierarchy";
 
     private void saveScreenshot(final String fileName) {
         try {
@@ -42,11 +40,11 @@ class TestWatcher extends org.junit.rules.TestWatcher {
         }
     }
 
-    private void saveHierarchy(final String fileName) {
-        try {
-            final File output = getFile(HIERARCHY_FOLDER, fileName, HIERARCHY_FILE_EXTENSION);
-            Logger.debug("Dumping hierarchy:" + output.getAbsolutePath());
-            Device.getUiDevice().dumpWindowHierarchy(output);
+    private void dumpHierarchy() {
+        Logger.debug("Dumping hierarchy");
+        try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
+            Device.getUiDevice().dumpWindowHierarchy(stream);
+            Logger.debug(new String(stream.toByteArray()));
         } catch (Exception e) {
             Logger.error("Unable to dump hierarchy:" + e);
         }
@@ -71,6 +69,6 @@ class TestWatcher extends org.junit.rules.TestWatcher {
         final String methodName = description.getMethodName();
         Logger.debug("FAILED:" + methodName);
         saveScreenshot(methodName);
-        saveHierarchy(methodName);
+        dumpHierarchy();
     }
 }

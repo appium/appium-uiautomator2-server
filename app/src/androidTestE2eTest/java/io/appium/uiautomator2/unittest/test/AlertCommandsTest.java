@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.unittest.test;
 
+import android.os.Build;
+
 import org.json.JSONException;
 import org.junit.Test;
 
@@ -55,6 +57,10 @@ public class AlertCommandsTest extends BaseTest {
 
     @Test
     public void verifyDismissingAnAlertWithButton() throws JSONException {
+        if (Build.VERSION.SDK_INT < 23) {
+            return;
+        }
+
         setupView();
 
         Response response = findElement(By.accessibilityId("OK Cancel dialog with a long message"));
