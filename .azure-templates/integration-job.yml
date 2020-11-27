@@ -34,15 +34,6 @@ jobs:
         JAVA_HOME: $(JAVA_HOME_8_X64)
         PATH: $(JAVA_HOME_8_X64)/bin:$(PATH)
       displayName: Run Tests
-    - script: |-
-        echo -e "\n\n----LOGCAT----\n"
-        cat logcat.txt
-
-        echo -e "----UIAUTOMATOR DUMPS----\n"
-        adb pull /sdcard/hierarchy . || true
-        for f in ./hierarchy/*.xml; do
-          echo -e "Hierarchy dump for $f\n"
-          cat "$f"
-        done
+    - script: cat logcat.txt
       condition: always()
       displayName: Show Logs
