@@ -50,7 +50,7 @@ stages:
     - ${{ each test in parameters.tests }}:
       - template: .azure-templates/integration-job.yml
         parameters:
-          name: ${{ job.name }}
+          name: ${{ job.name }}_${{ test.name }}
           platformVersion: ${{ job.platformVersion }}
           sdkVersion: ${{ job.sdkVersion }}
           emuTag: ${{ job.emuTag }}
