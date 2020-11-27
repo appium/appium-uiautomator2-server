@@ -2,7 +2,6 @@ variables:
   _FORCE_LOGS: 1
   CI: true
 
-
 parameters:
 - name: integrationJobs
   type: object
