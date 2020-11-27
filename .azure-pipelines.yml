@@ -10,7 +10,7 @@ parameters:
   - name: sdk28
     platformVersion: 9.0
     sdkVersion: 28
-    emuTag: google_apis
+    emuTag: default
   - name: sdk25
     platformVersion: 7.1
     sdkVersion: 25
