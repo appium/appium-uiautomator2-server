@@ -7,9 +7,9 @@ parameters:
 - name: integrationJobs
   type: object
   default:
-  - name: sdk30
-    platformVersion: 11.0
-    sdkVersion: 30
+  - name: sdk28
+    platformVersion: 9.0
+    sdkVersion: 28
     emuTag: google_apis
   - name: sdk25
     platformVersion: 7.1
