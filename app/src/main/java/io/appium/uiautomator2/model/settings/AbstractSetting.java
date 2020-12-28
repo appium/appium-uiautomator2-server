@@ -62,8 +62,8 @@ public abstract class AbstractSetting<T> implements ISetting<T> {
             }
             return valueType.cast(value);
         } catch (ClassCastException e) {
-            String errorMsg = String.format("Invalid setting value type. Got: %s. Expected: %s.",
-                    value.getClass().getName(), valueType.getName());
+            String errorMsg = String.format("Invalid '%s' setting value type. Got: %s. Expected: %s.",
+                    getName(), null == value ? null : value.getClass().getName(), valueType.getName());
             throw new InvalidArgumentException(errorMsg);
         }
     }

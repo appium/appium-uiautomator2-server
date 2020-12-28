@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.appium.uiautomator2.model.settings.ISetting;
+import io.appium.uiautomator2.model.settings.Settings;
+
 import static io.appium.uiautomator2.model.settings.Settings.ELEMENT_RESPONSE_ATTRIBUTES;
 import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_RESPONSES;
 
@@ -36,7 +39,21 @@ public class Session {
 
     Session(String sessionId, Map<String, Object> capabilities) {
         this.sessionId = sessionId;
-        this.capabilities.putAll(capabilities);
+        for (Map.Entry<String, Object> capability: capabilities.entrySet()) {
+            boolean isSetting = false;
+            for (Settings settingsEnumItem: Settings.values()) {
+                ISetting<?> currentSetting = settingsEnumItem.getSetting();
+                if (currentSetting.getName().equalsIgnoreCase(capability.getKey())) {
+                    isSetting = true;
+                    currentSetting.update(capability.getValue());
+                    setCapability(currentSetting.getName(), currentSetting.getValue());
+                    break;
+                }
+            }
+            if (!isSetting) {
+                capabilities.put(capability.getKey(), capability.getValue());
+            }
+        }
     }
 
     @SuppressWarnings("UnusedReturnValue")
