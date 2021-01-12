@@ -51,7 +51,7 @@ public class Session {
                 }
             }
             if (!isSetting) {
-                capabilities.put(capability.getKey(), capability.getValue());
+                setCapability(capability.getKey(), capability.getValue());
             }
         }
     }
