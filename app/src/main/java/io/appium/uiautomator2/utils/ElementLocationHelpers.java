@@ -33,6 +33,7 @@ import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
@@ -61,6 +62,11 @@ public class ElementLocationHelpers {
         String pkg = AppiumUIA2Driver.getInstance()
                 .getSessionOrThrow()
                 .getCapability("appPackage", "");
+        if (isBlank(pkg)) {
+            pkg = CustomUiDevice.getInstance().getInstrumentation()
+                    .getTargetContext()
+                    .getPackageName();
+        }
         return isBlank(pkg) ? null : pkg;
     }
 

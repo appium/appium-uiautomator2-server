@@ -49,7 +49,8 @@ public class NewSession extends SafeRequestHandler {
             Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(w3cCaps.capabilities);
             String sessionID = AppiumUIA2Driver.getInstance().initializeSession(parsedCaps);
             NotificationListener.getInstance().start();
-            Logger.info(String.format("Created the new session with SessionID: %s", sessionID));
+            Logger.info(String.format("Created the new session with id %s and capabilities %s",
+                    sessionID, AppiumUIA2Driver.getInstance().getSessionOrThrow().getCapabilities()));
             w3cCaps.sessionId = sessionID;
             return new AppiumResponse(sessionID, w3cCaps);
         } catch (Exception e) {
