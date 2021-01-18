@@ -24,8 +24,6 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiSelector;
 
-import java.util.Objects;
-
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -131,8 +129,9 @@ public class ElementsCache {
                     "A valid cached element identifier must be provided. Got null instead");
         }
 
+        AndroidElement resultElement;
         synchronized (cache) {
-            AndroidElement resultElement = cache.get(id);
+            resultElement = cache.get(id);
             if (resultElement != null) {
                 // It might be that cached UI object has been invalidated
                 // after AX cache reset has been performed. So we try to recreate
@@ -146,13 +145,14 @@ public class ElementsCache {
                     resultElement = restore(resultElement);
                 }
             }
-            if (resultElement == null) {
-                throw new ElementNotFoundException(
-                        String.format("The element identified by '%s' is not present in the cache " +
-                                "or has expired. Try to find it again", id));
-            }
-            return resultElement;
         }
+
+        if (resultElement == null) {
+            throw new ElementNotFoundException(
+                    String.format("The element identified by '%s' is not present in the cache " +
+                            "or has expired. Try to find it again", id));
+        }
+        return resultElement;
     }
 
     public AndroidElement add(Object element, boolean isSingleMatch) {
@@ -163,17 +163,12 @@ public class ElementsCache {
         return add(element, isSingleMatch, by, null);
     }
 
-    public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by, @Nullable String contextId) {
+    public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by,
+                              @Nullable String contextId) {
         AndroidElement androidElement = toAndroidElement(element, isSingleMatch, by, contextId);
         synchronized (cache) {
-            for (AndroidElement cachedElement : cache.snapshot().values()) {
-                if (Objects.equals(androidElement, cachedElement)) {
-                    return cache.get(cachedElement.getId());
-                }
-            }
-
             cache.put(androidElement.getId(), androidElement);
-            return androidElement;
         }
+        return androidElement;
     }
 }
