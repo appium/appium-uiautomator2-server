@@ -102,7 +102,7 @@ public class AccessibilityNodeInfoDumper {
                 .replaceAll("\\.+", ".")
                 .replaceAll("(^\\.|\\.$)", "");
 
-        if (((NormalizeTagNames) Settings.NORMALIZE_TAG_NAMES.getSetting()).getValue()) {
+        if (Settings.get(NormalizeTagNames.class).getValue()) {
             // A workaround for the Apache Harmony bug described in https://github.com/appium/appium/issues/11854
             // The buggy implementation: https://android.googlesource.com/platform/dalvik/+/21d27c095fee51fd6eac6a68d50b79df4dc97d85/libcore/xml/src/main/java/org/apache/harmony/xml/dom/DocumentImpl.java#84
             fixedName = unidecode(fixedName).replaceAll("[^A-Za-z0-9\\-._]", "_");

@@ -99,7 +99,7 @@ public class UpdateSettingsTests {
     private final UpdateSettings updateSettings = new UpdateSettings("my_uri");
 
     @Mock
-    private AbstractSetting mySetting;
+    private AbstractSetting<?> mySetting;
 
     @Mock
     private IHttpRequest req;
@@ -237,7 +237,7 @@ public class UpdateSettingsTests {
         assertThat(resp.getValue(), is(instanceOf(Throwable.class)));
     }
 
-    private void verifySettingIsAvailable(Settings setting, Class<? extends AbstractSetting> clazz) {
+    private void verifySettingIsAvailable(Settings setting, Class<? extends AbstractSetting<?>> clazz) {
         assertThat(updateSettings.getSetting(setting.toString()), instanceOf(clazz));
     }
 }

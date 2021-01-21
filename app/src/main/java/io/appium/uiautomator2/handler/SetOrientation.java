@@ -23,9 +23,9 @@ import io.appium.uiautomator2.model.ScreenOrientation;
 import io.appium.uiautomator2.model.ScreenRotation;
 import io.appium.uiautomator2.model.api.OrientationModel;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.UseResourcesForOrientationDetection;
 
-import static io.appium.uiautomator2.model.settings.Settings.USE_RESOURCES_FOR_ORIENTATION_DETECTION;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
 public class SetOrientation extends SafeRequestHandler {
@@ -39,7 +39,7 @@ public class SetOrientation extends SafeRequestHandler {
         ScreenOrientation desiredOrientation = ScreenOrientation.ofString(model.orientation);
         ScreenRotation rotation = CustomUiDevice.getInstance()
                 .setRotationSync(ScreenRotation.ofOrientation(desiredOrientation));
-        String result = ((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()
+        String result = Settings.get(UseResourcesForOrientationDetection.class).getValue()
                 ? ScreenOrientation.current().name()
                 : rotation.toOrientation().name();
         return new AppiumResponse(getSessionId(request), result);

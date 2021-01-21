@@ -23,8 +23,6 @@ import io.appium.uiautomator2.common.exceptions.UnsupportedSettingException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.api.SettingsModel;
 import io.appium.uiautomator2.model.settings.ISetting;
 import io.appium.uiautomator2.model.settings.Settings;
@@ -38,19 +36,16 @@ public class UpdateSettings extends SafeRequestHandler {
         super(mappedUri);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         SettingsModel model = toModel(request, SettingsModel.class);
         Map<String, Object> settings = model.settings;
         Logger.debug("Update settings: " + settings.toString());
         for (Entry<String, Object> entry : settings.entrySet()) {
             String settingName = entry.getKey();
             Object settingValue = entry.getValue();
-            ISetting setting = getSetting(settingName);
+            ISetting<?> setting = getSetting(settingName);
             setting.update(settingValue);
-            session.setCapability(settingName, settingValue);
         }
         return new AppiumResponse(getSessionId(request));
     }

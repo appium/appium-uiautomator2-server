@@ -67,8 +67,7 @@ public class InteractionController {
     }
 
     public boolean shouldTrackScrollEvents() {
-        final TrackScrollEvents trackScrollEventsSetting =
-                (TrackScrollEvents) Settings.TRACK_SCROLL_EVENTS.getSetting();
+        final TrackScrollEvents trackScrollEventsSetting = Settings.get(TrackScrollEvents.class);
         Boolean trackScrollEvents = trackScrollEventsSetting.getValue();
         Logger.error(String.format("Setting '%s' is set to %b",
                 trackScrollEventsSetting.getName(), trackScrollEvents));

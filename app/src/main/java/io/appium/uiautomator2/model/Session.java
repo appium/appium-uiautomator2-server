@@ -25,9 +25,6 @@ import java.util.Map;
 import io.appium.uiautomator2.model.settings.ISetting;
 import io.appium.uiautomator2.model.settings.Settings;
 
-import static io.appium.uiautomator2.model.settings.Settings.ELEMENT_RESPONSE_ATTRIBUTES;
-import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_RESPONSES;
-
 public class Session {
     public static final String NO_ID = "None";
     public static final int MAX_CACHE_SIZE = 500;
@@ -46,7 +43,6 @@ public class Session {
                 if (currentSetting.getName().equalsIgnoreCase(capability.getKey())) {
                     isSetting = true;
                     currentSetting.update(capability.getValue());
-                    setCapability(currentSetting.getName(), currentSetting.getValue());
                     break;
                 }
             }
@@ -56,10 +52,8 @@ public class Session {
         }
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    public <T> T setCapability(String name, T value) {
+    private void setCapability(String name, Object value) {
         capabilities.put(name, value);
-        return value;
     }
 
     @Nullable
@@ -78,19 +72,6 @@ public class Session {
 
     public boolean hasCapability(String name) {
         return capabilities.containsKey(name);
-    }
-
-    public boolean shouldUseCompactResponses() {
-        String capName = SHOULD_USE_COMPACT_RESPONSES.toString();
-        return !hasCapability(capName)
-                || String.valueOf(getCapability(capName)).equalsIgnoreCase("true");
-    }
-
-    public String[] getElementResponseAttributes() {
-        String capName = ELEMENT_RESPONSE_ATTRIBUTES.toString();
-        return getCapability(capName, "").trim().isEmpty()
-                ? new String[]{"name", "text"}
-                : getCapability(capName, "").split(",");
     }
 
     public String getSessionId() {

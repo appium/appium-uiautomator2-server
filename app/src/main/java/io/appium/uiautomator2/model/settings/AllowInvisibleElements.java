@@ -16,11 +16,10 @@
 
 package io.appium.uiautomator2.model.settings;
 
-import io.appium.uiautomator2.model.AppiumUIA2Driver;
-
 public class AllowInvisibleElements extends AbstractSetting<Boolean> {
 
     private static final String SETTING_NAME = "allowInvisibleElements";
+    private Boolean value = false;
 
     public AllowInvisibleElements() {
         super(Boolean.class, SETTING_NAME);
@@ -28,18 +27,12 @@ public class AllowInvisibleElements extends AbstractSetting<Boolean> {
 
     @Override
     public Boolean getValue() {
-        return AppiumUIA2Driver
-                .getInstance()
-                .getSessionOrThrow()
-                .getCapability(SETTING_NAME, false);
+        return value;
     }
 
     @Override
     protected void apply(Boolean allowInvisibleElements) {
-        AppiumUIA2Driver
-                .getInstance()
-                .getSessionOrThrow()
-                .setCapability(SETTING_NAME, allowInvisibleElements);
+        value = allowInvisibleElements;
     }
 
 }

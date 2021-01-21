@@ -16,11 +16,11 @@
 
 package io.appium.uiautomator2.model.settings;
 
-import io.appium.uiautomator2.model.AppiumUIA2Driver;
-
 public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
 
     private static final String SETTING_NAME = "shouldUseCompactResponses";
+
+    private Boolean value = true;
 
     public ShouldUseCompactResponses() {
         super(Boolean.class, SETTING_NAME);
@@ -28,18 +28,12 @@ public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
 
     @Override
     public Boolean getValue() {
-        return AppiumUIA2Driver
-                .getInstance()
-                .getSessionOrThrow()
-                .shouldUseCompactResponses();
+        return value;
     }
 
     @Override
     protected void apply(Boolean shouldUseCompactResponses) {
-        AppiumUIA2Driver
-                .getInstance()
-                .getSessionOrThrow()
-                .setCapability(SETTING_NAME, shouldUseCompactResponses);
+        value = shouldUseCompactResponses;
     }
 
 }

@@ -273,8 +273,7 @@ public class ServerInstrumentation {
                 return;
             }
 
-            final ShutdownOnPowerDisconnect shutdownOnPowerDisconnect =
-                    (ShutdownOnPowerDisconnect) Settings.SHUTDOWN_ON_POWER_DISCONNECT.getSetting();
+            final ShutdownOnPowerDisconnect shutdownOnPowerDisconnect = Settings.get(ShutdownOnPowerDisconnect.class);
             if (!shutdownOnPowerDisconnect.getValue()) {
                 Logger.debug(String.format("The value of `%s` setting is false - " +
                         "ignoring broadcasting.", shutdownOnPowerDisconnect.getName()));

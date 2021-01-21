@@ -54,6 +54,16 @@ public enum Settings {
         return setting;
     }
 
+    public static <T extends ISetting<?>> T get(Class<T> settingType) {
+        for (Settings setting: values()) {
+            if (setting.getSetting().getClass() == settingType) {
+                return settingType.cast(setting);
+            }
+        }
+        throw new IllegalArgumentException(String.format("%s setting is not known",
+                settingType.getCanonicalName()));
+    }
+
     @Override
     public String toString() {
         return setting.getName();

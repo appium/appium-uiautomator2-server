@@ -27,6 +27,7 @@ import java.util.List;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.model.settings.EnableMultiWindows;
 import io.appium.uiautomator2.model.settings.Settings;
 
 public class AXWindowHelpers {
@@ -104,7 +105,7 @@ public class AXWindowHelpers {
             // Multi-window searches are supported since API level 21
             boolean shouldRetrieveAllWindowRoots = CustomUiDevice.getInstance()
                     .getApiLevelActual() >= Build.VERSION_CODES.LOLLIPOP
-                    && (Boolean) Settings.ENABLE_MULTI_WINDOWS.getSetting().getValue();
+                    && Settings.get(EnableMultiWindows.class).getValue();
             /*
              * ENABLE_MULTI_WINDOWS is disabled by default
              * because UIAutomatorViewer captures active window properties and

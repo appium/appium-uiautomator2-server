@@ -33,11 +33,12 @@ import java.util.Objects;
 import java.util.Set;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
+import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
+import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.internal.util.Checks.checkNotNull;
-import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELEMENTS;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
@@ -226,8 +227,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         }
 
         List<UiElementSnapshot> children = new ArrayList<>(childCount);
-        boolean areInvisibleElementsAllowed = AppiumUIA2Driver.getInstance().getSessionOrThrow()
-                .getCapability(ALLOW_INVISIBLE_ELEMENTS.toString(), false);
+        boolean areInvisibleElementsAllowed = Settings.get(AllowInvisibleElements.class).getValue();
         for (int index = 0; index < childCount; ++index) {
             AccessibilityNodeInfo child = node.getChild(index);
             if (child == null) {

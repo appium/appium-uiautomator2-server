@@ -20,19 +20,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collections;
-
-import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.Session;
-
 public class AllowInvisibleElementsTest {
-    private Session session;
     private AllowInvisibleElements allowInvisibleElements;
 
     @Before
     public void setup() {
-        AppiumUIA2Driver.getInstance().initializeSession(Collections.<String, Object>emptyMap());
-        session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         allowInvisibleElements = new AllowInvisibleElements();
     }
 
@@ -48,13 +40,13 @@ public class AllowInvisibleElementsTest {
 
     @Test
     public void shouldBeAbleToDisableAllowInvisibleElements() {
-        session.setCapability(allowInvisibleElements.getName(), false);
+        allowInvisibleElements.apply(false);
         Assert.assertEquals(false, allowInvisibleElements.getValue());
     }
 
     @Test
     public void shouldBeAbleToEnableAllowInvisibleElements() {
-        session.setCapability(allowInvisibleElements.getName(), true);
+        allowInvisibleElements.apply(true);
         Assert.assertEquals(true, allowInvisibleElements.getValue());
     }
 }

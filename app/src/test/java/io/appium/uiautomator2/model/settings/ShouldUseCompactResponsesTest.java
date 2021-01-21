@@ -20,22 +20,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Collections;
-
-import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.Session;
-
-import static io.appium.uiautomator2.model.settings.Settings.SHOULD_USE_COMPACT_RESPONSES;
-
 public class ShouldUseCompactResponsesTest {
 
     private ShouldUseCompactResponses shouldUseCompactResponses;
-    private Session session;
 
     @Before
     public void setup() {
-        AppiumUIA2Driver.getInstance().initializeSession(Collections.<String, Object>emptyMap());
-        session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         shouldUseCompactResponses = new ShouldUseCompactResponses();
     }
 
@@ -51,13 +41,13 @@ public class ShouldUseCompactResponsesTest {
 
     @Test
     public void shouldBeAbleToEnableShouldUseCompactResponses() {
-        session.setCapability(SHOULD_USE_COMPACT_RESPONSES.toString(), "true");
+        shouldUseCompactResponses.apply(true);
         Assert.assertEquals(true, shouldUseCompactResponses.getValue());
     }
 
     @Test
     public void shouldBeAbleToDisableShouldUseCompactResponses() {
-        session.setCapability(SHOULD_USE_COMPACT_RESPONSES.toString(), "false");
+        shouldUseCompactResponses.apply(false);
         Assert.assertEquals(false, shouldUseCompactResponses.getValue());
     }
 }

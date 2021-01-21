@@ -21,9 +21,8 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.ScreenOrientation;
 import io.appium.uiautomator2.model.ScreenRotation;
+import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.UseResourcesForOrientationDetection;
-
-import static io.appium.uiautomator2.model.settings.Settings.USE_RESOURCES_FOR_ORIENTATION_DETECTION;
 
 public class GetOrientation extends SafeRequestHandler {
 
@@ -33,7 +32,7 @@ public class GetOrientation extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        return ((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()
+        return Settings.get(UseResourcesForOrientationDetection.class).getValue()
                 ? new AppiumResponse(getSessionId(request), ScreenOrientation.current().name())
                 : new AppiumResponse(getSessionId(request), ScreenRotation.current().toOrientation().name());
     }

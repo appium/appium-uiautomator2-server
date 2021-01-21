@@ -185,7 +185,7 @@ public class AxNodeInfoHelper {
         if (node == null) {
             return rect;
         }
-        if (((SimpleBoundsCalculation) Settings.SIMPLE_BOUNDS_CALCULATION.getSetting()).getValue()) {
+        if (Settings.get(SimpleBoundsCalculation.class).getValue()) {
             node.getBoundsInScreen(rect);
             return rect;
         }

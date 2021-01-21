@@ -65,7 +65,7 @@ public abstract class Device {
     }
 
     public static void waitForIdle() {
-        long timeoutMs = ((WaitForIdleTimeout) Settings.WAIT_FOR_IDLE_TIMEOUT.getSetting()).getValue();
+        long timeoutMs = Settings.get(WaitForIdleTimeout.class).getValue();
         if (timeoutMs <= 0) {
             Logger.info("Idle timeout is not greater than zero. Skipping the wait");
             return;

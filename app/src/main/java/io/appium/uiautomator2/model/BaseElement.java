@@ -31,6 +31,9 @@ import io.appium.uiautomator2.common.exceptions.NoSuchAttributeException;
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.api.ElementModel;
 import io.appium.uiautomator2.model.api.ElementRectModel;
+import io.appium.uiautomator2.model.settings.ElementResponseAttributes;
+import io.appium.uiautomator2.model.settings.Settings;
+import io.appium.uiautomator2.model.settings.ShouldUseCompactResponses;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.PositionHelper;
 
@@ -191,14 +194,14 @@ public abstract class BaseElement implements AndroidElement {
      */
     @Override
     public Object toModel() throws UiObjectNotFoundException {
-        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         ElementModel model = new ElementModel(this);
-        if (session.shouldUseCompactResponses()) {
+        if (Settings.get(ShouldUseCompactResponses.class).getValue()) {
             return model;
         }
 
         Map<String, Object> result = new HashMap<>(model.toMap());
-        for (String field : session.getElementResponseAttributes()) {
+        String [] responseAttributes = Settings.get(ElementResponseAttributes.class).asArray();
+        for (String field : responseAttributes) {
             try {
                 if (Objects.equals(field, "name")) {
                     result.put(field, this.getContentDesc());

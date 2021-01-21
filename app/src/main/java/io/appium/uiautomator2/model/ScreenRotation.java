@@ -18,10 +18,9 @@ package io.appium.uiautomator2.model;
 
 import java.util.Objects;
 
+import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.UseResourcesForOrientationDetection;
 import io.appium.uiautomator2.utils.Device;
-
-import static io.appium.uiautomator2.model.settings.Settings.USE_RESOURCES_FOR_ORIENTATION_DETECTION;
 
 public enum ScreenRotation {
     ROTATION_0, ROTATION_90, ROTATION_180, ROTATION_270;
@@ -65,7 +64,7 @@ public enum ScreenRotation {
     }
 
     public static ScreenRotation ofOrientation(ScreenOrientation desiredOrientation) {
-        if (!((UseResourcesForOrientationDetection) USE_RESOURCES_FOR_ORIENTATION_DETECTION.getSetting()).getValue()) {
+        if (!Settings.get(UseResourcesForOrientationDetection.class).getValue()) {
             return desiredOrientation == ScreenOrientation.LANDSCAPE ? ROTATION_270 : ROTATION_0;
         }
 

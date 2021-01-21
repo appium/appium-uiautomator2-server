@@ -16,11 +16,11 @@
 
 package io.appium.uiautomator2.model.settings;
 
-import io.appium.uiautomator2.model.AppiumUIA2Driver;
-
 public class EnableMultiWindows extends AbstractSetting<Boolean> {
 
     private static final String SETTING_NAME = "enableMultiWindows";
+
+    private Boolean value = false;
 
     public EnableMultiWindows() {
         super(Boolean.class, SETTING_NAME);
@@ -28,17 +28,11 @@ public class EnableMultiWindows extends AbstractSetting<Boolean> {
 
     @Override
     public Boolean getValue() {
-        return AppiumUIA2Driver.getInstance()
-                .getSessionOrThrow()
-                .getCapability(getName(), false);
+        return value;
     }
 
     @Override
     protected void apply(Boolean multiWindowsEnabled) {
-        AppiumUIA2Driver
-                .getInstance()
-                .getSessionOrThrow()
-                .setCapability(getName(), multiWindowsEnabled);
+        value = multiWindowsEnabled;
     }
-
 }

@@ -16,11 +16,11 @@
 
 package io.appium.uiautomator2.model.settings;
 
-import io.appium.uiautomator2.model.AppiumUIA2Driver;
-
 public class ElementResponseAttributes extends AbstractSetting<String> {
 
     private static final String SETTING_NAME = "elementResponseAttributes";
+    private static final String DEFAULT_ATTRIBUTES = "name,text";
+    private String value = DEFAULT_ATTRIBUTES;
 
     public ElementResponseAttributes() {
         super(String.class, SETTING_NAME);
@@ -28,16 +28,16 @@ public class ElementResponseAttributes extends AbstractSetting<String> {
 
     @Override
     public String getValue() {
-        return AppiumUIA2Driver.getInstance()
-                .getSessionOrThrow()
-                .getCapability(getName(), "");
+        return value;
+    }
+
+    public String[] asArray() {
+        return value.split(",");
     }
 
     @Override
     protected void apply(String elementResponseAttributes) {
-        AppiumUIA2Driver.getInstance()
-                .getSessionOrThrow()
-                .setCapability(SETTING_NAME, elementResponseAttributes);
+        value = elementResponseAttributes;
     }
 
 }
