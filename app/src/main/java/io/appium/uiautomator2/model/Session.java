@@ -56,11 +56,6 @@ public class Session {
         capabilities.put(name, value);
     }
 
-    @Nullable
-    public Object getCapability(String name) {
-        return capabilities.get(name);
-    }
-
     public <T> T getCapability(String name, T defaultValue) {
         //noinspection unchecked
         return hasCapability(name) ? (T) capabilities.get(name) : defaultValue;
