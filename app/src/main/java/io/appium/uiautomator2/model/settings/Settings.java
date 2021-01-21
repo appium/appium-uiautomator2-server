@@ -55,9 +55,9 @@ public enum Settings {
     }
 
     public static <T extends ISetting<?>> T get(Class<T> settingType) {
-        for (Settings setting: values()) {
-            if (setting.getSetting().getClass() == settingType) {
-                return settingType.cast(setting);
+        for (Settings enumItem: values()) {
+            if (enumItem.getSetting().getClass() == settingType) {
+                return settingType.cast(enumItem.getSetting());
             }
         }
         throw new IllegalArgumentException(String.format("%s setting is not known",
