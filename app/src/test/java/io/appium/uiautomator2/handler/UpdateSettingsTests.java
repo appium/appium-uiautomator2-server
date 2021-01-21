@@ -35,7 +35,6 @@ import io.appium.uiautomator2.handler.request.BaseRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.api.SettingsModel;
 import io.appium.uiautomator2.model.settings.AbstractSetting;
 import io.appium.uiautomator2.model.settings.ActionAcknowledgmentTimeout;
@@ -93,7 +92,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class UpdateSettingsTests {
     private static final String SETTING_NAME = "my_setting";
     private static final String SETTING_VALUE = "my_value";
-    private Session session;
 
     @Spy
     private final UpdateSettings updateSettings = new UpdateSettings("my_uri");
@@ -107,7 +105,6 @@ public class UpdateSettingsTests {
     @Before
     public void setUp() throws JSONException {
         AppiumUIA2Driver.getInstance().initializeSession(Collections.<String, Object>emptyMap());
-        session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         HashMap<String, Object> payload = new HashMap<>();
         payload.put(SETTING_NAME, SETTING_VALUE);
 
@@ -224,7 +221,6 @@ public class UpdateSettingsTests {
                 .thenReturn(toJsonString(new SettingsModel(SETTING_NAME, SETTING_VALUE)));
         AppiumResponse response = updateSettings.handle(req);
         verify(mySetting).update(SETTING_VALUE);
-        assertEquals(session.getCapability(SETTING_NAME), SETTING_VALUE);
         assertEquals(response.getHttpStatus(), HttpResponseStatus.OK);
     }
 
