@@ -219,9 +219,10 @@ public class AccessibilityNodeInfoDumper {
                     SystemClock.uptimeMillis() - timeStarted, matchedNodes.size(), xpathSelector));
             return matchedNodes;
         } catch (JDOMParseException e) {
-            throw new UiAutomator2Exception(String.format("%s. " +
-                            "Try changing the '%s' driver setting to 'true' in order to workaround the problem.",
-                    e.getMessage(), Settings.NORMALIZE_TAG_NAMES.toString()), e);
+            throw new UiAutomator2Exception(
+                    String.format("%s. Try changing the '%s' driver setting to 'true' in order " +
+                                    "to workaround the problem.", e.getMessage(),
+                    Settings.NORMALIZE_TAG_NAMES.getSetting().getName()), e);
         } catch (Exception e) {
             throw new UiAutomator2Exception(e);
         } finally {
