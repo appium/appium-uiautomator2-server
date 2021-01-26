@@ -53,7 +53,7 @@ import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class FindElements extends SafeRequestHandler {
 
-    private static final Pattern endsWithInstancePattern = Pattern.compile(".*INSTANCE=\\d+]$");
+    private static final Pattern containsInstancePattern = Pattern.compile(".*INSTANCE=\\d+.*");
 
     public FindElements(String mappedUri) {
         super(mappedUri);
@@ -170,7 +170,7 @@ public class FindElements extends SafeRequestHandler {
         boolean keepSearching = true;
         final String selectorString = sel.toString();
         final boolean useIndex = selectorString.contains("CLASS_REGEX=");
-        final boolean endsWithInstance = endsWithInstancePattern.matcher(selectorString).matches();
+        final boolean containsInstance = containsInstancePattern.matcher(selectorString).matches();
         Logger.debug("getElements selector:" + selectorString);
         final ArrayList<Object> elements = new ArrayList<>();
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
@@ -182,7 +182,7 @@ public class FindElements extends SafeRequestHandler {
         // UiSelector[CLASS=android.widget.Button, INSTANCE=1]
         //
         // The selector now points to an entirely different element.
-        if (endsWithInstance) {
+        if (containsInstance) {
             Logger.debug("Selector ends with instance.");
             // There's exactly one element when using instance.
             UiObject instanceObj = getUiDevice().findObject(sel);
