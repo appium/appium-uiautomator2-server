@@ -22,17 +22,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
-import androidx.test.uiautomator.UiSelector;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.utils.ByUiAutomatorFinder;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
-import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 
 public class ElementsCache {
     private final LruCache<String, AndroidElement> cache;
@@ -101,12 +100,7 @@ public class ElementsCache {
                     ui2Object = CustomUiDevice.getInstance().findObject(matchedNodes);
                 }
             } else if (by instanceof By.ByAndroidUiAutomator) {
-                UiSelector selector = toSelector(by.getElementLocator());
-                if (selector != null) {
-                    ui2Object = searchRoot == null
-                            ? CustomUiDevice.getInstance().findObject(selector)
-                            : searchRoot.getChild(selector);
-                }
+                ui2Object = new ByUiAutomatorFinder().findOne((By.ByAndroidUiAutomator) by, searchRoot);
             }
         } catch (Exception e) {
             Logger.warn(String.format(

@@ -36,9 +36,7 @@ import org.json.JSONObject;
 import java.io.InvalidClassException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -59,12 +57,10 @@ import static android.view.accessibility.AccessibilityNodeInfo.AccessibilityActi
 import static io.appium.uiautomator2.model.internal.CustomUiDevice.getInstance;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
-import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
 import static io.appium.uiautomator2.utils.StringHelpers.toNonNullString;
 
 public abstract class ElementHelpers {
-    private static Method findAccessibilityNodeInfo;
     // these constants are magic numbers experimentally determined to minimize flakiness in generating
     // last scroll data used in getting the 'contentSize' attribute.
     // TODO see whether anchoring these to time and screen size is more reliable across devices
@@ -72,43 +68,6 @@ public abstract class ElementHelpers {
     private static final int MINI_SWIPE_PIXELS = 200;
     // https://android.googlesource.com/platform/frameworks/testing/+/master/uiautomator/library/core-src/com/android/uiautomator/core/UiScrollable.java#635
     private static final double SWIPE_DEAD_ZONE_PCT = 0.1;
-
-    private static AccessibilityNodeInfo elementToNode(Object element) {
-        AccessibilityNodeInfo result = null;
-        try {
-            result = (AccessibilityNodeInfo) findAccessibilityNodeInfo.invoke(element, 5000L);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    /**
-     * Remove all duplicate elements from the provided list
-     *
-     * @param elements - elements to remove duplicates from
-     * @return a new list with duplicates removed
-     */
-    public static List<Object> dedupe(List<Object> elements) {
-        try {
-            findAccessibilityNodeInfo = getMethod(UiObject.class, "findAccessibilityNodeInfo", long.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        List<Object> result = new ArrayList<>();
-        List<AccessibilityNodeInfo> nodes = new ArrayList<>();
-
-        for (Object element : elements) {
-            AccessibilityNodeInfo node = elementToNode(element);
-            if (!nodes.contains(node)) {
-                nodes.add(node);
-                result.add(element);
-            }
-        }
-
-        return result;
-    }
 
     public static boolean canSetProgress(Object element) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {

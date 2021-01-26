@@ -18,11 +18,9 @@ package io.appium.uiautomator2.handler;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
-import androidx.test.uiautomator.UiSelector;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
-import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -35,13 +33,13 @@ import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.api.FindElementModel;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.ElementsLookupStrategy;
+import io.appium.uiautomator2.utils.ByUiAutomatorFinder;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
 import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshAccessibilityCache;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
-import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
@@ -92,11 +90,7 @@ public class FindElement extends SafeRequestHandler {
             }
             return CustomUiDevice.getInstance().findObject(matchedNodes);
         } else if (by instanceof By.ByAndroidUiAutomator) {
-            UiSelector selector = toSelector(by.getElementLocator());
-            if (selector == null) {
-                throw new UiSelectorSyntaxException(by.getElementLocator(), "");
-            }
-            return CustomUiDevice.getInstance().findObject(selector);
+            return new ByUiAutomatorFinder().findOne((By.ByAndroidUiAutomator) by);
         }
         String msg = String.format("By locator %s is currently not supported!", by.getClass().getSimpleName());
         throw new UnsupportedOperationException(msg);
@@ -121,11 +115,7 @@ public class FindElement extends SafeRequestHandler {
             }
             return CustomUiDevice.getInstance().findObject(matchedNodes);
         } else if (by instanceof By.ByAndroidUiAutomator) {
-            UiSelector selector = toSelector(by.getElementLocator());
-            if (selector == null) {
-                throw new UiSelectorSyntaxException(by.getElementLocator(), "");
-            }
-            return element.getChild(selector);
+            return new ByUiAutomatorFinder().findOne((By.ByAndroidUiAutomator) by, element);
         }
         String msg = String.format("By locator %s is currently not supported!", by.getClass().getSimpleName());
         throw new UnsupportedOperationException(msg);
