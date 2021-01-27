@@ -161,7 +161,7 @@ public class ByUiAutomatorFinder {
             String fieldName = attributeName.startsWith(UI_SELECTOR_CRITERION_PREFIX)
                     ? attributeName
                     : (UI_SELECTOR_CRITERION_PREFIX + attributeName.toUpperCase());
-            Field field = UiSelector.class.getField(fieldName);
+            Field field = UiSelector.class.getDeclaredField(fieldName);
             field.setAccessible(true);
             expectedCriterion = field.getInt(sel);
         } catch (IllegalAccessException e) {
