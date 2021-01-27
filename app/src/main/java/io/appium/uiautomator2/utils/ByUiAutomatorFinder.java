@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Set;
 
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
-import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 import io.appium.uiautomator2.core.AxNodeInfoExtractor;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.By;
@@ -53,9 +52,6 @@ public class ByUiAutomatorFinder {
     public Object findOne(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
             throws InvalidSelectorException, UiObjectNotFoundException {
         UiSelector selector = toSelector(by.getElementLocator());
-        if (selector == null) {
-            throw new UiSelectorSyntaxException(by.getElementLocator(), "");
-        }
         return context == null
                 ? CustomUiDevice.getInstance().findObject(selector)
                 : context.getChild(selector);

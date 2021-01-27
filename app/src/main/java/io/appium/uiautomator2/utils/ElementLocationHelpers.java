@@ -119,15 +119,17 @@ public class ElementLocationHelpers {
         return new AccessibilityNodeInfoDumper(root, includedAttributes).findNodes(expression, multiple);
     }
 
-    @Nullable
     public static UiSelector toSelector(String uiaExpression) throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
-        List<UiSelector> selectors = toSelectors(uiaExpression);
-        return selectors.isEmpty() ? null : selectors.get(0);
+        return toSelectors(uiaExpression).get(0);
     }
 
     public static List<UiSelector> toSelectors(String uiaExpression) throws UiSelectorSyntaxException,
             UiObjectNotFoundException {
-        return new UiAutomatorParser().parse(uiaExpression);
+        List<UiSelector> selectors = new UiAutomatorParser().parse(uiaExpression);
+        if (selectors.isEmpty()) {
+            throw new UiSelectorSyntaxException(uiaExpression);
+        }
+        return selectors;
     }
 }
