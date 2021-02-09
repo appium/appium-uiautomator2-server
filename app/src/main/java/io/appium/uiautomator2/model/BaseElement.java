@@ -65,6 +65,11 @@ public abstract class BaseElement implements AndroidElement {
     }
 
     @Override
+    public void doubleClick() {
+        AxNodeInfoHelper.doubleClick(toAxNodeInfo(getUiObject()));
+    }
+
+    @Override
     public void longClick() {
         AxNodeInfoHelper.longClick(toAxNodeInfo(getUiObject()));
     }

@@ -66,6 +66,9 @@ public interface AndroidElement {
     /** Clicks on this object. */
     void click();
 
+    /** Performs a double click on this object. */
+    void doubleClick();
+
     /** Performs a long click on this object. */
     void longClick();
 

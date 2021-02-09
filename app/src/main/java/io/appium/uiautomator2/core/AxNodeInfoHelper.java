@@ -112,6 +112,11 @@ public class AxNodeInfoHelper {
         CustomUiDevice.getInstance().getGestureController().click(getCenterPoint(bounds));
     }
 
+    public static void doubleClick(AccessibilityNodeInfo node) {
+        Rect bounds = getBounds(node);
+        CustomUiDevice.getInstance().getGestureController().doubleClick(getCenterPoint(bounds));
+    }
+
     public static void longClick(AccessibilityNodeInfo node) {
         longClick(node, null);
     }

@@ -18,6 +18,7 @@ package io.appium.uiautomator2.model.internal;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.SystemClock;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.Nullable;
@@ -85,6 +86,12 @@ public class GestureController {
     }
 
     public void click(Point point) {
+        performGesture(new PointerGesture(point).pause(0L));
+    }
+
+    public void doubleClick(Point point) {
+        performGesture(new PointerGesture(point).pause(0L));
+        SystemClock.sleep(ViewConfiguration.getDoubleTapTimeout() / 2);
         performGesture(new PointerGesture(point).pause(0L));
     }
 
