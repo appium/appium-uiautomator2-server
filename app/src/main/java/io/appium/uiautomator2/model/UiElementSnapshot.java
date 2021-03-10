@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -60,6 +61,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.PASSWORD, Attribute.SCROLLABLE, Attribute.SELECTION_START,
             Attribute.SELECTION_END, Attribute.SELECTED, Attribute.BOUNDS, Attribute.DISPLAYED
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
+    };
+    private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[] {
+            Attribute.TEXT, Attribute.CLASS, Attribute.PACKAGE, Attribute.DISPLAYED,
+            Attribute.INDEX
     };
 
     private final Set<Attribute> includedAttributes = new HashSet<>();
@@ -112,8 +117,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         }
     }
 
-    private @Nullable
-    Object getNodeAttributeValue(Attribute attr) {
+    private @Nullable Object getNodeAttributeValue(Attribute attr) {
         AccessibilityNodeInfo node = Objects.requireNonNull(getNode());
         switch (attr) {
             case CHECKABLE:
@@ -210,7 +214,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         node.setPackageName("com.android.settings");
         node.setVisibleToUser(true);
         setField("mSealed", true, node);
-        this.children.add(new UiElementSnapshot(node, this.children.size(), 0, null));
+        this.children.add(new UiElementSnapshot(node, this.children.size(), 0,
+                new HashSet<>(Arrays.asList(TOAST_NODE_ATTRIBUTES))));
     }
 
     private List<UiElementSnapshot> buildChildren(AccessibilityNodeInfo node) {

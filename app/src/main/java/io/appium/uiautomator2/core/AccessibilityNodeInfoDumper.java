@@ -223,6 +223,7 @@ public class AccessibilityNodeInfoDumper {
                                     "to workaround the problem.", e.getMessage(),
                     Settings.NORMALIZE_TAG_NAMES.getSetting().getName()), e);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new UiAutomator2Exception(e);
         } finally {
             uiElementsMapping.clear();
