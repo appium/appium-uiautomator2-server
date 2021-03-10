@@ -72,13 +72,12 @@ public class AccessibilityNodeInfoDumper {
     @Nullable
     private final AccessibilityNodeInfo root;
     private final SparseArray<UiElement<?, ?>> uiElementsMapping = new SparseArray<>();
-    @Nullable
     private final Set<Attribute> includedAttributes;
     private boolean shouldAddDisplayInfo;
     private XmlSerializer serializer;
 
     public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root,
-                                       @Nullable Set<Attribute> includedAttributes) {
+                                       Set<Attribute> includedAttributes) {
         this.root = root;
         this.includedAttributes = includedAttributes;
     }

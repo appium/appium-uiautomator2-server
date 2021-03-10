@@ -52,7 +52,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     // https://github.com/appium/appium/issues/12545
     private final static int DEFAULT_MAX_DEPTH = 70;
     // The same order will be used for node attributes in xml page source
-    private final static Attribute[] SUPPORTED_ATTRIBUTES = new Attribute[]{
+    public final static Attribute[] SUPPORTED_ATTRIBUTES = new Attribute[]{
             Attribute.INDEX, Attribute.PACKAGE, Attribute.CLASS, Attribute.TEXT,
             Attribute.ORIGINAL_TEXT, Attribute.CONTENT_DESC, Attribute.RESOURCE_ID,
             Attribute.CHECKABLE, Attribute.CHECKED, Attribute.CLICKABLE, Attribute.ENABLED,
@@ -70,27 +70,25 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     private final int index;
 
     private UiElementSnapshot(AccessibilityNodeInfo node, int index, int depth, int maxDepth,
-                              @Nullable Set<Attribute> includedAttributes) {
+                              Set<Attribute> includedAttributes) {
         super(checkNotNull(node));
         this.depth = depth;
         this.maxDepth = maxDepth;
         this.index = index;
-        if (includedAttributes != null) {
-            // Class name attribute should always be there
-            this.includedAttributes.add(Attribute.CLASS);
-            this.includedAttributes.addAll(includedAttributes);
-        }
+        // Class name attribute should always be there
+        this.includedAttributes.add(Attribute.CLASS);
+        this.includedAttributes.addAll(includedAttributes);
         this.attributes = collectAttributes();
         this.children = buildChildren(node);
     }
 
     private UiElementSnapshot(AccessibilityNodeInfo node, int index, int depth,
-                              @Nullable Set<Attribute> includedAttributes) {
+                              Set<Attribute> includedAttributes) {
         this(node, index, depth, DEFAULT_MAX_DEPTH, includedAttributes);
     }
 
     private UiElementSnapshot(AccessibilityNodeInfo[] childNodes,
-                              @Nullable Set<Attribute> includedAttributes) {
+                              Set<Attribute> includedAttributes) {
         super(null);
         this.depth = 0;
         this.index = 0;
@@ -114,7 +112,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         }
     }
 
-    private @Nullable Object getNodeAttributeValue(Attribute attr) {
+    private @Nullable
+    Object getNodeAttributeValue(Attribute attr) {
         AccessibilityNodeInfo node = Objects.requireNonNull(getNode());
         switch (attr) {
             case CHECKABLE:
@@ -179,7 +178,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     }
 
     public static UiElementSnapshot take(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs,
-                                         @Nullable Set<Attribute> includedAttributes) {
+                                         Set<Attribute> includedAttributes) {
         UiElementSnapshot uiRoot = new UiElementSnapshot(roots, includedAttributes);
         for (CharSequence toastMSG : toastMSGs) {
             Logger.info(String.format("Adding toast message to root: %s", toastMSG));
@@ -188,20 +187,19 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         return uiRoot;
     }
 
-    public static UiElementSnapshot take(AccessibilityNodeInfo rootElement,
-                                         @Nullable Set<Attribute> includedAttributes) {
+    public static UiElementSnapshot take(AccessibilityNodeInfo rootElement, Set<Attribute> includedAttributes) {
         return new UiElementSnapshot(rootElement, AxNodeInfoHelper.calculateIndex(rootElement), 0,
                 includedAttributes);
     }
 
     public static UiElementSnapshot take(AccessibilityNodeInfo rootElement, int maxDepth,
-                                         @Nullable Set<Attribute> includedAttributes) {
+                                         Set<Attribute> includedAttributes) {
         return new UiElementSnapshot(rootElement, AxNodeInfoHelper.calculateIndex(rootElement), 0,
                 maxDepth, includedAttributes);
     }
 
     private static UiElementSnapshot take(AccessibilityNodeInfo rootElement, int index, int depth,
-                                          @Nullable Set<Attribute> includedAttributes) {
+                                          Set<Attribute> includedAttributes) {
         return new UiElementSnapshot(rootElement, index, depth, includedAttributes);
     }
 
