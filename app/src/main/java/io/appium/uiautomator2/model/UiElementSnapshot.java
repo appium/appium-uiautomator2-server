@@ -171,10 +171,9 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     private Map<Attribute, Object> collectAttributes() {
         Map<Attribute, Object> result = new LinkedHashMap<>();
         for (Attribute attr : SUPPORTED_ATTRIBUTES) {
-            if (!includedAttributes.isEmpty() && !includedAttributes.contains(attr)) {
-                continue;
+            if (includedAttributes.isEmpty() || includedAttributes.contains(attr)) {
+                putAttribute(result, attr, getNodeAttributeValue(attr));
             }
-            putAttribute(result, attr, getNodeAttributeValue(attr));
         }
         return Collections.unmodifiableMap(result);
     }
