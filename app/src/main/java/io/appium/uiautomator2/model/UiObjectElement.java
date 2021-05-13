@@ -40,6 +40,8 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
+import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
+import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObjects;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 
 public class UiObjectElement extends BaseElement {
@@ -159,7 +161,7 @@ public class UiObjectElement extends BaseElement {
 
     @Nullable
     @Override
-    public Object getChild(final Object selector) throws UiObjectNotFoundException {
+    public AccessibleUiObject getChild(final Object selector) throws UiObjectNotFoundException {
         if (selector instanceof BySelector) {
             /*
              * We can't find the child element with BySelector on UiObject,
@@ -167,20 +169,19 @@ public class UiObjectElement extends BaseElement {
              * and finding the child element on UiObject2.
              */
             AccessibilityNodeInfo nodeInfo = toAxNodeInfo(element);
-            Object uiObject2 = CustomUiDevice.getInstance().findObject(nodeInfo);
-            return (uiObject2 instanceof UiObject2)
-                    ? ((UiObject2) uiObject2).findObject((BySelector) selector)
-                    : null;
-        }
-        UiObject result = element.getChild((UiSelector) selector);
-        if (result != null && !result.exists()) {
+            AccessibleUiObject root = CustomUiDevice.getInstance().findObject(nodeInfo);
+            if (root != null && root.getValue() instanceof UiObject2) {
+                UiObject2 child = ((UiObject2) root.getValue()).findObject((BySelector) selector);
+                return toAccessibleUiObject(child);
+            }
             return null;
         }
-        return result;
+        UiObject child = element.getChild((UiSelector) selector);
+        return toAccessibleUiObject(child);
     }
 
     @Override
-    public List<?> getChildren(final Object selector, final By by) throws UiObjectNotFoundException {
+    public List<AccessibleUiObject> getChildren(final Object selector, final By by) throws UiObjectNotFoundException {
         if (selector instanceof BySelector) {
             /*
              * We can't find the child elements with BySelector on UiObject,
@@ -188,19 +189,20 @@ public class UiObjectElement extends BaseElement {
              * and finding the child elements on UiObject2.
              */
             AccessibilityNodeInfo nodeInfo = toAxNodeInfo(element);
-            UiObject2 uiObject2 = (UiObject2) CustomUiDevice.getInstance().findObject(nodeInfo);
-            if (uiObject2 == null) {
+            AccessibleUiObject root = CustomUiDevice.getInstance().findObject(nodeInfo);
+            if (root == null || !(root.getValue() instanceof UiObject2)) {
                 throw new ElementNotFoundException();
             }
-            return uiObject2.findObjects((BySelector) selector);
+            List<UiObject2> children = ((UiObject2) root.getValue()).findObjects((BySelector) selector);
+            return toAccessibleUiObjects(children);
         }
         return this.getChildElements((UiSelector) selector);
     }
 
-    private ArrayList<UiObject> getChildElements(final UiSelector sel) throws UiObjectNotFoundException {
+    private ArrayList<AccessibleUiObject> getChildElements(final UiSelector sel) throws UiObjectNotFoundException {
         final String selectorString = sel.toString();
         Logger.debug("getElements selector:" + selectorString);
-        final ArrayList<UiObject> elements = new ArrayList<>();
+        final ArrayList<AccessibleUiObject> elements = new ArrayList<>();
         // If sel is UiSelector[CLASS=android.widget.Button, INSTANCE=0]
         // then invoking instance with a non-0 argument will corrupt the selector.
         //
@@ -211,19 +213,18 @@ public class UiObjectElement extends BaseElement {
         if (endsWithInstancePattern.matcher(selectorString).matches()) {
             Logger.debug("Selector ends with instance.");
             // There's exactly one element when using instance.
-            UiObject instanceObj = Device.getUiDevice().findObject(sel);
-            if (instanceObj != null && instanceObj.exists()) {
+            AccessibleUiObject instanceObj = toAccessibleUiObject(Device.getUiDevice().findObject(sel));
+            if (instanceObj != null) {
                 elements.add(instanceObj);
             }
             return elements;
         }
 
-        UiObject lastFoundObj;
+        AccessibleUiObject lastFoundObj;
         final boolean useIndex = selectorString.contains("CLASS_REGEX=");
         UiSelector tmp;
         int counter = 0;
-        boolean keepSearching = true;
-        while (keepSearching) {
+        do {
             if (element == null) {
                 Logger.debug("Element] is null: (" + counter + ")");
 
@@ -235,18 +236,17 @@ public class UiObjectElement extends BaseElement {
                 }
 
                 Logger.debug("getElements tmp selector:" + tmp.toString());
-                lastFoundObj = Device.getUiDevice().findObject(tmp);
+                lastFoundObj = toAccessibleUiObject(Device.getUiDevice().findObject(tmp));
             } else {
                 Logger.debug("Element is " + getId() + ", counter: " + counter);
-                lastFoundObj = element.getChild(sel.instance(counter));
+                lastFoundObj = toAccessibleUiObject(element.getChild(sel.instance(counter)));
             }
             counter++;
-            if (lastFoundObj != null && lastFoundObj.exists()) {
+
+            if (lastFoundObj != null) {
                 elements.add(lastFoundObj);
-            } else {
-                keepSearching = false;
             }
-        }
+        } while (lastFoundObj != null);
         return elements;
     }
 

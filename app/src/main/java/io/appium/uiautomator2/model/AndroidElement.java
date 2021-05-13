@@ -50,9 +50,9 @@ public interface AndroidElement {
 
     Rect getBounds();
 
-    Object getChild(final Object sel) throws UiObjectNotFoundException;
+    AccessibleUiObject getChild(final Object sel) throws UiObjectNotFoundException;
 
-    List<?> getChildren(final Object selector, final By by) throws UiObjectNotFoundException;
+    List<AccessibleUiObject> getChildren(final Object selector, final By by) throws UiObjectNotFoundException;
 
     String getContentDesc() throws UiObjectNotFoundException;
 

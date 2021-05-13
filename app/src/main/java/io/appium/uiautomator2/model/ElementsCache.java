@@ -17,11 +17,14 @@
 package io.appium.uiautomator2.model;
 
 import android.util.LruCache;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
+
+import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
@@ -32,6 +35,7 @@ import io.appium.uiautomator2.utils.NodeInfoList;
 
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 
 public class ElementsCache {
     private final LruCache<String, AndroidElement> cache;
@@ -40,20 +44,38 @@ public class ElementsCache {
         this.cache = new LruCache<>(maxSize);
     }
 
-    private static AndroidElement toAndroidElement(Object element, boolean isSingleMatch,
+    private static AndroidElement toAndroidElement(AccessibleUiObject element, boolean isSingleMatch,
                                                    @Nullable By by, @Nullable String contextId) {
         return toAndroidElement(element, isSingleMatch, by, contextId, null);
     }
 
-    private static AndroidElement toAndroidElement(Object element, boolean isSingleMatch,
+    private static String axInfoToId(AccessibilityNodeInfo info) {
+        // mSourceNodeId and mWindowId properties define
+        // the uniqueness of the particular AccessibilityNodeInfo instance
+        Long sourceNodeId = (Long) getField("mSourceNodeId", info);
+        Long windowId = (Long) getField("mWindowId", info);
+        if (sourceNodeId == 0 && windowId == 0) {
+            return UUID.randomUUID().toString();
+        }
+        String sourceNodeIdHex = String.format("%016x", sourceNodeId);
+        String windowIdHex = String.format("%016x", windowId);
+        return String.format("%s-%s-%s-%s-%s",
+                windowIdHex.substring(0, 8), windowIdHex.substring(8, 12), windowIdHex.substring(12, 16),
+                sourceNodeIdHex.substring(0, 4), sourceNodeIdHex.substring(4, 16));
+    }
+
+    private static AndroidElement toAndroidElement(AccessibleUiObject element, boolean isSingleMatch,
                                                    @Nullable By by, @Nullable String contextId,
                                                    @Nullable String id) {
-        if (element instanceof UiObject2) {
-            UiObject2Element result = new UiObject2Element((UiObject2) element, isSingleMatch, by, contextId);
-            return id == null ? result : result.withId(id);
-        } else if (element instanceof UiObject) {
-            UiObjectElement result = new UiObjectElement((UiObject) element, isSingleMatch, by, contextId);
-            return id == null ? result : result.withId(id);
+        String cacheId = id == null ? axInfoToId(element.getInfo()) : id;
+        if (element.getValue() instanceof UiObject2) {
+            UiObject2Element result = new UiObject2Element(
+                    (UiObject2) element.getValue(), isSingleMatch, by, contextId);
+            return result.withId(cacheId);
+        } else if (element.getValue() instanceof UiObject) {
+            UiObjectElement result = new UiObjectElement(
+                    (UiObject) element.getValue(), isSingleMatch, by, contextId);
+            return result.withId(cacheId);
         }
         throw new IllegalStateException(
                 String.format("Unknown element type: %s", element.getClass().getName()));
@@ -76,20 +98,20 @@ public class ElementsCache {
         final AndroidElement searchRoot = element.getContextId() == null
                 ? null
                 : get(element.getContextId());
-        Object ui2Object = null;
+        AccessibleUiObject accessibleUiObject = null;
         try {
             if (by instanceof By.ById) {
                 String locator = rewriteIdLocator((By.ById) by);
-                ui2Object = searchRoot == null
+                accessibleUiObject = searchRoot == null
                         ? CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator))
                         : searchRoot.getChild(androidx.test.uiautomator.By.res(locator));
             } else if (by instanceof By.ByAccessibilityId) {
-                ui2Object = searchRoot == null
+                accessibleUiObject = searchRoot == null
                         ? CustomUiDevice.getInstance().findObject(
                         androidx.test.uiautomator.By.desc(by.getElementLocator()))
                         : searchRoot.getChild(androidx.test.uiautomator.By.desc(by.getElementLocator()));
             } else if (by instanceof By.ByClass) {
-                ui2Object = searchRoot == null
+                accessibleUiObject = searchRoot == null
                         ? CustomUiDevice.getInstance().findObject(
                         androidx.test.uiautomator.By.clazz(by.getElementLocator()))
                         : searchRoot.getChild(androidx.test.uiautomator.By.clazz(by.getElementLocator()));
@@ -97,20 +119,20 @@ public class ElementsCache {
                 final NodeInfoList matchedNodes = getXPathNodeMatch(
                         by.getElementLocator(), searchRoot, false);
                 if (!matchedNodes.isEmpty()) {
-                    ui2Object = CustomUiDevice.getInstance().findObject(matchedNodes);
+                    accessibleUiObject = CustomUiDevice.getInstance().findObject(matchedNodes);
                 }
             } else if (by instanceof By.ByAndroidUiAutomator) {
-                ui2Object = new ByUiAutomatorFinder().findOne((By.ByAndroidUiAutomator) by, searchRoot);
+                accessibleUiObject = new ByUiAutomatorFinder().findOne((By.ByAndroidUiAutomator) by, searchRoot);
             }
         } catch (Exception e) {
             Logger.warn(String.format(
                     "An exception happened while restoring the cached element '%s'", by), e);
         }
-        if (ui2Object == null) {
+        if (accessibleUiObject == null) {
             throw new StaleElementReferenceException(String.format(
                     "The element '%s' does not exist in DOM anymore", by));
         }
-        AndroidElement restoredElement = toAndroidElement(ui2Object,
+        AndroidElement restoredElement = toAndroidElement(accessibleUiObject,
                 element.isSingleMatch(), element.getBy(), element.getContextId(), element.getId());
         cache.put(restoredElement.getId(), restoredElement);
         return restoredElement;
@@ -149,15 +171,15 @@ public class ElementsCache {
         return resultElement;
     }
 
-    public AndroidElement add(Object element, boolean isSingleMatch) {
+    public AndroidElement add(AccessibleUiObject element, boolean isSingleMatch) {
         return add(element, isSingleMatch, null, null);
     }
 
-    public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by) {
+    public AndroidElement add(AccessibleUiObject element, boolean isSingleMatch, @Nullable By by) {
         return add(element, isSingleMatch, by, null);
     }
 
-    public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by,
+    public AndroidElement add(AccessibleUiObject element, boolean isSingleMatch, @Nullable By by,
                               @Nullable String contextId) {
         AndroidElement androidElement = toAndroidElement(element, isSingleMatch, by, contextId);
         synchronized (cache) {

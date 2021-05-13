@@ -20,7 +20,6 @@ import android.util.SparseArray;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
-import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
@@ -31,11 +30,12 @@ import java.util.List;
 import java.util.Set;
 
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
-import io.appium.uiautomator2.core.AxNodeInfoExtractor;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.By;
+import io.appium.uiautomator2.model.AccessibleUiObject;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
+import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelectors;
@@ -44,12 +44,12 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 public class ByUiAutomatorFinder {
     private static final String UI_SELECTOR_CRITERION_PREFIX = "SELECTOR_";
 
-    public Object findOne(By.ByAndroidUiAutomator by)
+    public AccessibleUiObject findOne(By.ByAndroidUiAutomator by)
             throws InvalidSelectorException, UiObjectNotFoundException {
         return findOne(by, null);
     }
 
-    public Object findOne(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
+    public AccessibleUiObject findOne(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
             throws InvalidSelectorException, UiObjectNotFoundException {
         UiSelector selector = toSelector(by.getElementLocator());
         return context == null
@@ -57,7 +57,7 @@ public class ByUiAutomatorFinder {
                 : context.getChild(selector);
     }
 
-    public List<Object> findMany(By.ByAndroidUiAutomator by)
+    public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by)
             throws InvalidSelectorException, UiObjectNotFoundException {
         return findMany(by, null);
     }
@@ -65,9 +65,9 @@ public class ByUiAutomatorFinder {
     /**
      * returns  List<UiObject> using '-android automator' expression
      **/
-    public List<Object> findMany(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
+    public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
             throws InvalidSelectorException, UiObjectNotFoundException {
-        List<Object> foundElements = new ArrayList<>();
+        List<AccessibleUiObject> foundElements = new ArrayList<>();
         for (UiSelector sel : toSelectors(by.getElementLocator())) {
             // With multiple selectors, we expect that some elements may not exist.
             try {
@@ -79,10 +79,10 @@ public class ByUiAutomatorFinder {
         return dedupe(foundElements);
     }
 
-    private List<Object> fetchElements(UiSelector sel, @Nullable AndroidElement context)
+    private List<AccessibleUiObject> fetchElements(UiSelector sel, @Nullable AndroidElement context)
             throws UiObjectNotFoundException, InvalidSelectorException {
         Logger.debug("getElements selector:" + sel.toString());
-        final ArrayList<Object> elements = new ArrayList<>();
+        final ArrayList<AccessibleUiObject> elements = new ArrayList<>();
 
         // If sel is UiSelector[CLASS=android.widget.Button, INSTANCE=0]
         // then invoking instance with a non-0 argument will corrupt the selector.
@@ -94,36 +94,33 @@ public class ByUiAutomatorFinder {
         if (doesUiSelectorHaveAttribute(sel, "INSTANCE")) {
             Logger.debug("Selector has INSTANCE attribute");
             // There's exactly one element when using instance.
-            UiObject instanceObj = getUiDevice().findObject(sel);
-            if (instanceObj != null && instanceObj.exists()) {
+            AccessibleUiObject instanceObj = toAccessibleUiObject(getUiDevice().findObject(sel));
+            if (instanceObj != null) {
                 elements.add(instanceObj);
             }
             return elements;
         }
 
-        UiObject lastFoundObj;
+        AccessibleUiObject lastFoundObj;
         UiSelector tmpSelector;
         int counter = 0;
-        boolean keepSearching = true;
         final boolean useIndex = doesUiSelectorHaveAttribute(sel, "CLASS_REGEX");
         if (useIndex) {
             Logger.debug("Selector has CLASS_REGEX attribute");
         }
-        while (keepSearching) {
+        do {
             if (context == null) {
                 tmpSelector = useIndex ? sel.index(counter) : sel.instance(counter);
                 Logger.debug("getElements tmp selector:" + tmpSelector.toString());
-                lastFoundObj = getUiDevice().findObject(tmpSelector);
+                lastFoundObj = toAccessibleUiObject(getUiDevice().findObject(tmpSelector));
             } else {
-                lastFoundObj = (UiObject) context.getChild(sel.instance(counter));
+                lastFoundObj = context.getChild(sel.instance(counter));
             }
             counter++;
-            if (lastFoundObj != null && lastFoundObj.exists()) {
+            if (lastFoundObj != null) {
                 elements.add(lastFoundObj);
-            } else {
-                keepSearching = false;
             }
-        }
+        } while (lastFoundObj != null);
         return elements;
     }
 
@@ -133,13 +130,13 @@ public class ByUiAutomatorFinder {
      * @param elements - elements to remove duplicates from
      * @return a new list with duplicates removed
      */
-    private static List<Object> dedupe(List<Object> elements) {
-        List<Object> result = new ArrayList<>();
+    private static List<AccessibleUiObject> dedupe(List<AccessibleUiObject> elements) {
+        List<AccessibleUiObject> result = new ArrayList<>();
         Set<AccessibilityNodeInfo> nodes = new HashSet<>();
-        for (Object element : elements) {
-            AccessibilityNodeInfo node = AxNodeInfoExtractor.toNullableAxNodeInfo(element);
-            if (node != null && !nodes.contains(node)) {
-                nodes.add(node);
+        for (AccessibleUiObject element : elements) {
+            AccessibilityNodeInfo info = element.getInfo();
+            if (info != null && !nodes.contains(info)) {
+                nodes.add(info);
                 result.add(element);
             }
         }

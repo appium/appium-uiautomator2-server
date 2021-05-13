@@ -19,7 +19,6 @@ package io.appium.uiautomator2.handler;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
@@ -27,10 +26,10 @@ import io.appium.uiautomator2.common.exceptions.NotImplementedException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.AccessibleUiObject;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
-import io.appium.uiautomator2.model.By.ById;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.api.FindElementModel;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -67,12 +66,12 @@ public class FindElements extends SafeRequestHandler {
 
         final By by = ElementsLookupStrategy.ofName(method).toNativeSelector(selector);
 
-        final List<?> elements;
+        final List<AccessibleUiObject> elements;
         try {
             elements = isBlank(contextId) ? this.findElements(by) : this.findElements(by, contextId);
 
             Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            for (Object element : elements) {
+            for (AccessibleUiObject element : elements) {
                 AndroidElement androidElement = session.getElementsCache().add(element, false, by, contextId);
                 result.add(androidElement.toModel());
             }
@@ -84,11 +83,11 @@ public class FindElements extends SafeRequestHandler {
         }
     }
 
-    private List<Object> findElements(By by) throws UiObjectNotFoundException {
+    private List<AccessibleUiObject> findElements(By by) throws UiObjectNotFoundException {
         refreshAccessibilityCache();
 
         if (by instanceof By.ById) {
-            String locator = rewriteIdLocator((ById) by);
+            String locator = rewriteIdLocator((By.ById) by);
             return CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {
             return CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.desc(by.getElementLocator()));
@@ -97,7 +96,7 @@ public class FindElements extends SafeRequestHandler {
         } else if (by instanceof By.ByXPath) {
             final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null, true);
             return matchedNodes.isEmpty()
-                    ? Collections.emptyList()
+                    ? new ArrayList<AccessibleUiObject>()
                     : CustomUiDevice.getInstance().findObjects(matchedNodes);
         } else if (by instanceof By.ByAndroidUiAutomator) {
             return new ByUiAutomatorFinder().findMany((By.ByAndroidUiAutomator) by);
@@ -107,12 +106,12 @@ public class FindElements extends SafeRequestHandler {
         throw new NotImplementedException(msg);
     }
 
-    private List<?> findElements(By by, String contextId) throws UiObjectNotFoundException {
+    private List<AccessibleUiObject> findElements(By by, String contextId) throws UiObjectNotFoundException {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         AndroidElement element = session.getElementsCache().get(contextId);
 
-        if (by instanceof ById) {
-            String locator = rewriteIdLocator((ById) by);
+        if (by instanceof By.ById) {
+            String locator = rewriteIdLocator((By.ById) by);
             return element.getChildren(androidx.test.uiautomator.By.res(locator), by);
         } else if (by instanceof By.ByAccessibilityId) {
             return element.getChildren(androidx.test.uiautomator.By.desc(by.getElementLocator()), by);
@@ -121,7 +120,7 @@ public class FindElements extends SafeRequestHandler {
         } else if (by instanceof By.ByXPath) {
             final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), element, true);
             return matchedNodes.isEmpty()
-                    ? Collections.emptyList()
+                    ? new ArrayList<AccessibleUiObject>()
                     : CustomUiDevice.getInstance().findObjects(matchedNodes);
         } else if (by instanceof By.ByAndroidUiAutomator) {
             return new ByUiAutomatorFinder().findMany((By.ByAndroidUiAutomator) by, element);

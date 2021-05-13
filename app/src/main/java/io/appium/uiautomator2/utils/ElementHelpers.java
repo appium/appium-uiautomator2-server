@@ -48,6 +48,7 @@ import io.appium.uiautomator2.core.EventRegister;
 import io.appium.uiautomator2.core.ReturningRunnable;
 import io.appium.uiautomator2.core.UiObjectChildGenerator;
 import io.appium.uiautomator2.model.AccessibilityScrollData;
+import io.appium.uiautomator2.model.AccessibleUiObject;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
@@ -114,12 +115,12 @@ public abstract class ElementHelpers {
     }
 
     public static AndroidElement findElement(final BySelector ui2BySelector) {
-        Object ui2Object = getInstance().findObject(ui2BySelector);
-        if (ui2Object == null) {
+        AccessibleUiObject accessibleUiObject = getInstance().findObject(ui2BySelector);
+        if (accessibleUiObject == null) {
             throw new ElementNotFoundException();
         }
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-        return session.getElementsCache().add(ui2Object, true);
+        return session.getElementsCache().add(accessibleUiObject, true);
     }
 
     public static NoSuchAttributeException generateNoAttributeException(@Nullable String attributeName) {
