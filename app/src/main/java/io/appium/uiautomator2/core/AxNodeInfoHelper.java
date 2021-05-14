@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
-import android.view.accessibility.AccessibilityWindowInfo;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
@@ -51,18 +50,17 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
  */
 public class AxNodeInfoHelper {
     // https://github.com/appium/appium/issues/12892
-    private final static int MAX_DEPTH = 70;
+    private static final int MAX_DEPTH = 70;
+    private static final long UNDEFINED_NODE_ID =
+            (((long) Integer.MAX_VALUE) << 32) | Integer.MAX_VALUE;
+    private static final int UNDEFINED_WINDOW_ID = -1;
 
     public static String toUuid(AccessibilityNodeInfo info) {
         // mSourceNodeId and windowId properties define
         // the uniqueness of the particular AccessibilityNodeInfo instance
         long sourceNodeId = (Long) getField("mSourceNodeId", info);
         int windowId = info.getWindowId();
-        long undefinedSourceNodeId = (Long) getField(
-                AccessibilityNodeInfo.class, "UNDEFINED_NODE_ID", null);
-        int undefinedWindowId = (Integer) getField(
-                AccessibilityWindowInfo.class, "UNDEFINED_WINDOW_ID", null);
-        if (sourceNodeId == undefinedSourceNodeId && windowId == undefinedWindowId) {
+        if (sourceNodeId == UNDEFINED_NODE_ID || windowId == UNDEFINED_WINDOW_ID) {
             return UUID.randomUUID().toString();
         }
         String sourceNodeIdHex = String.format("%016x", sourceNodeId);
