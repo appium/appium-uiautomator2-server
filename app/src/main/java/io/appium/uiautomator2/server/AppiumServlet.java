@@ -32,6 +32,7 @@ import io.appium.uiautomator2.handler.Click;
 import io.appium.uiautomator2.handler.DeleteSession;
 import io.appium.uiautomator2.handler.DismissAlert;
 import io.appium.uiautomator2.handler.Drag;
+import io.appium.uiautomator2.handler.ActiveElement;
 import io.appium.uiautomator2.handler.FindElement;
 import io.appium.uiautomator2.handler.FindElements;
 import io.appium.uiautomator2.handler.FirstVisibleView;
@@ -116,6 +117,7 @@ public class AppiumServlet implements IHttpServlet {
     private void registerPostHandler() {
         register(postHandler, new NewSession("/wd/hub/session"));
         register(postHandler, new FindElement("/wd/hub/session/:sessionId/element"));
+        register(postHandler, new ActiveElement("/wd/hub/session/:sessionId/element/active"));
         register(postHandler, new FindElements("/wd/hub/session/:sessionId/elements"));
         register(postHandler, new Click("/wd/hub/session/:sessionId/element/:id/click"));
         register(postHandler, new Tap("/wd/hub/session/:sessionId/appium/tap"));
