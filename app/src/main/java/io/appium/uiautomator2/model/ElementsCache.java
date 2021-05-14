@@ -17,17 +17,15 @@
 package io.appium.uiautomator2.model;
 
 import android.util.LruCache;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 
-import java.util.UUID;
-
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
+import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.ByUiAutomatorFinder;
 import io.appium.uiautomator2.utils.Logger;
@@ -35,7 +33,6 @@ import io.appium.uiautomator2.utils.NodeInfoList;
 
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
-import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 
 public class ElementsCache {
     private final LruCache<String, AndroidElement> cache;
@@ -49,25 +46,10 @@ public class ElementsCache {
         return toAndroidElement(element, isSingleMatch, by, contextId, null);
     }
 
-    private static String axInfoToId(AccessibilityNodeInfo info) {
-        // mSourceNodeId and mWindowId properties define
-        // the uniqueness of the particular AccessibilityNodeInfo instance
-        Long sourceNodeId = (Long) getField("mSourceNodeId", info);
-        Long windowId = (Long) getField("mWindowId", info);
-        if (sourceNodeId == 0 && windowId == 0) {
-            return UUID.randomUUID().toString();
-        }
-        String sourceNodeIdHex = String.format("%016x", sourceNodeId);
-        String windowIdHex = String.format("%016x", windowId);
-        return String.format("%s-%s-%s-%s-%s",
-                windowIdHex.substring(0, 8), windowIdHex.substring(8, 12), windowIdHex.substring(12, 16),
-                sourceNodeIdHex.substring(0, 4), sourceNodeIdHex.substring(4, 16));
-    }
-
     private static AndroidElement toAndroidElement(AccessibleUiObject element, boolean isSingleMatch,
                                                    @Nullable By by, @Nullable String contextId,
                                                    @Nullable String id) {
-        String cacheId = id == null ? axInfoToId(element.getInfo()) : id;
+        String cacheId = id == null ? AxNodeInfoHelper.toUuid(element.getInfo()) : id;
         if (element.getValue() instanceof UiObject2) {
             UiObject2Element result = new UiObject2Element(
                     (UiObject2) element.getValue(), isSingleMatch, by, contextId);

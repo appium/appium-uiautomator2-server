@@ -25,13 +25,16 @@ import android.os.Bundle;
 import android.util.Range;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
+import android.view.accessibility.AccessibilityWindowInfo;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -40,6 +43,7 @@ import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
 
@@ -49,6 +53,25 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
 public class AxNodeInfoHelper {
     // https://github.com/appium/appium/issues/12892
     private final static int MAX_DEPTH = 70;
+
+    public static String toUuid(AccessibilityNodeInfo info) {
+        // mSourceNodeId and mWindowId properties define
+        // the uniqueness of the particular AccessibilityNodeInfo instance
+        Long sourceNodeId = (Long) getField("mSourceNodeId", info);
+        Integer windowId = (Integer) getField("mWindowId", info);
+        Long undefinedSourceNodeId = (Long) getField(
+                AccessibilityNodeInfo.class, "UNDEFINED_NODE_ID", null);
+        Integer undefinedWindowId = (Integer) getField(
+                AccessibilityWindowInfo.class, "UNDEFINED_WINDOW_ID", null);
+        if (Objects.equals(sourceNodeId, undefinedSourceNodeId) && Objects.equals(windowId, undefinedWindowId)) {
+            return UUID.randomUUID().toString();
+        }
+        String sourceNodeIdHex = String.format("%016x", sourceNodeId);
+        String windowIdHex = String.format("%016x", windowId);
+        return String.format("%s-%s-%s-%s-%s",
+                windowIdHex.substring(0, 8), windowIdHex.substring(8, 12), windowIdHex.substring(12, 16),
+                sourceNodeIdHex.substring(0, 4), sourceNodeIdHex.substring(4, 16));
+    }
 
     @Nullable
     public static Range<Integer> getSelectionRange(@Nullable AccessibilityNodeInfo nodeInfo) {
