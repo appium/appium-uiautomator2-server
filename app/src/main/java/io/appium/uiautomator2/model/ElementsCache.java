@@ -113,16 +113,15 @@ public class ElementsCache {
             Logger.warn(String.format(
                     "An exception happened while restoring the cached element '%s'", by), e);
         }
-        final boolean isStale;
         if (accessibleUiObject == null) {
-            isStale = true;
-        } else {
-            String uuid = AxNodeInfoHelper.toUuid(accessibleUiObject.getInfo());
-            isStale = uuid != null && !Objects.equals(uuid, element.getId());
-        }
-        if (isStale) {
             throw new StaleElementReferenceException(String.format(
                     "The element '%s' does not exist in DOM anymore", by));
+        } else {
+            String uuid = AxNodeInfoHelper.toUuid(accessibleUiObject.getInfo());
+            if (uuid != null && !Objects.equals(uuid, element.getId())) {
+                throw new StaleElementReferenceException(String.format(
+                        "The element '%s' is not linked to the same object in DOM anymore", by));
+            }
         }
 
         AndroidElement restoredElement = toAndroidElement(accessibleUiObject,
