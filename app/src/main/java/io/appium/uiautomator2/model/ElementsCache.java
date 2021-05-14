@@ -23,6 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 
+import java.util.Objects;
+
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
@@ -46,6 +48,7 @@ public class ElementsCache {
         return toAndroidElement(element, isSingleMatch, by, contextId, null);
     }
 
+    @NonNull
     private static AndroidElement toAndroidElement(AccessibleUiObject element, boolean isSingleMatch,
                                                    @Nullable By by, @Nullable String contextId,
                                                    @Nullable String id) {
@@ -53,11 +56,11 @@ public class ElementsCache {
         if (element.getValue() instanceof UiObject2) {
             UiObject2Element result = new UiObject2Element(
                     (UiObject2) element.getValue(), isSingleMatch, by, contextId);
-            return result.withId(cacheId);
+            return cacheId == null ? result : result.withId(cacheId);
         } else if (element.getValue() instanceof UiObject) {
             UiObjectElement result = new UiObjectElement(
                     (UiObject) element.getValue(), isSingleMatch, by, contextId);
-            return result.withId(cacheId);
+            return cacheId == null ? result : result.withId(cacheId);
         }
         throw new IllegalStateException(
                 String.format("Unknown element type: %s", element.getClass().getName()));
@@ -110,10 +113,18 @@ public class ElementsCache {
             Logger.warn(String.format(
                     "An exception happened while restoring the cached element '%s'", by), e);
         }
+        final boolean isStale;
         if (accessibleUiObject == null) {
+            isStale = true;
+        } else {
+            String uuid = AxNodeInfoHelper.toUuid(accessibleUiObject.getInfo());
+            isStale = uuid != null && !Objects.equals(uuid, element.getId());
+        }
+        if (isStale) {
             throw new StaleElementReferenceException(String.format(
                     "The element '%s' does not exist in DOM anymore", by));
         }
+
         AndroidElement restoredElement = toAndroidElement(accessibleUiObject,
                 element.isSingleMatch(), element.getBy(), element.getContextId(), element.getId());
         cache.put(restoredElement.getId(), restoredElement);

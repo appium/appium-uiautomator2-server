@@ -32,7 +32,6 @@ import androidx.test.uiautomator.UiDevice;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -55,13 +54,14 @@ public class AxNodeInfoHelper {
             (((long) Integer.MAX_VALUE) << 32) | Integer.MAX_VALUE;
     private static final int UNDEFINED_WINDOW_ID = -1;
 
+    @Nullable
     public static String toUuid(AccessibilityNodeInfo info) {
         // mSourceNodeId and windowId properties define
         // the uniqueness of the particular AccessibilityNodeInfo instance
         long sourceNodeId = (Long) getField("mSourceNodeId", info);
         int windowId = info.getWindowId();
         if (sourceNodeId == UNDEFINED_NODE_ID || windowId == UNDEFINED_WINDOW_ID) {
-            return UUID.randomUUID().toString();
+            return null;
         }
         String sourceNodeIdHex = String.format("%016x", sourceNodeId);
         String windowIdHex = String.format("%016x", windowId);
