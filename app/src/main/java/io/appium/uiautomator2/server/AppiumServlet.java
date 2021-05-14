@@ -117,7 +117,6 @@ public class AppiumServlet implements IHttpServlet {
     private void registerPostHandler() {
         register(postHandler, new NewSession("/wd/hub/session"));
         register(postHandler, new FindElement("/wd/hub/session/:sessionId/element"));
-        register(postHandler, new ActiveElement("/wd/hub/session/:sessionId/element/active"));
         register(postHandler, new FindElements("/wd/hub/session/:sessionId/elements"));
         register(postHandler, new Click("/wd/hub/session/:sessionId/element/:id/click"));
         register(postHandler, new Tap("/wd/hub/session/:sessionId/appium/tap"));
@@ -170,6 +169,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetRect("/wd/hub/session/:sessionId/element/:id/rect"));
         register(getHandler, new GetSize("/wd/hub/session/:sessionId/element/:id/size"));
         register(getHandler, new GetName("/wd/hub/session/:sessionId/element/:id/name"));
+        register(getHandler, new ActiveElement("/wd/hub/session/:sessionId/element/active"));
         // W3C endpoint
         register(getHandler, new GetElementScreenshot("/wd/hub/session/:sessionId/element/:id/screenshot"));
         // JSONWP endpoint
