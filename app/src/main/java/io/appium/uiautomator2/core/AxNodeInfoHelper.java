@@ -32,7 +32,6 @@ import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,15 +54,15 @@ public class AxNodeInfoHelper {
     private final static int MAX_DEPTH = 70;
 
     public static String toUuid(AccessibilityNodeInfo info) {
-        // mSourceNodeId and mWindowId properties define
+        // mSourceNodeId and windowId properties define
         // the uniqueness of the particular AccessibilityNodeInfo instance
-        Long sourceNodeId = (Long) getField("mSourceNodeId", info);
-        Integer windowId = (Integer) getField("mWindowId", info);
-        Long undefinedSourceNodeId = (Long) getField(
+        long sourceNodeId = (Long) getField("mSourceNodeId", info);
+        int windowId = info.getWindowId();
+        long undefinedSourceNodeId = (Long) getField(
                 AccessibilityNodeInfo.class, "UNDEFINED_NODE_ID", null);
-        Integer undefinedWindowId = (Integer) getField(
+        int undefinedWindowId = (Integer) getField(
                 AccessibilityWindowInfo.class, "UNDEFINED_WINDOW_ID", null);
-        if (Objects.equals(sourceNodeId, undefinedSourceNodeId) && Objects.equals(windowId, undefinedWindowId)) {
+        if (sourceNodeId == undefinedSourceNodeId && windowId == undefinedWindowId) {
             return UUID.randomUUID().toString();
         }
         String sourceNodeIdHex = String.format("%016x", sourceNodeId);
