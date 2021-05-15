@@ -18,6 +18,7 @@ package io.appium.uiautomator2.model;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
@@ -31,20 +32,22 @@ public class AccessibleUiObject {
     private final Object value;
     private final AccessibilityNodeInfo info;
 
-    public AccessibleUiObject(UiObject value, AccessibilityNodeInfo info) {
+    public AccessibleUiObject(@NonNull UiObject value, @NonNull AccessibilityNodeInfo info) {
         this.value = value;
         this.info = info;
     }
 
-    public AccessibleUiObject(UiObject2 value, AccessibilityNodeInfo info) {
+    public AccessibleUiObject(@NonNull UiObject2 value, @NonNull AccessibilityNodeInfo info) {
         this.value = value;
         this.info = info;
     }
 
+    @NonNull
     public Object getValue() {
         return this.value;
     }
 
+    @NonNull
     public AccessibilityNodeInfo getInfo() {
         return this.info;
     }

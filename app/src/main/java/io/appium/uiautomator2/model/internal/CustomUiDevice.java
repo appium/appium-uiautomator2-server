@@ -56,7 +56,6 @@ public class CustomUiDevice {
 
     private static final String FIELD_M_INSTRUMENTATION = "mInstrumentation";
     private static final String FIELD_API_LEVEL_ACTUAL = "API_LEVEL_ACTUAL";
-    private static final long UIOBJECT2_CREATION_TIMEOUT = 1000; // ms
 
     private static CustomUiDevice INSTANCE = null;
     private final Method METHOD_FIND_MATCH;
@@ -91,27 +90,14 @@ public class CustomUiDevice {
         return (Integer) API_LEVEL_ACTUAL;
     }
 
-    @Nullable
     private UiObject2 toUiObject2(Object selector, AccessibilityNodeInfo node) {
         Object[] constructorParams = {getUiDevice(), selector, node};
-        long end = SystemClock.uptimeMillis() + UIOBJECT2_CREATION_TIMEOUT;
-        while (true) {
-            Object object2;
-            try {
-                object2 = uiObject2Constructor.newInstance(constructorParams);
-            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                String msg = String.format("Cannot create UiObject2 instance with '%s' selector", selector);
-                Logger.error(msg, e);
-                throw new UiAutomator2Exception(msg, e);
-            }
-            if (object2 instanceof UiObject2) {
-                return (UiObject2) object2;
-            }
-            long remainingMillis = end - SystemClock.uptimeMillis();
-            if (remainingMillis < 0) {
-                return null;
-            }
-            SystemClock.sleep(Math.min(200, remainingMillis));
+        try {
+            return (UiObject2) uiObject2Constructor.newInstance(constructorParams);
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            String msg = String.format("Cannot create UiObject2 instance with '%s' selector", selector);
+            Logger.error(msg, e);
+            throw new UiAutomator2Exception(msg, e);
         }
     }
 
@@ -143,9 +129,6 @@ public class CustomUiDevice {
     public synchronized GestureController getGestureController() {
         if (gestureController == null) {
             UiObject2 dummyElement = toUiObject2(null, null);
-            if (dummyElement == null) {
-                throw new IllegalStateException("Cannot create dummy UiObject2 instance");
-            }
             Gestures gestures = new Gestures(getField("mGestures", dummyElement));
             gestureController = new GestureController(getField("mGestureController", dummyElement), gestures);
         }
@@ -170,9 +153,7 @@ public class CustomUiDevice {
         }
         for (AccessibilityNodeInfo node : axNodesList) {
             UiObject2 uiObject2 = toUiObject2(toSelector(node), node);
-            if (uiObject2 != null) {
-                ret.add(new AccessibleUiObject(uiObject2, node));
-            }
+            ret.add(new AccessibleUiObject(uiObject2, node));
         }
 
         return ret;
