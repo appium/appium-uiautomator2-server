@@ -41,7 +41,7 @@ public abstract class AxNodeInfoExtractor {
     public static AccessibilityNodeInfo toNullableAxNodeInfo(UiObject2 object, boolean checkStaleness) {
         return checkStaleness
                 ? extractAxNodeInfo(object)
-                : extractAxNodeInfoWithoutStalenessCheck(object);
+                : (AccessibilityNodeInfo) getField("mCachedNode", object);
     }
 
     @NonNull
@@ -51,10 +51,6 @@ public abstract class AxNodeInfoExtractor {
             throw new StaleElementReferenceException();
         }
         return result;
-    }
-
-    private static AccessibilityNodeInfo extractAxNodeInfoWithoutStalenessCheck(UiObject2 object) {
-        return (AccessibilityNodeInfo) getField("mCachedNode", object);
     }
 
     @Nullable
