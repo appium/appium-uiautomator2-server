@@ -16,8 +16,6 @@
 
 package io.appium.uiautomator2.handler;
 
-import android.view.accessibility.AccessibilityNodeInfo;
-
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -26,7 +24,6 @@ import androidx.test.uiautomator.UiSelector;
 import java.util.List;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -74,13 +71,9 @@ public class FirstVisibleView extends SafeRequestHandler {
                 throw new UiObjectNotFoundException("Could not get children for container object");
             }
             for (UiObject2 childObject : childObjects) {
-                try {
-                    AccessibilityNodeInfo info = toNullableAxNodeInfo(childObject);
-                    if (info != null) {
-                        firstObject = new AccessibleUiObject(childObject, info);
-                        break;
-                    }
-                } catch (UiAutomator2Exception ignored) {
+                firstObject = toAccessibleUiObject(childObject);
+                if (firstObject != null) {
+                    break;
                 }
             }
         }
