@@ -16,10 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import io.appium.uiautomator2.handler.request.NoSessionCommandHandler;
@@ -33,6 +30,7 @@ import io.appium.uiautomator2.model.api.SessionModel;
 import static io.appium.uiautomator2.model.Session.NO_ID;
 
 public class GetSessions extends SafeRequestHandler implements NoSessionCommandHandler {
+
     public GetSessions(String mappedUri) {
         super(mappedUri);
     }
@@ -40,19 +38,21 @@ public class GetSessions extends SafeRequestHandler implements NoSessionCommandH
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         Session session = AppiumUIA2Driver.getInstance().getSession();
-        if (session == null) {
+        if (session == null || session.getSessionId() == null) {
             return new AppiumResponse(NO_ID, Collections.emptyList());
         }
 
-        List<SessionModel> result = new ArrayList<>();
-        String sessionId = session.getSessionId();
-        if (sessionId != null) {
-            Map<String, Object> sessionCaps = new HashMap<>();
-            for (Map.Entry<String, Object> capEntry : session.getCapabilities().entrySet()) {
-                sessionCaps.put(capEntry.getKey(), capEntry.getValue());
-            }
-            result.add(new SessionModel(sessionId, sessionCaps));
+        ResponseModel model = new ResponseModel(session.getSessionId(), session.getCapabilities());
+        return new AppiumResponse(NO_ID, Collections.singletonList(model));
+    }
+
+    private static class ResponseModel extends SessionModel {
+        // https://webdriver.io/docs/api/jsonwp/#getsessions
+        public String id;
+
+        ResponseModel(String sessionId, Map<String, Object> capabilities) {
+            super(sessionId, capabilities);
+            this.id = sessionId;
         }
-        return new AppiumResponse(NO_ID, result);
     }
 }
