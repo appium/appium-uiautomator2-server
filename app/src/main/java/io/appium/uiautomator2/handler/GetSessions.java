@@ -29,15 +29,6 @@ import io.appium.uiautomator2.model.api.SessionModel;
 import static io.appium.uiautomator2.model.Session.NO_ID;
 
 public class GetSessions extends SafeRequestHandler {
-    static class ResponseModel extends SessionModel {
-        // https://webdriver.io/docs/api/jsonwp/#getsessions
-        public String id;
-
-        ResponseModel(String sessionId, Map<String, Object> capabilities) {
-            super(sessionId, capabilities);
-            this.id = sessionId;
-        }
-    }
 
     public GetSessions(String mappedUri) {
         super(mappedUri);
@@ -52,5 +43,15 @@ public class GetSessions extends SafeRequestHandler {
 
         ResponseModel model = new ResponseModel(session.getSessionId(), session.getCapabilities());
         return new AppiumResponse(NO_ID, Collections.singletonList(model));
+    }
+
+    private static class ResponseModel extends SessionModel {
+        // https://webdriver.io/docs/api/jsonwp/#getsessions
+        public String id;
+
+        ResponseModel(String sessionId, Map<String, Object> capabilities) {
+            super(sessionId, capabilities);
+            this.id = sessionId;
+        }
     }
 }
