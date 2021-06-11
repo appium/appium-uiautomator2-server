@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler.request;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
@@ -99,13 +100,15 @@ public abstract class BaseRequestHandler {
         return map;
     }
 
+    @Nullable
     public static String getSessionId(IHttpRequest request) {
         return (String) request.data().get(AppiumServlet.SESSION_ID_KEY);
     }
 
-    @Nullable
+    @NonNull
     public abstract AppiumResponse handle(IHttpRequest request);
 
+    @NonNull
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
         return handle(request);
     }

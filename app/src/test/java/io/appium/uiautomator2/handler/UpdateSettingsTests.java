@@ -214,7 +214,6 @@ public class UpdateSettingsTests {
         updateSettings.getSetting("unsupported_setting");
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void shouldBeAbleToUpdateSetting() {
         when(req.body())
@@ -224,7 +223,6 @@ public class UpdateSettingsTests {
         assertEquals(response.getHttpStatus(), HttpResponseStatus.OK);
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void shouldReturnResponseWithUnknownErrorStatusIfFailed() {
         doThrow(new UiAutomator2Exception("error")).when(mySetting).update(any());
