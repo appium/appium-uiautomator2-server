@@ -26,5 +26,4 @@ public class Config {
     public static final String APP_PKG = "io.appium.android.apis";
     public static final String APP_NAME = ".ApiDemos";
     public static final String HOST = "http://localhost:" + ServerConfig.getServerPort();
-    public static final String BASE_URL = HOST + "/wd/hub/session/:sessionId";
 }

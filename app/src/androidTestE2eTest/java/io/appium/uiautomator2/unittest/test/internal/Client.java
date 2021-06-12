@@ -45,7 +45,7 @@ public abstract class Client {
     }
 
     public static Response get(final String path) {
-        return get(Config.BASE_URL, path);
+        return get(WebDriverSession.getInstance().getBaseUrl(), path);
     }
 
     private static Response get(final String baseUrl, final String path) {
@@ -54,7 +54,7 @@ public abstract class Client {
     }
 
     public static Response post(final String path, final JSONObject body) {
-        return post(Config.BASE_URL, path, body);
+        return post(WebDriverSession.getInstance().getBaseUrl(), path, body);
     }
 
     public static Response post(final String baseUrl, final String path, final JSONObject body) {
@@ -64,7 +64,7 @@ public abstract class Client {
     }
 
     public static Response delete() {
-        Request request = new Request.Builder().url(Config.BASE_URL)
+        Request request = new Request.Builder().url(WebDriverSession.getInstance().getBaseUrl())
                 .delete(RequestBody.create(JSON, new JSONObject().toString())).build();
         return execute(request);
     }
