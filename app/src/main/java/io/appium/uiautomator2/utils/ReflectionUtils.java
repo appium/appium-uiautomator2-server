@@ -80,6 +80,8 @@ public class ReflectionUtils {
     public static Object invoke(final Method method, final Object object, final Object... parameters) {
         try {
             return method.invoke(object, parameters);
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             throw new UiAutomator2Exception(String.format("Cannot invoke method %s on object %s with parameters %s",
                     method, object, Arrays.toString(parameters)), e);
