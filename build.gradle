@@ -6,8 +6,8 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript {
     repositories {
-        jcenter()
         google()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.0'
@@ -34,8 +34,8 @@ allprojects {
         }
     }
     repositories {
-        jcenter()
         google()
+        mavenCentral()
     }
 }
 
