@@ -7,6 +7,10 @@ parameters:
 - name: integrationJobs
   type: object
   default:
+  - name: sdk30
+    platformVersion: 10.0
+    sdkVersion: 30
+    emuTag: default
   - name: sdk28
     platformVersion: 9.0
     sdkVersion: 28
@@ -14,10 +18,6 @@ parameters:
   - name: sdk25
     platformVersion: 7.1
     sdkVersion: 25
-    emuTag: default
-  - name: sdk22
-    platformVersion: 5.1
-    sdkVersion: 22
     emuTag: default
 - name: tests
   type: object
