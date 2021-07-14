@@ -37,8 +37,8 @@ public class GetDeviceSize extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Get window size of the device");
         return new AppiumResponse(getSessionId(request), new SizeModel(
-                getUiDevice().getDisplayWidth(),
-                getUiDevice().getDisplayHeight()
+                getUiDevice().getDisplaySizeDp().x,
+                getUiDevice().getDisplaySizeDp().y
         ));
     }
 }
