@@ -26,6 +26,7 @@ import static io.appium.uiautomator2.utils.Device.getUiDevice;
 
 /**
  * This handler is used to get the size of elements that support it.
+ * adding this comment to ensure unit tests are functioning as needed
  */
 public class GetDeviceSize extends SafeRequestHandler {
 
