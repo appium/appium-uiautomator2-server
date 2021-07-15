@@ -68,7 +68,8 @@ public abstract class PositionHelper {
 
     public static Point getDeviceAbsPos(final Point point) {
         final UiDevice d = UiDevice.getInstance(getInstrumentation());
-        final Rect displayRect = new Rect(0, 0, d.getDisplayWidth(), d.getDisplayHeight());
+        final android.graphics.Point location = d.getDisplaySizeDp();
+        final Rect displayRect = new Rect(0, 0, location.x, location.y);
         Logger.debug("Display bounds: " + displayRect.toShortString());
         return getAbsolutePosition(point, displayRect, ZERO_POINT, true);
     }
