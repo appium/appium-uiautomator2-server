@@ -17,7 +17,7 @@
 package io.appium.uiautomator2.model;
 
 import android.annotation.TargetApi;
-import android.util.Range;
+import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
@@ -147,12 +147,12 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case SCROLLABLE:
                 return node.isScrollable();
             case SELECTION_START: {
-                Range<Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
-                return selectionRange == null ? null : selectionRange.getLower();
+                Pair<Integer, Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
+                return selectionRange == null ? null : selectionRange.first;
             }
             case SELECTION_END: {
-                Range<Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
-                return selectionRange == null ? null : selectionRange.getUpper();
+                Pair<Integer, Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
+                return selectionRange == null ? null : selectionRange.second;
             }
             case SELECTED:
                 return node.isSelected();

@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model;
 
-import android.util.Range;
+import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
@@ -131,9 +131,9 @@ public class UiObjectElement extends BaseElement {
             }
             case SELECTION_END:
             case SELECTION_START:
-                Range<Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(toAxNodeInfo(element));
+                Pair<Integer, Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(toAxNodeInfo(element));
                 result = selectionRange == null ? null
-                        : (dstAttribute == Attribute.SELECTION_END ? selectionRange.getUpper() : selectionRange.getLower());
+                        : (dstAttribute == Attribute.SELECTION_END ? selectionRange.second : selectionRange.first);
                 break;
             default:
                 throw generateNoAttributeException(attr);
