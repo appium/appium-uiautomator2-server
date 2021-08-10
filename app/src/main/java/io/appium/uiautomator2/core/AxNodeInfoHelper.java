@@ -78,10 +78,9 @@ public class AxNodeInfoHelper {
 
         int selectionStart = nodeInfo.getTextSelectionStart();
         int selectionEnd = nodeInfo.getTextSelectionEnd();
-        if (selectionStart >= 0 && selectionStart != selectionEnd) {
-            return new Range<>(selectionStart, selectionEnd);
-        }
-        return null;
+        return selectionStart >= 0 && selectionStart < selectionEnd
+            ? new Range<>(selectionStart, selectionEnd)
+            : null;
     }
 
     @Nullable
