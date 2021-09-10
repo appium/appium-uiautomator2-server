@@ -195,15 +195,6 @@ public class UiScrollableParserTests {
     }
 
     @Test
-    public void shouldReThrowUiObjectNotFoundException() throws UiSelectorSyntaxException {
-        expectedException.expect(UiObjectNotFoundException.class);
-        expectedException.expectMessage("not found");
-        final String locator = "new UiScrollable(new UiSelector()).getChildByText(" +
-                "new UiSelector().resourceId(\"testId\"), \"text\")";
-        new UiScrollableParserSpy(locator).parse();
-    }
-
-    @Test
     public void isUiScrollableShouldReturnTrueIfStringStartsWithConstructor() {
         assertTrue(new UiScrollableParserSpy("new UiScrollable").isUiScrollable());
     }
