@@ -181,7 +181,7 @@ public class UiObjectElement extends BaseElement {
     }
 
     @Override
-    public List<AccessibleUiObject> getChildren(final Object selector, final By by) throws UiObjectNotFoundException {
+    public List<AccessibleUiObject> getChildren(final Object selector, final By by) {
         if (selector instanceof BySelector) {
             /*
              * We can't find the child elements with BySelector on UiObject,
@@ -199,7 +199,7 @@ public class UiObjectElement extends BaseElement {
         return this.getChildElements((UiSelector) selector);
     }
 
-    private ArrayList<AccessibleUiObject> getChildElements(final UiSelector sel) throws UiObjectNotFoundException {
+    private ArrayList<AccessibleUiObject> getChildElements(final UiSelector sel) {
         final String selectorString = sel.toString();
         Logger.debug("getElements selector:" + selectorString);
         final ArrayList<AccessibleUiObject> elements = new ArrayList<>();
@@ -220,11 +220,11 @@ public class UiObjectElement extends BaseElement {
             return elements;
         }
 
-        AccessibleUiObject lastFoundObj;
         final boolean useIndex = selectorString.contains("CLASS_REGEX=");
         UiSelector tmp;
         int counter = 0;
         do {
+            AccessibleUiObject lastFoundObj;
             if (element == null) {
                 Logger.debug("Element] is null: (" + counter + ")");
 
@@ -239,15 +239,19 @@ public class UiObjectElement extends BaseElement {
                 lastFoundObj = toAccessibleUiObject(Device.getUiDevice().findObject(tmp));
             } else {
                 Logger.debug("Element is " + getId() + ", counter: " + counter);
-                lastFoundObj = toAccessibleUiObject(element.getChild(sel.instance(counter)));
+                try {
+                    lastFoundObj = toAccessibleUiObject(element.getChild(sel.instance(counter)));
+                } catch (UiObjectNotFoundException e) {
+                    lastFoundObj = null;
+                }
+            }
+
+            if (lastFoundObj == null) {
+                return elements;
             }
             counter++;
-
-            if (lastFoundObj != null) {
-                elements.add(lastFoundObj);
-            }
-        } while (lastFoundObj != null);
-        return elements;
+            elements.add(lastFoundObj);
+        } while (true);
     }
 
     @Override

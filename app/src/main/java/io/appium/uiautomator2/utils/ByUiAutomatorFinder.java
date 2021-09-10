@@ -57,8 +57,7 @@ public class ByUiAutomatorFinder {
                 : context.getChild(selector);
     }
 
-    public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by)
-            throws InvalidSelectorException, UiObjectNotFoundException {
+    public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by) throws InvalidSelectorException {
         return findMany(by, null);
     }
 
@@ -66,21 +65,20 @@ public class ByUiAutomatorFinder {
      * returns  List<UiObject> using '-android automator' expression
      **/
     public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
-            throws InvalidSelectorException, UiObjectNotFoundException {
+            throws InvalidSelectorException {
         List<AccessibleUiObject> foundElements = new ArrayList<>();
         for (UiSelector sel : toSelectors(by.getElementLocator())) {
             // With multiple selectors, we expect that some elements may not exist.
-            try {
-                foundElements.addAll(fetchElements(sel, context));
-            } catch (UiObjectNotFoundException ignored) {
-                // for findElements up on no elements, empty array should return.
-            }
+            foundElements.addAll(fetchElements(sel, context));
+            Logger.info(
+                    String.format("Found %s element(s) using selector %s", foundElements.size(), sel)
+            );
         }
+        Logger.info(String.format("Found %s element(s) in total", foundElements.size()));
         return dedupe(foundElements);
     }
 
-    private List<AccessibleUiObject> fetchElements(UiSelector sel, @Nullable AndroidElement context)
-            throws UiObjectNotFoundException, InvalidSelectorException {
+    private List<AccessibleUiObject> fetchElements(UiSelector sel, @Nullable AndroidElement context) {
         Logger.debug("getElements selector:" + sel.toString());
         final ArrayList<AccessibleUiObject> elements = new ArrayList<>();
 
@@ -101,27 +99,31 @@ public class ByUiAutomatorFinder {
             return elements;
         }
 
-        AccessibleUiObject lastFoundObj;
-        UiSelector tmpSelector;
-        int counter = 0;
         final boolean useIndex = doesUiSelectorHaveAttribute(sel, "CLASS_REGEX");
         if (useIndex) {
             Logger.debug("Selector has CLASS_REGEX attribute");
         }
+        int counter = 0;
         do {
+            AccessibleUiObject lastFoundObj;
             if (context == null) {
-                tmpSelector = useIndex ? sel.index(counter) : sel.instance(counter);
+                UiSelector tmpSelector = useIndex ? sel.index(counter) : sel.instance(counter);
                 Logger.debug("getElements tmp selector:" + tmpSelector.toString());
                 lastFoundObj = toAccessibleUiObject(getUiDevice().findObject(tmpSelector));
             } else {
-                lastFoundObj = context.getChild(sel.instance(counter));
+                try {
+                    lastFoundObj = context.getChild(sel.instance(counter));
+                } catch (UiObjectNotFoundException e) {
+                    lastFoundObj = null;
+                }
             }
+            if (lastFoundObj == null) {
+                return elements;
+            }
+
+            elements.add(lastFoundObj);
             counter++;
-            if (lastFoundObj != null) {
-                elements.add(lastFoundObj);
-            }
-        } while (lastFoundObj != null);
-        return elements;
+        } while (true);
     }
 
     /**
@@ -135,11 +137,12 @@ public class ByUiAutomatorFinder {
         Set<AccessibilityNodeInfo> nodes = new HashSet<>();
         for (AccessibleUiObject element : elements) {
             AccessibilityNodeInfo info = element.getInfo();
-            if (info != null && !nodes.contains(info)) {
+            if (!nodes.contains(info)) {
                 nodes.add(info);
                 result.add(element);
             }
         }
+        Logger.info(String.format("%s element(s) left after deduplication", result.size()));
         return result;
     }
 

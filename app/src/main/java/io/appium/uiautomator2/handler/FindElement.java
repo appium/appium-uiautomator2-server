@@ -20,7 +20,6 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -53,7 +52,7 @@ public class FindElement extends SafeRequestHandler {
         FindElementModel model = toModel(request, FindElementModel.class);
         final String method = model.strategy;
         final String selector = model.selector;
-        final String contextId = model.context;
+        final String contextId = isBlank(model.context) ? null : model.context;
         if (contextId == null) {
             Logger.info(String.format("method: '%s', selector: '%s'", method, selector));
         } else {
@@ -62,7 +61,9 @@ public class FindElement extends SafeRequestHandler {
         }
 
         final By by = ElementsLookupStrategy.ofName(method).toNativeSelector(selector);
-        final AccessibleUiObject element = isBlank(contextId) ? this.findElement(by) : this.findElement(by, contextId);
+        final AccessibleUiObject element = contextId == null
+                ? this.findElement(by)
+                : this.findElement(by, contextId);
         if (element == null) {
             throw new ElementNotFoundException();
         }
@@ -73,7 +74,7 @@ public class FindElement extends SafeRequestHandler {
     }
 
     @Nullable
-    private AccessibleUiObject findElement(By by) throws UiAutomator2Exception, UiObjectNotFoundException {
+    private AccessibleUiObject findElement(By by) throws UiObjectNotFoundException {
         refreshAccessibilityCache();
         if (by instanceof By.ById) {
             String locator = rewriteIdLocator((By.ById) by);
@@ -96,7 +97,7 @@ public class FindElement extends SafeRequestHandler {
     }
 
     @Nullable
-    private AccessibleUiObject findElement(By by, String contextId) throws UiAutomator2Exception, UiObjectNotFoundException {
+    private AccessibleUiObject findElement(By by, String contextId) throws UiObjectNotFoundException {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         AndroidElement element = session.getElementsCache().get(contextId);
 

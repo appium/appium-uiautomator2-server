@@ -52,7 +52,7 @@ public interface AndroidElement {
 
     AccessibleUiObject getChild(final Object sel) throws UiObjectNotFoundException;
 
-    List<AccessibleUiObject> getChildren(final Object selector, final By by) throws UiObjectNotFoundException;
+    List<AccessibleUiObject> getChildren(final Object selector, final By by);
 
     String getContentDesc() throws UiObjectNotFoundException;
 

@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.utils;
 
-import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
@@ -46,7 +45,7 @@ public class UiSelectorParser extends UiExpressionParser<UiSelector, UiSelector>
         }
     }
 
-    public UiSelector parse() throws UiSelectorSyntaxException, UiObjectNotFoundException {
+    public UiSelector parse() throws UiSelectorSyntaxException {
         resetCurrentIndex();
         consumeConstructor();
         while (hasMoreDataToParse()) {

@@ -19,7 +19,6 @@ package io.appium.uiautomator2.utils;
 import android.util.Pair;
 
 import androidx.test.uiautomator.UiObject;
-import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 
@@ -58,7 +57,7 @@ public class UiScrollableParser extends UiExpressionParser<UiScrollable, UiSelec
      * Parse a string into a UiSelector, but use UiScrollable class and methods
      */
     @Override
-    public UiSelector parse() throws UiSelectorSyntaxException, UiObjectNotFoundException {
+    public UiSelector parse() throws UiSelectorSyntaxException {
         resetCurrentIndex();
         UiObject self = consumeConstructor();
         List<Object> results = new ArrayList<>();
@@ -99,8 +98,7 @@ public class UiScrollableParser extends UiExpressionParser<UiScrollable, UiSelec
 
     @SuppressWarnings("unchecked")
     @Override
-    protected <V> V consumeMethodCall() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    protected <V> V consumeMethodCall() throws UiSelectorSyntaxException {
         final String methodName = consumeMethodName();
         final List<String> arguments = consumeMethodParameters();
         final Pair<Method, List<Object>> methodWithArguments = findMethod(methodName, arguments);

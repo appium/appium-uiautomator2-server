@@ -177,7 +177,7 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
-    public List<AccessibleUiObject> getChildren(final Object selector, final By by) throws UiObjectNotFoundException {
+    public List<AccessibleUiObject> getChildren(final Object selector, final By by) {
         if (selector instanceof UiSelector) {
             /*
              * We can't find the child elements with UiSelector on UiObject2,

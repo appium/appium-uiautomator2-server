@@ -19,7 +19,6 @@ package io.appium.uiautomator2.utils;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
-import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import java.util.Arrays;
@@ -120,13 +119,11 @@ public class ElementLocationHelpers {
         return new AccessibilityNodeInfoDumper(root, includedAttributes).findNodes(expression, multiple);
     }
 
-    public static UiSelector toSelector(String uiaExpression) throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public static UiSelector toSelector(String uiaExpression) throws UiSelectorSyntaxException {
         return toSelectors(uiaExpression).get(0);
     }
 
-    public static List<UiSelector> toSelectors(String uiaExpression) throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public static List<UiSelector> toSelectors(String uiaExpression) throws UiSelectorSyntaxException {
         List<UiSelector> selectors = new UiAutomatorParser().parse(uiaExpression);
         if (selectors.isEmpty()) {
             throw new UiSelectorSyntaxException(uiaExpression);

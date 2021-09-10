@@ -52,11 +52,10 @@ public class FindElements extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) throws UiObjectNotFoundException {
-        List<Object> result = new ArrayList<>();
         FindElementModel model = toModel(request, FindElementModel.class);
         final String method = model.strategy;
         final String selector = model.selector;
-        final String contextId = model.context;
+        final String contextId = isBlank(model.context) ? null : model.context;
         if (contextId == null) {
             Logger.info(String.format("method: '%s', selector: '%s'", method, selector));
         } else {
@@ -65,25 +64,28 @@ public class FindElements extends SafeRequestHandler {
         }
 
         final By by = ElementsLookupStrategy.ofName(method).toNativeSelector(selector);
-
-        final List<AccessibleUiObject> elements;
+        List<Object> result = new ArrayList<>();
+        List<AccessibleUiObject> elements;
         try {
-            elements = isBlank(contextId) ? this.findElements(by) : this.findElements(by, contextId);
-
-            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            for (AccessibleUiObject element : elements) {
-                AndroidElement androidElement = session.getElementsCache().add(element, false, by, contextId);
-                result.add(androidElement.toModel());
-            }
-            return new AppiumResponse(getSessionId(request), result);
+            elements = contextId == null ? this.findElements(by) : this.findElements(by, contextId);
         } catch (ElementNotFoundException ignored) {
             // Return an empty array:
             // https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#sessionsessionidelements
             return new AppiumResponse(getSessionId(request), result);
         }
+
+        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+        Logger.info(String.format("Caching %s found element(s)", elements.size()));
+        for (AccessibleUiObject element : elements) {
+            AndroidElement androidElement = session.getElementsCache().add(element, false, by, contextId);
+            Logger.info(String.format("Caching is completed for the element: %s", element.getInfo()));
+            result.add(androidElement.toModel());
+        }
+        Logger.info(String.format("Cached %s element(s) in total", elements.size()));
+        return new AppiumResponse(getSessionId(request), result);
     }
 
-    private List<AccessibleUiObject> findElements(By by) throws UiObjectNotFoundException {
+    private List<AccessibleUiObject> findElements(By by) {
         refreshAccessibilityCache();
 
         if (by instanceof By.ById) {
@@ -102,11 +104,12 @@ public class FindElements extends SafeRequestHandler {
             return new ByUiAutomatorFinder().findMany((By.ByAndroidUiAutomator) by);
         }
 
-        String msg = String.format("By locator %s is curently not supported!", by.getClass().getSimpleName());
-        throw new NotImplementedException(msg);
+        throw new NotImplementedException(
+                String.format("%s locator is not supported", by.getClass().getSimpleName())
+        );
     }
 
-    private List<AccessibleUiObject> findElements(By by, String contextId) throws UiObjectNotFoundException {
+    private List<AccessibleUiObject> findElements(By by, String contextId) {
         Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
         AndroidElement element = session.getElementsCache().get(contextId);
 
