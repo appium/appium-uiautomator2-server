@@ -100,7 +100,7 @@ public class ByUiAutomatorFinder {
         if (useIndex) {
             Logger.debug("Selector has CLASS_REGEX attribute");
         }
-        final ArrayList<AccessibleUiObject> elements = new ArrayList<>();
+        final List<AccessibleUiObject> elements = new ArrayList<>();
         int descendantIndex = 0;
         do {
             AccessibleUiObject lastFoundObj;
