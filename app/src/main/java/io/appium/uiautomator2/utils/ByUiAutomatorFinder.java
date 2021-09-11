@@ -25,6 +25,7 @@ import androidx.test.uiautomator.UiSelector;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,7 +70,7 @@ public class ByUiAutomatorFinder {
         List<AccessibleUiObject> foundElements = new ArrayList<>();
         for (UiSelector sel : toSelectors(by.getElementLocator())) {
             // With multiple selectors, we expect that some elements may not exist.
-            foundElements.addAll(fetchElements(sel, context));
+            foundElements.addAll(matchDescendantElements(sel, context));
             Logger.info(
                     String.format("Found %s element(s) using selector %s", foundElements.size(), sel)
             );
@@ -78,9 +79,9 @@ public class ByUiAutomatorFinder {
         return dedupe(foundElements);
     }
 
-    private List<AccessibleUiObject> fetchElements(UiSelector sel, @Nullable AndroidElement context) {
-        Logger.debug("getElements selector:" + sel.toString());
-        final ArrayList<AccessibleUiObject> elements = new ArrayList<>();
+    public static List<AccessibleUiObject> matchDescendantElements(UiSelector sel,
+                                                                   @Nullable AndroidElement context) {
+        Logger.debug(String.format("matchDescendantElements selector: %s", sel));
 
         // If sel is UiSelector[CLASS=android.widget.Button, INSTANCE=0]
         // then invoking instance with a non-0 argument will corrupt the selector.
@@ -93,26 +94,26 @@ public class ByUiAutomatorFinder {
             Logger.debug("Selector has INSTANCE attribute");
             // There's exactly one element when using instance.
             AccessibleUiObject instanceObj = toAccessibleUiObject(getUiDevice().findObject(sel));
-            if (instanceObj != null) {
-                elements.add(instanceObj);
-            }
-            return elements;
+            return instanceObj == null
+                    ? Collections.<AccessibleUiObject>emptyList()
+                    : Collections.singletonList(instanceObj);
         }
 
         final boolean useIndex = doesUiSelectorHaveAttribute(sel, "CLASS_REGEX");
         if (useIndex) {
             Logger.debug("Selector has CLASS_REGEX attribute");
         }
-        int counter = 0;
+        final ArrayList<AccessibleUiObject> elements = new ArrayList<>();
+        int descendantIndex = 0;
         do {
             AccessibleUiObject lastFoundObj;
             if (context == null) {
-                UiSelector tmpSelector = useIndex ? sel.index(counter) : sel.instance(counter);
-                Logger.debug("getElements tmp selector:" + tmpSelector.toString());
+                UiSelector tmpSelector = useIndex ? sel.index(descendantIndex) : sel.instance(descendantIndex);
+                Logger.debug(String.format("matchDescendantElements temporary selector: %s", tmpSelector));
                 lastFoundObj = toAccessibleUiObject(getUiDevice().findObject(tmpSelector));
             } else {
                 try {
-                    lastFoundObj = context.getChild(sel.instance(counter));
+                    lastFoundObj = context.getChild(sel.instance(descendantIndex));
                 } catch (UiObjectNotFoundException e) {
                     lastFoundObj = null;
                 }
@@ -122,7 +123,7 @@ public class ByUiAutomatorFinder {
             }
 
             elements.add(lastFoundObj);
-            counter++;
+            descendantIndex++;
         } while (true);
     }
 
