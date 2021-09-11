@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.model.AccessibleUiObject;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.By;
@@ -45,28 +44,26 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 public class ByUiAutomatorFinder {
     private static final String UI_SELECTOR_CRITERION_PREFIX = "SELECTOR_";
 
-    public AccessibleUiObject findOne(By.ByAndroidUiAutomator by)
-            throws InvalidSelectorException, UiObjectNotFoundException {
+    public AccessibleUiObject findOne(By.ByAndroidUiAutomator by) throws UiObjectNotFoundException {
         return findOne(by, null);
     }
 
     public AccessibleUiObject findOne(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
-            throws InvalidSelectorException, UiObjectNotFoundException {
+            throws UiObjectNotFoundException {
         UiSelector selector = toSelector(by.getElementLocator());
         return context == null
                 ? CustomUiDevice.getInstance().findObject(selector)
                 : context.getChild(selector);
     }
 
-    public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by) throws InvalidSelectorException {
+    public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by) {
         return findMany(by, null);
     }
 
     /**
      * returns  List<UiObject> using '-android automator' expression
      **/
-    public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
-            throws InvalidSelectorException {
+    public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by, @Nullable AndroidElement context) {
         List<AccessibleUiObject> foundElements = new ArrayList<>();
         for (UiSelector sel : toSelectors(by.getElementLocator())) {
             // With multiple selectors, we expect that some elements may not exist.
