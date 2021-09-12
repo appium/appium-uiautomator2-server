@@ -37,11 +37,6 @@ public abstract class AxNodeInfoExtractor {
     // `Configurator.getInstance().getWaitForSelectorTimeout()` timeout which equals to 10000ms
 
     @Nullable
-    public static AccessibilityNodeInfo toNullableAxNodeInfo(Object object) {
-        return toNullableAxNodeInfo(object, null);
-    }
-
-    @Nullable
     public static AccessibilityNodeInfo toNullableAxNodeInfo(Object object, @Nullable Long timeoutMs) {
         return extractAxNodeInfo(object, timeoutMs);
     }
