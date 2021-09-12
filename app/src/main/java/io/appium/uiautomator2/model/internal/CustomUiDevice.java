@@ -119,7 +119,7 @@ public class CustomUiDevice {
             node = (AccessibilityNodeInfo) selector;
             selector = toSelector(node);
         } else if (selector instanceof UiSelector) {
-            return toAccessibleUiObject(getUiDevice().findObject((UiSelector) selector));
+            return toAccessibleUiObject(getUiDevice().findObject((UiSelector) selector), null);
         } else {
             throw new InvalidSelectorException("Selector of type " + selector.getClass().getName() + " not supported");
         }

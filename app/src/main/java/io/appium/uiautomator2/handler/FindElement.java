@@ -76,7 +76,7 @@ public class FindElement extends SafeRequestHandler {
     @Nullable
     private AccessibleUiObject findElement(By by) throws UiObjectNotFoundException {
         refreshAccessibilityCache();
-        
+
         if (by instanceof By.ById) {
             String locator = rewriteIdLocator((By.ById) by);
             return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator));

@@ -82,14 +82,18 @@ public class FindElements extends SafeRequestHandler {
             return new AppiumResponse(getSessionId(request), Collections.emptyList());
         }
 
-        Logger.info(String.format("Caching %s found element(s)", elements.size()));
+        if (elements.isEmpty()) {
+            Logger.info("Found zero matches");
+            return new AppiumResponse(getSessionId(request), Collections.emptyList());
+        }
+
+        Logger.info(String.format("Caching %s found element%s", elements.size(), elements.size() == 1 ? "" : "s"));
         List<Object> result = new ArrayList<>();
         for (AccessibleUiObject element : elements) {
             AndroidElement androidElement = elementsCache.add(element, false, by, contextId);
-            Logger.info(String.format("Caching is completed for the element: %s", element.getInfo()));
             result.add(androidElement.toModel());
         }
-        Logger.info(String.format("Cached %s element(s) in total", elements.size()));
+        Logger.info(String.format("Cached %s element%s in total", result.size(), result.size() == 1 ? "" : "s"));
         return new AppiumResponse(getSessionId(request), result);
     }
 

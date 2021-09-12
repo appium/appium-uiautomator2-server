@@ -172,7 +172,7 @@ public class UiObjectElement extends BaseElement {
             }
             return null;
         }
-        return toAccessibleUiObject(element.getChild((UiSelector) selector));
+        return toAccessibleUiObject(element.getChild((UiSelector) selector), 0L);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class UiObjectElement extends BaseElement {
                 throw new ElementNotFoundException();
             }
             List<UiObject2> children = ((UiObject2) root.getValue()).findObjects((BySelector) selector);
-            return toAccessibleUiObjects(children);
+            return toAccessibleUiObjects(children, 0L);
         }
         return ByUiAutomatorFinder.matchDescendantElements((UiSelector) selector, this);
     }

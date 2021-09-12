@@ -32,21 +32,35 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
 public abstract class AxNodeInfoExtractor {
 
+    // The timeout argument only affects the lookup timeout for UiObject instances
+    // null timeout value means to use the default
+    // `Configurator.getInstance().getWaitForSelectorTimeout()` timeout which equals to 10000ms
+
     @Nullable
     public static AccessibilityNodeInfo toNullableAxNodeInfo(Object object) {
-        return extractAxNodeInfo(object);
+        return toNullableAxNodeInfo(object, null);
+    }
+
+    @Nullable
+    public static AccessibilityNodeInfo toNullableAxNodeInfo(Object object, @Nullable Long timeoutMs) {
+        return extractAxNodeInfo(object, timeoutMs);
     }
 
     @Nullable
     public static AccessibilityNodeInfo toNullableAxNodeInfo(UiObject2 object, boolean checkStaleness) {
         return checkStaleness
-                ? extractAxNodeInfo(object)
+                ? extractAxNodeInfo(object, null)
                 : (AccessibilityNodeInfo) getField("mCachedNode", object);
     }
 
     @NonNull
     public static AccessibilityNodeInfo toAxNodeInfo(Object object) {
-        AccessibilityNodeInfo result = extractAxNodeInfo(object);
+        return toAxNodeInfo(object, null);
+    }
+
+    @NonNull
+    public static AccessibilityNodeInfo toAxNodeInfo(Object object, @Nullable Long timeoutMs) {
+        AccessibilityNodeInfo result = extractAxNodeInfo(object, timeoutMs);
         if (result == null) {
             throw new StaleElementReferenceException();
         }
@@ -54,12 +68,14 @@ public abstract class AxNodeInfoExtractor {
     }
 
     @Nullable
-    private static AccessibilityNodeInfo extractAxNodeInfo(Object object) {
+    private static AccessibilityNodeInfo extractAxNodeInfo(Object object, @Nullable Long timeoutMs) {
         if (object instanceof UiObject2) {
             return (AccessibilityNodeInfo) invoke(getMethod(UiObject2.class,
                     "getAccessibilityNodeInfo"), object);
         } else if (object instanceof UiObject) {
-            long timeout = Configurator.getInstance().getWaitForSelectorTimeout();
+            long timeout = timeoutMs == null
+                    ? Configurator.getInstance().getWaitForSelectorTimeout()
+                    : timeoutMs;
             return (AccessibilityNodeInfo) invoke(getMethod(UiObject.class,
                     "findAccessibilityNodeInfo", long.class), object, timeout);
         }

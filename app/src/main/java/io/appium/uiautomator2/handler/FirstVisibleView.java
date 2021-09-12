@@ -33,7 +33,6 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.utils.Logger;
 
-import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toNullableAxNodeInfo;
 import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
 
 /**
@@ -57,7 +56,7 @@ public class FirstVisibleView extends SafeRequestHandler {
             UiObject uiObject = (UiObject) element.getUiObject();
             Logger.debug("Container for first visible is a uiobject; looping through children");
             for (int i = 0; i < uiObject.getChildCount(); i++) {
-                AccessibleUiObject object = toAccessibleUiObject(uiObject.getChild(new UiSelector().index(i)));
+                AccessibleUiObject object = toAccessibleUiObject(uiObject.getChild(new UiSelector().index(i)), 0L);
                 if (object != null) {
                     firstObject = object;
                     break;
