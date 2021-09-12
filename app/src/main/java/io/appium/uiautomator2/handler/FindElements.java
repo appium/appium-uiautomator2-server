@@ -68,7 +68,6 @@ public class FindElements extends SafeRequestHandler {
 
         ElementsCache elementsCache = AppiumUIA2Driver.getInstance().getSessionOrThrow().getElementsCache();
         final By by = ElementsLookupStrategy.ofName(method).toNativeSelector(selector);
-        List<Object> result = new ArrayList<>();
         List<AccessibleUiObject> elements;
         try {
             elements = contextId == null
@@ -80,10 +79,11 @@ public class FindElements extends SafeRequestHandler {
             Logger.warn(Log.getStackTraceString(e));
             // Return an empty array:
             // https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#sessionsessionidelements
-            return new AppiumResponse(getSessionId(request), result);
+            return new AppiumResponse(getSessionId(request), Collections.emptyList());
         }
 
         Logger.info(String.format("Caching %s found element(s)", elements.size()));
+        List<Object> result = new ArrayList<>();
         for (AccessibleUiObject element : elements) {
             AndroidElement androidElement = elementsCache.add(element, false, by, contextId);
             Logger.info(String.format("Caching is completed for the element: %s", element.getInfo()));
