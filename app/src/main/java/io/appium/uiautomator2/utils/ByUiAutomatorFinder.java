@@ -40,6 +40,7 @@ import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelectors;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
+import static io.appium.uiautomator2.utils.StringHelpers.pluralize;
 
 public class ByUiAutomatorFinder {
     private static final String UI_SELECTOR_CRITERION_PREFIX = "SELECTOR_";
@@ -67,12 +68,13 @@ public class ByUiAutomatorFinder {
         List<AccessibleUiObject> foundElements = new ArrayList<>();
         for (UiSelector sel : toSelectors(by.getElementLocator())) {
             // With multiple selectors, we expect that some elements may not exist.
-            foundElements.addAll(matchDescendantElements(sel, context));
-            Logger.info(
-                    String.format("Found %s element(s) using selector %s", foundElements.size(), sel)
-            );
+            List<AccessibleUiObject> chunk = matchDescendantElements(sel, context);
+            foundElements.addAll(chunk);
+            Logger.info(String.format("Matched %s using selector %s",
+                    pluralize(chunk.size(), "element"), sel));
         }
-        Logger.info(String.format("Found %s element(s) in total", foundElements.size()));
+        Logger.info(String.format("Matched %s including possible duplicates",
+                pluralize(foundElements.size(), "element")));
         return dedupe(foundElements);
     }
 

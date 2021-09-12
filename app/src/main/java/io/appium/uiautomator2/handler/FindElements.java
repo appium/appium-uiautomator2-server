@@ -44,6 +44,7 @@ import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMa
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
+import static io.appium.uiautomator2.utils.StringHelpers.pluralize;
 
 import android.util.Log;
 
@@ -74,26 +75,26 @@ public class FindElements extends SafeRequestHandler {
                     ? this.findElements(by)
                     : this.findElements(by, elementsCache.get(contextId));
         } catch (ElementNotFoundException e) {
-            Logger.warn(String.format("Got %s exception while looking for multiple matches using " +
-                    "selector %s", e.getClass().getSimpleName(), by));
+            Logger.warn(String.format("Got an exception while looking for multiple matches using " +
+                    "selector %s", by));
             Logger.warn(Log.getStackTraceString(e));
             // Return an empty array:
             // https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#sessionsessionidelements
             return new AppiumResponse(getSessionId(request), Collections.emptyList());
         }
-
         if (elements.isEmpty()) {
             Logger.info("Found zero matches");
             return new AppiumResponse(getSessionId(request), Collections.emptyList());
         }
 
-        Logger.info(String.format("Caching %s found element%s", elements.size(), elements.size() == 1 ? "" : "s"));
+        Logger.info(String.format(
+                "Caching %s", pluralize(elements.size(), "found element")));
         List<Object> result = new ArrayList<>();
         for (AccessibleUiObject element : elements) {
             AndroidElement androidElement = elementsCache.add(element, false, by, contextId);
             result.add(androidElement.toModel());
         }
-        Logger.info(String.format("Cached %s element%s in total", result.size(), result.size() == 1 ? "" : "s"));
+        Logger.info(String.format("Cached %s", pluralize(result.size(), "element")));
         return new AppiumResponse(getSessionId(request), result);
     }
 
