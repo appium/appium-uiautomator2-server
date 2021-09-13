@@ -56,7 +56,7 @@ public class FirstVisibleView extends SafeRequestHandler {
             UiObject uiObject = (UiObject) element.getUiObject();
             Logger.debug("Container for first visible is a uiobject; looping through children");
             for (int i = 0; i < uiObject.getChildCount(); i++) {
-                AccessibleUiObject object = toAccessibleUiObject(uiObject.getChild(new UiSelector().index(i)), 0L);
+                AccessibleUiObject object = toAccessibleUiObject(uiObject.getChild(new UiSelector().index(i)));
                 if (object != null) {
                     firstObject = object;
                     break;

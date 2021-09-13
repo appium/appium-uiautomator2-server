@@ -170,7 +170,7 @@ public class UiObject2Element extends BaseElement {
                 return null;
             }
             UiObject child = ((UiObject) root.getValue()).getChild((UiSelector) selector);
-            return toAccessibleUiObject(child, 0L);
+            return toAccessibleUiObject(child);
         }
         UiObject2 child = element.findObject((BySelector) selector);
         return toAccessibleUiObject(child);
@@ -195,7 +195,7 @@ public class UiObject2Element extends BaseElement {
             return rootElement.getChildren(selector, by);
         }
         List<UiObject2> children = element.findObjects((BySelector) selector);
-        return toAccessibleUiObjects(children, 0L);
+        return toAccessibleUiObjects(children);
     }
 
     @Override

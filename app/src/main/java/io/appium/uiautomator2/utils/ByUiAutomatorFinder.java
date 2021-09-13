@@ -92,7 +92,7 @@ public class ByUiAutomatorFinder {
         if (doesUiSelectorHaveAttribute(sel, "INSTANCE")) {
             Logger.debug("Selector has INSTANCE attribute");
             // There's exactly one element when using instance.
-            AccessibleUiObject instanceObj = toAccessibleUiObject(getUiDevice().findObject(sel), 0L);
+            AccessibleUiObject instanceObj = toAccessibleUiObject(getUiDevice().findObject(sel));
             return instanceObj == null
                     ? Collections.<AccessibleUiObject>emptyList()
                     : Collections.singletonList(instanceObj);
@@ -109,7 +109,7 @@ public class ByUiAutomatorFinder {
             if (context == null) {
                 UiSelector tmpSelector = useIndex ? sel.index(descendantIndex) : sel.instance(descendantIndex);
                 Logger.debug(String.format("matchDescendantElements temporary selector: %s", tmpSelector));
-                lastFoundObj = toAccessibleUiObject(getUiDevice().findObject(tmpSelector), 0L);
+                lastFoundObj = toAccessibleUiObject(getUiDevice().findObject(tmpSelector));
             } else {
                 try {
                     lastFoundObj = context.getChild(sel.instance(descendantIndex));

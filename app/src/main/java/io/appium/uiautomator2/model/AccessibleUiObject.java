@@ -53,20 +53,19 @@ public class AccessibleUiObject {
     }
 
     @Nullable
-    public static AccessibleUiObject toAccessibleUiObject(@Nullable UiObject uiObject,
-                                                          @Nullable Long timeoutMs) {
+    public static AccessibleUiObject toAccessibleUiObject(@Nullable UiObject uiObject) {
         if (uiObject == null) {
             return null;
         }
-        AccessibilityNodeInfo info = toNullableAxNodeInfo(uiObject, timeoutMs);
+        AccessibilityNodeInfo info = toNullableAxNodeInfo(uiObject, 0L);
         return info == null ? null : new AccessibleUiObject(uiObject, info);
     }
 
-    public static List<AccessibleUiObject> toAccessibleUiObjects(List<?> uiObjects, @Nullable Long timeoutMs) {
+    public static List<AccessibleUiObject> toAccessibleUiObjects(List<?> uiObjects) {
         List<AccessibleUiObject> result = new ArrayList<>();
         for (Object obj: uiObjects) {
             if (obj instanceof UiObject) {
-                AccessibilityNodeInfo info = toNullableAxNodeInfo(obj, timeoutMs);
+                AccessibilityNodeInfo info = toNullableAxNodeInfo(obj, 0L);
                 if (info != null) {
                     result.add(new AccessibleUiObject((UiObject) obj, info));
                 }
