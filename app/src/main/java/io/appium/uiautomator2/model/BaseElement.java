@@ -168,8 +168,7 @@ public abstract class BaseElement implements AndroidElement {
     @Override
     public Point getAbsolutePosition(final Point offset) {
         final Rect bounds = this.getBounds();
-        return PositionHelper.getAbsolutePosition(
-                new Point(bounds.left, bounds.top), bounds, offset, false);
+        return PositionHelper.getAbsolutePosition(new Point(bounds.left, bounds.top), bounds, offset);
     }
 
     @Override

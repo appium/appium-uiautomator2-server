@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.model.Point;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -14,7 +13,7 @@ import static org.junit.Assert.assertThat;
 public class PositionHelperTests {
 
     @Test
-    public void zeroPointAndOffsets() throws InvalidCoordinatesException {
+    public void zeroPointAndOffsets() {
         Point zeroPoint = new Point();
         Point zeroOffset = new Point();
 
@@ -22,14 +21,14 @@ public class PositionHelperTests {
         Mockito.when(zeroRect.width()).thenReturn(0);
         Mockito.when(zeroRect.height()).thenReturn(0);
 
-        Point actualPoint = PositionHelper.getAbsolutePosition(zeroPoint, zeroRect, zeroOffset, false);
+        Point actualPoint = PositionHelper.getAbsolutePosition(zeroPoint, zeroRect, zeroOffset);
 
         assertThat(actualPoint.x, equalTo(0.0));
         assertThat(actualPoint.y, equalTo(0.0));
     }
 
     @Test
-    public void zeroOnePointAndOneZeroOffsets() throws InvalidCoordinatesException {
+    public void zeroOnePointAndOneZeroOffsets() {
         Point onePoint = new Point(0, 1);
         Point oneOffset = new Point(1, 0);
 
@@ -37,14 +36,14 @@ public class PositionHelperTests {
         Mockito.when(zeroRect.width()).thenReturn(0);
         Mockito.when(zeroRect.height()).thenReturn(0);
 
-        Point actualPoint = PositionHelper.getAbsolutePosition(onePoint, zeroRect, oneOffset, false);
+        Point actualPoint = PositionHelper.getAbsolutePosition(onePoint, zeroRect, oneOffset);
 
         assertThat(actualPoint.x, equalTo(1.0));
         assertThat(actualPoint.y, equalTo(1.0));
     }
 
     @Test
-    public void zeroPointAndOffsetsWithOneRect() throws InvalidCoordinatesException {
+    public void zeroPointAndOffsetsWithOneRect() {
         Point onePoint = new Point(0, 1);
         Point oneOffset = new Point(1, 0);
 
@@ -52,14 +51,14 @@ public class PositionHelperTests {
         Mockito.when(oneRect.width()).thenReturn(1);
         Mockito.when(oneRect.height()).thenReturn(0);
 
-        Point actualPoint = PositionHelper.getAbsolutePosition(onePoint, oneRect, oneOffset, false);
+        Point actualPoint = PositionHelper.getAbsolutePosition(onePoint, oneRect, oneOffset);
 
         assertThat(actualPoint.x, equalTo(1.0));
         assertThat(actualPoint.y, equalTo(1.0));
     }
 
     @Test
-    public void zeroOnePointAndOneZeroOffsetsWithOneRect() throws InvalidCoordinatesException {
+    public void zeroOnePointAndOneZeroOffsetsWithOneRect() {
         Point onePoint = new Point(0, 1);
         Point oneOffset = new Point(1, 0);
 
@@ -67,22 +66,9 @@ public class PositionHelperTests {
         Mockito.when(oneRect.width()).thenReturn(1);
         Mockito.when(oneRect.height()).thenReturn(1);
 
-        Point actualPoint = PositionHelper.getAbsolutePosition(onePoint, oneRect, oneOffset, false);
+        Point actualPoint = PositionHelper.getAbsolutePosition(onePoint, oneRect, oneOffset);
 
         assertThat(actualPoint.x, equalTo(1.0));
         assertThat(actualPoint.y, equalTo(1.0));
-    }
-
-
-    @Test(expected = InvalidCoordinatesException.class)
-    public void onePointOverRect() throws InvalidCoordinatesException {
-        Point onePoint = new Point(1, 1);
-        Point oneOffset = new Point(1, 1);
-
-        Rect zeroRect = Mockito.mock(Rect.class);
-        Mockito.when(zeroRect.width()).thenReturn(0);
-        Mockito.when(zeroRect.height()).thenReturn(0);
-
-        PositionHelper.getAbsolutePosition(onePoint, zeroRect, oneOffset, true);
     }
 }
