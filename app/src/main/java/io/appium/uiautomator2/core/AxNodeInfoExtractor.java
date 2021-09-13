@@ -20,7 +20,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 
@@ -32,30 +31,21 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
 public abstract class AxNodeInfoExtractor {
 
-    // The timeout argument only affects the lookup timeout for UiObject instances
-    // null timeout value means to use the default
-    // `Configurator.getInstance().getWaitForSelectorTimeout()` timeout which equals to 10000ms
-
     @Nullable
-    public static AccessibilityNodeInfo toNullableAxNodeInfo(Object object, @Nullable Long timeoutMs) {
-        return extractAxNodeInfo(object, timeoutMs);
+    public static AccessibilityNodeInfo toNullableAxNodeInfo(UiObject object) {
+        return extractAxNodeInfo(object);
     }
 
     @Nullable
     public static AccessibilityNodeInfo toNullableAxNodeInfo(UiObject2 object, boolean checkStaleness) {
         return checkStaleness
-                ? extractAxNodeInfo(object, null)
+                ? extractAxNodeInfo(object)
                 : (AccessibilityNodeInfo) getField("mCachedNode", object);
     }
 
     @NonNull
     public static AccessibilityNodeInfo toAxNodeInfo(Object object) {
-        return toAxNodeInfo(object, null);
-    }
-
-    @NonNull
-    public static AccessibilityNodeInfo toAxNodeInfo(Object object, @Nullable Long timeoutMs) {
-        AccessibilityNodeInfo result = extractAxNodeInfo(object, timeoutMs);
+        AccessibilityNodeInfo result = extractAxNodeInfo(object);
         if (result == null) {
             throw new StaleElementReferenceException();
         }
@@ -63,16 +53,13 @@ public abstract class AxNodeInfoExtractor {
     }
 
     @Nullable
-    private static AccessibilityNodeInfo extractAxNodeInfo(Object object, @Nullable Long timeoutMs) {
+    private static AccessibilityNodeInfo extractAxNodeInfo(Object object) {
         if (object instanceof UiObject2) {
             return (AccessibilityNodeInfo) invoke(getMethod(UiObject2.class,
                     "getAccessibilityNodeInfo"), object);
         } else if (object instanceof UiObject) {
-            long timeout = timeoutMs == null
-                    ? Configurator.getInstance().getWaitForSelectorTimeout()
-                    : timeoutMs;
             return (AccessibilityNodeInfo) invoke(getMethod(UiObject.class,
-                    "findAccessibilityNodeInfo", long.class), object, timeout);
+                    "findAccessibilityNodeInfo", long.class), object, 0L);
         }
         throw new IllegalArgumentException(String.format("Unknown object type '%s'",
                 object == null ? null : object.getClass().getName()));

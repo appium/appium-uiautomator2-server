@@ -57,7 +57,7 @@ public class AccessibleUiObject {
         if (uiObject == null) {
             return null;
         }
-        AccessibilityNodeInfo info = toNullableAxNodeInfo(uiObject, 0L);
+        AccessibilityNodeInfo info = toNullableAxNodeInfo(uiObject);
         return info == null ? null : new AccessibleUiObject(uiObject, info);
     }
 
@@ -65,7 +65,7 @@ public class AccessibleUiObject {
         List<AccessibleUiObject> result = new ArrayList<>();
         for (Object obj: uiObjects) {
             if (obj instanceof UiObject) {
-                AccessibilityNodeInfo info = toNullableAxNodeInfo(obj, 0L);
+                AccessibilityNodeInfo info = toNullableAxNodeInfo((UiObject) obj);
                 if (info != null) {
                     result.add(new AccessibleUiObject((UiObject) obj, info));
                 }
