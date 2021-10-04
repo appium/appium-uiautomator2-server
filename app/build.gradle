@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.1.3'
         classpath 'com.github.JakeWharton:sdk-manager-plugin:0ce4cdf08009d79223850a59959d9d6e774d0f77'
         classpath 'de.mobilej.unmock:UnMockPlugin:0.6.4'
     }
@@ -72,17 +72,17 @@ unMock {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    implementation 'androidx.test:core:1.3.0'
-    implementation 'androidx.test:runner:1.3.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'androidx.test:core:1.4.0'
+    implementation 'androidx.test:runner:1.4.0'
+    implementation 'com.google.code.gson:gson:2.8.8'
     //noinspection GradleDependency
     implementation 'commons-io:commons-io:2.6'
     implementation 'io.netty:netty-all:4.0.41.Final'
-    implementation 'jaxen:jaxen:1.2.0'
     implementation 'net.gcardone.junidecode:junidecode:0.4.1'
-    implementation 'org.jdom:jdom2:2.0.6'
+    implementation 'xerces:xercesImpl:2.12.1'
+    implementation 'com.rackspace.eclipse.webtools.sourceediting:org.eclipse.wst.xml.xpath2.processor:2.1.100'
     unmock 'org.robolectric:android-all:7.1.0_r7-robolectric-0'
-    testImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation 'androidx.test.ext:junit:1.1.3'
     //noinspection GradleDependency
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20190722'
@@ -90,10 +90,10 @@ dependencies {
     testImplementation 'org.powermock:powermock-classloading-xstream:1.7.4'
     testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
     testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
-    testImplementation 'org.robolectric:robolectric:4.3.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation 'org.robolectric:robolectric:4.5.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'com.squareup.okhttp:okhttp:2.7.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-web:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-web:3.4.0'
     //noinspection GradleDependency
     androidTestImplementation 'junit:junit:4.12'
 }
