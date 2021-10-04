@@ -16,7 +16,8 @@
 
 package io.appium.uiautomator2.utils;
 
-import androidx.test.uiautomator.UiObjectNotFoundException;
+import static org.hamcrest.CoreMatchers.containsString;
+
 import androidx.test.uiautomator.UiSelector;
 
 import org.junit.Assert;
@@ -30,8 +31,6 @@ import org.robolectric.annotation.Config;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 
-import static org.hamcrest.Matchers.containsString;
-
 @RunWith(RobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
 public class UiSelectorParserTests {
@@ -40,8 +39,7 @@ public class UiSelectorParserTests {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
-    public void shouldBeAbleToParseSimpleUiSelector() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldBeAbleToParseSimpleUiSelector() throws UiSelectorSyntaxException {
         UiSelector expected = new UiSelector().className(android.widget.TextView.class).text("test")
                 .clickable(false).selected(true).index(1);
         UiSelector actual = new UiSelectorParser("new UiSelector().className(android.widget" +
@@ -50,8 +48,7 @@ public class UiSelectorParserTests {
     }
 
     @Test
-    public void shouldBeAbleToParseUiSelectorWithSpaces() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldBeAbleToParseUiSelectorWithSpaces() throws UiSelectorSyntaxException {
         UiSelector expected = new UiSelector().text("test").clickable(false);
         UiSelector actual = new UiSelectorParser(
                 "  new UiSelector() . text ( \"test\" ) . clickable ( false ) ").parse();
@@ -59,40 +56,35 @@ public class UiSelectorParserTests {
     }
 
     @Test
-    public void shouldBeAbleToParseUiSelectorWithoutNewKeyword() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldBeAbleToParseUiSelectorWithoutNewKeyword() throws UiSelectorSyntaxException {
         UiSelector expected = new UiSelector().text("test");
         UiSelector actual = new UiSelectorParser("UiSelector().text(\"test\")").parse();
         assertSame(expected, actual);
     }
 
     @Test
-    public void shouldBeAbleToParseUiSelectorWithoutConstructor() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldBeAbleToParseUiSelectorWithoutConstructor() throws UiSelectorSyntaxException {
         UiSelector expected = new UiSelector().text("test");
         UiSelector actual = new UiSelectorParser("text(\"test\")").parse();
         assertSame(expected, actual);
     }
 
     @Test
-    public void shouldBeAbleToParseLiteralsWithParentheses() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldBeAbleToParseLiteralsWithParentheses() throws UiSelectorSyntaxException {
         UiSelector expected = new UiSelector().text(")test(test)(");
         UiSelector actual = new UiSelectorParser("new UiSelector().text(\")test(test)(\")").parse();
         assertSame(expected, actual);
     }
 
     @Test
-    public void shouldBeAbleToParseLiteralsWithBrakes() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldBeAbleToParseLiteralsWithBrakes() throws UiSelectorSyntaxException {
         UiSelector expected = new UiSelector().text("te\nst");
         UiSelector actual = new UiSelectorParser("new UiSelector().text(\"te\nst\")").parse();
         assertSame(expected, actual);
     }
 
     @Test
-    public void shouldBeAbleToParseLiteralsWithQuotes() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldBeAbleToParseLiteralsWithQuotes() throws UiSelectorSyntaxException {
         UiSelector expected = new UiSelector().text("\"\"tes\\t(\"test)(");
         UiSelector actual = new UiSelectorParser(
                 "new UiSelector().text(\"\\\"\\\"tes\\t(\\\"test)(\")").parse();
@@ -100,8 +92,7 @@ public class UiSelectorParserTests {
     }
 
     @Test
-    public void shouldBeAbleToParseNestedUiSelector() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldBeAbleToParseNestedUiSelector() throws UiSelectorSyntaxException {
         UiSelector expected = new UiSelector().text("test").childSelector(new UiSelector()
                 .checkable(true));
         UiSelector actual = new UiSelectorParser(
@@ -111,24 +102,21 @@ public class UiSelectorParserTests {
     }
 
     @Test()
-    public void shouldThrowExceptionOnUnclosedParenthesis() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionOnUnclosedParenthesis() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("Unclosed paren in expression");
         new UiSelectorParser("new UiSelector().text(\"test\"()").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfNoPeriodAfterConstructor() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfNoPeriodAfterConstructor() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("Expected \".\" at position 16");
         new UiSelectorParser("new UiSelector()text(\"test\")").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfNoSuitableConstructor() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfNoSuitableConstructor() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("UiSelector has no suitable constructor");
         new UiSelectorParser("new UiSelector(1, true).text(\"test\")").parse();
@@ -136,15 +124,14 @@ public class UiSelectorParserTests {
 
     @Test()
     public void shouldThrowExceptionIfNoOpeningParenthesisAfterMethodName() throws
-            UiSelectorSyntaxException, UiObjectNotFoundException {
+            UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("No opening parenthesis after method name at position 17");
         new UiSelectorParser("new UiSelector().text)\"test\")").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionOnMethodWithInvalidArgsCount() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionOnMethodWithInvalidArgsCount() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage(
                 "`UiSelector` doesn't have suitable method `text` with arguments [\"test1\", 5]");
@@ -152,56 +139,49 @@ public class UiSelectorParserTests {
     }
 
     @Test()
-    public void shouldThrowExceptionOnInvalidMethod() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionOnInvalidMethod() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("UiSelector has no `test` method");
         new UiSelectorParser("new UiSelector().test(5)").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfBooleanArgHasInvalidType() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfBooleanArgHasInvalidType() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("invalidArg is not a boolean");
         new UiSelectorParser("new UiSelector().checkable(invalidArg)").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfStringArgHasInvalidType() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfStringArgHasInvalidType() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("invalidArg is not a string");
         new UiSelectorParser("new UiSelector().text(invalidArg)").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfIntegerArgHasInvalidType() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfIntegerArgHasInvalidType() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("invalidArg is not a integer");
         new UiSelectorParser("new UiSelector().index(invalidArg)").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfArgTypeIsNotSupported() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfArgTypeIsNotSupported() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("Could not parse");
         new UiSelectorParser("new UiSelector().equals(test)").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfClassNotFound() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfClassNotFound() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage(containsString("com.fake.class"));
         new UiSelectorParser("new UiSelector().className(com.fake.class)").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfMethodIsNotAccessible() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfMethodIsNotAccessible() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("Problem using reflection to call `getInt` method");
         new UiSelectorParser("new UiSelector().getInt(5)").parse();
@@ -209,15 +189,14 @@ public class UiSelectorParserTests {
 
     @Test()
     public void shouldThrowExceptionIfMethodDoesNotReturnUiSelector() throws
-            UiSelectorSyntaxException, UiObjectNotFoundException {
+            UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("Unsupported return value type:`String`.");
         new UiSelectorParser("new UiSelector().index(0).toString()").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfMethodThrowsException() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfMethodThrowsException() throws UiSelectorSyntaxException {
         expectedException.expect(UiAutomator2Exception.class);
         expectedException.expectMessage("java.util.regex.PatternSyntaxException: " +
                 "Unclosed character class near index 0");
@@ -225,24 +204,21 @@ public class UiSelectorParserTests {
     }
 
     @Test()
-    public void shouldThrowExceptionIfMethodNameIsMissing() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfMethodNameIsMissing() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("Missing method name at position 17");
         new UiSelectorParser("new UiSelector().(0)").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfArgumentIsMissing() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfArgumentIsMissing() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("Missing argument at position 22");
         new UiSelectorParser("new UiSelector().index(,1)").parse();
     }
 
     @Test()
-    public void shouldThrowExceptionIfLastArgumentIsMissing() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfLastArgumentIsMissing() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("Missing argument at position 24");
         new UiSelectorParser("new UiSelector().index(0,)").parse();
