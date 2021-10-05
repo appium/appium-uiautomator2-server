@@ -43,6 +43,7 @@ import io.appium.uiautomator2.handler.GetClipboard;
 import io.appium.uiautomator2.handler.GetDeviceInfo;
 import io.appium.uiautomator2.handler.GetDevicePixelRatio;
 import io.appium.uiautomator2.handler.GetDeviceSize;
+import io.appium.uiautomator2.handler.GetDisplayDensity;
 import io.appium.uiautomator2.handler.GetElementAttribute;
 import io.appium.uiautomator2.handler.GetElementScreenshot;
 import io.appium.uiautomator2.handler.GetName;
@@ -184,6 +185,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new FirstVisibleView("/wd/hub/session/:sessionId/appium/element/:id/first_visible"));
         register(getHandler, new GetAlertText("/wd/hub/session/:sessionId/alert/text"));
         register(getHandler, new GetDeviceInfo("/wd/hub/session/:sessionId/appium/device/info"));
+        register(getHandler, new GetDisplayDensity("/wd/hub/session/:sessionId/appium/device/display_density"));
     }
 
     private void register(Map<String, BaseRequestHandler> registerOn, BaseRequestHandler handler) {
