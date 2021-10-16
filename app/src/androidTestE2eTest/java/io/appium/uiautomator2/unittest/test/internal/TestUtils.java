@@ -85,10 +85,14 @@ public class TestUtils {
     }
 
     public static Response waitForElement(By by) {
-        return waitForElement(by, null);
+        return waitForElement(by, null, null);
     }
 
     public static Response waitForElement(By by, String context) {
+        return waitForElement(by, null, null);
+    }
+
+    public static Response waitForElement(By by, String context, Long timeoutMs) {
         final long start = elapsedRealtime();
         Response response;
         do {
@@ -101,7 +105,7 @@ public class TestUtils {
               //
             }
             waitForMillis(DEFAULT_POLLING_INTERVAL);
-        } while (elapsedRealtime() - start < Config.EXPLICIT_TIMEOUT);
+        } while (elapsedRealtime() - start < (timeoutMs == null ? Config.EXPLICIT_TIMEOUT : timeoutMs));
         throw new TimeoutException("element located by " + by);
     }
 

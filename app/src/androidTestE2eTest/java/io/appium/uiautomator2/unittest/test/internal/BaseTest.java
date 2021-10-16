@@ -97,7 +97,7 @@ public abstract class BaseTest {
     public void launchAUT() throws JSONException {
         dismissSystemAlert();
         startActivity(Config.APP_NAME);
-        waitForElement(By.accessibilityId("Accessibility"));
+        waitForElement(By.accessibilityId("Accessibility"), null, Config.APP_LAUNCH_TIMEOUT);
     }
 
     protected void dismissSystemAlert() {
@@ -130,5 +130,14 @@ public abstract class BaseTest {
 
         click(elementId);
         waitForElementInvisibility(elementId);
+    }
+
+    protected boolean isRunningInCi() {
+        return System.getenv("CI") != null;
+    }
+
+    protected int getCiSdkVersion() {
+        String sdkVersion = System.getenv("ANDROID_SDK_VERSION");
+        return sdkVersion == null ? -1 : Integer.parseInt(sdkVersion);
     }
 }

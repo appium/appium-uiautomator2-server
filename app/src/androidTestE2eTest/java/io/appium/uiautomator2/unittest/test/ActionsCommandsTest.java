@@ -90,11 +90,6 @@ public class ActionsCommandsTest extends BaseTest {
 
     @Test
     public void verifyDragAndDropOnAnotherElement() throws JSONException {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // TODO: The test is unstable on API30
-            return;
-        }
-
         setupDragDropView();
 
         Response dot1Response = findElement(By.id(dotIdByIdx(1)));
@@ -156,7 +151,7 @@ public class ActionsCommandsTest extends BaseTest {
 
     @Test
     public void verifyDragGesture() throws JSONException {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (isRunningInCi() && getCiSdkVersion() >= Build.VERSION_CODES.R) {
             // TODO: The test is unstable on API30
             return;
         }
@@ -201,7 +196,7 @@ public class ActionsCommandsTest extends BaseTest {
 
     @Test
     public void verifyPinchCloseGesture() throws JSONException {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (isRunningInCi() && getCiSdkVersion() >= Build.VERSION_CODES.R) {
             // TODO: The test is unstable on API30
             return;
         }
