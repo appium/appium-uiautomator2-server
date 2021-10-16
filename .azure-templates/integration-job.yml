@@ -34,7 +34,7 @@ jobs:
         else
           adb install -r $apidemos_app
         fi
-      displayName: Install UI Catalog App
+      displayName: Install ApiDemos App
     - script: |-
         nohup adb logcat -v time *:S appium:V appium-e2e-tests:V TestRunner:V *:E *:F > logcat.txt &
         ./gradlew connectedE2eTestDebugAndroidTest \
