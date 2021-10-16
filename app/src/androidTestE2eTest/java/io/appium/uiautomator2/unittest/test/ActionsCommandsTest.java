@@ -151,7 +151,7 @@ public class ActionsCommandsTest extends BaseTest {
 
     @Test
     public void verifyDragGesture() throws JSONException {
-        if (isRunningInCi() && getCiSdkVersion() >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // TODO: The test is unstable on API30
             return;
         }
@@ -196,7 +196,7 @@ public class ActionsCommandsTest extends BaseTest {
 
     @Test
     public void verifyPinchCloseGesture() throws JSONException {
-        if (isRunningInCi() && getCiSdkVersion() >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // TODO: The test is unstable on API30
             return;
         }

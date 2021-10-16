@@ -131,13 +131,4 @@ public abstract class BaseTest {
         click(elementId);
         waitForElementInvisibility(elementId);
     }
-
-    protected boolean isRunningInCi() {
-        return System.getenv("CI") != null;
-    }
-
-    protected int getCiSdkVersion() {
-        String sdkVersion = System.getenv("ANDROID_SDK_VERSION");
-        return sdkVersion == null ? -1 : Integer.parseInt(sdkVersion);
-    }
 }
