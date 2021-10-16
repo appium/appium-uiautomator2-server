@@ -58,13 +58,11 @@ public class ScreenshotHelper {
      * @return Base64-encoded screenshot string.
      */
     public static String takeScreenshot(@Nullable final Rect cropArea) throws TakeScreenshotException {
-        Object screenshotObj = takeDeviceScreenshot(cropArea == null ? String.class : Bitmap.class);
-
         if (cropArea == null) {
-            return (String) screenshotObj;
+            return takeDeviceScreenshot(String.class);
         }
 
-        Bitmap screenshot = (Bitmap) screenshotObj;
+        Bitmap screenshot = takeDeviceScreenshot(Bitmap.class);
         try {
             final Bitmap elementScreenshot = crop(screenshot, cropArea);
             screenshot.recycle();
