@@ -44,7 +44,7 @@ class TestWatcher extends org.junit.rules.TestWatcher {
         Logger.debug("Dumping hierarchy");
         try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
             Device.getUiDevice().dumpWindowHierarchy(stream);
-            Logger.debug(new String(stream.toByteArray()));
+            Logger.debug(stream.toString());
         } catch (Exception e) {
             Logger.error("Unable to dump hierarchy:" + e);
         }
