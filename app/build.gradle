@@ -14,11 +14,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'de.mobilej.unmock'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     defaultConfig {
         applicationId 'io.appium.uiautomator2'
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 94
         archivesBaseName = 'appium-uiautomator2'
         /**
@@ -109,11 +109,7 @@ task installAUT(type: Exec) {
         /* This seems weird but it is what it is: https://github.com/wix/detox/issues/274 */
         def command = sdkVersion.toInteger() < 23 ? "$adb install -r $apk" : "$adb install -r -g $apk"
         println "Execute command: $command"
-        try {
-            commandLine command.split(' ')
-        } catch (Exception e) {
-            println "Could not install ApiDemos app: ${e.getMessage()}"
-        }
+        commandLine command.split(' ')
     }
 }
 
