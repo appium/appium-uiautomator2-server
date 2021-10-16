@@ -102,7 +102,7 @@ public class UpdateSettingsTests {
 
     @Before
     public void setUp() throws JSONException {
-        AppiumUIA2Driver.getInstance().initializeSession(Collections.<String, Object>emptyMap());
+        AppiumUIA2Driver.getInstance().initializeSession(Collections.emptyMap());
         HashMap<String, Object> payload = new HashMap<>();
         payload.put(SETTING_NAME, SETTING_VALUE);
 
@@ -182,32 +182,32 @@ public class UpdateSettingsTests {
     @Test
     public void shouldBeAbleToReturnMjpegServerFramerateSetting() {
         verifySettingIsAvailable(
-            MJPEG_SERVER_FRAMERATE,
-            MjpegServerFramerate.class);
+                MJPEG_SERVER_FRAMERATE,
+                MjpegServerFramerate.class);
     }
 
     @Test
     public void shouldBeAbleToReturnMjpegScalingFactorSetting() {
         verifySettingIsAvailable(
-            MJPEG_SCALING_FACTOR,
-            MjpegScalingFactor.class);
+                MJPEG_SCALING_FACTOR,
+                MjpegScalingFactor.class);
     }
 
     @Test
     public void shouldBeAbleToReturnMjpeqServerScreenshotQualitySetting() {
         verifySettingIsAvailable(
-            MJPEG_SERVER_SCREENSHOT_QUALITY,
-            MjpegServerScreenshotQuality.class);
+                MJPEG_SERVER_SCREENSHOT_QUALITY,
+                MjpegServerScreenshotQuality.class);
     }
 
     @Test
     public void shouldBeAbleToReturnMjpegBilinearFilteringSetting() {
         verifySettingIsAvailable(
-            MJPEG_BILINEAR_FILTERING,
-            MjpegBilinearFiltering.class);
+                MJPEG_BILINEAR_FILTERING,
+                MjpegBilinearFiltering.class);
     }
 
-    @Test(expected=UnsupportedSettingException.class)
+    @Test(expected = UnsupportedSettingException.class)
     public void shouldThrowExceptionIfSettingIsNotSupported() {
         updateSettings.getSetting("unsupported_setting");
     }
