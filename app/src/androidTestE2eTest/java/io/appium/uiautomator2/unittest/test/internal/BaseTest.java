@@ -68,7 +68,7 @@ public abstract class BaseTest {
             return;
         }
         assertNotNull(getUiDevice());
-        ctx = InstrumentationRegistry.getInstrumentation().getContext();
+        ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
         serverInstrumentation = ServerInstrumentation.getInstance();
         Logger.info("Starting Server");
         serverInstrumentation.startServer();
