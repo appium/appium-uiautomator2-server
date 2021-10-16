@@ -89,7 +89,7 @@ public class TestUtils {
     }
 
     public static Response waitForElement(By by, String context) {
-        return waitForElement(by, null, null);
+        return waitForElement(by, context, null);
     }
 
     public static Response waitForElement(By by, String context, Long timeoutMs) {
