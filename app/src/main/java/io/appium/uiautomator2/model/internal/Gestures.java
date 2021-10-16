@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
-import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
+import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
 public class Gestures {
     private final Object wrappedInstance;

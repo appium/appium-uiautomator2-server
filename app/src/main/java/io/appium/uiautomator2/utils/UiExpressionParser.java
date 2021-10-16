@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.common.exceptions.UiSelectorSyntaxException;
 
@@ -58,8 +59,7 @@ abstract class UiExpressionParser<T, U> {
     }
 
     @SuppressWarnings("unchecked")
-    protected T consumeConstructor() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    protected T consumeConstructor() throws UiSelectorSyntaxException {
         skipLeadingSpaces();
         final String constructorExpression = getConstructorExpression();
         if (!expression.startsWith(constructorExpression, currentIndex)) {
@@ -176,8 +176,7 @@ abstract class UiExpressionParser<T, U> {
      * our
      * argument
      */
-    protected <V> V consumeMethodCall() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    protected <V> V consumeMethodCall() throws UiSelectorSyntaxException {
         final String methodName = consumeMethodName();
         final List<String> arguments = consumeMethodParameters();
         final Pair<Method, List<Object>> methodWithArgument = findMethod(methodName, arguments);
@@ -185,7 +184,7 @@ abstract class UiExpressionParser<T, U> {
     }
 
     protected Pair<Method, List<Object>> findMethod(String methodName, List<String> arguments)
-            throws UiSelectorSyntaxException, UiObjectNotFoundException {
+            throws UiSelectorSyntaxException {
         final List<Method> candidates = new ArrayList<>();
         for (final Method method : clazz.getDeclaredMethods()) {
             if (method.getName().equals(methodName)) {
@@ -218,7 +217,7 @@ abstract class UiExpressionParser<T, U> {
     }
 
     private Pair<Constructor, List<Object>> findConstructor(List<String> arguments) throws
-            UiSelectorSyntaxException, UiObjectNotFoundException {
+            UiSelectorSyntaxException {
         UiSelectorSyntaxException exThrown = null;
         for (final Constructor constructor : clazz.getConstructors()) {
             try {
@@ -237,7 +236,7 @@ abstract class UiExpressionParser<T, U> {
 
     @SuppressWarnings("unchecked")
     protected <V> V invokeMethod(Object receiver, Method method, List<Object> arguments) throws
-            UiSelectorSyntaxException, UiObjectNotFoundException {
+            UiSelectorSyntaxException {
         try {
             return (V) method.invoke(receiver, arguments.toArray());
         } catch (IllegalAccessException e) {
@@ -248,14 +247,14 @@ abstract class UiExpressionParser<T, U> {
         } catch (InvocationTargetException e) {
             Throwable targetException = e.getTargetException();
             if (targetException instanceof UiObjectNotFoundException) {
-                throw (UiObjectNotFoundException) targetException;
+                throw new ElementNotFoundException(targetException);
             }
             throw new UiAutomator2Exception(targetException);
         }
     }
 
     private List<Object> coerceArgsToTypes(Type[] types, List<String> arguments) throws
-            UiSelectorSyntaxException, UiObjectNotFoundException {
+            UiSelectorSyntaxException {
         if (types.length != arguments.size()) {
             throw new UiSelectorSyntaxException(expression.toString(),
                     String.format("Invalid arguments count. Actual: %s. Expected: %s.",
@@ -268,8 +267,7 @@ abstract class UiExpressionParser<T, U> {
         return result;
     }
 
-    private Object coerceArgToType(Type type, String argument) throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    private Object coerceArgToType(Type type, String argument) throws UiSelectorSyntaxException {
         Logger.debug(String.format("UiSelector coerce type:%s arg:%s", type, argument));
         if (type == boolean.class) {
             if (argument.matches("^(true|false)$")) {

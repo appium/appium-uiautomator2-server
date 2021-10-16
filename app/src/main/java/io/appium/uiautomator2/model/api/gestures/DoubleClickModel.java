@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.handler;
+package io.appium.uiautomator2.model.api.gestures;
 
-import io.appium.uiautomator2.handler.request.SafeRequestHandler;
-import io.appium.uiautomator2.http.AppiumResponse;
-import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.internal.Gestures;
+import io.appium.uiautomator2.model.api.BaseModel;
+import io.appium.uiautomator2.model.api.ElementModel;
 
-public class GetDevicePixelRatio extends SafeRequestHandler {
-
-    public GetDevicePixelRatio(String mappedUri) {
-        super(mappedUri);
-    }
-
-    @Override
-    protected AppiumResponse safeHandle(IHttpRequest request) {
-        return new AppiumResponse(getSessionId(request), Gestures.getDisplayDensity());
-    }
+public class DoubleClickModel extends BaseModel {
+    public ElementModel origin;
+    public PointModel offset;
 }

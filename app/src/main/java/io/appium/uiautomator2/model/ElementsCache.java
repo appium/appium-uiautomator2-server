@@ -23,8 +23,11 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 
+import java.util.Objects;
+
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
+import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.ByUiAutomatorFinder;
 import io.appium.uiautomator2.utils.Logger;
@@ -40,20 +43,24 @@ public class ElementsCache {
         this.cache = new LruCache<>(maxSize);
     }
 
-    private static AndroidElement toAndroidElement(Object element, boolean isSingleMatch,
+    private static AndroidElement toAndroidElement(AccessibleUiObject element, boolean isSingleMatch,
                                                    @Nullable By by, @Nullable String contextId) {
         return toAndroidElement(element, isSingleMatch, by, contextId, null);
     }
 
-    private static AndroidElement toAndroidElement(Object element, boolean isSingleMatch,
+    @NonNull
+    private static AndroidElement toAndroidElement(AccessibleUiObject element, boolean isSingleMatch,
                                                    @Nullable By by, @Nullable String contextId,
                                                    @Nullable String id) {
-        if (element instanceof UiObject2) {
-            UiObject2Element result = new UiObject2Element((UiObject2) element, isSingleMatch, by, contextId);
-            return id == null ? result : result.withId(id);
-        } else if (element instanceof UiObject) {
-            UiObjectElement result = new UiObjectElement((UiObject) element, isSingleMatch, by, contextId);
-            return id == null ? result : result.withId(id);
+        String cacheId = id == null ? AxNodeInfoHelper.toUuid(element.getInfo()) : id;
+        if (element.getValue() instanceof UiObject2) {
+            UiObject2Element result = new UiObject2Element(
+                    (UiObject2) element.getValue(), isSingleMatch, by, contextId);
+            return cacheId == null ? result : result.withId(cacheId);
+        } else if (element.getValue() instanceof UiObject) {
+            UiObjectElement result = new UiObjectElement(
+                    (UiObject) element.getValue(), isSingleMatch, by, contextId);
+            return cacheId == null ? result : result.withId(cacheId);
         }
         throw new IllegalStateException(
                 String.format("Unknown element type: %s", element.getClass().getName()));
@@ -76,20 +83,20 @@ public class ElementsCache {
         final AndroidElement searchRoot = element.getContextId() == null
                 ? null
                 : get(element.getContextId());
-        Object ui2Object = null;
+        AccessibleUiObject accessibleUiObject = null;
         try {
             if (by instanceof By.ById) {
                 String locator = rewriteIdLocator((By.ById) by);
-                ui2Object = searchRoot == null
+                accessibleUiObject = searchRoot == null
                         ? CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator))
                         : searchRoot.getChild(androidx.test.uiautomator.By.res(locator));
             } else if (by instanceof By.ByAccessibilityId) {
-                ui2Object = searchRoot == null
+                accessibleUiObject = searchRoot == null
                         ? CustomUiDevice.getInstance().findObject(
                         androidx.test.uiautomator.By.desc(by.getElementLocator()))
                         : searchRoot.getChild(androidx.test.uiautomator.By.desc(by.getElementLocator()));
             } else if (by instanceof By.ByClass) {
-                ui2Object = searchRoot == null
+                accessibleUiObject = searchRoot == null
                         ? CustomUiDevice.getInstance().findObject(
                         androidx.test.uiautomator.By.clazz(by.getElementLocator()))
                         : searchRoot.getChild(androidx.test.uiautomator.By.clazz(by.getElementLocator()));
@@ -97,20 +104,27 @@ public class ElementsCache {
                 final NodeInfoList matchedNodes = getXPathNodeMatch(
                         by.getElementLocator(), searchRoot, false);
                 if (!matchedNodes.isEmpty()) {
-                    ui2Object = CustomUiDevice.getInstance().findObject(matchedNodes);
+                    accessibleUiObject = CustomUiDevice.getInstance().findObject(matchedNodes);
                 }
             } else if (by instanceof By.ByAndroidUiAutomator) {
-                ui2Object = new ByUiAutomatorFinder().findOne((By.ByAndroidUiAutomator) by, searchRoot);
+                accessibleUiObject = new ByUiAutomatorFinder().findOne((By.ByAndroidUiAutomator) by, searchRoot);
             }
         } catch (Exception e) {
             Logger.warn(String.format(
                     "An exception happened while restoring the cached element '%s'", by), e);
         }
-        if (ui2Object == null) {
+        if (accessibleUiObject == null) {
             throw new StaleElementReferenceException(String.format(
                     "The element '%s' does not exist in DOM anymore", by));
+        } else {
+            String uuid = AxNodeInfoHelper.toUuid(accessibleUiObject.getInfo());
+            if (uuid != null && !Objects.equals(uuid, element.getId())) {
+                throw new StaleElementReferenceException(String.format(
+                        "The element '%s' is not linked to the same object in DOM anymore", by));
+            }
         }
-        AndroidElement restoredElement = toAndroidElement(ui2Object,
+
+        AndroidElement restoredElement = toAndroidElement(accessibleUiObject,
                 element.isSingleMatch(), element.getBy(), element.getContextId(), element.getId());
         cache.put(restoredElement.getId(), restoredElement);
         return restoredElement;
@@ -149,15 +163,15 @@ public class ElementsCache {
         return resultElement;
     }
 
-    public AndroidElement add(Object element, boolean isSingleMatch) {
+    public AndroidElement add(AccessibleUiObject element, boolean isSingleMatch) {
         return add(element, isSingleMatch, null, null);
     }
 
-    public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by) {
+    public AndroidElement add(AccessibleUiObject element, boolean isSingleMatch, @Nullable By by) {
         return add(element, isSingleMatch, by, null);
     }
 
-    public AndroidElement add(Object element, boolean isSingleMatch, @Nullable By by,
+    public AndroidElement add(AccessibleUiObject element, boolean isSingleMatch, @Nullable By by,
                               @Nullable String contextId) {
         AndroidElement androidElement = toAndroidElement(element, isSingleMatch, by, contextId);
         synchronized (cache) {

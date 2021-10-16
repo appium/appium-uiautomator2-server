@@ -23,8 +23,8 @@ import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.TrackScrollEvents;
 import io.appium.uiautomator2.utils.Logger;
 
-import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
+import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
 public class InteractionController {
 

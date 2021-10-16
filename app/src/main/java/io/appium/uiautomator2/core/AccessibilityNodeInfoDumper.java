@@ -27,26 +27,33 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import androidx.annotation.Nullable;
 
 import org.apache.commons.io.IOUtils;
-import org.jdom2.Document;
-import org.jdom2.filter.Filters;
-import org.jdom2.input.JDOMParseException;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.xpath.XPathExpression;
-import org.jdom2.xpath.XPathFactory;
+import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
+import org.eclipse.wst.xml.xpath2.api.Item;
+import org.eclipse.wst.xml.xpath2.api.ResultSequence;
+import org.eclipse.wst.xml.xpath2.api.XPath2Expression;
+import org.eclipse.wst.xml.xpath2.processor.Engine;
+import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
+import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
+import org.eclipse.wst.xml.xpath2.processor.util.StaticContextBuilder;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.NotificationListener;
-import io.appium.uiautomator2.model.UiElementSnapshot;
 import io.appium.uiautomator2.model.UiElement;
+import io.appium.uiautomator2.model.UiElementSnapshot;
 import io.appium.uiautomator2.model.settings.NormalizeTagNames;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Attribute;
@@ -59,26 +66,26 @@ import static io.appium.uiautomator2.utils.XMLHelpers.toNodeName;
 import static io.appium.uiautomator2.utils.XMLHelpers.toSafeString;
 import static net.gcardone.junidecode.Junidecode.unidecode;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 public class AccessibilityNodeInfoDumper {
     private static final String UI_ELEMENT_INDEX = "uiElementIndex";
     private static final String NON_XML_CHAR_REPLACEMENT = "?";
     private static final String NAMESPACE = "";
     private static final String DEFAULT_VIEW_CLASS_NAME = View.class.getName();
     private static final String XML_ENCODING = "UTF-8";
-    private static final XPathFactory XPATH = XPathFactory.instance();
-    private static final SAXBuilder SAX_BUILDER = new SAXBuilder();
     private final Semaphore RESOURCES_GUARD = new Semaphore(1);
 
     @Nullable
     private final AccessibilityNodeInfo root;
     private final SparseArray<UiElement<?, ?>> uiElementsMapping = new SparseArray<>();
-    @Nullable
     private final Set<Attribute> includedAttributes;
     private boolean shouldAddDisplayInfo;
     private XmlSerializer serializer;
 
     public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root,
-                                       @Nullable Set<Attribute> includedAttributes) {
+                                       Set<Attribute> includedAttributes) {
         this.root = root;
         this.includedAttributes = includedAttributes;
     }
@@ -186,10 +193,23 @@ public class AccessibilityNodeInfoDumper {
         }
     }
 
-    public NodeInfoList findNodes(String xpathSelector, boolean multiple) {
+    private static Document loadDocument(InputStream in) {
+        DocumentBuilderFactory factory = new DocumentBuilderFactoryImpl();
+        factory.setNamespaceAware(true);
+        factory.setValidating(false);
         try {
-            XPATH.compile(xpathSelector, Filters.element());
-        } catch (IllegalArgumentException e) {
+            return factory.newDocumentBuilder().parse(in);
+        } catch (SAXException | ParserConfigurationException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public NodeInfoList findNodes(String xpathSelector, boolean multiple) {
+        StaticContextBuilder scb = new StaticContextBuilder();
+        final XPath2Expression expr;
+        try {
+            expr = new Engine().parseExpression(xpathSelector, scb);
+        } catch (XPathParserException e) {
             throw new InvalidSelectorException(e);
         }
 
@@ -199,17 +219,31 @@ public class AccessibilityNodeInfoDumper {
             throw new UiAutomator2Exception(e);
         }
         try (InputStream xmlStream = toStream(true)) {
-            final Document document = SAX_BUILDER.build(xmlStream);
-            final XPathExpression<org.jdom2.Attribute> expr = XPATH
-                    .compile(String.format("(%s)/@%s", xpathSelector, UI_ELEMENT_INDEX), Filters.attribute());
-            final NodeInfoList matchedNodes = new NodeInfoList();
+            Document doc = loadDocument(xmlStream);
+            ResultSequence rs = expr.evaluate(new DynamicContextBuilder(scb), new Object[] { doc });
+            NodeInfoList matchedNodes = new NodeInfoList();
+            Iterator<Item> iterator = rs.iterator();
             final long timeStarted = SystemClock.uptimeMillis();
-            for (org.jdom2.Attribute uiElementId : expr.evaluate(document)) {
-                UiElement<?, ?> uiElement = uiElementsMapping.get(uiElementId.getIntValue());
-                if (uiElement == null || uiElement.getNode() == null) {
+            while (iterator.hasNext()) {
+                Item item = iterator.next();
+                if (!(item.getNativeValue() instanceof Node)) {
+                    continue;
+                }
+                Node node = (Node) item.getNativeValue();
+                if (node.getNodeType() != Node.ELEMENT_NODE) {
                     continue;
                 }
 
+                NamedNodeMap attributes = node.getAttributes();
+                Node uiElementIndexAttr = attributes.getNamedItem(UI_ELEMENT_INDEX);
+                if (uiElementIndexAttr == null) {
+                    continue;
+                }
+                UiElement<?, ?> uiElement = uiElementsMapping.get(
+                        Integer.parseInt(uiElementIndexAttr.getNodeValue()));
+                if (uiElement == null || uiElement.getNode() == null) {
+                    continue;
+                }
                 matchedNodes.add(uiElement.getNode());
                 if (!multiple) {
                     break;
@@ -218,12 +252,8 @@ public class AccessibilityNodeInfoDumper {
             Logger.info(String.format("Took %sms to retrieve %s matches for '%s' XPath query",
                     SystemClock.uptimeMillis() - timeStarted, matchedNodes.size(), xpathSelector));
             return matchedNodes;
-        } catch (JDOMParseException e) {
-            throw new UiAutomator2Exception(
-                    String.format("%s. Try changing the '%s' driver setting to 'true' in order " +
-                                    "to workaround the problem.", e.getMessage(),
-                    Settings.NORMALIZE_TAG_NAMES.getSetting().getName()), e);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new UiAutomator2Exception(e);
         } finally {
             uiElementsMapping.clear();

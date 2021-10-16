@@ -23,6 +23,7 @@ import androidx.test.uiautomator.Configurator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -72,7 +73,8 @@ public abstract class BaseTest {
         Logger.info("Starting Server");
         serverInstrumentation.startServer();
         Client.waitForNettyStatus(NettyStatus.ONLINE);
-        createSession();
+        JSONObject responseValue = createSession().getValue();
+        WebDriverSession.getInstance().setId(responseValue.getString("sessionId"));
         Configurator.getInstance().setWaitForSelectorTimeout(0);
         Configurator.getInstance().setWaitForIdleTimeout(50000);
         TestUtils.grantPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
@@ -82,6 +84,7 @@ public abstract class BaseTest {
     @AfterClass
     public static void stopSever() {
         deleteSession();
+        WebDriverSession.getInstance().setId(null);
         if (serverInstrumentation == null) {
             return;
         }

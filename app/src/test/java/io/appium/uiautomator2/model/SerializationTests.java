@@ -27,7 +27,7 @@ import io.appium.uiautomator2.model.api.touch.w3c.W3CActionsModel;
 import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.powermock.api.mockito.PowerMockito.when;
 

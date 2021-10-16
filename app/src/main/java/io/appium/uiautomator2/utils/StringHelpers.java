@@ -59,4 +59,17 @@ public class StringHelpers {
     public static String toNullableString(@Nullable String input, boolean replaceNull) {
         return input == null ? (replaceNull ? "" : null) : input;
     }
+
+    @NonNull
+    public static String pluralize(long count, String singularWord) {
+        return pluralize(count, singularWord, true);
+    }
+
+    @NonNull
+    public static String pluralize(long count, String singularWord, boolean includeCount) {
+        if (count == 1) {
+            return includeCount ? String.format("%s %s", count, singularWord) : String.valueOf(singularWord);
+        }
+        return includeCount ? String.format("%s %ss", count, singularWord) : String.format("%ss", singularWord);
+    }
 }

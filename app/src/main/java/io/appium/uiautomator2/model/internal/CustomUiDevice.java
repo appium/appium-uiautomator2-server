@@ -24,7 +24,6 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiSelector;
 
@@ -37,25 +36,26 @@ import java.util.List;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.model.AccessibleUiObject;
 import io.appium.uiautomator2.model.ScreenRotation;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.ReflectionUtils;
 
+import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getConstructor;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
-import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
+import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
 public class CustomUiDevice {
     private static final int CHANGE_ROTATION_TIMEOUT_MS = 2000;
 
     private static final String FIELD_M_INSTRUMENTATION = "mInstrumentation";
     private static final String FIELD_API_LEVEL_ACTUAL = "API_LEVEL_ACTUAL";
-    private static final long UIOBJECT2_CREATION_TIMEOUT = 1000; // ms
 
     private static CustomUiDevice INSTANCE = null;
     private final Method METHOD_FIND_MATCH;
@@ -90,27 +90,14 @@ public class CustomUiDevice {
         return (Integer) API_LEVEL_ACTUAL;
     }
 
-    @Nullable
     private UiObject2 toUiObject2(Object selector, AccessibilityNodeInfo node) {
         Object[] constructorParams = {getUiDevice(), selector, node};
-        long end = SystemClock.uptimeMillis() + UIOBJECT2_CREATION_TIMEOUT;
-        while (true) {
-            Object object2;
-            try {
-                object2 = uiObject2Constructor.newInstance(constructorParams);
-            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                String msg = String.format("Cannot create UiObject2 instance with '%s' selector", selector);
-                Logger.error(msg, e);
-                throw new UiAutomator2Exception(msg, e);
-            }
-            if (object2 instanceof UiObject2) {
-                return (UiObject2) object2;
-            }
-            long remainingMillis = end - SystemClock.uptimeMillis();
-            if (remainingMillis < 0) {
-                return null;
-            }
-            SystemClock.sleep(Math.min(200, remainingMillis));
+        try {
+            return (UiObject2) uiObject2Constructor.newInstance(constructorParams);
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            String msg = String.format("Cannot create UiObject2 instance with '%s' selector", selector);
+            Logger.error(msg, e);
+            throw new UiAutomator2Exception(msg, e);
         }
     }
 
@@ -120,7 +107,7 @@ public class CustomUiDevice {
      * @throws InvalidSelectorException if given selector is unsupported/unknown
      */
     @Nullable
-    public Object findObject(Object selector) throws UiAutomator2Exception {
+    public AccessibleUiObject findObject(Object selector) throws UiAutomator2Exception {
         final AccessibilityNodeInfo node;
         if (selector instanceof BySelector) {
             node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcherClass,
@@ -132,20 +119,16 @@ public class CustomUiDevice {
             node = (AccessibilityNodeInfo) selector;
             selector = toSelector(node);
         } else if (selector instanceof UiSelector) {
-            UiObject uiObject = getUiDevice().findObject((UiSelector) selector);
-            return uiObject.exists() ? uiObject : null;
+            return toAccessibleUiObject(getUiDevice().findObject((UiSelector) selector));
         } else {
             throw new InvalidSelectorException("Selector of type " + selector.getClass().getName() + " not supported");
         }
-        return node == null ? null : toUiObject2(selector, node);
+        return node == null ? null : new AccessibleUiObject(toUiObject2(selector, node), node);
     }
 
     public synchronized GestureController getGestureController() {
         if (gestureController == null) {
             UiObject2 dummyElement = toUiObject2(null, null);
-            if (dummyElement == null) {
-                throw new IllegalStateException("Cannot create dummy UiObject2 instance");
-            }
             Gestures gestures = new Gestures(getField("mGestures", dummyElement));
             gestureController = new GestureController(getField("mGestureController", dummyElement), gestures);
         }
@@ -155,14 +138,14 @@ public class CustomUiDevice {
     /**
      * Returns List<object> to match the {@code selector} criteria.
      */
-    public List<Object> findObjects(Object selector) throws UiAutomator2Exception {
-        List<Object> ret = new ArrayList<>();
+    public List<AccessibleUiObject> findObjects(Object selector) throws UiAutomator2Exception {
+        List<AccessibleUiObject> ret = new ArrayList<>();
 
-        List<AccessibilityNodeInfo> axNodesList;
+        final List<AccessibilityNodeInfo> axNodesList;
         if (selector instanceof BySelector) {
-            Object nodes = invoke(METHOD_FIND_MATCHES, ByMatcherClass, getUiDevice(), selector, getCachedWindowRoots());
             //noinspection unchecked
-            axNodesList = (List) nodes;
+            axNodesList = (List<AccessibilityNodeInfo>) invoke(
+                    METHOD_FIND_MATCHES, ByMatcherClass, getUiDevice(), selector, getCachedWindowRoots());
         } else if (selector instanceof NodeInfoList) {
             axNodesList = ((NodeInfoList) selector).getAll();
         } else {
@@ -170,9 +153,7 @@ public class CustomUiDevice {
         }
         for (AccessibilityNodeInfo node : axNodesList) {
             UiObject2 uiObject2 = toUiObject2(toSelector(node), node);
-            if (uiObject2 != null) {
-                ret.add(uiObject2);
-            }
+            ret.add(new AccessibleUiObject(uiObject2, node));
         }
 
         return ret;

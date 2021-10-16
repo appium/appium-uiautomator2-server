@@ -20,69 +20,67 @@ import android.util.SparseArray;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
-import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
-import io.appium.uiautomator2.core.AxNodeInfoExtractor;
+import io.appium.uiautomator2.model.AccessibleUiObject;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
+import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelector;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.toSelectors;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
+import static io.appium.uiautomator2.utils.StringHelpers.pluralize;
 
 public class ByUiAutomatorFinder {
     private static final String UI_SELECTOR_CRITERION_PREFIX = "SELECTOR_";
 
-    public Object findOne(By.ByAndroidUiAutomator by)
-            throws InvalidSelectorException, UiObjectNotFoundException {
+    public AccessibleUiObject findOne(By.ByAndroidUiAutomator by) throws UiObjectNotFoundException {
         return findOne(by, null);
     }
 
-    public Object findOne(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
-            throws InvalidSelectorException, UiObjectNotFoundException {
+    public AccessibleUiObject findOne(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
+            throws UiObjectNotFoundException {
         UiSelector selector = toSelector(by.getElementLocator());
         return context == null
                 ? CustomUiDevice.getInstance().findObject(selector)
                 : context.getChild(selector);
     }
 
-    public List<Object> findMany(By.ByAndroidUiAutomator by)
-            throws InvalidSelectorException, UiObjectNotFoundException {
+    public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by) {
         return findMany(by, null);
     }
 
     /**
      * returns  List<UiObject> using '-android automator' expression
      **/
-    public List<Object> findMany(By.ByAndroidUiAutomator by, @Nullable AndroidElement context)
-            throws InvalidSelectorException, UiObjectNotFoundException {
-        List<Object> foundElements = new ArrayList<>();
+    public List<AccessibleUiObject> findMany(By.ByAndroidUiAutomator by, @Nullable AndroidElement context) {
+        List<AccessibleUiObject> foundElements = new ArrayList<>();
         for (UiSelector sel : toSelectors(by.getElementLocator())) {
             // With multiple selectors, we expect that some elements may not exist.
-            try {
-                foundElements.addAll(fetchElements(sel, context));
-            } catch (UiObjectNotFoundException ignored) {
-                // for findElements up on no elements, empty array should return.
-            }
+            List<AccessibleUiObject> chunk = matchDescendantElements(sel, context);
+            foundElements.addAll(chunk);
+            Logger.info(String.format("Matched %s using selector %s",
+                    pluralize(chunk.size(), "element"), sel));
         }
+        Logger.info(String.format("Matched %s including possible duplicates",
+                pluralize(foundElements.size(), "element")));
         return dedupe(foundElements);
     }
 
-    private List<Object> fetchElements(UiSelector sel, @Nullable AndroidElement context)
-            throws UiObjectNotFoundException, InvalidSelectorException {
-        Logger.debug("getElements selector:" + sel.toString());
-        final ArrayList<Object> elements = new ArrayList<>();
+    public static List<AccessibleUiObject> matchDescendantElements(UiSelector sel,
+                                                                   @Nullable AndroidElement context) {
+        Logger.debug(String.format("matchDescendantElements selector: %s", sel));
 
         // If sel is UiSelector[CLASS=android.widget.Button, INSTANCE=0]
         // then invoking instance with a non-0 argument will corrupt the selector.
@@ -94,37 +92,38 @@ public class ByUiAutomatorFinder {
         if (doesUiSelectorHaveAttribute(sel, "INSTANCE")) {
             Logger.debug("Selector has INSTANCE attribute");
             // There's exactly one element when using instance.
-            UiObject instanceObj = getUiDevice().findObject(sel);
-            if (instanceObj != null && instanceObj.exists()) {
-                elements.add(instanceObj);
-            }
-            return elements;
+            AccessibleUiObject instanceObj = toAccessibleUiObject(getUiDevice().findObject(sel));
+            return instanceObj == null
+                    ? Collections.<AccessibleUiObject>emptyList()
+                    : Collections.singletonList(instanceObj);
         }
 
-        UiObject lastFoundObj;
-        UiSelector tmpSelector;
-        int counter = 0;
-        boolean keepSearching = true;
         final boolean useIndex = doesUiSelectorHaveAttribute(sel, "CLASS_REGEX");
         if (useIndex) {
             Logger.debug("Selector has CLASS_REGEX attribute");
         }
-        while (keepSearching) {
+        final List<AccessibleUiObject> elements = new ArrayList<>();
+        int descendantIndex = 0;
+        do {
+            AccessibleUiObject lastFoundObj;
             if (context == null) {
-                tmpSelector = useIndex ? sel.index(counter) : sel.instance(counter);
-                Logger.debug("getElements tmp selector:" + tmpSelector.toString());
-                lastFoundObj = getUiDevice().findObject(tmpSelector);
+                UiSelector tmpSelector = useIndex ? sel.index(descendantIndex) : sel.instance(descendantIndex);
+                Logger.debug(String.format("matchDescendantElements temporary selector: %s", tmpSelector));
+                lastFoundObj = toAccessibleUiObject(getUiDevice().findObject(tmpSelector));
             } else {
-                lastFoundObj = (UiObject) context.getChild(sel.instance(counter));
+                try {
+                    lastFoundObj = context.getChild(sel.instance(descendantIndex));
+                } catch (UiObjectNotFoundException e) {
+                    lastFoundObj = null;
+                }
             }
-            counter++;
-            if (lastFoundObj != null && lastFoundObj.exists()) {
-                elements.add(lastFoundObj);
-            } else {
-                keepSearching = false;
+            if (lastFoundObj == null) {
+                return elements;
             }
-        }
-        return elements;
+
+            elements.add(lastFoundObj);
+            descendantIndex++;
+        } while (true);
     }
 
     /**
@@ -133,16 +132,17 @@ public class ByUiAutomatorFinder {
      * @param elements - elements to remove duplicates from
      * @return a new list with duplicates removed
      */
-    private static List<Object> dedupe(List<Object> elements) {
-        List<Object> result = new ArrayList<>();
+    private static List<AccessibleUiObject> dedupe(List<AccessibleUiObject> elements) {
+        List<AccessibleUiObject> result = new ArrayList<>();
         Set<AccessibilityNodeInfo> nodes = new HashSet<>();
-        for (Object element : elements) {
-            AccessibilityNodeInfo node = AxNodeInfoExtractor.toNullableAxNodeInfo(element);
-            if (node != null && !nodes.contains(node)) {
-                nodes.add(node);
+        for (AccessibleUiObject element : elements) {
+            AccessibilityNodeInfo info = element.getInfo();
+            if (!nodes.contains(info)) {
+                nodes.add(info);
                 result.add(element);
             }
         }
+        Logger.info(String.format("%s element(s) left after deduplication", result.size()));
         return result;
     }
 

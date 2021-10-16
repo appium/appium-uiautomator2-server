@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.utils;
 
-import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import java.util.ArrayList;
@@ -34,8 +33,7 @@ public class UiAutomatorParser {
     private final List<UiSelector> selectors = new ArrayList<>();
     private String text;
 
-    public List<UiSelector> parse(String textToParse) throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public List<UiSelector> parse(String textToParse) throws UiSelectorSyntaxException {
         selectors.clear();
         if (textToParse.isEmpty()) {
             throw new UiSelectorSyntaxException(textToParse, "Tried to parse an empty string. " +
@@ -65,7 +63,7 @@ public class UiAutomatorParser {
         }
     }
 
-    private void consumeStatement() throws UiSelectorSyntaxException, UiObjectNotFoundException {
+    private void consumeStatement() throws UiSelectorSyntaxException {
         text = text.trim();
         String statement;
         int index = 0;

@@ -16,10 +16,15 @@
 
 package io.appium.uiautomator2.handler;
 
+import java.util.Objects;
+
+import io.appium.uiautomator2.common.exceptions.NoSuchDriverException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.NotificationListener;
+import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.server.ServerInstrumentation;
 
 public class DeleteSession extends SafeRequestHandler {
@@ -31,6 +36,10 @@ public class DeleteSession extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         String sessionId = getSessionId(request);
+        Session currentSession = AppiumUIA2Driver.getInstance().getSession();
+        if (currentSession == null || !Objects.equals(sessionId, currentSession.getSessionId())) {
+            throw new NoSuchDriverException(String.format("The session %s cannot be found", sessionId));
+        }
         NotificationListener.getInstance().stop();
         ServerInstrumentation.getInstance().stopServer();
         return new AppiumResponse(sessionId);

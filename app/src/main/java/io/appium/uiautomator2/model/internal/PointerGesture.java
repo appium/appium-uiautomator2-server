@@ -51,7 +51,7 @@ public class PointerGesture {
     public PointerGesture(Object wrappedInstanceOrPoint) {
         if (wrappedInstanceOrPoint instanceof Point) {
             try {
-                this.wrappedInstance = getWrappedConstructor().newInstance((Point) wrappedInstanceOrPoint);
+                this.wrappedInstance = getWrappedConstructor().newInstance(wrappedInstanceOrPoint);
             } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 throw new IllegalStateException(String.format("Cannot perform gesture at %s", wrappedInstanceOrPoint), e);
             }

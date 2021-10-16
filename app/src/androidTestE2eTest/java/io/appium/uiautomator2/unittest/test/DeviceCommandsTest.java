@@ -98,6 +98,10 @@ public class DeviceCommandsTest extends BaseTest {
         response = findElement(by);
         assertTrue(response.isSuccessful());
 
+        by = By.xpath("//*[@*='android:id/action_bar']");
+        response = findElement(by);
+        assertTrue(response.isSuccessful());
+
         by = By.xpath("(//*[@class='android.widget.TextView'])[3]");
         response = findElement(by);
         response = getAttribute(response.getElementId(), "text");
@@ -108,6 +112,11 @@ public class DeviceCommandsTest extends BaseTest {
         response = findElement(by);
         response = getAttribute(response.getElementId(), "text");
         assertEquals("Content", response.getValue());
+
+        // Xpath 2.0
+        by = By.xpath("//*[@resource-id[matches(., 'action_bar$')]]");
+        response = findElement(by);
+        assertTrue(response.isSuccessful());
     }
 
     /**

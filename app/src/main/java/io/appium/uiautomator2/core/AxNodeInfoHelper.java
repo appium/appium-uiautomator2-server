@@ -22,7 +22,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Range;
+import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
@@ -40,6 +40,7 @@ import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
 
@@ -48,20 +49,38 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
  */
 public class AxNodeInfoHelper {
     // https://github.com/appium/appium/issues/12892
-    private final static int MAX_DEPTH = 70;
+    private static final int MAX_DEPTH = 70;
+    private static final long UNDEFINED_NODE_ID =
+            (((long) Integer.MAX_VALUE) << 32) | Integer.MAX_VALUE;
+    private static final int UNDEFINED_WINDOW_ID = -1;
 
     @Nullable
-    public static Range<Integer> getSelectionRange(@Nullable AccessibilityNodeInfo nodeInfo) {
+    public static String toUuid(AccessibilityNodeInfo info) {
+        // mSourceNodeId and windowId properties define
+        // the uniqueness of the particular AccessibilityNodeInfo instance
+        long sourceNodeId = (Long) getField("mSourceNodeId", info);
+        int windowId = info.getWindowId();
+        if (sourceNodeId == UNDEFINED_NODE_ID || windowId == UNDEFINED_WINDOW_ID) {
+            return null;
+        }
+        String sourceNodeIdHex = String.format("%016x", sourceNodeId);
+        String windowIdHex = String.format("%016x", windowId);
+        return String.format("%s-%s-%s-%s-%s",
+                windowIdHex.substring(0, 8), windowIdHex.substring(8, 12), windowIdHex.substring(12, 16),
+                sourceNodeIdHex.substring(0, 4), sourceNodeIdHex.substring(4, 16));
+    }
+
+    @Nullable
+    public static Pair<Integer, Integer> getSelectionRange(@Nullable AccessibilityNodeInfo nodeInfo) {
         if (nodeInfo == null) {
             return null;
         }
 
         int selectionStart = nodeInfo.getTextSelectionStart();
         int selectionEnd = nodeInfo.getTextSelectionEnd();
-        if (selectionStart >= 0 && selectionStart != selectionEnd) {
-            return new Range<>(selectionStart, selectionEnd);
-        }
-        return null;
+        return selectionStart >= 0 && selectionStart != selectionEnd
+            ? new Pair<>(selectionStart, selectionEnd)
+            : null;
     }
 
     @Nullable
@@ -110,6 +129,11 @@ public class AxNodeInfoHelper {
     public static void click(AccessibilityNodeInfo node) {
         Rect bounds = getBounds(node);
         CustomUiDevice.getInstance().getGestureController().click(getCenterPoint(bounds));
+    }
+
+    public static void doubleClick(AccessibilityNodeInfo node) {
+        Rect bounds = getBounds(node);
+        CustomUiDevice.getInstance().getGestureController().doubleClick(getCenterPoint(bounds));
     }
 
     public static void longClick(AccessibilityNodeInfo node) {

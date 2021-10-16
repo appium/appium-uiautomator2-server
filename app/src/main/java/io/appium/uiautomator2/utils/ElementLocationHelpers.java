@@ -19,9 +19,9 @@ package io.appium.uiautomator2.utils;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
-import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +33,7 @@ import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
+import io.appium.uiautomator2.model.UiElementSnapshot;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
@@ -92,10 +93,9 @@ public class ElementLocationHelpers {
         return locator;
     }
 
-    @Nullable
     private static Set<Attribute> extractQueriedAttributes(String xpathExpression) {
         if (xpathExpression.contains("@*")) {
-            return null;
+            return new HashSet<>(Arrays.asList(UiElementSnapshot.SUPPORTED_ATTRIBUTES));
         }
 
         Set<Attribute> result = new HashSet<>();
@@ -115,17 +115,15 @@ public class ElementLocationHelpers {
         // while building this document.
         Set<Attribute> includedAttributes = extractQueriedAttributes(expression);
         Logger.info(String.format("The following attributes will be included to the page source: %s",
-                includedAttributes == null ? "all" : includedAttributes));
+                includedAttributes));
         return new AccessibilityNodeInfoDumper(root, includedAttributes).findNodes(expression, multiple);
     }
 
-    public static UiSelector toSelector(String uiaExpression) throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public static UiSelector toSelector(String uiaExpression) throws UiSelectorSyntaxException {
         return toSelectors(uiaExpression).get(0);
     }
 
-    public static List<UiSelector> toSelectors(String uiaExpression) throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public static List<UiSelector> toSelectors(String uiaExpression) throws UiSelectorSyntaxException {
         List<UiSelector> selectors = new UiAutomatorParser().parse(uiaExpression);
         if (selectors.isEmpty()) {
             throw new UiSelectorSyntaxException(uiaExpression);

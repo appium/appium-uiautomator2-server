@@ -20,20 +20,27 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 
 import io.appium.uiautomator2.common.exceptions.StaleElementReferenceException;
 
-import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
+import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
+import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
 public abstract class AxNodeInfoExtractor {
 
     @Nullable
-    public static AccessibilityNodeInfo toNullableAxNodeInfo(Object object) {
+    public static AccessibilityNodeInfo toNullableAxNodeInfo(UiObject object) {
         return extractAxNodeInfo(object);
+    }
+
+    @Nullable
+    public static AccessibilityNodeInfo toNullableAxNodeInfo(UiObject2 object, boolean checkStaleness) {
+        return checkStaleness
+                ? extractAxNodeInfo(object)
+                : (AccessibilityNodeInfo) getField("mCachedNode", object);
     }
 
     @NonNull
@@ -51,9 +58,8 @@ public abstract class AxNodeInfoExtractor {
             return (AccessibilityNodeInfo) invoke(getMethod(UiObject2.class,
                     "getAccessibilityNodeInfo"), object);
         } else if (object instanceof UiObject) {
-            long timeout = Configurator.getInstance().getWaitForSelectorTimeout();
             return (AccessibilityNodeInfo) invoke(getMethod(UiObject.class,
-                    "findAccessibilityNodeInfo", long.class), object, timeout);
+                    "findAccessibilityNodeInfo", long.class), object, 0L);
         }
         throw new IllegalArgumentException(String.format("Unknown object type '%s'",
                 object == null ? null : object.getClass().getName()));

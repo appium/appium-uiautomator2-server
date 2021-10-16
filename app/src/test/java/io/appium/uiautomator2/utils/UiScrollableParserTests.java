@@ -82,8 +82,7 @@ public class UiScrollableParserTests {
     }
 
     @Test
-    public void shouldBeAbleToParseUiSelectorInConstructor() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldBeAbleToParseUiSelectorInConstructor() throws UiSelectorSyntaxException {
         new UiScrollableParserSpy("new UiScrollable(new UiSelector().text(\"test\"))" +
                 ".scrollTextIntoView(\"test\")").parse();
         UiSelector expectedUiScrollableSelector = new UiSelector().text("test");
@@ -92,7 +91,7 @@ public class UiScrollableParserTests {
 
     @Test
     public void shouldBeAbleToParseUiSelectorInConstructorIfTheFinalMethodDoesNotReturnUiObject()
-            throws UiSelectorSyntaxException, UiObjectNotFoundException {
+            throws UiSelectorSyntaxException {
         new UiScrollableParserSpy("new UiScrollable(new UiSelector().text(\"test\"))" +
                 ".scrollToEnd(20)").parse();
         UiSelector expectedUiScrollableSelector = new UiSelector().text("test");
@@ -100,8 +99,7 @@ public class UiScrollableParserTests {
     }
 
     @Test
-    public void shouldBeAbleToChainUiScrollableMethods() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldBeAbleToChainUiScrollableMethods() throws UiSelectorSyntaxException {
         final String locator = "new UiScrollable(new UiSelector()).setAsHorizontalList()" +
                 ".setMaxSearchSwipes(10).scrollIntoView(new UiSelector())";
         new UiScrollableParserSpy(locator).parse();
@@ -189,22 +187,11 @@ public class UiScrollableParserTests {
     }
 
     @Test
-    public void shouldThrowExceptionIfNoConstructor() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
+    public void shouldThrowExceptionIfNoConstructor() throws UiSelectorSyntaxException {
         expectedException.expect(UiSelectorSyntaxException.class);
         expectedException.expectMessage("didn't start with an acceptable prefix. " +
                 "Acceptable prefixes are: `new UiScrollable` or `UiScrollable`");
         new UiScrollableParserSpy("test").parse();
-    }
-
-    @Test
-    public void shouldReThrowUiObjectNotFoundException() throws UiSelectorSyntaxException,
-            UiObjectNotFoundException {
-        expectedException.expect(UiObjectNotFoundException.class);
-        expectedException.expectMessage("not found");
-        final String locator = "new UiScrollable(new UiSelector()).getChildByText(" +
-                "new UiSelector().resourceId(\"testId\"), \"text\")";
-        new UiScrollableParserSpy(locator).parse();
     }
 
     @Test
@@ -233,18 +220,21 @@ public class UiScrollableParserTests {
         }
 
         @Override
-        protected UiScrollable consumeConstructor() throws UiSelectorSyntaxException,
-                UiObjectNotFoundException {
+        protected UiScrollable consumeConstructor() throws UiSelectorSyntaxException {
             UiScrollable self = super.consumeConstructor();
             uiScrollableSpy = spy(getTarget());
-            doReturn(true).when(uiScrollableSpy).scrollIntoView(any(UiSelector.class));
-            doReturn(true).when(uiScrollableSpy).scrollIntoView(any(UiObject.class));
-            doReturn(uiObject).when(uiScrollableSpy).getChildByText(any(UiSelector.class),
-                    anyString(), anyBoolean());
-            doThrow(new UiObjectNotFoundException("not found")).when(uiScrollableSpy)
-                    .getChildByText(any(UiSelector.class), anyString());
-            doReturn(true).when(uiScrollableSpy).scrollForward(anyInt());
-            setTarget(uiScrollableSpy);
+            try {
+                doReturn(true).when(uiScrollableSpy).scrollIntoView(any(UiSelector.class));
+                doReturn(true).when(uiScrollableSpy).scrollIntoView(any(UiObject.class));
+                doReturn(uiObject).when(uiScrollableSpy).getChildByText(any(UiSelector.class),
+                        anyString(), anyBoolean());
+                doThrow(new UiObjectNotFoundException("not found")).when(uiScrollableSpy)
+                        .getChildByText(any(UiSelector.class), anyString());
+                doReturn(true).when(uiScrollableSpy).scrollForward(anyInt());
+                setTarget(uiScrollableSpy);
+            } catch (UiObjectNotFoundException e) {
+                throw new RuntimeException(e);
+            }
             return self;
         }
 

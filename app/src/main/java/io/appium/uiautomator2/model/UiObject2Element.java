@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model;
 
-import android.util.Range;
+import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
@@ -26,6 +26,7 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
@@ -36,6 +37,8 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
+import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
+import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObjects;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
 
 public class UiObject2Element extends BaseElement {
@@ -132,10 +135,10 @@ public class UiObject2Element extends BaseElement {
                 break;
             case SELECTION_END:
             case SELECTION_START:
-                Range<Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(toAxNodeInfo(element));
+                Pair<Integer, Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(toAxNodeInfo(element));
                 result = selectionRange == null
                         ? null
-                        : (dstAttribute == Attribute.SELECTION_END ? selectionRange.getUpper() : selectionRange.getLower());
+                        : (dstAttribute == Attribute.SELECTION_END ? selectionRange.second : selectionRange.first);
                 break;
             default:
                 throw generateNoAttributeException(attr);
@@ -153,7 +156,7 @@ public class UiObject2Element extends BaseElement {
 
     @Nullable
     @Override
-    public Object getChild(final Object selector) throws UiObjectNotFoundException {
+    public AccessibleUiObject getChild(final Object selector) throws UiObjectNotFoundException {
         if (selector instanceof UiSelector) {
             /*
              * We can't find the child element with UiSelector on UiObject2,
@@ -162,21 +165,19 @@ public class UiObject2Element extends BaseElement {
              */
             AccessibilityNodeInfo nodeInfo = toAxNodeInfo(element);
             UiSelector uiSelector = UiSelectorHelper.toUiSelector(nodeInfo);
-            Object uiObject = CustomUiDevice.getInstance().findObject(uiSelector);
-            if (!(uiObject instanceof UiObject)) {
+            AccessibleUiObject root = CustomUiDevice.getInstance().findObject(uiSelector);
+            if (root == null || !(root.getValue() instanceof UiObject)) {
                 return null;
             }
-            UiObject result = ((UiObject) uiObject).getChild((UiSelector) selector);
-            if (result != null && !result.exists()) {
-                return null;
-            }
-            return result;
+            UiObject child = ((UiObject) root.getValue()).getChild((UiSelector) selector);
+            return toAccessibleUiObject(child);
         }
-        return element.findObject((BySelector) selector);
+        UiObject2 child = element.findObject((BySelector) selector);
+        return toAccessibleUiObject(child);
     }
 
     @Override
-    public List<?> getChildren(final Object selector, final By by) throws UiObjectNotFoundException {
+    public List<AccessibleUiObject> getChildren(final Object selector, final By by) {
         if (selector instanceof UiSelector) {
             /*
              * We can't find the child elements with UiSelector on UiObject2,
@@ -185,11 +186,16 @@ public class UiObject2Element extends BaseElement {
              */
             AccessibilityNodeInfo nodeInfo = toAxNodeInfo(element);
             UiSelector uiSelector = UiSelectorHelper.toUiSelector(nodeInfo);
-            UiObject uiObject = (UiObject) CustomUiDevice.getInstance().findObject(uiSelector);
-            UiObjectElement androidElement = new UiObjectElement(uiObject, true, by, getContextId());
-            return androidElement.getChildren(selector, by);
+            AccessibleUiObject root = CustomUiDevice.getInstance().findObject(uiSelector);
+            if (root == null || !(root.getValue() instanceof UiObject)) {
+                return Collections.emptyList();
+            }
+            UiObjectElement rootElement = new UiObjectElement(
+                    (UiObject) root.getValue(), true, by, getContextId());
+            return rootElement.getChildren(selector, by);
         }
-        return element.findObjects((BySelector) selector);
+        List<UiObject2> children = element.findObjects((BySelector) selector);
+        return toAccessibleUiObjects(children);
     }
 
     @Override

@@ -20,7 +20,6 @@ import android.graphics.Rect;
 
 import androidx.test.uiautomator.UiDevice;
 
-import io.appium.uiautomator2.common.exceptions.InvalidCoordinatesException;
 import io.appium.uiautomator2.model.Point;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
@@ -50,18 +49,17 @@ public abstract class PositionHelper {
      * @param displayRect       The display rectangle to which the point is relative.
      * @param offsets           X and Y values by which to offset the point. These are typically the
      *                          absolute coordinates of the display rectangle.
-     * @param shouldCheckBounds Throw if the translated point is outside displayRect?
      */
-    public static Point getAbsolutePosition(final Point point, final Rect displayRect,
-                                            final Point offsets, final boolean shouldCheckBounds) {
+    public static Point getAbsolutePosition(Point point, Rect displayRect, Point offsets) {
         final Point absolutePosition = new Point(
                 translateCoordinate(point.x, displayRect.width(), offsets.x),
                 translateCoordinate(point.y, displayRect.height(), offsets.y)
         );
-        if (shouldCheckBounds &&
-                !displayRect.contains(absolutePosition.x.intValue(), absolutePosition.y.intValue())) {
-            throw new InvalidCoordinatesException("Coordinate " + absolutePosition.toString() +
-                    " is outside of element rect: " + displayRect.toShortString());
+        if (!displayRect.contains(absolutePosition.x.intValue(), absolutePosition.y.intValue())) {
+            Logger.warn(String.format(
+                    "Coordinate %s is outside of the display rect %s. Continuing anyway",
+                    absolutePosition, displayRect.toShortString())
+            );
         }
         return absolutePosition;
     }
@@ -70,6 +68,6 @@ public abstract class PositionHelper {
         final UiDevice d = UiDevice.getInstance(getInstrumentation());
         final Rect displayRect = new Rect(0, 0, d.getDisplayWidth(), d.getDisplayHeight());
         Logger.debug("Display bounds: " + displayRect.toShortString());
-        return getAbsolutePosition(point, displayRect, ZERO_POINT, true);
+        return getAbsolutePosition(point, displayRect, ZERO_POINT);
     }
 }

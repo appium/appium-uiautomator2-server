@@ -20,6 +20,7 @@ import java.util.Map;
 
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.common.exceptions.SessionNotCreatedException;
+import io.appium.uiautomator2.handler.request.NoSessionCommandHandler;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -31,7 +32,7 @@ import io.appium.uiautomator2.utils.w3c.W3CCapsUtils;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
-public class NewSession extends SafeRequestHandler {
+public class NewSession extends SafeRequestHandler implements NoSessionCommandHandler {
     private static final String CAPABILITIES_KEY = "capabilities";
 
     public NewSession(String mappedUri) {

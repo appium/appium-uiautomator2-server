@@ -78,13 +78,11 @@ import static io.appium.uiautomator2.utils.ModelUtils.toJsonString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -214,17 +212,15 @@ public class UpdateSettingsTests {
         updateSettings.getSetting("unsupported_setting");
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
-    public void shouldBeAbleToUpdateSetting() {
+    public void shouldFailBecauseOfNoSessionFound() {
         when(req.body())
                 .thenReturn(toJsonString(new SettingsModel(SETTING_NAME, SETTING_VALUE)));
-        AppiumResponse response = updateSettings.handle(req);
-        verify(mySetting).update(SETTING_VALUE);
-        assertEquals(response.getHttpStatus(), HttpResponseStatus.OK);
+        AppiumResponse resp = updateSettings.handle(req);
+        assertNotEquals(resp.getHttpStatus(), HttpResponseStatus.OK);
+        assertThat(resp.getValue(), is(instanceOf(Throwable.class)));
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void shouldReturnResponseWithUnknownErrorStatusIfFailed() {
         doThrow(new UiAutomator2Exception("error")).when(mySetting).update(any());

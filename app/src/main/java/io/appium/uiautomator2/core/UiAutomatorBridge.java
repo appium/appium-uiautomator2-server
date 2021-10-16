@@ -24,8 +24,8 @@ import androidx.test.uiautomator.UiDevice;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.utils.Device;
 
-import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
+import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
 public class UiAutomatorBridge {
     private static UiAutomatorBridge INSTANCE = null;

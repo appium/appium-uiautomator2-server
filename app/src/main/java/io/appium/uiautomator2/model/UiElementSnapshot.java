@@ -17,13 +17,14 @@
 package io.appium.uiautomator2.model;
 
 import android.annotation.TargetApi;
-import android.util.Range;
+import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -52,7 +53,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     // https://github.com/appium/appium/issues/12545
     private final static int DEFAULT_MAX_DEPTH = 70;
     // The same order will be used for node attributes in xml page source
-    private final static Attribute[] SUPPORTED_ATTRIBUTES = new Attribute[]{
+    public final static Attribute[] SUPPORTED_ATTRIBUTES = new Attribute[]{
             Attribute.INDEX, Attribute.PACKAGE, Attribute.CLASS, Attribute.TEXT,
             Attribute.ORIGINAL_TEXT, Attribute.CONTENT_DESC, Attribute.RESOURCE_ID,
             Attribute.CHECKABLE, Attribute.CHECKED, Attribute.CLICKABLE, Attribute.ENABLED,
@@ -60,6 +61,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.PASSWORD, Attribute.SCROLLABLE, Attribute.SELECTION_START,
             Attribute.SELECTION_END, Attribute.SELECTED, Attribute.BOUNDS, Attribute.DISPLAYED
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
+    };
+    private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[] {
+            Attribute.TEXT, Attribute.CLASS, Attribute.PACKAGE, Attribute.DISPLAYED,
+            Attribute.INDEX
     };
 
     private final Set<Attribute> includedAttributes = new HashSet<>();
@@ -70,27 +75,25 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     private final int index;
 
     private UiElementSnapshot(AccessibilityNodeInfo node, int index, int depth, int maxDepth,
-                              @Nullable Set<Attribute> includedAttributes) {
+                              Set<Attribute> includedAttributes) {
         super(checkNotNull(node));
         this.depth = depth;
         this.maxDepth = maxDepth;
         this.index = index;
-        if (includedAttributes != null) {
-            // Class name attribute should always be there
-            this.includedAttributes.add(Attribute.CLASS);
-            this.includedAttributes.addAll(includedAttributes);
-        }
+        // Class name attribute should always be there
+        this.includedAttributes.add(Attribute.CLASS);
+        this.includedAttributes.addAll(includedAttributes);
         this.attributes = collectAttributes();
         this.children = buildChildren(node);
     }
 
     private UiElementSnapshot(AccessibilityNodeInfo node, int index, int depth,
-                              @Nullable Set<Attribute> includedAttributes) {
+                              Set<Attribute> includedAttributes) {
         this(node, index, depth, DEFAULT_MAX_DEPTH, includedAttributes);
     }
 
     private UiElementSnapshot(AccessibilityNodeInfo[] childNodes,
-                              @Nullable Set<Attribute> includedAttributes) {
+                              Set<Attribute> includedAttributes) {
         super(null);
         this.depth = 0;
         this.index = 0;
@@ -144,12 +147,12 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case SCROLLABLE:
                 return node.isScrollable();
             case SELECTION_START: {
-                Range<Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
-                return selectionRange == null ? null : selectionRange.getLower();
+                Pair<Integer, Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
+                return selectionRange == null ? null : selectionRange.first;
             }
             case SELECTION_END: {
-                Range<Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
-                return selectionRange == null ? null : selectionRange.getUpper();
+                Pair<Integer, Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(node);
+                return selectionRange == null ? null : selectionRange.second;
             }
             case SELECTED:
                 return node.isSelected();
@@ -171,16 +174,15 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     private Map<Attribute, Object> collectAttributes() {
         Map<Attribute, Object> result = new LinkedHashMap<>();
         for (Attribute attr : SUPPORTED_ATTRIBUTES) {
-            if (!includedAttributes.isEmpty() && !includedAttributes.contains(attr)) {
-                continue;
+            if (includedAttributes.isEmpty() || includedAttributes.contains(attr)) {
+                putAttribute(result, attr, getNodeAttributeValue(attr));
             }
-            putAttribute(result, attr, getNodeAttributeValue(attr));
         }
         return Collections.unmodifiableMap(result);
     }
 
     public static UiElementSnapshot take(AccessibilityNodeInfo[] roots, List<CharSequence> toastMSGs,
-                                         @Nullable Set<Attribute> includedAttributes) {
+                                         Set<Attribute> includedAttributes) {
         UiElementSnapshot uiRoot = new UiElementSnapshot(roots, includedAttributes);
         for (CharSequence toastMSG : toastMSGs) {
             Logger.info(String.format("Adding toast message to root: %s", toastMSG));
@@ -189,20 +191,19 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         return uiRoot;
     }
 
-    public static UiElementSnapshot take(AccessibilityNodeInfo rootElement,
-                                         @Nullable Set<Attribute> includedAttributes) {
+    public static UiElementSnapshot take(AccessibilityNodeInfo rootElement, Set<Attribute> includedAttributes) {
         return new UiElementSnapshot(rootElement, AxNodeInfoHelper.calculateIndex(rootElement), 0,
                 includedAttributes);
     }
 
     public static UiElementSnapshot take(AccessibilityNodeInfo rootElement, int maxDepth,
-                                         @Nullable Set<Attribute> includedAttributes) {
+                                         Set<Attribute> includedAttributes) {
         return new UiElementSnapshot(rootElement, AxNodeInfoHelper.calculateIndex(rootElement), 0,
                 maxDepth, includedAttributes);
     }
 
     private static UiElementSnapshot take(AccessibilityNodeInfo rootElement, int index, int depth,
-                                          @Nullable Set<Attribute> includedAttributes) {
+                                          Set<Attribute> includedAttributes) {
         return new UiElementSnapshot(rootElement, index, depth, includedAttributes);
     }
 
@@ -213,7 +214,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         node.setPackageName("com.android.settings");
         node.setVisibleToUser(true);
         setField("mSealed", true, node);
-        this.children.add(new UiElementSnapshot(node, this.children.size(), 0, null));
+        this.children.add(new UiElementSnapshot(node, this.children.size(), 0,
+                new HashSet<>(Arrays.asList(TOAST_NODE_ATTRIBUTES))));
     }
 
     private List<UiElementSnapshot> buildChildren(AccessibilityNodeInfo node) {

@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -80,8 +81,9 @@ public class ReflectionUtils {
     public static Object invoke(final Method method, final Object object, final Object... parameters) {
         try {
             return method.invoke(object, parameters);
-        } catch (Exception e) {
-            throw new UiAutomator2Exception(String.format("Cannot invoke method %s on object %s with parameters %s",
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new UiAutomator2Exception(String.format(
+                    "Cannot invoke method %s on object %s with parameters %s",
                     method, object, Arrays.toString(parameters)), e);
         }
     }

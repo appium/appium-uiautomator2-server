@@ -16,19 +16,22 @@
 
 package io.appium.uiautomator2.handler;
 
+import android.util.DisplayMetrics;
+
+import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.internal.Gestures;
 
-public class GetDevicePixelRatio extends SafeRequestHandler {
-
-    public GetDevicePixelRatio(String mappedUri) {
+public class GetDisplayDensity extends SafeRequestHandler {
+    public GetDisplayDensity(String mappedUri) {
         super(mappedUri);
     }
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        return new AppiumResponse(getSessionId(request), Gestures.getDisplayDensity());
+        DisplayMetrics metrics = new DisplayMetrics();
+        UiAutomatorBridge.getInstance().getDefaultDisplay().getMetrics(metrics);
+        return new AppiumResponse(getSessionId(request), metrics.densityDpi);
     }
 }

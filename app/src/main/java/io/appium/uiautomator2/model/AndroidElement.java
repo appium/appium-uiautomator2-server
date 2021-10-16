@@ -50,9 +50,9 @@ public interface AndroidElement {
 
     Rect getBounds();
 
-    Object getChild(final Object sel) throws UiObjectNotFoundException;
+    AccessibleUiObject getChild(final Object sel) throws UiObjectNotFoundException;
 
-    List<?> getChildren(final Object selector, final By by) throws UiObjectNotFoundException;
+    List<AccessibleUiObject> getChildren(final Object selector, final By by);
 
     String getContentDesc() throws UiObjectNotFoundException;
 
@@ -65,6 +65,9 @@ public interface AndroidElement {
     //region Gestures
     /** Clicks on this object. */
     void click();
+
+    /** Performs a double click on this object. */
+    void doubleClick();
 
     /** Performs a long click on this object. */
     void longClick();

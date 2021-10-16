@@ -32,6 +32,7 @@ import io.appium.uiautomator2.handler.Click;
 import io.appium.uiautomator2.handler.DeleteSession;
 import io.appium.uiautomator2.handler.DismissAlert;
 import io.appium.uiautomator2.handler.Drag;
+import io.appium.uiautomator2.handler.ActiveElement;
 import io.appium.uiautomator2.handler.FindElement;
 import io.appium.uiautomator2.handler.FindElements;
 import io.appium.uiautomator2.handler.FirstVisibleView;
@@ -42,6 +43,7 @@ import io.appium.uiautomator2.handler.GetClipboard;
 import io.appium.uiautomator2.handler.GetDeviceInfo;
 import io.appium.uiautomator2.handler.GetDevicePixelRatio;
 import io.appium.uiautomator2.handler.GetDeviceSize;
+import io.appium.uiautomator2.handler.GetDisplayDensity;
 import io.appium.uiautomator2.handler.GetElementAttribute;
 import io.appium.uiautomator2.handler.GetElementScreenshot;
 import io.appium.uiautomator2.handler.GetName;
@@ -149,6 +151,7 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Drag("/wd/hub/session/:sessionId/appium/gestures/drag"));
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Fling("/wd/hub/session/:sessionId/appium/gestures/fling"));
         register(postHandler, new io.appium.uiautomator2.handler.gestures.LongClick("/wd/hub/session/:sessionId/appium/gestures/long_click"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.DoubleClick("/wd/hub/session/:sessionId/appium/gestures/double_click"));
         register(postHandler, new io.appium.uiautomator2.handler.gestures.PinchClose("/wd/hub/session/:sessionId/appium/gestures/pinch_close"));
         register(postHandler, new io.appium.uiautomator2.handler.gestures.PinchOpen("/wd/hub/session/:sessionId/appium/gestures/pinch_open"));
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Scroll("/wd/hub/session/:sessionId/appium/gestures/scroll"));
@@ -167,6 +170,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetRect("/wd/hub/session/:sessionId/element/:id/rect"));
         register(getHandler, new GetSize("/wd/hub/session/:sessionId/element/:id/size"));
         register(getHandler, new GetName("/wd/hub/session/:sessionId/element/:id/name"));
+        register(getHandler, new ActiveElement("/wd/hub/session/:sessionId/element/active"));
         // W3C endpoint
         register(getHandler, new GetElementScreenshot("/wd/hub/session/:sessionId/element/:id/screenshot"));
         // JSONWP endpoint
@@ -181,6 +185,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new FirstVisibleView("/wd/hub/session/:sessionId/appium/element/:id/first_visible"));
         register(getHandler, new GetAlertText("/wd/hub/session/:sessionId/alert/text"));
         register(getHandler, new GetDeviceInfo("/wd/hub/session/:sessionId/appium/device/info"));
+        register(getHandler, new GetDisplayDensity("/wd/hub/session/:sessionId/appium/device/display_density"));
     }
 
     private void register(Map<String, BaseRequestHandler> registerOn, BaseRequestHandler handler) {
