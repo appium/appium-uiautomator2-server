@@ -10,19 +10,16 @@ parameters:
   - name: sdk30
     platformVersion: 11.0
     sdkVersion: 30
-    emuTag: default
+    emuArch: x86_64
   - name: sdk28
     platformVersion: 9.0
     sdkVersion: 28
-    emuTag: default
   - name: sdk25
     platformVersion: 7.1
     sdkVersion: 25
-    emuTag: default
   - name: sdk22
     platformVersion: 5.1
     sdkVersion: 22
-    emuTag: default
 - name: tests
   type: object
   default:

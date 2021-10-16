@@ -5,6 +5,7 @@ parameters:
   sdkVersion: 28
   platformVersion: 9.0
   emuTag: default
+  emuArch: x86
   testName: ''
 
 jobs:
@@ -17,6 +18,7 @@ jobs:
       ANDROID_SDK_VERSION: ${{ parameters.sdkVersion }}
       PLATFORM_VERSION: ${{ parameters.platformVersion }}
       EMU_TAG: ${{ parameters.emuTag }}
+      EMU_ARCH: ${{ parameters.emuArch }}
     steps:
     - task: NodeTool@0
       inputs:
@@ -25,7 +27,13 @@ jobs:
       displayName: Install Node Dependencies
     - script: bash .azure-templates/scripts/start-emulator.sh
       displayName: Create And Run Emulator
-    - script: adb install -r -g "./node_modules/android-apidemos/apks/ApiDemos-debug.apk"
+    - script: |-
+        apidemos_app=./node_modules/android-apidemos/apks/ApiDemos-debug.apk
+        if [[ $ANDROID_SDK_VERSION -ge 23 ]]; then
+          adb install -r -g $apidemos_app
+        else
+          adb install -r $apidemos_app
+        fi
       displayName: Install UI Catalog App
     - script: |-
         nohup adb logcat -v time *:S appium:V appium-e2e-tests:V TestRunner:V *:E *:F > logcat.txt &
