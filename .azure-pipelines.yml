@@ -7,6 +7,10 @@ parameters:
 - name: integrationJobs
   type: object
   default:
+  - name: sdk30
+    platformVersion: 11.0
+    sdkVersion: 30
+    emuTag: default
   - name: sdk28
     platformVersion: 9.0
     sdkVersion: 28
@@ -38,8 +42,8 @@ stages:
     steps:
     - script: ./gradlew testServerDebugUnitTest
       env:
-        JAVA_HOME: $(JAVA_HOME_8_X64)
-        PATH: $(JAVA_HOME_8_X64)/bin:$(PATH)
+        JAVA_HOME: $(JAVA_HOME_11_X64)
+        PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
       displayName: Tests
 - stage: Integration_Tests
   jobs:

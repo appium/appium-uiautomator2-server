@@ -110,7 +110,11 @@ task installAUT(type: Exec) {
         /* This seems weird but it is what it is: https://github.com/wix/detox/issues/274 */
         def command = sdkVersion.toInteger() < 23 ? "$adb install -r $apk" : "$adb install -r -g $apk"
         println "Execute command: $command"
-        commandLine command.split(' ')
+        try {
+            commandLine command.split(' ')
+        } catch (Exception e) {
+            println "Could not install ApiDemos app: ${e.getMessage()}"
+        }
     }
 }
 

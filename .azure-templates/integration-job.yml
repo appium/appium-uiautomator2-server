@@ -25,14 +25,16 @@ jobs:
       displayName: Install Node Dependencies
     - script: bash .azure-templates/scripts/start-emulator.sh
       displayName: Create And Run Emulator
+    - script: adb install -r -g "./node_modules/android-apidemos/apks/ApiDemos-debug.apk"
+      displayName: Install UI Catalog App
     - script: |-
         nohup adb logcat -v time *:S appium:V appium-e2e-tests:V TestRunner:V *:E *:F > logcat.txt &
         ./gradlew connectedE2eTestDebugAndroidTest \
           -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.${{ parameters.testName }} \
           -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices
       env:
-        JAVA_HOME: $(JAVA_HOME_8_X64)
-        PATH: $(JAVA_HOME_8_X64)/bin:$(PATH)
+        JAVA_HOME: $(JAVA_HOME_11_X64)
+        PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)
       displayName: Run Tests
     - script: cat logcat.txt
       condition: always()
