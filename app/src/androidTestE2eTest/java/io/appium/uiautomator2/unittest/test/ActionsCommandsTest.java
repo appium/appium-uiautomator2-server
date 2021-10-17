@@ -151,12 +151,12 @@ public class ActionsCommandsTest extends BaseTest {
 
     @Test
     public void verifyDragGesture() throws JSONException {
+        setupDragDropView();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // TODO: The test is unstable on API30
             return;
         }
-
-        setupDragDropView();
 
         Response dot1Response = findElement(By.id(dotIdByIdx(1)));
         Response dragResponse = drag(dot1Response.getElementId(), null, new Point(1,1), null);
@@ -196,12 +196,12 @@ public class ActionsCommandsTest extends BaseTest {
 
     @Test
     public void verifyPinchCloseGesture() throws JSONException {
+        setupDragDropView();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // TODO: The test is unstable on API30
             return;
         }
-
-        setupDragDropView();
 
         Response dot1Response = findElement(By.id(dotIdByIdx(1)));
         Response pinchCloseResponse = pinchClose(dot1Response.getElementId(), null, 0.5f, null);

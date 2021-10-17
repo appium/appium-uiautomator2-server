@@ -97,7 +97,7 @@ public abstract class BaseTest {
     public void launchAUT() throws JSONException {
         dismissSystemAlert();
         startActivity(Config.APP_NAME);
-        waitForElement(By.accessibilityId("Accessibility"), null, Config.APP_LAUNCH_TIMEOUT);
+        waitForElement(By.accessibilityId("Accessibility"));
     }
 
     protected void dismissSystemAlert() {
