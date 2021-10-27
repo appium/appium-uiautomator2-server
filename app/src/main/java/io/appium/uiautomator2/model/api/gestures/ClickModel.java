@@ -16,6 +16,10 @@
 
 package io.appium.uiautomator2.model.api.gestures;
 
-public class LongClickModel extends ClickModel {
-    public Double duration;
+import io.appium.uiautomator2.model.api.BaseModel;
+import io.appium.uiautomator2.model.api.ElementModel;
+
+public class ClickModel extends BaseModel {
+    public ElementModel origin;
+    public PointModel offset;
 }
