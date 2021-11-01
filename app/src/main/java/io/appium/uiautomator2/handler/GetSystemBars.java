@@ -37,7 +37,7 @@ public class GetSystemBars extends SafeRequestHandler {
     }
 
     private static int getStatusBarHeight() {
-        Resources resources = getInstrumentation().getContext().getResources();
+        Resources resources = getInstrumentation().getTargetContext().getResources();
         int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
         return resourceId > 0 ? resources.getDimensionPixelSize(resourceId) : 0;
     }

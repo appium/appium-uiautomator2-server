@@ -16,8 +16,9 @@
 
 package io.appium.uiautomator2.utils;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 import androidx.annotation.Nullable;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
@@ -30,7 +31,7 @@ import io.appium.uiautomator2.model.settings.WaitForIdleTimeout;
 
 public abstract class Device {
     public static UiDevice getUiDevice() {
-        return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        return UiDevice.getInstance(getInstrumentation());
     }
 
     public static void scrollToElement(@Nullable UiScrollable origin, UiSelector selector,

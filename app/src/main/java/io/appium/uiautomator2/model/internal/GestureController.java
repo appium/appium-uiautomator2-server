@@ -16,13 +16,14 @@
 
 package io.appium.uiautomator2.model.internal;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.SystemClock;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.Nullable;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.EventCondition;
 import androidx.test.uiautomator.UiDevice;
@@ -65,7 +66,7 @@ public class GestureController {
     }
 
     private static UiDevice getDevice() {
-        return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        return UiDevice.getInstance(getInstrumentation());
     }
 
     private class GestureRunnable implements Runnable {
@@ -161,7 +162,7 @@ public class GestureController {
     }
 
     public boolean fling(Rect area, Direction direction, @Nullable Integer speed) {
-        ViewConfiguration vc = ViewConfiguration.get(InstrumentationRegistry.getInstrumentation().getContext());
+        ViewConfiguration vc = ViewConfiguration.get(getInstrumentation().getTargetContext());
         int minVelocity = vc.getScaledMinimumFlingVelocity();
         int flingSpeed = speed == null ? Gestures.getDefaultFlingSpeed() : speed;
         if (flingSpeed < minVelocity) {

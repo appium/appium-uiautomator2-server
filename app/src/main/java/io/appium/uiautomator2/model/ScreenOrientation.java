@@ -16,10 +16,9 @@
 
 package io.appium.uiautomator2.model;
 
-import androidx.test.platform.app.InstrumentationRegistry;
-
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 public enum ScreenOrientation {
     LANDSCAPE, PORTRAIT;
@@ -48,7 +47,7 @@ public enum ScreenOrientation {
     }
 
     private static int asInteger() {
-        return InstrumentationRegistry.getInstrumentation()
-                .getContext().getResources().getConfiguration().orientation;
+        return getInstrumentation().getTargetContext()
+                .getResources().getConfiguration().orientation;
     }
 }
