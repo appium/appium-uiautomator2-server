@@ -232,6 +232,9 @@ public class AccessibilityNodeInfoDumper {
             final NodeInfoList matchedNodes = new NodeInfoList();
             final long timeStarted = SystemClock.uptimeMillis();
             for (int i = 0; i < elements.getLength(); ++i) {
+                if (!(elements.item(i) instanceof Element)) {
+                    continue;
+                }
                 Element item = (Element) elements.item(i);
                 if (!item.hasAttribute(UI_ELEMENT_INDEX)) {
                     continue;
