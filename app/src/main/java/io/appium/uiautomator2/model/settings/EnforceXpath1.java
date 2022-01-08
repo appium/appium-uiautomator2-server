@@ -18,7 +18,7 @@ package io.appium.uiautomator2.model.settings;
 
 public class EnforceXpath1 extends AbstractSetting<Boolean> {
 
-    private static final String SETTING_NAME = "normalizeTagNames";
+    private static final String SETTING_NAME = "enforceXPath1";
 
     private boolean shouldEnforceXpath1 = false;
 
