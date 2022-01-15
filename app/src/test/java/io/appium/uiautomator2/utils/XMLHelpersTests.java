@@ -254,4 +254,11 @@ public class XMLHelpersTests {
         List<Node> nodes = findNodesUsingXpath2(XML, query, true);
         assertEquals(nodes.size(), 1);
     }
+
+    @Test
+    public void parsesXpath2UsingIcu() {
+        String query = "//android.widget.TextView[substring(@text, 1) = 'some, text']";
+        List<Node> nodes = findNodesUsingXpath2(XML, query, false);
+        assertEquals(nodes.size(), 1);
+    }
 }
