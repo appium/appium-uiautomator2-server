@@ -1,15 +1,17 @@
 'use strict';
 
 const gulp = require('gulp');
-const boilerplate = require('appium-gulp-plugins').boilerplate.use(gulp);
+const boilerplate = require('@appium/gulp-plugins').boilerplate.use(gulp);
+const DEFAULTS = require('@appium/gulp-plugins').boilerplate.DEFAULTS;
 const { androidHelpers } = require('appium-android-driver');
-const { fs } = require('appium-support');
+const { fs } = require('@appium/support');
 const path = require('path');
 const B = require('bluebird');
 
 
 boilerplate({
   build: 'appium-uiautomator2-server',
+  files: DEFAULTS.files.concat('index.js'),
   transpile: false,
 });
 
