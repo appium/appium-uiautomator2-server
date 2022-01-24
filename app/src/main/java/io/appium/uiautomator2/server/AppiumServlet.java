@@ -39,7 +39,6 @@ import io.appium.uiautomator2.handler.FirstVisibleView;
 import io.appium.uiautomator2.handler.Flick;
 import io.appium.uiautomator2.handler.GetAlertText;
 import io.appium.uiautomator2.handler.GetBatteryInfo;
-import io.appium.uiautomator2.handler.GetClipboard;
 import io.appium.uiautomator2.handler.GetDeviceInfo;
 import io.appium.uiautomator2.handler.GetDevicePixelRatio;
 import io.appium.uiautomator2.handler.GetDeviceSize;
@@ -112,81 +111,80 @@ public class AppiumServlet implements IHttpServlet {
     }
 
     private void registerDeleteHandler() {
-        register(deleteHandler, new DeleteSession("/wd/hub/session/:sessionId"));
+        register(deleteHandler, new DeleteSession("/session/:sessionId"));
     }
 
     private void registerPostHandler() {
-        register(postHandler, new NewSession("/wd/hub/session"));
-        register(postHandler, new FindElement("/wd/hub/session/:sessionId/element"));
-        register(postHandler, new FindElements("/wd/hub/session/:sessionId/elements"));
-        register(postHandler, new Click("/wd/hub/session/:sessionId/element/:id/click"));
-        register(postHandler, new Tap("/wd/hub/session/:sessionId/appium/tap"));
-        register(postHandler, new Clear("/wd/hub/session/:sessionId/element/:id/clear"));
-        register(postHandler, new SetOrientation("/wd/hub/session/:sessionId/orientation"));
-        register(postHandler, new SetRotation("/wd/hub/session/:sessionId/rotation"));
-        register(postHandler, new PressBack("/wd/hub/session/:sessionId/back"));
-        register(postHandler, new SendKeysToElement("/wd/hub/session/:sessionId/element/:id/value"));
-        register(postHandler, new SendKeysToElement("/wd/hub/session/:sessionId/keys"));
-        register(postHandler, new Swipe("/wd/hub/session/:sessionId/touch/perform"));
-        register(postHandler, new TouchLongClick("/wd/hub/session/:sessionId/touch/longclick"));
-        register(postHandler, new OpenNotification("/wd/hub/session/:sessionId/appium/device/open_notifications"));
-        register(postHandler, new PressKeyCode("/wd/hub/session/:sessionId/appium/device/press_keycode"));
-        register(postHandler, new LongPressKeyCode("/wd/hub/session/:sessionId/appium/device/long_press_keycode"));
-        register(postHandler, new Drag("/wd/hub/session/:sessionId/touch/drag"));
-        register(postHandler, new Flick("/wd/hub/session/:sessionId/touch/flick"));
-        register(postHandler, new ScrollTo("/wd/hub/session/:sessionId/touch/scroll"));
-        register(postHandler, new MultiPointerGesture("/wd/hub/session/:sessionId/touch/multi/perform"));
-        register(postHandler, new W3CActions("/wd/hub/session/:sessionId/actions"));
-        register(postHandler, new TouchDown("/wd/hub/session/:sessionId/touch/down"));
-        register(postHandler, new TouchUp("/wd/hub/session/:sessionId/touch/up"));
-        register(postHandler, new TouchMove("/wd/hub/session/:sessionId/touch/move"));
-        register(postHandler, new UpdateSettings("/wd/hub/session/:sessionId/appium/settings"));
-        register(postHandler, new NetworkConnection("/wd/hub/session/:sessionId/network_connection"));
-        register(postHandler, new ScrollToElement("/wd/hub/session/:sessionId/appium/element/:id/scroll_to/:id2"));
-        register(postHandler, new GetClipboard("/wd/hub/session/:sessionId/appium/device/get_clipboard"));
-        register(postHandler, new SetClipboard("/wd/hub/session/:sessionId/appium/device/set_clipboard"));
-        register(postHandler, new AcceptAlert("/wd/hub/session/:sessionId/alert/accept"));
-        register(postHandler, new DismissAlert("/wd/hub/session/:sessionId/alert/dismiss"));
+        register(postHandler, new NewSession("/session"));
+        register(postHandler, new FindElement("/session/:sessionId/element"));
+        register(postHandler, new FindElements("/session/:sessionId/elements"));
+        register(postHandler, new Click("/session/:sessionId/element/:id/click"));
+        register(postHandler, new Tap("/session/:sessionId/appium/tap"));
+        register(postHandler, new Clear("/session/:sessionId/element/:id/clear"));
+        register(postHandler, new SetOrientation("/session/:sessionId/orientation"));
+        register(postHandler, new SetRotation("/session/:sessionId/rotation"));
+        register(postHandler, new PressBack("/session/:sessionId/back"));
+        register(postHandler, new SendKeysToElement("/session/:sessionId/element/:id/value"));
+        register(postHandler, new SendKeysToElement("/session/:sessionId/keys"));
+        register(postHandler, new Swipe("/session/:sessionId/touch/perform"));
+        register(postHandler, new TouchLongClick("/session/:sessionId/touch/longclick"));
+        register(postHandler, new OpenNotification("/session/:sessionId/appium/device/open_notifications"));
+        register(postHandler, new PressKeyCode("/session/:sessionId/appium/device/press_keycode"));
+        register(postHandler, new LongPressKeyCode("/session/:sessionId/appium/device/long_press_keycode"));
+        register(postHandler, new Drag("/session/:sessionId/touch/drag"));
+        register(postHandler, new Flick("/session/:sessionId/touch/flick"));
+        register(postHandler, new ScrollTo("/session/:sessionId/touch/scroll"));
+        register(postHandler, new MultiPointerGesture("/session/:sessionId/touch/multi/perform"));
+        register(postHandler, new W3CActions("/session/:sessionId/actions"));
+        register(postHandler, new TouchDown("/session/:sessionId/touch/down"));
+        register(postHandler, new TouchUp("/session/:sessionId/touch/up"));
+        register(postHandler, new TouchMove("/session/:sessionId/touch/move"));
+        register(postHandler, new UpdateSettings("/session/:sessionId/appium/settings"));
+        register(postHandler, new NetworkConnection("/session/:sessionId/network_connection"));
+        register(postHandler, new ScrollToElement("/session/:sessionId/appium/element/:id/scroll_to/:id2"));
+        register(postHandler, new SetClipboard("/session/:sessionId/appium/device/set_clipboard"));
+        register(postHandler, new AcceptAlert("/session/:sessionId/alert/accept"));
+        register(postHandler, new DismissAlert("/session/:sessionId/alert/dismiss"));
 
-        register(postHandler, new io.appium.uiautomator2.handler.gestures.Drag("/wd/hub/session/:sessionId/appium/gestures/drag"));
-        register(postHandler, new io.appium.uiautomator2.handler.gestures.Fling("/wd/hub/session/:sessionId/appium/gestures/fling"));
-        register(postHandler, new io.appium.uiautomator2.handler.gestures.Click("/wd/hub/session/:sessionId/appium/gestures/click"));
-        register(postHandler, new io.appium.uiautomator2.handler.gestures.LongClick("/wd/hub/session/:sessionId/appium/gestures/long_click"));
-        register(postHandler, new io.appium.uiautomator2.handler.gestures.DoubleClick("/wd/hub/session/:sessionId/appium/gestures/double_click"));
-        register(postHandler, new io.appium.uiautomator2.handler.gestures.PinchClose("/wd/hub/session/:sessionId/appium/gestures/pinch_close"));
-        register(postHandler, new io.appium.uiautomator2.handler.gestures.PinchOpen("/wd/hub/session/:sessionId/appium/gestures/pinch_open"));
-        register(postHandler, new io.appium.uiautomator2.handler.gestures.Scroll("/wd/hub/session/:sessionId/appium/gestures/scroll"));
-        register(postHandler, new io.appium.uiautomator2.handler.gestures.Swipe("/wd/hub/session/:sessionId/appium/gestures/swipe"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.Drag("/session/:sessionId/appium/gestures/drag"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.Fling("/session/:sessionId/appium/gestures/fling"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.Click("/session/:sessionId/appium/gestures/click"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.LongClick("/session/:sessionId/appium/gestures/long_click"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.DoubleClick("/session/:sessionId/appium/gestures/double_click"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.PinchClose("/session/:sessionId/appium/gestures/pinch_close"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.PinchOpen("/session/:sessionId/appium/gestures/pinch_open"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.Scroll("/session/:sessionId/appium/gestures/scroll"));
+        register(postHandler, new io.appium.uiautomator2.handler.gestures.Swipe("/session/:sessionId/appium/gestures/swipe"));
     }
 
     private void registerGetHandler() {
-        register(getHandler, new Status("/wd/hub/status"));
-        register(getHandler, new GetSessions("/wd/hub/sessions"));
-        register(getHandler, new GetSessionDetails("/wd/hub/session/:sessionId"));
-        register(getHandler, new CaptureScreenshot("/wd/hub/session/:sessionId/screenshot"));
-        register(getHandler, new GetOrientation("/wd/hub/session/:sessionId/orientation"));
-        register(getHandler, new GetRotation("/wd/hub/session/:sessionId/rotation"));
-        register(getHandler, new GetText("/wd/hub/session/:sessionId/element/:id/text"));
-        register(getHandler, new GetElementAttribute("/wd/hub/session/:sessionId/element/:id/attribute/:name"));
-        register(getHandler, new GetRect("/wd/hub/session/:sessionId/element/:id/rect"));
-        register(getHandler, new GetSize("/wd/hub/session/:sessionId/element/:id/size"));
-        register(getHandler, new GetName("/wd/hub/session/:sessionId/element/:id/name"));
-        register(getHandler, new ActiveElement("/wd/hub/session/:sessionId/element/active"));
+        register(getHandler, new Status("/status"));
+        register(getHandler, new GetSessions("/sessions"));
+        register(getHandler, new GetSessionDetails("/session/:sessionId"));
+        register(getHandler, new CaptureScreenshot("/session/:sessionId/screenshot"));
+        register(getHandler, new GetOrientation("/session/:sessionId/orientation"));
+        register(getHandler, new GetRotation("/session/:sessionId/rotation"));
+        register(getHandler, new GetText("/session/:sessionId/element/:id/text"));
+        register(getHandler, new GetElementAttribute("/session/:sessionId/element/:id/attribute/:name"));
+        register(getHandler, new GetRect("/session/:sessionId/element/:id/rect"));
+        register(getHandler, new GetSize("/session/:sessionId/element/:id/size"));
+        register(getHandler, new GetName("/session/:sessionId/element/:id/name"));
+        register(getHandler, new ActiveElement("/session/:sessionId/element/active"));
         // W3C endpoint
-        register(getHandler, new GetElementScreenshot("/wd/hub/session/:sessionId/element/:id/screenshot"));
+        register(getHandler, new GetElementScreenshot("/session/:sessionId/element/:id/screenshot"));
         // JSONWP endpoint
-        register(getHandler, new GetElementScreenshot("/wd/hub/session/:sessionId/screenshot/:id"));
-        register(getHandler, new Location("/wd/hub/session/:sessionId/element/:id/location"));
-        register(getHandler, new GetDeviceSize("/wd/hub/session/:sessionId/window/:windowHandle/size"));
-        register(getHandler, new Source("/wd/hub/session/:sessionId/source"));
-        register(getHandler, new GetSystemBars("/wd/hub/session/:sessionId/appium/device/system_bars"));
-        register(getHandler, new GetBatteryInfo("/wd/hub/session/:sessionId/appium/device/battery_info"));
-        register(getHandler, new GetSettings("/wd/hub/session/:sessionId/appium/settings"));
-        register(getHandler, new GetDevicePixelRatio("/wd/hub/session/:sessionId/appium/device/pixel_ratio"));
-        register(getHandler, new FirstVisibleView("/wd/hub/session/:sessionId/appium/element/:id/first_visible"));
-        register(getHandler, new GetAlertText("/wd/hub/session/:sessionId/alert/text"));
-        register(getHandler, new GetDeviceInfo("/wd/hub/session/:sessionId/appium/device/info"));
-        register(getHandler, new GetDisplayDensity("/wd/hub/session/:sessionId/appium/device/display_density"));
+        register(getHandler, new GetElementScreenshot("/session/:sessionId/screenshot/:id"));
+        register(getHandler, new Location("/session/:sessionId/element/:id/location"));
+        register(getHandler, new GetDeviceSize("/session/:sessionId/window/:windowHandle/size"));
+        register(getHandler, new Source("/session/:sessionId/source"));
+        register(getHandler, new GetSystemBars("/session/:sessionId/appium/device/system_bars"));
+        register(getHandler, new GetBatteryInfo("/session/:sessionId/appium/device/battery_info"));
+        register(getHandler, new GetSettings("/session/:sessionId/appium/settings"));
+        register(getHandler, new GetDevicePixelRatio("/session/:sessionId/appium/device/pixel_ratio"));
+        register(getHandler, new FirstVisibleView("/session/:sessionId/appium/element/:id/first_visible"));
+        register(getHandler, new GetAlertText("/session/:sessionId/alert/text"));
+        register(getHandler, new GetDeviceInfo("/session/:sessionId/appium/device/info"));
+        register(getHandler, new GetDisplayDensity("/session/:sessionId/appium/device/display_density"));
     }
 
     private void register(Map<String, BaseRequestHandler> registerOn, BaseRequestHandler handler) {

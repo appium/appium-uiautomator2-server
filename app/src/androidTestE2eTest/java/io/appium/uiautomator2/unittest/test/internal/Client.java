@@ -75,7 +75,7 @@ public abstract class Client {
         NettyStatus actualStatus;
         do {
             try {
-                get(Config.HOST, "/wd/hub/status");
+                get(Config.HOST, "/status");
                 actualStatus = NettyStatus.ONLINE;
             } catch (Exception e) {
                 actualStatus = NettyStatus.OFFLINE;

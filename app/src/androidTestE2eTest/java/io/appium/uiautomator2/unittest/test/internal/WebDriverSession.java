@@ -45,7 +45,7 @@ public class WebDriverSession {
             throw new IllegalStateException("Session id must be set");
         }
 
-        return String.format("%s/wd/hub/session/%s", Config.HOST, this.getId());
+        return String.format("%s/session/%s", Config.HOST, this.getId());
     }
 
     public void setId(String value) {
