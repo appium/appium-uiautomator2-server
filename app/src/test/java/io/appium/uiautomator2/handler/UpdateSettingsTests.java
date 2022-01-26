@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
-import io.appium.uiautomator2.common.exceptions.UnsupportedSettingException;
 import io.appium.uiautomator2.handler.request.BaseRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -205,11 +204,6 @@ public class UpdateSettingsTests {
         verifySettingIsAvailable(
                 MJPEG_BILINEAR_FILTERING,
                 MjpegBilinearFiltering.class);
-    }
-
-    @Test(expected = UnsupportedSettingException.class)
-    public void shouldThrowExceptionIfSettingIsNotSupported() {
-        updateSettings.getSetting("unsupported_setting");
     }
 
     @Test

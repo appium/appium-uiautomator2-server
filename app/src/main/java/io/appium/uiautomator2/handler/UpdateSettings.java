@@ -19,7 +19,6 @@ package io.appium.uiautomator2.handler;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import io.appium.uiautomator2.common.exceptions.UnsupportedSettingException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -29,6 +28,8 @@ import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
+
+import androidx.annotation.Nullable;
 
 public class UpdateSettings extends SafeRequestHandler {
 
@@ -45,18 +46,22 @@ public class UpdateSettings extends SafeRequestHandler {
             String settingName = entry.getKey();
             Object settingValue = entry.getValue();
             ISetting<?> setting = getSetting(settingName);
+            if (setting == null) {
+                Logger.info(String.format("Setting '%s' is not known -> skipped", settingName));
+                continue;
+            }
             setting.update(settingValue);
         }
         return new AppiumResponse(getSessionId(request));
     }
 
-    @SuppressWarnings("rawtypes")
-    public ISetting getSetting(String settingName) throws UnsupportedSettingException {
+    @Nullable
+    public ISetting<?> getSetting(String settingName) {
         for (final Settings value : Settings.values()) {
             if (value.toString().equals(settingName)) {
                 return value.getSetting();
             }
         }
-        throw new UnsupportedSettingException(settingName, Settings.names());
+        return null;
     }
 }
