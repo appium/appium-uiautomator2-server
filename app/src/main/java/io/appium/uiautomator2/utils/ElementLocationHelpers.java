@@ -19,6 +19,7 @@ package io.appium.uiautomator2.utils;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
+import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiSelector;
 
 import java.util.Arrays;
@@ -109,6 +110,20 @@ public class ElementLocationHelpers {
 
     public static NodeInfoList getXPathNodeMatch(
             final String expression, @Nullable AndroidElement element, boolean multiple) {
+        if (expression.equals("/..") && element != null) {
+            // Because the search scope is restricted only to child elements, we add this exception
+            // when looking for parent element.
+            Object object = element.getUiObject();
+            if (object instanceof UiObject2) {
+                UiObject2 parent = ((UiObject2) object).getParent();
+                if (parent != null) {
+                    NodeInfoList matchedNodes = new NodeInfoList();
+                    matchedNodes.add(toAxNodeInfo(parent));
+                    return matchedNodes;
+                }
+            }
+        }
+
         AccessibilityNodeInfo root = element == null ? null : toAxNodeInfo(element.getUiObject());
         // We are trying to be smart here and only include the actually queried
         // attributes into the source XML document. This allows to improve the performance a lot
