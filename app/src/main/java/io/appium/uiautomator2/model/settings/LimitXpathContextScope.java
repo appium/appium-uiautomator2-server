@@ -20,7 +20,7 @@ public class LimitXpathContextScope extends AbstractSetting<Boolean> {
 
     private static final String SETTING_NAME = "limitXPathContextScope";
 
-    private boolean limitXPathContextScope = true;
+    private boolean limitXpathContextScope = true;
 
     public LimitXpathContextScope() {
         super(Boolean.class, SETTING_NAME);
@@ -28,11 +28,11 @@ public class LimitXpathContextScope extends AbstractSetting<Boolean> {
 
     @Override
     public Boolean getValue() {
-        return limitXPathContextScope;
+        return limitXpathContextScope;
     }
 
     @Override
     protected void apply(Boolean value) {
-        this.limitXPathContextScope = value;
+        this.limitXpathContextScope = value;
     }
 }
