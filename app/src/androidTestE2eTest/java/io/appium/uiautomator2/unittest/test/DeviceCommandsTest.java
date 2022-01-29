@@ -314,6 +314,10 @@ public class DeviceCommandsTest extends BaseTest {
         response = findElement(By.xpath("//*[@class='android.widget.TextView'][2]"), contextId);
         response = getText(response.getElementId());
         assertEquals("Accessibility", response.getValue());
+
+        //parent element - By.xpath  (UiObject2)
+        response = findElement(By.xpath("./.."), contextId);
+        assertTrue(response.isSuccessful());
     }
 
     @Test

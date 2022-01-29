@@ -48,6 +48,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
@@ -96,6 +97,62 @@ public class AccessibilityNodeInfoDumper {
                                        Set<Attribute> includedAttributes) {
         this.root = root;
         this.includedAttributes = includedAttributes;
+    }
+
+    private String buildRootElementSearchQuery() {
+        if (root == null) {
+            throw new RuntimeException(
+                    "Root node search query cannot be built if the root is unset"
+            );
+        }
+        for (int i = 0; i < uiElementsMapping.size(); ++i) {
+            if (Objects.equals(uiElementsMapping.valueAt(i).getNode(), root)) {
+                return String.format("//*[@%s=\"%s\"]", UI_ELEMENT_INDEX, uiElementsMapping.keyAt(i));
+            }
+        }
+        throw new RuntimeException("Cannot match the index of the root node");
+    }
+
+    private Node matchRootElementXPath1(Document doc) {
+        String query = buildRootElementSearchQuery();
+        XPathExpression expression;
+        try {
+            expression = XPATH_FACTORY.newXPath().compile(query);
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException(e);
+        }
+        NodeList elements;
+        try {
+            elements = (NodeList) expression.evaluate(doc, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException(e);
+        }
+        for (int i = 0; i < elements.getLength(); ++i) {
+            Node result = elements.item(i);
+            if (result instanceof Element) {
+                return result;
+            }
+        }
+        throw new RuntimeException("Cannot match the root element using XPath1");
+    }
+
+    private Node matchRootElementXPath2(Document doc) {
+        String query = buildRootElementSearchQuery();
+        StaticContextBuilder scb = new StaticContextBuilder();
+        XPath2Expression expr = new Engine().parseExpression(query, scb);
+        ResultSequence rs = expr.evaluate(new DynamicContextBuilder(scb), new Object[]{doc});
+        Iterator<Item> iterator = rs.iterator();
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            if (!(item.getNativeValue() instanceof Node)) {
+                continue;
+            }
+            Node node = (Node) item.getNativeValue();
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                return node;
+            }
+        }
+        throw new RuntimeException("Cannot match the root element using XPath2");
     }
 
     private void addDisplayInfo() throws IOException {
@@ -174,9 +231,10 @@ public class AccessibilityNodeInfoDumper {
             serializer.setOutput(outputStream, XML_ENCODING);
             serializer.startDocument(XML_ENCODING, true);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-            final UiElement<?, ?> uiRootElement = root == null
-                    ? UiElementSnapshot.take(getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage(), includedAttributes)
-                    : UiElementSnapshot.take(root, includedAttributes);
+            final UiElement<?, ?> uiRootElement = UiElementSnapshot.take(
+                    getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage(),
+                    includedAttributes
+            );
             serializeUiElement(uiRootElement, isIndexed);
             serializer.endDocument();
             Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",
@@ -226,9 +284,9 @@ public class AccessibilityNodeInfoDumper {
             throw new UiAutomator2Exception(e);
         }
         try (InputStream xmlStream = toStream(true)) {
-            NodeList elements = (NodeList) expression.evaluate(
-                    loadDocument(xmlStream), XPathConstants.NODESET
-            );
+            Document doc = loadDocument(xmlStream);
+            Node context = root == null ? doc : matchRootElementXPath1(doc);
+            NodeList elements = (NodeList) expression.evaluate(context, XPathConstants.NODESET);
             final NodeInfoList matchedNodes = new NodeInfoList();
             final long timeStarted = SystemClock.uptimeMillis();
             for (int i = 0; i < elements.getLength(); ++i) {
@@ -284,7 +342,8 @@ public class AccessibilityNodeInfoDumper {
         }
         try (InputStream xmlStream = toStream(true)) {
             Document doc = loadDocument(xmlStream);
-            ResultSequence rs = expr.evaluate(new DynamicContextBuilder(scb), new Object[]{doc});
+            Node context = root == null ? doc : matchRootElementXPath2(doc);
+            ResultSequence rs = expr.evaluate(new DynamicContextBuilder(scb), new Object[]{context});
             NodeInfoList matchedNodes = new NodeInfoList();
             Iterator<Item> iterator = rs.iterator();
             final long timeStarted = SystemClock.uptimeMillis();
