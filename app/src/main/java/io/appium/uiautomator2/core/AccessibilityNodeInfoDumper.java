@@ -114,15 +114,10 @@ public class AccessibilityNodeInfoDumper {
     }
 
     private Node matchRootElementXPath1(Document doc) {
-        String query = buildRootElementSearchQuery();
-        XPathExpression expression;
-        try {
-            expression = XPATH_FACTORY.newXPath().compile(query);
-        } catch (XPathExpressionException e) {
-            throw new RuntimeException(e);
-        }
         NodeList elements;
         try {
+            XPathExpression expression = XPATH_FACTORY.newXPath()
+                    .compile(buildRootElementSearchQuery());
             elements = (NodeList) expression.evaluate(doc, XPathConstants.NODESET);
         } catch (XPathExpressionException e) {
             throw new RuntimeException(e);
