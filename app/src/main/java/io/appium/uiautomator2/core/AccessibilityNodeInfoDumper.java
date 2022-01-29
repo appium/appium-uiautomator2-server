@@ -59,6 +59,7 @@ import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.UiElement;
 import io.appium.uiautomator2.model.UiElementSnapshot;
 import io.appium.uiautomator2.model.settings.EnforceXpath1;
+import io.appium.uiautomator2.model.settings.LimitXpathContextScope;
 import io.appium.uiautomator2.model.settings.NormalizeTagNames;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Attribute;
@@ -138,14 +139,12 @@ public class AccessibilityNodeInfoDumper {
     @NonNull
     private Node fetchContext(InputStream xml) {
         Document doc = loadDocument(xml);
-        Node context = root == null ? doc : matchRootElement(
-                doc.getDocumentElement(), matchRootElementIndex());
-        if (context == null) {
-            throw new RuntimeException(
+        return root == null || Settings.get(LimitXpathContextScope.class).getValue()
+                ? doc
+                : Objects.requireNonNull(
+                    matchRootElement(doc.getDocumentElement(), matchRootElementIndex()),
                     "Cannot match the root element for the context-based XPath lookup"
-            );
-        }
-        return context;
+                );
     }
 
     private void addDisplayInfo() throws IOException {
@@ -224,10 +223,12 @@ public class AccessibilityNodeInfoDumper {
             serializer.setOutput(outputStream, XML_ENCODING);
             serializer.startDocument(XML_ENCODING, true);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-            final UiElement<?, ?> uiRootElement = UiElementSnapshot.take(
-                    getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage(),
-                    includedAttributes
-            );
+            UiElement<?, ?> uiRootElement = root != null && Settings.get(LimitXpathContextScope.class).getValue()
+                    ? UiElementSnapshot.take(root, includedAttributes)
+                    : UiElementSnapshot.take(
+                        getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage(),
+                        includedAttributes
+                    );
             serializeUiElement(uiRootElement, isIndexed);
             serializer.endDocument();
             Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",
