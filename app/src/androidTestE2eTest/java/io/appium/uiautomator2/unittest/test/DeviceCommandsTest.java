@@ -327,7 +327,7 @@ public class DeviceCommandsTest extends BaseTest {
         String contextId = response.getElementId();
 
         //child element - By.xpath  (UiObject2)
-        response = findElement(By.xpath("(//*[@class='android.widget.TextView'])[2]"), contextId);
+        response = findElement(By.xpath("(.//*[@class='android.widget.TextView'])[2]"), contextId);
         response = getText(response.getElementId());
         assertEquals("Accessibility", response.getValue());
     }
@@ -352,7 +352,7 @@ public class DeviceCommandsTest extends BaseTest {
         String contextId = response.getElementId();
 
         //child element - By.xpath  (UiObject2)
-        response = findElement(By.xpath("(//*[@class='android.widget.TextView'])[2]"), contextId);
+        response = findElement(By.xpath("(.//*[@class='android.widget.TextView'])[2]"), contextId);
         response = getText(response.getElementId());
         assertEquals("Accessibility", response.getValue());
     }

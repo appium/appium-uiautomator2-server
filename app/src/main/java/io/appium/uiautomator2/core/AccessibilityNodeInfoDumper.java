@@ -142,7 +142,7 @@ public class AccessibilityNodeInfoDumper {
                 doc.getDocumentElement(), matchRootElementIndex());
         if (context == null) {
             throw new RuntimeException(
-                    "Cannot match the root element for the context-based XPath1 lookup"
+                    "Cannot match the root element for the context-based XPath lookup"
             );
         }
         return context;
