@@ -129,6 +129,8 @@ public class UiObjectElement extends BaseElement {
             case HINT:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     result = toAxNodeInfo(element).getHintText();
+                } else {
+                    result = null;
                 }
                 break;
             case SELECTION_END:
