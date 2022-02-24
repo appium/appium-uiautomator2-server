@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.model;
 
+import android.os.Build;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -132,6 +133,13 @@ public class UiObject2Element extends BaseElement {
                 break;
             case PACKAGE:
                 result = AxNodeInfoHelper.getPackageName(toAxNodeInfo(element));
+                break;
+            case HINT:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    result = toAxNodeInfo(element).getHintText();
+                } else {
+                    result = null;
+                }
                 break;
             case SELECTION_END:
             case SELECTION_START:

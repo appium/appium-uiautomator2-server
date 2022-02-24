@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.model;
 
 import android.annotation.TargetApi;
+import android.os.Build;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 
 import static androidx.test.internal.util.Checks.checkNotNull;
+import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
@@ -59,7 +61,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.CHECKABLE, Attribute.CHECKED, Attribute.CLICKABLE, Attribute.ENABLED,
             Attribute.FOCUSABLE, Attribute.FOCUSED, Attribute.LONG_CLICKABLE,
             Attribute.PASSWORD, Attribute.SCROLLABLE, Attribute.SELECTION_START,
-            Attribute.SELECTION_END, Attribute.SELECTED, Attribute.BOUNDS, Attribute.DISPLAYED
+            Attribute.SELECTION_END, Attribute.SELECTED, Attribute.BOUNDS, Attribute.DISPLAYED,
+            Attribute.HINT
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
     };
     private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[] {
@@ -158,6 +161,12 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 return node.isSelected();
             case TEXT:
                 return AxNodeInfoHelper.getText(node, true);
+            case HINT:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    return node.getHintText();
+                } else {
+                    return null;
+                }
             case ORIGINAL_TEXT:
                 return AxNodeInfoHelper.getText(node, false);
             case BOUNDS:
