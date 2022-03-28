@@ -30,6 +30,7 @@ public enum Settings {
     WAIT_FOR_SELECTOR_TIMEOUT(new WaitForSelectorTimeout()),
     NORMALIZE_TAG_NAMES(new NormalizeTagNames()),
     ENFORCE_XPATH1(new EnforceXpath1()),
+    DISABLE_IDS_AUTOCOMPLETION(new DisableIdLocatorAutocompletion()),
     LIMIT_XPATH_CONTEXT_SCOPE(new LimitXpathContextScope()),
     SHUTDOWN_ON_POWER_DISCONNECT(new ShutdownOnPowerDisconnect()),
     SIMPLE_BOUNDS_CALCULATION(new SimpleBoundsCalculation()),

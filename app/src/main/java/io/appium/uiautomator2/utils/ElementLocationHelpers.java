@@ -35,6 +35,8 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.UiElementSnapshot;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.model.settings.DisableIdLocatorAutocompletion;
+import io.appium.uiautomator2.model.settings.Settings;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
@@ -73,24 +75,24 @@ public class ElementLocationHelpers {
 
     public static String rewriteIdLocator(By.ById by) {
         String locator = by.getElementLocator();
-
-        if (!resourceIdRegex.matcher(by.getElementLocator()).matches()) {
-            // not a fully qualified resource id
-            // transform "textToBeChanged" into:
-            // com.example.android.testing.espresso.BasicSample:id/textToBeChanged
-            // it's prefixed with the app package.
-            String packageName = getPackageName();
-            if (packageName == null) {
-                throw new UiAutomator2Exception(String.format(
-                        "Cannot rewrite element locator '%s' to its complete form, because " +
-                                "the current application package name is unknown. Consider " +
-                                "providing the app package name or changing the locator to " +
-                                "'<package_name>:id/%s' format.", by.getElementLocator(), by.getElementLocator()));
-            }
-            locator = String.format("%s:id/%s", packageName, locator);
-            Logger.debug("Updated findElement locator strategy: " + locator);
+        if (Settings.get(DisableIdLocatorAutocompletion.class).getValue()
+                || resourceIdRegex.matcher(locator).matches()) {
+            return locator;
         }
-        return locator;
+
+        // not a fully qualified resource id
+        // transform "textToBeChanged" into:
+        // com.example.android.testing.espresso.BasicSample:id/textToBeChanged
+        // it's prefixed with the app package.
+        String packageName = getPackageName();
+        if (packageName == null) {
+            throw new UiAutomator2Exception(String.format(
+                    "Cannot rewrite element locator '%s' to its complete form, because " +
+                            "the current application package name is unknown. Consider " +
+                            "providing the app package name or changing the locator to " +
+                            "'<package_name>:id/%s' format.", by.getElementLocator(), by.getElementLocator()));
+        }
+        return String.format("%s:id/%s", packageName, locator);
     }
 
     private static Set<Attribute> extractQueriedAttributes(String xpathExpression) {

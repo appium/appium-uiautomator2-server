@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4'
+        classpath 'com.android.tools.build:gradle:7.1.2'
         classpath 'com.github.bjoernq:unmockplugin:0.7.9'
     }
 }
@@ -41,9 +41,6 @@ android {
         }
     }
     flavorDimensions 'default'
-    lintOptions {
-        abortOnError false
-    }
     productFlavors {
         e2eTest {
             applicationId 'io.appium.uiautomator2.e2etest'
@@ -56,8 +53,12 @@ android {
         unitTests.returnDefaultValues = true
     }
     packagingOptions {
-        exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
-        exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
+        resources {
+            excludes += ['META-INF/maven/com.google.guava/guava/pom.properties', 'META-INF/maven/com.google.guava/guava/pom.xml']
+        }
+    }
+    lint {
+        abortOnError false
     }
 }
 
