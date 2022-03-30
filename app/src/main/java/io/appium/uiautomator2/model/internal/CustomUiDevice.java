@@ -90,8 +90,8 @@ public class CustomUiDevice {
     }
 
     public UiAutomation getUiAutomation() {
-        int flags = Configurator.getInstance().getUiAutomationFlags();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            int flags = Configurator.getInstance().getUiAutomationFlags();
             return getInstrumentation().getUiAutomation(flags);
         } else {
             return getInstrumentation().getUiAutomation();
