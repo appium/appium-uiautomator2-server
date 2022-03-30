@@ -17,6 +17,8 @@
 package io.appium.uiautomator2.model.internal;
 
 import android.app.Instrumentation;
+import android.app.UiAutomation;
+import android.os.Build;
 import android.os.SystemClock;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -26,6 +28,7 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiSelector;
+import androidx.test.uiautomator.Configurator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -84,6 +87,16 @@ public class CustomUiDevice {
 
     public Instrumentation getInstrumentation() {
         return mInstrumentation;
+    }
+
+    public UiAutomation getUiAutomation() {
+        int flags = Configurator.getInstance().getUiAutomationFlags();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            return getInstrumentation().getUiAutomation(flags);
+        } else {
+            return getInstrumentation().getUiAutomation();
+        }
     }
 
     public int getApiLevelActual() {
@@ -173,7 +186,7 @@ public class CustomUiDevice {
             return desired;
         }
 
-        getInstrumentation().getUiAutomation().setRotation(desired.ordinal());
+        getUiAutomation().setRotation(desired.ordinal());
         long start = System.currentTimeMillis();
         do {
             if (ScreenRotation.current() == desired) {

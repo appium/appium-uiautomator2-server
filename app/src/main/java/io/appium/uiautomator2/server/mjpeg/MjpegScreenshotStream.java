@@ -40,7 +40,7 @@ public class MjpegScreenshotStream extends Thread {
     private static final int NO_CLIENTS_CONNECTED_SLEEP_TIME_MS = 500;
     private static final byte[] END = "\r\n\r\n".getBytes(UTF_8);
     private static final UiAutomation UI_AUTOMATION =
-        CustomUiDevice.getInstance().getInstrumentation().getUiAutomation();
+        CustomUiDevice.getInstance().getUiAutomation();
     private final List<MjpegScreenshotClient> clients;
     private boolean isStopped = false;
 

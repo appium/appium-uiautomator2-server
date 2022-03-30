@@ -48,7 +48,7 @@ import static android.util.DisplayMetrics.DENSITY_DEFAULT;
 public class ScreenshotHelper {
     private static final int PNG_MAGIC_LENGTH = 8;
     private static final UiAutomation uia =
-        CustomUiDevice.getInstance().getInstrumentation().getUiAutomation();
+        CustomUiDevice.getInstance().getUiAutomation();
 
     /**
      * Grab device screenshot and crop it to specifyed area if cropArea is not null.

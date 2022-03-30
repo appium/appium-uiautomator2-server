@@ -86,7 +86,6 @@ public class AXWindowHelpers {
     private static AccessibilityNodeInfo[] getWindowRoots() {
         List<AccessibilityNodeInfo> result = new ArrayList<>();
         List<AccessibilityWindowInfo> windows = CustomUiDevice.getInstance()
-                .getInstrumentation()
                 .getUiAutomation()
                 .getWindows();
         for (AccessibilityWindowInfo window : windows) {
