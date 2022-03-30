@@ -93,9 +93,8 @@ public class CustomUiDevice {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             int flags = Configurator.getInstance().getUiAutomationFlags();
             return getInstrumentation().getUiAutomation(flags);
-        } else {
-            return getInstrumentation().getUiAutomation();
         }
+        return getInstrumentation().getUiAutomation();
     }
 
     public int getApiLevelActual() {

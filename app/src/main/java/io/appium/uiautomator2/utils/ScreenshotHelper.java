@@ -47,8 +47,6 @@ import static android.util.DisplayMetrics.DENSITY_DEFAULT;
 
 public class ScreenshotHelper {
     private static final int PNG_MAGIC_LENGTH = 8;
-    private static final UiAutomation uia =
-        CustomUiDevice.getInstance().getUiAutomation();
 
     /**
      * Grab device screenshot and crop it to specifyed area if cropArea is not null.
@@ -86,6 +84,7 @@ public class ScreenshotHelper {
      */
     private static <T> T takeDeviceScreenshot(Class<T> outputType) throws TakeScreenshotException {
         Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+        UiAutomation automation = CustomUiDevice.getInstance().getUiAutomation();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
         Bitmap screenshot = null;
@@ -94,7 +93,7 @@ public class ScreenshotHelper {
         // executeShellCommand seems to be faulty on Android 5
         if (metrics.densityDpi != DENSITY_DEFAULT && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             try {
-                ParcelFileDescriptor pfd = uia.executeShellCommand("screencap -p");
+                ParcelFileDescriptor pfd = automation.executeShellCommand("screencap -p");
                 try (InputStream is = new FileInputStream(pfd.getFileDescriptor())) {
                     byte[] pngBytes = IOUtils.toByteArray(is);
                     if (pngBytes.length <= PNG_MAGIC_LENGTH) {
@@ -122,7 +121,7 @@ public class ScreenshotHelper {
         }
 
         if (screenshot == null) {
-            screenshot = uia.takeScreenshot();
+            screenshot = automation.takeScreenshot();
         }
 
         if (screenshot == null || screenshot.getWidth() == 0 || screenshot.getHeight() == 0) {
