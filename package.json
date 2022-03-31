@@ -37,10 +37,12 @@
   "devDependencies": {
     "@appium/gulp-plugins": "^6.0.0",
     "@appium/support": "^2.53.0",
+    "@semantic-release/git": "^10.0.1",
     "android-apidemos": "^4.0.0",
     "appium-adb": "^9.0.0",
     "appium-android-driver": "^5.0.0",
     "bluebird": "^3.7.2",
-    "gulp": "^4.0.0"
+    "gulp": "^4.0.0",
+    "semantic-release": "^19.0.2"
   }
 }
