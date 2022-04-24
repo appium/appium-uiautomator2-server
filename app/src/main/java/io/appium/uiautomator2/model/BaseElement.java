@@ -17,11 +17,16 @@
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
+import android.os.Build;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -242,5 +247,28 @@ public abstract class BaseElement implements AndroidElement {
                 && Objects.equals(by, otherEl.by)
                 && Objects.equals(contextId, otherEl.contextId)
                 && this.isSingleMatch == otherEl.isSingleMatch;
+    }
+
+    /**
+     * Returns the string by combining all of keys/values in the given
+     * AccessibilityNodeInfo's extra bundle. Separator is ";".
+     *
+     * @param nodeInfo An AccessibilityNodeInfo instance
+     * @return the string of extra bundles, or null
+     */
+    @Nullable
+    public String getExtrasAsString(AccessibilityNodeInfo nodeInfo) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return null;
+        }
+
+        ArrayList<String> extras = new ArrayList<>();
+        Bundle extraBundle = nodeInfo.getExtras();
+        for (String key : extraBundle.keySet()) {
+            if (extraBundle.get(key) != null) {
+                extras.add(String.format("%s=%s", key, extraBundle.get(key)));
+            }
+        }
+        return TextUtils.join(";", extras);
     }
 }

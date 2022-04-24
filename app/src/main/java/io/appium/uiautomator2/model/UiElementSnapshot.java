@@ -19,6 +19,7 @@ package io.appium.uiautomator2.model;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
@@ -169,20 +170,17 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                     return null;
                 }
             case EXTRAS:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    StringBuilder extras = new StringBuilder();
-                    String separator = "";
-                    Bundle extraBundles = node.getExtras();
-                    for (String key : extraBundles.keySet()) {
-                        if (extraBundles.get(key) != null) {
-                            extras.append(separator).append(String.format("%s=%s", key, extraBundles.get(key)));
-                            separator = ";";
-                        }
-                    }
-                    return extras;
-                } else {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     return null;
                 }
+                ArrayList<String> extras = new ArrayList<>();
+                Bundle extraBundle = node.getExtras();
+                for (String key : extraBundle.keySet()) {
+                    if (extraBundle.get(key) != null) {
+                        extras.add(String.format("%s=%s", key, extraBundle.get(key)));
+                    }
+                }
+                return TextUtils.join(";", extras);
             case ORIGINAL_TEXT:
                 return AxNodeInfoHelper.getText(node, false);
             case BOUNDS:

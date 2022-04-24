@@ -141,20 +141,7 @@ public class UiObjectElement extends BaseElement {
                         : (dstAttribute == Attribute.SELECTION_END ? selectionRange.second : selectionRange.first);
                 break;
             case EXTRAS:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    StringBuilder extras = new StringBuilder();
-                    String separator = "";
-                    Bundle extraBundles = toAxNodeInfo(element).getExtras();
-                    for (String key : extraBundles.keySet()) {
-                        if (extraBundles.get(key) != null) {
-                            extras.append(separator).append(String.format("%s=%s", key, extraBundles.get(key)));
-                            separator = ";";
-                        }
-                    }
-                    result = extras;
-                } else {
-                    result = null;
-                }
+                result = getExtrasAsString(toAxNodeInfo(element));
                 break;
             default:
                 throw generateNoAttributeException(attr);
