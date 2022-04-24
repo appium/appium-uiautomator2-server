@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.model;
 
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -138,6 +139,22 @@ public class UiObjectElement extends BaseElement {
                 Pair<Integer, Integer> selectionRange = AxNodeInfoHelper.getSelectionRange(toAxNodeInfo(element));
                 result = selectionRange == null ? null
                         : (dstAttribute == Attribute.SELECTION_END ? selectionRange.second : selectionRange.first);
+                break;
+            case EXTRAS:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    StringBuilder extras = new StringBuilder();
+                    String separator = "";
+                    Bundle extraBundles = toAxNodeInfo(element).getExtras();
+                    for (String key : extraBundles.keySet()) {
+                        if (extraBundles.get(key) != null) {
+                            extras.append(separator).append(String.format("%s=%s", key, extraBundles.get(key)));
+                            separator = ";";
+                        }
+                    }
+                    result = separator;
+                } else {
+                    result = null;
+                }
                 break;
             default:
                 throw generateNoAttributeException(attr);

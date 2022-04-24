@@ -42,6 +42,7 @@ public enum Attribute {
     SELECTED(new String[]{"selected"}),
     TEXT(new String[]{"text", "name"}),
     HINT(new String[]{"hint"}),
+    EXTRAS(new String[]{"extras"}),
     // The main difference of this attribute from the preceding one is that
     // it does not replace null values with empty strings
     ORIGINAL_TEXT(new String[]{"original-text"}, false, false),
