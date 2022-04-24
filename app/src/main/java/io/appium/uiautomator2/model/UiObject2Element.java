@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.model;
 
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -28,7 +27,6 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

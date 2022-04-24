@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.model;
 
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 
