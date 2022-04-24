@@ -32,6 +32,7 @@ public enum Settings {
     ENFORCE_XPATH1(new EnforceXpath1()),
     DISABLE_IDS_AUTOCOMPLETION(new DisableIdLocatorAutocompletion()),
     LIMIT_XPATH_CONTEXT_SCOPE(new LimitXpathContextScope()),
+    INCLUDE_EXTRAS_IN_PAGE_SOURCE(new IncludeExtrasInPageSource()),
     SHUTDOWN_ON_POWER_DISCONNECT(new ShutdownOnPowerDisconnect()),
     SIMPLE_BOUNDS_CALCULATION(new SimpleBoundsCalculation()),
     TRACK_SCROLL_EVENTS(new TrackScrollEvents()),

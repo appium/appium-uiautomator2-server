@@ -141,6 +141,7 @@ public class UiObjectElement extends BaseElement {
                         : (dstAttribute == Attribute.SELECTION_END ? selectionRange.second : selectionRange.first);
                 break;
             case EXTRAS:
+                // Do not restrict if the 'extras' is available in each element attribute
                 result = getExtrasAsString(toAxNodeInfo(element));
                 break;
             default:

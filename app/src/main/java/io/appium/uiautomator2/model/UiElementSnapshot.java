@@ -38,6 +38,7 @@ import java.util.Set;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
+import io.appium.uiautomator2.model.settings.IncludeExtrasInPageSource;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
@@ -197,6 +198,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     private Map<Attribute, Object> collectAttributes() {
         Map<Attribute, Object> result = new LinkedHashMap<>();
         for (Attribute attr : SUPPORTED_ATTRIBUTES) {
+            if (attr.equals(Attribute.EXTRAS) &&
+                    !Settings.get(IncludeExtrasInPageSource.class).getValue()) {
+                continue;
+            }
             if (includedAttributes.isEmpty() || includedAttributes.contains(attr)) {
                 putAttribute(result, attr, getNodeAttributeValue(attr));
             }

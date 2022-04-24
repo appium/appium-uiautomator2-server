@@ -41,6 +41,7 @@ import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.CompressedLayoutHierarchy;
 import io.appium.uiautomator2.model.settings.ElementResponseAttributes;
 import io.appium.uiautomator2.model.settings.EnableNotificationListener;
+import io.appium.uiautomator2.model.settings.IncludeExtrasInPageSource;
 import io.appium.uiautomator2.model.settings.KeyInjectionDelay;
 import io.appium.uiautomator2.model.settings.MjpegBilinearFiltering;
 import io.appium.uiautomator2.model.settings.MjpegScalingFactor;
@@ -61,6 +62,7 @@ import static io.appium.uiautomator2.model.settings.Settings.ALLOW_INVISIBLE_ELE
 import static io.appium.uiautomator2.model.settings.Settings.COMPRESSED_LAYOUT_HIERARCHY;
 import static io.appium.uiautomator2.model.settings.Settings.ELEMENT_RESPONSE_ATTRIBUTES;
 import static io.appium.uiautomator2.model.settings.Settings.ENABLE_NOTIFICATION_LISTENER;
+import static io.appium.uiautomator2.model.settings.Settings.INCLUDE_EXTRAS_IN_PAGE_SOURCE;
 import static io.appium.uiautomator2.model.settings.Settings.KEY_INJECTION_DELAY;
 import static io.appium.uiautomator2.model.settings.Settings.MJPEG_BILINEAR_FILTERING;
 import static io.appium.uiautomator2.model.settings.Settings.MJPEG_SCALING_FACTOR;
@@ -221,6 +223,11 @@ public class UpdateSettingsTests {
         AppiumResponse resp = updateSettings.handle(req);
         assertNotEquals(resp.getHttpStatus(), HttpResponseStatus.OK);
         assertThat(resp.getValue(), is(instanceOf(Throwable.class)));
+    }
+
+    @Test
+    public void shouldBeAbleToReturnIncludeExtrasInPageSourceSetting() {
+        verifySettingIsAvailable(INCLUDE_EXTRAS_IN_PAGE_SOURCE, IncludeExtrasInPageSource.class);
     }
 
     private void verifySettingIsAvailable(Settings setting, Class<? extends AbstractSetting<?>> clazz) {
