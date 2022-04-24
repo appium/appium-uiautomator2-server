@@ -151,7 +151,7 @@ public class UiObjectElement extends BaseElement {
                             separator = ";";
                         }
                     }
-                    result = separator;
+                    result = extras;
                 } else {
                     result = null;
                 }
