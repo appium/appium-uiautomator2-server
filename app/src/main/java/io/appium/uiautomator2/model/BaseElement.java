@@ -251,7 +251,8 @@ public abstract class BaseElement implements AndroidElement {
 
     /**
      * Returns the string by combining all of keys/values in the given
-     * AccessibilityNodeInfo's extra bundle. Separator is ";".
+     * AccessibilityNodeInfo's extras. Separator is ";".
+     * "extras" is https://developer.android.com/reference/android/view/accessibility/AccessibilityNodeInfo#getExtras()
      *
      * @param nodeInfo An AccessibilityNodeInfo instance
      * @return the string of extra bundles, or null
