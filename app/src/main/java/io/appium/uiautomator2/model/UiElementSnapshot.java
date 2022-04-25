@@ -171,17 +171,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                     return null;
                 }
             case EXTRAS:
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    return null;
-                }
-                ArrayList<String> extras = new ArrayList<>();
-                Bundle extraBundle = node.getExtras();
-                for (String key : extraBundle.keySet()) {
-                    if (extraBundle.get(key) != null) {
-                        extras.add(String.format("%s=%s", key, extraBundle.get(key)));
-                    }
-                }
-                return TextUtils.join(";", extras);
+                return BaseElement.getExtrasAsString(node);
             case ORIGINAL_TEXT:
                 return AxNodeInfoHelper.getText(node, false);
             case BOUNDS:

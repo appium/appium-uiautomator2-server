@@ -28,6 +28,7 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -47,6 +48,7 @@ import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public abstract class BaseElement implements AndroidElement {
     protected static final String ATTRIBUTE_PREFIX = "attribute/";
+    protected static final String EXTRAS_SEPARATOR = ";";
 
     private String id = UUID.randomUUID().toString();
     private final By by;
@@ -258,18 +260,18 @@ public abstract class BaseElement implements AndroidElement {
      * @return the string of extra bundles, or null
      */
     @Nullable
-    public String getExtrasAsString(AccessibilityNodeInfo nodeInfo) {
+    public static String getExtrasAsString(AccessibilityNodeInfo nodeInfo) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return null;
         }
 
-        ArrayList<String> extras = new ArrayList<>();
+        List<String> extras = new ArrayList<>();
         Bundle extraBundle = nodeInfo.getExtras();
         for (String key : extraBundle.keySet()) {
             if (extraBundle.get(key) != null) {
                 extras.add(String.format("%s=%s", key, extraBundle.get(key)));
             }
         }
-        return TextUtils.join(";", extras);
+        return TextUtils.join(EXTRAS_SEPARATOR, extras);
     }
 }
