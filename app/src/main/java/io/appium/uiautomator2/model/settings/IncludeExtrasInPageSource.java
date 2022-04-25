@@ -20,7 +20,7 @@ public class IncludeExtrasInPageSource extends AbstractSetting<Boolean> {
 
     private static final String SETTING_NAME = "includeExtrasInPageSource";
 
-    private boolean includeExtrasInPageSource =false;
+    private boolean includeExtrasInPageSource = false;
 
     public IncludeExtrasInPageSource() {
         super(Boolean.class, SETTING_NAME);
