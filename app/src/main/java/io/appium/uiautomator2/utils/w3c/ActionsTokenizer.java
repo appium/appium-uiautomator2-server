@@ -403,11 +403,8 @@ public class ActionsTokenizer {
                 }
                 break;
                 case ACTION_ITEM_TYPE_POINTER_UP: {
-                    if (!isPointerDown) {
-                        throw new ActionsParseException(String.format(
-                                "You cannot perform '%s' action without performing '%s' first at " +
-                                        "%sms in '%s' chain", gesture.type, ACTION_ITEM_TYPE_POINTER_DOWN, timeDelta, actionId));
-                    }
+                    // Due to issue #470, removed restriction to demand PointerDown before PointerUp.
+
                     if (recentUpDelta == timeDelta) {
                         throw new ActionsParseException(String.format(
                                 "You cannot perform two or more '%s' actions without a pause between them at " +
