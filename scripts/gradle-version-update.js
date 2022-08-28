@@ -7,11 +7,11 @@ const VERSION_NAME_PATTERN = /^\s*versionName\s+['"](.+)['"]$/gm;
 const VERSION_CODE_PATTERN = /^\s*versionCode\s+(.+)$/gm;
 
 function parseArgValue (argName) {
-  const fullArgName = `--${argName}`;
+  const argNamePattern = new RegExp(`^--${argName}\\b`);
   for (let i = 1; i < process.argv.length; ++i) {
     const arg = process.argv[i];
-    if (arg === fullArgName) {
-      return process.argv[i + 1];
+    if (argNamePattern.test(arg)) {
+      return arg.includes('=') ? arg.split('=')[1] : process.argv[i + 1];
     }
   }
   return null;
@@ -19,7 +19,7 @@ function parseArgValue (argName) {
 
 
 async function gradleVersionUpdate() {
-  const gradleFile = path.resolve(__dirname, 'app', 'build.gradle');
+  const gradleFile = path.resolve(__dirname, '..', 'app', 'build.gradle');
   try {
     await fs.promises.access(gradleFile, fs.constants.W_OK);
   } catch (e) {
@@ -50,7 +50,7 @@ async function gradleVersionUpdate() {
   // match will be like `versionCode 42`
   const newCode = parseInt(versionCodeMatch[1], 10) + 1;
   log.info(`Updating gradle build file '${gradleFile}' to version name '${version}' and version code '${newCode}'`);
-  const newVersionCode = versionCodeMatch[0].trim().replace(/\d+/, `${newCode}`);
+  const newVersionCode = versionCodeMatch[0].replace(/\d+/, `${newCode}`);
   const newPayload = gradleFilePayload
     .replace(versionNameMatch[0], newVersionName)
     .replace(versionCodeMatch[0], newVersionCode);

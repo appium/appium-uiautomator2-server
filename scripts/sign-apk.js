@@ -1,19 +1,18 @@
-const glob = require('glob');
+const fs = require('fs');
 const path = require('path');
-const ADB = require('appium-adb');
+const { ADB } = require('appium-adb');
 const B = require('bluebird');
 
 
 async function signApks () {
   // Signs the APK with the default Appium Certificate
   const adb = new ADB();
-  const apksToSign = await glob('*.apk', {
-    cwd: path.resolve('apks'),
-    absolute: true,
-  });
-  if (apksToSign.length) {
-    await B.all(apksToSign.map((apk) => adb.sign(apk)));
+  const apksRoot = path.resolve(__dirname, '..', 'apks');
+  const apks = await fs.promises.readdir(apksRoot);
+  if (!apks.length) {
+    throw new Error(`There are no .apk files available for signing in '${apksRoot}'`);
   }
+  await B.all(apks.map((name) => adb.sign(path.join(apksRoot, name))));
 }
 
 (async () => await signApks())();
