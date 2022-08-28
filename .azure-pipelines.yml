@@ -1,7 +1,7 @@
 variables:
   _FORCE_LOGS: 1
   CI: true
-  NODE_VERSION: 12.x
+  NODE_VERSION: 16.x
 
 parameters:
 - name: integrationJobs
@@ -42,9 +42,15 @@ stages:
   jobs:
   - job: Unit_Tests
     pool:
-      vmImage: ubuntu-20.04
+      vmImage: ubuntu-latest
     steps:
-    - script: ./gradlew testServerDebugUnitTest
+    - task: NodeTool@0
+      inputs:
+        versionSpec: $(NODE_VERSION)
+    - script: |
+        npm install
+        npm run lint
+    - script: npm run test
       env:
         JAVA_HOME: $(JAVA_HOME_11_X64)
         PATH: $(JAVA_HOME_11_X64)/bin:$(PATH)

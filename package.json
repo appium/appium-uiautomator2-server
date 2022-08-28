@@ -3,7 +3,6 @@
   "version": "5.6.2",
   "description": "A netty server with uiautomator2 handlers",
   "main": "index.js",
-  "windowsBuildDir": "c:/tmp",
   "repository": {
     "type": "git",
     "url": "https://github.com/appium/appium-uiautomator2-server"
@@ -13,36 +12,46 @@
     "android",
     "uiautomator2"
   ],
-  "author": "https://github.com/appium",
+  "engines": {
+    "node": ">=14",
+    "npm": ">=8"
+  },
+  "author": "Appium Contributors",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/appium/appium-uiautomator2-server/issues"
   },
   "files": [
     "./index.js",
-    "/apks"
+    "./apks"
   ],
   "homepage": "https://github.com/appium/appium-uiautomator2-server",
   "scripts": {
     "clean": "rm -rf node_modules && rm -f package-lock.json && npm install",
-    "bump-gradle-version": "gulp gradle-version-update --package-version=${npm_package_version} && git add app/build.gradle",
+    "bump-gradle-version": "node ./scripts/gradle-version-update.js --package-version=${npm_package_version} && git add app/build.gradle",
     "build": "./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks && npm run sign-apk",
-    "sign-apk": "gulp sign-apk",
+    "sign-apk": "node ./scripts/sign-apk.js",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
     "move-server": "cp app/build/outputs/apk/server/debug/appium-uiautomator2-server-v${npm_package_version}.apk ./apks",
     "move-test": "cp app/build/outputs/apk/androidTest/server/debug/appium-uiautomator2-server-debug-androidTest.apk ./apks",
     "move-apks": "rm -rf apks && mkdir -p apks && npm run move-server && npm run move-test",
     "version": "npm run bump-gradle-version && npm run build",
-    "clean-device": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test"
+    "clean-device": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test",
+    "test": "./gradlew testServerDebugUnitTest"
   },
   "devDependencies": {
-    "@appium/gulp-plugins": "^7.0.0",
-    "@appium/support": "^2.53.0",
+    "@appium/eslint-config-appium": "^6.0.0",
     "@semantic-release/git": "^10.0.1",
     "android-apidemos": "^4.0.0",
     "appium-adb": "^9.0.0",
-    "appium-android-driver": "^5.0.0",
     "bluebird": "^3.7.2",
-    "gulp": "^4.0.0",
-    "semantic-release": "^19.0.2"
+    "fancy-log": "^2.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "glob": "^8.0.3",
+    "semantic-release": "^19.0.2",
+    "semver": "^7.3.7"
   }
 }
