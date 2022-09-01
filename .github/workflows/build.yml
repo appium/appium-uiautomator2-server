@@ -37,69 +37,85 @@ jobs:
           platformVersion: "11.0"
           apiLevel: 30
           emuTag: default
+          emuArch: x86_64
         - category: AlertCommandsTest
           platformVersion: "9.0"
           apiLevel: 28
           emuTag: default
+          emuArch: x86
         - category: AlertCommandsTest
           platformVersion: "7.1"
           apiLevel: 25
           emuTag: default
+          emuArch: x86
         - category: AlertCommandsTest
           platformVersion: "5.1"
           apiLevel: 22
           emuTag: default
+          emuArch: x86
 
         - category: ActionsCommandsTest
           platformVersion: "11.0"
           apiLevel: 30
           emuTag: default
+          emuArch: x86_64
         - category: ActionsCommandsTest
           platformVersion: "9.0"
           apiLevel: 28
           emuTag: default
+          emuArch: x86
         - category: ActionsCommandsTest
           platformVersion: "7.1"
           apiLevel: 25
           emuTag: default
+          emuArch: x86
         - category: ActionsCommandsTest
           platformVersion: "5.1"
           apiLevel: 22
           emuTag: default
+          emuArch: x86
 
         - category: GestureCommandsTest
           platformVersion: "11.0"
           apiLevel: 30
           emuTag: default
+          emuArch: x86_64
         - category: GestureCommandsTest
           platformVersion: "9.0"
           apiLevel: 28
           emuTag: default
+          emuArch: x86
         - category: GestureCommandsTest
           platformVersion: "7.1"
           apiLevel: 25
           emuTag: default
+          emuArch: x86
         - category: GestureCommandsTest
           platformVersion: "5.1"
           apiLevel: 22
           emuTag: default
+          emuArch: x86
 
         - category: DeviceCommandsTest
           platformVersion: "11.0"
           apiLevel: 30
           emuTag: default
+          emuArch: x86_64
         - category: DeviceCommandsTest
           platformVersion: "9.0"
           apiLevel: 28
           emuTag: default
+          emuArch: x86
         - category: DeviceCommandsTest
           platformVersion: "7.1"
           apiLevel: 25
           emuTag: default
+          emuArch: x86
         - category: DeviceCommandsTest
           platformVersion: "5.1"
           apiLevel: 22
           emuTag: default
+          emuArch: x86
 
     env:
       CI: true
@@ -144,6 +160,7 @@ jobs:
         disable-spellchecker: true
         target: ${{ matrix.emuTag }}
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+        arch: ${{ matrix.emuArch }}
     - run: nohup adb logcat > logcat.log &
       name: Capture Logcat
     - uses: reactivecircus/android-emulator-runner@v2
@@ -157,6 +174,7 @@ jobs:
         disable-spellchecker: true
         target: ${{ matrix.emuTag }}
         emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+        arch: ${{ matrix.emuArch }}
     - name: Save logcat output
       if: ${{ always() }}
       uses: actions/upload-artifact@master
