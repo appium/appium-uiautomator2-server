@@ -33,86 +33,19 @@ jobs:
     strategy:
       matrix:
         include:
-        - category: AlertCommandsTest
-          platformVersion: "11.0"
+        - platformVersion: "11.0"
           apiLevel: 30
           emuTag: default
           emuArch: x86_64
-        - category: AlertCommandsTest
-          platformVersion: "9.0"
+        - platformVersion: "9.0"
           apiLevel: 28
           emuTag: default
           emuArch: x86
-        - category: AlertCommandsTest
-          platformVersion: "7.1"
+        - platformVersion: "7.1"
           apiLevel: 25
           emuTag: default
           emuArch: x86
-        - category: AlertCommandsTest
-          platformVersion: "5.1"
-          apiLevel: 22
-          emuTag: default
-          emuArch: x86
-
-        - category: ActionsCommandsTest
-          platformVersion: "11.0"
-          apiLevel: 30
-          emuTag: default
-          emuArch: x86_64
-        - category: ActionsCommandsTest
-          platformVersion: "9.0"
-          apiLevel: 28
-          emuTag: default
-          emuArch: x86
-        - category: ActionsCommandsTest
-          platformVersion: "7.1"
-          apiLevel: 25
-          emuTag: default
-          emuArch: x86
-        - category: ActionsCommandsTest
-          platformVersion: "5.1"
-          apiLevel: 22
-          emuTag: default
-          emuArch: x86
-
-        - category: GestureCommandsTest
-          platformVersion: "11.0"
-          apiLevel: 30
-          emuTag: default
-          emuArch: x86_64
-        - category: GestureCommandsTest
-          platformVersion: "9.0"
-          apiLevel: 28
-          emuTag: default
-          emuArch: x86
-        - category: GestureCommandsTest
-          platformVersion: "7.1"
-          apiLevel: 25
-          emuTag: default
-          emuArch: x86
-        - category: GestureCommandsTest
-          platformVersion: "5.1"
-          apiLevel: 22
-          emuTag: default
-          emuArch: x86
-
-        - category: DeviceCommandsTest
-          platformVersion: "11.0"
-          apiLevel: 30
-          emuTag: default
-          emuArch: x86_64
-        - category: DeviceCommandsTest
-          platformVersion: "9.0"
-          apiLevel: 28
-          emuTag: default
-          emuArch: x86
-        - category: DeviceCommandsTest
-          platformVersion: "7.1"
-          apiLevel: 25
-          emuTag: default
-          emuArch: x86
-        - category: DeviceCommandsTest
-          platformVersion: "5.1"
+        - platformVersion: "5.1"
           apiLevel: 22
           emuTag: default
           emuArch: x86
@@ -164,9 +97,19 @@ jobs:
     - run: nohup adb logcat > logcat.log &
       name: Capture Logcat
     - uses: reactivecircus/android-emulator-runner@v2
-      name: ${{ matrix.category }}@api${{ matrix.apiLevel }}
+      name: e2e_api${{ matrix.apiLevel }}
       with:
-        script: ./gradlew connectedE2eTestDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.${{ matrix.category }} -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices
+        script: |
+          classes=(AlertCommandsTest ActionsCommandsTest GestureCommandsTest ElementCommandsTest DeviceCommandsTest)
+          did_fail=0
+          for cls_name in "${classes[@]}"; do
+            if ! ./gradlew connectedE2eTestDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.$cls_name -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices; then
+              did_fail=1
+            fi
+          done
+          if [[ did_fail -eq 1 ]]; then
+            exit 1
+          fi
         avd-name: ${{ env.ANDROID_AVD }}
         force-avd-creation: false
         sdcard-path-or-size: 1500M
@@ -179,5 +122,5 @@ jobs:
       if: ${{ always() }}
       uses: actions/upload-artifact@master
       with:
-        name: logcat-${{ matrix.category }}-api${{ matrix.apiLevel }}
+        name: logcat-api${{ matrix.apiLevel }}
         path: logcat.log
