@@ -35,7 +35,7 @@ jobs:
         include:
         - platformVersion: "11.0"
           apiLevel: 30
-          emuTag: default
+          emuTag: google_apis
           emuArch: x86_64
         - platformVersion: "9.0"
           apiLevel: 28
@@ -79,7 +79,7 @@ jobs:
         path: |
           ~/.android/avd/*
           ~/.android/adb*
-        key: avd-${{ env.apiLevel }}
+        key: avd-${{ env.apiLevel }}-${{ env.apiLevel }}
     # https://github.com/marketplace/actions/android-emulator-runner
     - uses: reactivecircus/android-emulator-runner@v2
       if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -99,9 +99,7 @@ jobs:
     - uses: reactivecircus/android-emulator-runner@v2
       name: e2e_api${{ matrix.apiLevel }}
       with:
-        script: |
-          export classes=(AlertCommandsTest ActionsCommandsTest GestureCommandsTest ElementCommandsTest DeviceCommandsTest)
-          for cls_name in "${classes[@]}"; do ./gradlew connectedE2eTestDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.$cls_name -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices || exit 1; done
+        script: scripts/e2e.sh
         avd-name: ${{ env.ANDROID_AVD }}
         force-avd-creation: false
         sdcard-path-or-size: 1500M
