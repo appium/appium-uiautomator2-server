@@ -10,7 +10,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application android:allowBackup="true" tools:ignore="GoogleAppIndexingWarning">
-        <receiver android:name="io.appium.uiautomator2.server.ServerInstrumentation$PowerConnectionReceiver">
+        <receiver android:name="io.appium.uiautomator2.server.ServerInstrumentation$PowerConnectionReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>

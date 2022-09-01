@@ -1,0 +1,116 @@
+name: Build
+
+on: [pull_request, push]
+
+
+jobs:
+  unit_test:
+    strategy:
+      matrix:
+        node: [14, 16, 18]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node }}
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+    - run: npm i -g npm
+      name: Update NPM
+    - run: npm install --no-package-lock
+      name: Install dev dependencies
+    - run: npm run lint
+      name: Run js linter
+    - run: npm run lint:java
+      name: Run java linter
+    - run: npm run test
+      name: Run unit tests
+
+  e2e_test:
+    strategy:
+      matrix:
+        category:
+        - AlertCommandsTest
+        - ActionsCommandsTest
+        - GestureCommandsTest
+        - DeviceCommandsTest
+        - ElementCommandsTest
+        include:
+        - platformVersion: "11.0"
+          apiLevel: 30
+          emuTag: default
+        - platformVersion: "9.0"
+          apiLevel: 28
+          emuTag: default
+        - platformVersion: "7.1"
+          apiLevel: 25
+          emuTag: default
+        - platformVersion: "5.1"
+          apiLevel: 22
+          emuTag: default
+
+    env:
+      CI: true
+      ANDROID_AVD: emulator
+      ANDROID_SDK_VERSION: ${{ matrix.apiLevel }}
+      PLATFORM_VERSION: ${{ matrix.platformVersion }}
+      EMU_TAG: ${{ matrix.emuTag }}
+      _FORCE_LOGS: 1
+    # No hardware acceleration is available for emulators on Ubuntu:
+    # https://github.com/marketplace/actions/android-emulator-runner#can-i-use-this-action-on-linux-vms
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: lts/*
+        check-latest: true
+    - run: npm install --no-package-lock
+      name: Install dev dependencies
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+    - name: AVD cache
+      uses: actions/cache@v3
+      id: avd-cache
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+        key: avd-${{ env.apiLevel }}
+    # https://github.com/marketplace/actions/android-emulator-runner
+    - uses: reactivecircus/android-emulator-runner@v2
+      if: steps.avd-cache.outputs.cache-hit != 'true'
+      name: Generate AVD snapshot for caching
+      with:
+        script: echo "Generated AVD snapshot for caching."
+        avd-name: ${{ env.ANDROID_AVD }}
+        force-avd-creation: false
+        sdcard-path-or-size: 1500M
+        api-level: ${{ matrix.apiLevel }}
+        disable-spellchecker: true
+        target: ${{ matrix.emuTag }}
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+    - run: nohup adb logcat > logcat.log &
+      name: Capture Logcat
+    - uses: reactivecircus/android-emulator-runner@v2
+      name: ${{ matrix.category }}@api${{ matrix.apiLevel }}
+      with:
+        script: ./gradlew connectedE2eTestDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.${{ matrix.category }} -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices
+        avd-name: ${{ env.ANDROID_AVD }}
+        force-avd-creation: false
+        sdcard-path-or-size: 1500M
+        api-level: ${{ matrix.apiLevel }}
+        disable-spellchecker: true
+        target: ${{ matrix.emuTag }}
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+    - name: Save logcat output
+      if: ${{ always() }}
+      uses: actions/upload-artifact@master
+      with:
+        name: logcat-${{ matrix.category }}-api${{ matrix.apiLevel }}
+        path: logcat.log

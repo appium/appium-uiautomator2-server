@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -261,10 +260,6 @@ public abstract class BaseElement implements AndroidElement {
      */
     @Nullable
     public static String getExtrasAsString(AccessibilityNodeInfo nodeInfo) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            return null;
-        }
-
         List<String> extras = new ArrayList<>();
         Bundle extraBundle = nodeInfo.getExtras();
         for (String key : extraBundle.keySet()) {
