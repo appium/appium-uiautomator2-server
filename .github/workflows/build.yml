@@ -72,28 +72,6 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '11'
-    - name: AVD cache
-      uses: actions/cache@v3
-      id: avd-cache
-      with:
-        path: |
-          ~/.android/avd/*
-          ~/.android/adb*
-        key: avd-${{ env.apiLevel }}-${{ env.apiLevel }}
-    # https://github.com/marketplace/actions/android-emulator-runner
-    - uses: reactivecircus/android-emulator-runner@v2
-      if: steps.avd-cache.outputs.cache-hit != 'true'
-      name: Generate AVD snapshot for caching
-      with:
-        script: echo "Generated AVD snapshot for caching."
-        avd-name: ${{ env.ANDROID_AVD }}
-        force-avd-creation: false
-        sdcard-path-or-size: 1500M
-        api-level: ${{ matrix.apiLevel }}
-        disable-spellchecker: true
-        target: ${{ matrix.emuTag }}
-        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
-        arch: ${{ matrix.emuArch }}
     - run: nohup adb logcat > logcat.log &
       name: Capture Logcat
     - uses: reactivecircus/android-emulator-runner@v2
@@ -101,12 +79,10 @@ jobs:
       with:
         script: scripts/e2e.sh
         avd-name: ${{ env.ANDROID_AVD }}
-        force-avd-creation: false
         sdcard-path-or-size: 1500M
         api-level: ${{ matrix.apiLevel }}
         disable-spellchecker: true
         target: ${{ matrix.emuTag }}
-        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
         arch: ${{ matrix.emuArch }}
     - name: Save logcat output
       if: ${{ always() }}
