@@ -32,23 +32,72 @@ jobs:
   e2e_test:
     strategy:
       matrix:
-        category:
-        - AlertCommandsTest
-        - ActionsCommandsTest
-        - GestureCommandsTest
-        - DeviceCommandsTest
-        - ElementCommandsTest
         include:
-        - platformVersion: "11.0"
+        - category: AlertCommandsTest
+          platformVersion: "11.0"
           apiLevel: 30
           emuTag: default
-        - platformVersion: "9.0"
+        - category: AlertCommandsTest
+          platformVersion: "9.0"
           apiLevel: 28
           emuTag: default
-        - platformVersion: "7.1"
+        - category: AlertCommandsTest
+          platformVersion: "7.1"
           apiLevel: 25
           emuTag: default
-        - platformVersion: "5.1"
+        - category: AlertCommandsTest
+          platformVersion: "5.1"
+          apiLevel: 22
+          emuTag: default
+
+        - category: ActionsCommandsTest
+          platformVersion: "11.0"
+          apiLevel: 30
+          emuTag: default
+        - category: ActionsCommandsTest
+          platformVersion: "9.0"
+          apiLevel: 28
+          emuTag: default
+        - category: ActionsCommandsTest
+          platformVersion: "7.1"
+          apiLevel: 25
+          emuTag: default
+        - category: ActionsCommandsTest
+          platformVersion: "5.1"
+          apiLevel: 22
+          emuTag: default
+
+        - category: GestureCommandsTest
+          platformVersion: "11.0"
+          apiLevel: 30
+          emuTag: default
+        - category: GestureCommandsTest
+          platformVersion: "9.0"
+          apiLevel: 28
+          emuTag: default
+        - category: GestureCommandsTest
+          platformVersion: "7.1"
+          apiLevel: 25
+          emuTag: default
+        - category: GestureCommandsTest
+          platformVersion: "5.1"
+          apiLevel: 22
+          emuTag: default
+
+        - category: DeviceCommandsTest
+          platformVersion: "11.0"
+          apiLevel: 30
+          emuTag: default
+        - category: DeviceCommandsTest
+          platformVersion: "9.0"
+          apiLevel: 28
+          emuTag: default
+        - category: DeviceCommandsTest
+          platformVersion: "7.1"
+          apiLevel: 25
+          emuTag: default
+        - category: DeviceCommandsTest
+          platformVersion: "5.1"
           apiLevel: 22
           emuTag: default
 
