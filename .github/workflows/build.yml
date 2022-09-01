@@ -101,9 +101,7 @@ jobs:
       with:
         script: |
           export classes=(AlertCommandsTest ActionsCommandsTest GestureCommandsTest ElementCommandsTest DeviceCommandsTest)
-          export did_fail=0
-          for cls_name in "${classes[@]}"; do; if ! ./gradlew connectedE2eTestDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.$cls_name -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices; then; export did_fail=1; fi; done
-          if [[ did_fail -eq 1 ]]; then; exit 1; fi
+          for cls_name in "${classes[@]}"; do ./gradlew connectedE2eTestDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=io.appium.uiautomator2.unittest.test.$cls_name -Pandroid.testInstrumentationRunnerArguments.notAnnotation=io.appium.uiautomator2.unittest.test.internal.SkipHeadlessDevices || exit 1; done
         avd-name: ${{ env.ANDROID_AVD }}
         force-avd-creation: false
         sdcard-path-or-size: 1500M
