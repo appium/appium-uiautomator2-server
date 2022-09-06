@@ -18,7 +18,7 @@ jobs:
         VERSIONS="[$previous_lts, $current_lts, $next_lts]"
         echo ::set-output name=versions::${VERSIONS}
 
-  test:
+  node_test:
     needs:
     - prepare_matrix
     strategy:
@@ -30,17 +30,27 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '11'
     - run: npm i -g npm
       name: Update NPM
     - run: npm install --no-package-lock
       name: Install dev dependencies
     - run: npm run lint
       name: Run js linter
+
+  java_test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: lts/*
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+    - run: npm install --no-package-lock
+      name: Install dev dependencies
     - run: npm run lint:java
-      name: Run java linter
+      name: Run server linter
     - run: npm run test
-      name: Run unit tests
+      name: Run server unit tests
