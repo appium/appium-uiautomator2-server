@@ -65,7 +65,7 @@ public class ScreenshotHelper {
             final Bitmap elementScreenshot = crop(screenshot, cropArea);
             screenshot.recycle();
             screenshot = elementScreenshot;
-            return Base64.encodeToString(compress(screenshot), Base64.DEFAULT);
+            return Base64.encodeToString(compress(screenshot), Base64.NO_WRAP);
         } finally {
             screenshot.recycle();
         }
@@ -100,7 +100,7 @@ public class ScreenshotHelper {
                         throw new IllegalStateException("screencap returned an invalid response");
                     }
                     if (outputType == String.class) {
-                        return outputType.cast(Base64.encodeToString(pngBytes, Base64.DEFAULT));
+                        return outputType.cast(Base64.encodeToString(pngBytes, Base64.NO_WRAP));
                     }
                     screenshot = BitmapFactory.decodeByteArray(
                         pngBytes,
@@ -136,7 +136,7 @@ public class ScreenshotHelper {
 
         if (outputType == String.class) {
             try {
-                return outputType.cast(Base64.encodeToString(compress(screenshot), Base64.DEFAULT));
+                return outputType.cast(Base64.encodeToString(compress(screenshot), Base64.NO_WRAP));
             } finally {
                 screenshot.recycle();
             }

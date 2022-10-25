@@ -684,7 +684,7 @@ public class DeviceCommandsTest extends BaseTest {
 
         response = screenshot();
         String value = response.getValue();
-        byte[] bytes = Base64.decode(value, Base64.DEFAULT);
+        byte[] bytes = Base64.decode(value, Base64.NO_WRAP);
         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
         assertNotNull(bitmap);
     }

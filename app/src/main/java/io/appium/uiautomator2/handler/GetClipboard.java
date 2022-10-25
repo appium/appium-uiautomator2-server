@@ -40,7 +40,7 @@ public class GetClipboard extends SafeRequestHandler {
     }
 
     private static String toBase64String(String s) {
-        return Base64.encodeToString(s.getBytes(StandardCharsets.UTF_8), Base64.DEFAULT);
+        return Base64.encodeToString(s.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
     }
 
     @Override
