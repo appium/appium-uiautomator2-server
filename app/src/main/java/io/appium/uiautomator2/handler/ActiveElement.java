@@ -29,6 +29,8 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
+import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshAccessibilityCache;
+
 public class ActiveElement extends SafeRequestHandler {
 
     public ActiveElement(String mappedUri) {
@@ -51,6 +53,8 @@ public class ActiveElement extends SafeRequestHandler {
 
     @Nullable
     private AccessibleUiObject findFocused() {
+        refreshAccessibilityCache();
+
         return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.focused(true));
     }
 }
