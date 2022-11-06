@@ -23,7 +23,8 @@
   },
   "files": [
     "./index.js",
-    "./apks"
+    "./apks",
+    "CHANGELOG.md"
   ],
   "homepage": "https://github.com/appium/appium-uiautomator2-server",
   "scripts": {
