@@ -17,10 +17,9 @@
 package io.appium.uiautomator2.model.settings;
 
 public class EnforceXpath1 extends AbstractSetting<Boolean> {
-
     private static final String SETTING_NAME = "enforceXPath1";
-
-    private boolean shouldEnforceXpath1 = false;
+    private static final boolean DEFAULT_VALUE = false;
+    private boolean shouldEnforceXpath1 = DEFAULT_VALUE;
 
     public EnforceXpath1() {
         super(Boolean.class, SETTING_NAME);
@@ -29,6 +28,11 @@ public class EnforceXpath1 extends AbstractSetting<Boolean> {
     @Override
     public Boolean getValue() {
         return shouldEnforceXpath1;
+    }
+
+    @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

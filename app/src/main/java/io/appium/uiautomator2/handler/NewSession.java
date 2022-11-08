@@ -27,6 +27,7 @@ import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.api.SessionModel;
+import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.w3c.W3CCapsUtils;
 
@@ -48,6 +49,7 @@ public class NewSession extends SafeRequestHandler implements NoSessionCommandHa
                         "'%s' are mandatory for session creation", CAPABILITIES_KEY));
             }
             Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(w3cCaps.capabilities);
+            Settings.resetForNewSession();
             String sessionID = AppiumUIA2Driver.getInstance().initializeSession(parsedCaps);
             NotificationListener.getInstance().start();
             Logger.info(String.format("Created the new session with id %s and capabilities %s",

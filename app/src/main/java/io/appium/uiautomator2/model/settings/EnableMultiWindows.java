@@ -17,10 +17,9 @@
 package io.appium.uiautomator2.model.settings;
 
 public class EnableMultiWindows extends AbstractSetting<Boolean> {
-
     private static final String SETTING_NAME = "enableMultiWindows";
-
-    private Boolean value = false;
+    private static final boolean DEFAULT_VALUE = false;
+    private Boolean value = DEFAULT_VALUE;
 
     public EnableMultiWindows() {
         super(Boolean.class, SETTING_NAME);
@@ -29,6 +28,11 @@ public class EnableMultiWindows extends AbstractSetting<Boolean> {
     @Override
     public Boolean getValue() {
         return value;
+    }
+
+    @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

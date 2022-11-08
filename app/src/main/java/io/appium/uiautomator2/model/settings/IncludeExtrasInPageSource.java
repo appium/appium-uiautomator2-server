@@ -17,10 +17,9 @@
 package io.appium.uiautomator2.model.settings;
 
 public class IncludeExtrasInPageSource extends AbstractSetting<Boolean> {
-
     private static final String SETTING_NAME = "includeExtrasInPageSource";
-
-    private boolean includeExtrasInPageSource = false;
+    private static final boolean DEFAULT_VALUE = false;
+    private boolean includeExtrasInPageSource = DEFAULT_VALUE;
 
     public IncludeExtrasInPageSource() {
         super(Boolean.class, SETTING_NAME);
@@ -29,6 +28,11 @@ public class IncludeExtrasInPageSource extends AbstractSetting<Boolean> {
     @Override
     public Boolean getValue() {
         return includeExtrasInPageSource;
+    }
+
+    @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

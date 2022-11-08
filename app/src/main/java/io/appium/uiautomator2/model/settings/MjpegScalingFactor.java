@@ -30,7 +30,7 @@ import io.appium.uiautomator2.server.ServerConfig;
  */
 public class MjpegScalingFactor extends AbstractSetting<Integer> {
     public static final String SETTING_NAME = "mjpegScalingFactor";
-
+    private static final int DEFAULT_VALUE = 50;
     public MjpegScalingFactor() {
         super(Integer.class, SETTING_NAME);
     }
@@ -38,6 +38,16 @@ public class MjpegScalingFactor extends AbstractSetting<Integer> {
     @Override
     public Integer getValue() {
         return ServerConfig.getMjpegScalingFactor();
+    }
+
+    @Override
+    public Integer getDefaultValue() {
+        return DEFAULT_VALUE;
+    }
+
+    @Override
+    public boolean isTiedToSession() {
+        return false;
     }
 
     @Override

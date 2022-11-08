@@ -44,7 +44,7 @@ public class ServerInstrumentation {
     private static final int MIN_PORT = 1024;
     private static final int MAX_PORT = 65535;
     private static final String WAKE_LOCK_TAG = "UiAutomator2:ScreenKeeper";
-    private static final long MAX_TEST_DURATION = 24 * 60 * 60 * 1000;
+    public static final long MAX_TEST_DURATION = 24 * 60 * 60 * 1000;
 
     private static ServerInstrumentation instance;
 

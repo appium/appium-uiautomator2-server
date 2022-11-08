@@ -19,8 +19,8 @@ package io.appium.uiautomator2.model.settings;
 import androidx.test.uiautomator.Configurator;
 
 public class ActionAcknowledgmentTimeout extends AbstractSetting<Long> {
-
     private static final String SETTING_NAME = "actionAcknowledgmentTimeout";
+    private static final long DEFAULT_VALUE = 3 * 1000L;
 
     public ActionAcknowledgmentTimeout() {
         super(Long.class, SETTING_NAME);
@@ -29,6 +29,11 @@ public class ActionAcknowledgmentTimeout extends AbstractSetting<Long> {
     @Override
     public Long getValue() {
         return Configurator.getInstance().getActionAcknowledgmentTimeout();
+    }
+
+    @Override
+    public Long getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

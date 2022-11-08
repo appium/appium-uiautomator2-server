@@ -19,9 +19,8 @@ package io.appium.uiautomator2.model.settings;
 import androidx.test.uiautomator.Configurator;
 
 public class WaitForIdleTimeout extends AbstractSetting<Long> {
-
     private static final String SETTING_NAME = "waitForIdleTimeout";
-
+    private static final long DEFAULT_VALUE = 10 * 1000;
     public WaitForIdleTimeout() {
         super(Long.class, SETTING_NAME);
     }
@@ -29,6 +28,11 @@ public class WaitForIdleTimeout extends AbstractSetting<Long> {
     @Override
     public Long getValue() {
         return Configurator.getInstance().getWaitForIdleTimeout();
+    }
+
+    @Override
+    public Long getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

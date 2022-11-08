@@ -17,10 +17,9 @@
 package io.appium.uiautomator2.model.settings;
 
 public class DisableIdLocatorAutocompletion extends AbstractSetting<Boolean> {
-
     private static final String SETTING_NAME = "disableIdLocatorAutocompletion";
-
-    private boolean disableIdLocatorAutocompletion = false;
+    private static final boolean DEFAULT_VALUE = false;
+    private boolean disableIdLocatorAutocompletion = DEFAULT_VALUE;
 
     public DisableIdLocatorAutocompletion() {
         super(Boolean.class, SETTING_NAME);
@@ -29,6 +28,11 @@ public class DisableIdLocatorAutocompletion extends AbstractSetting<Boolean> {
     @Override
     public Boolean getValue() {
         return disableIdLocatorAutocompletion;
+    }
+
+    @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

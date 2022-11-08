@@ -29,42 +29,45 @@ public abstract class EventRegister {
             listener.stop();
         }
 
-        // here we set a callback for the accessibility event stream, keeping track of any scroll
-        // events we come across
-        AccessibilityEvent event = null;
-        ArrayList<AccessibilityEvent> events = new ArrayList<>();
-        UiAutomation.AccessibilityEventFilter filter = new EventCollectingPredicate(AccessibilityEvent.TYPE_VIEW_SCROLLED, events);
-        UiAutomation automation = UiAutomatorBridge.getInstance().getUiAutomation();
         try {
-            automation.executeAndWaitForEvent(runnable, filter, timeout);
-        } catch (TimeoutException ign) {
-            // ignore
-        }
+            // here we set a callback for the accessibility event stream, keeping track of any scroll
+            // events we come across
+            AccessibilityEvent event = null;
+            ArrayList<AccessibilityEvent> events = new ArrayList<>();
+            UiAutomation.AccessibilityEventFilter filter = new EventCollectingPredicate(AccessibilityEvent.TYPE_VIEW_SCROLLED, events);
+            UiAutomation automation = UiAutomatorBridge.getInstance().getUiAutomation();
+            try {
+                automation.executeAndWaitForEvent(runnable, filter, timeout);
+            } catch (TimeoutException ign) {
+                // ignore
+            }
 
-        // if we have caught any events in our net, snatch the last one
-        if (events.size() > 0) {
-            event = events.get(events.size() - 1);
-        }
+            // if we have caught any events in our net, snatch the last one
+            if (events.size() > 0) {
+                event = events.get(events.size() - 1);
+            }
 
-        Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
+            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
 
-        if (event == null) {
-            Logger.debug("Did not retrieve accessibility event for scroll");
-            session.setLastScrollData(null);
-        } else {
-            AccessibilityScrollData data = new AccessibilityScrollData(event);
-            Logger.debug("Retrieved accessibility event for scroll: ", data);
-            session.setLastScrollData(data);
-        }
+            if (event == null) {
+                Logger.debug("Did not retrieve accessibility event for scroll");
+                session.setLastScrollData(null);
+            } else {
+                AccessibilityScrollData data = new AccessibilityScrollData(event);
+                Logger.debug("Retrieved accessibility event for scroll: ", data);
+                session.setLastScrollData(data);
+            }
 
-        // ensure we recycle all accessibility events once we no longer need them
-        for (AccessibilityEvent eventToRecycle : events) {
-            eventToRecycle.recycle();
-        }
+            // ensure we recycle all accessibility events once we no longer need them
+            for (AccessibilityEvent eventToRecycle : events) {
+                eventToRecycle.recycle();
+            }
 
-        // turn back on notification listener if it was active
-        if (notificationListenerActive) {
-            listener.start();
+        } finally {
+            // turn back on notification listener if it was active
+            if (notificationListenerActive) {
+                listener.start();
+            }
         }
 
         // finally, return whatever the runnable set as its result

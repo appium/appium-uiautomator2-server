@@ -30,6 +30,7 @@ import io.appium.uiautomator2.server.ServerConfig;
  */
 public class MjpegBilinearFiltering extends AbstractSetting<Boolean> {
     public static final String SETTING_NAME = "mjpegBilinearFiltering";
+    private static final boolean DEFAULT_VALUE = false;
 
     public MjpegBilinearFiltering() {
         super(Boolean.class, SETTING_NAME);
@@ -38,6 +39,16 @@ public class MjpegBilinearFiltering extends AbstractSetting<Boolean> {
     @Override
     public Boolean getValue() {
         return ServerConfig.isMjpegBilinearFiltering();
+    }
+
+    @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
+    }
+
+    @Override
+    public boolean isTiedToSession() {
+        return false;
     }
 
     @Override

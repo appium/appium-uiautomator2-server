@@ -19,8 +19,8 @@ package io.appium.uiautomator2.model.settings;
 import androidx.test.uiautomator.Configurator;
 
 public class WaitForSelectorTimeout extends AbstractSetting<Long> {
-
     private static final String SETTING_NAME = "waitForSelectorTimeout";
+    private static final long DEFAULT_VALUE = 10 * 1000;
 
     public WaitForSelectorTimeout() {
         super(Long.class, SETTING_NAME);
@@ -29,6 +29,11 @@ public class WaitForSelectorTimeout extends AbstractSetting<Long> {
     @Override
     public Long getValue() {
         return Configurator.getInstance().getWaitForSelectorTimeout();
+    }
+
+    @Override
+    public Long getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

@@ -24,4 +24,9 @@ public interface ISetting<T> {
 
     String getName();
 
+    T getDefaultValue();
+
+    boolean reset();
+
+    boolean isTiedToSession();
 }

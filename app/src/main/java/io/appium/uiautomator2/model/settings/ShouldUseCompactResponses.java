@@ -17,10 +17,9 @@
 package io.appium.uiautomator2.model.settings;
 
 public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
-
     private static final String SETTING_NAME = "shouldUseCompactResponses";
-
-    private Boolean value = true;
+    private static final boolean DEFAULT_VALUE = true;
+    private Boolean value = DEFAULT_VALUE;
 
     public ShouldUseCompactResponses() {
         super(Boolean.class, SETTING_NAME);
@@ -32,8 +31,12 @@ public class ShouldUseCompactResponses extends AbstractSetting<Boolean> {
     }
 
     @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
+    }
+
+    @Override
     protected void apply(Boolean shouldUseCompactResponses) {
         value = shouldUseCompactResponses;
     }
-
 }

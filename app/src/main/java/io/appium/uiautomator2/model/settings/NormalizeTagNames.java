@@ -26,10 +26,9 @@ package io.appium.uiautomator2.model.settings;
  * JUnidecode library (https://github.com/gcardone/junidecode)
  */
 public class NormalizeTagNames extends AbstractSetting<Boolean> {
-
     private static final String SETTING_NAME = "normalizeTagNames";
-
-    private boolean shouldNormalizeTagNames = false;
+    private static final boolean DEFAULT_VALUE = false;
+    private boolean shouldNormalizeTagNames = DEFAULT_VALUE;
 
     public NormalizeTagNames() {
         super(Boolean.class, SETTING_NAME);
@@ -38,6 +37,11 @@ public class NormalizeTagNames extends AbstractSetting<Boolean> {
     @Override
     public Boolean getValue() {
         return shouldNormalizeTagNames;
+    }
+
+    @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

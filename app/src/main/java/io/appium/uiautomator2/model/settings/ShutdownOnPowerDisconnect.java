@@ -18,8 +18,8 @@ package io.appium.uiautomator2.model.settings;
 
 public class ShutdownOnPowerDisconnect extends AbstractSetting<Boolean> {
     private static final String SETTING_NAME = "shutdownOnPowerDisconnect";
-
-    private boolean value = true;
+    private static final boolean DEFAULT_VALUE = true;
+    private boolean value = DEFAULT_VALUE;
 
     public ShutdownOnPowerDisconnect() {
         super(Boolean.class, SETTING_NAME);
@@ -28,6 +28,11 @@ public class ShutdownOnPowerDisconnect extends AbstractSetting<Boolean> {
     @Override
     public Boolean getValue() {
         return value;
+    }
+
+    @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

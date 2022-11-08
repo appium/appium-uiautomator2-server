@@ -33,6 +33,7 @@ import io.appium.uiautomator2.server.ServerConfig;
  */
 public class MjpegServerScreenshotQuality extends AbstractSetting<Integer> {
     public static final String SETTING_NAME = "mjpegServerScreenshotQuality";
+    private static final int DEFAULT_VALUE = 50;
 
     public MjpegServerScreenshotQuality() {
         super(Integer.class, SETTING_NAME);
@@ -41,6 +42,16 @@ public class MjpegServerScreenshotQuality extends AbstractSetting<Integer> {
     @Override
     public Integer getValue() {
         return ServerConfig.getMjpegServerScreenshotQuality();
+    }
+
+    @Override
+    public Integer getDefaultValue() {
+        return DEFAULT_VALUE;
+    }
+
+    @Override
+    public boolean isTiedToSession() {
+        return false;
     }
 
     @Override

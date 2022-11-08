@@ -28,6 +28,7 @@ import io.appium.uiautomator2.server.ServerConfig;
  */
 public class ServerPort extends AbstractSetting<Integer> {
     public static final String SETTING_NAME = "serverPort";
+    private static final int DEFAULT_VALUE = 6790;
 
     public ServerPort() {
         super(Integer.class, SETTING_NAME);
@@ -36,6 +37,16 @@ public class ServerPort extends AbstractSetting<Integer> {
     @Override
     public Integer getValue() {
         return ServerConfig.getServerPort();
+    }
+
+    @Override
+    public Integer getDefaultValue() {
+        return DEFAULT_VALUE;
+    }
+
+    @Override
+    public boolean isTiedToSession() {
+        return false;
     }
 
     @Override

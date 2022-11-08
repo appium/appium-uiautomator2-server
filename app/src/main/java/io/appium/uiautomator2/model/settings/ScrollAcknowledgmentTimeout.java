@@ -19,8 +19,8 @@ package io.appium.uiautomator2.model.settings;
 import androidx.test.uiautomator.Configurator;
 
 public class ScrollAcknowledgmentTimeout extends AbstractSetting<Long> {
-
     private static final String SETTING_NAME = "scrollAcknowledgmentTimeout";
+    private static final long DEFAULT_VALUE = 200;
 
     public ScrollAcknowledgmentTimeout() {
         super(Long.class, SETTING_NAME);
@@ -29,6 +29,11 @@ public class ScrollAcknowledgmentTimeout extends AbstractSetting<Long> {
     @Override
     public Long getValue() {
         return Configurator.getInstance().getScrollAcknowledgmentTimeout();
+    }
+
+    @Override
+    public Long getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

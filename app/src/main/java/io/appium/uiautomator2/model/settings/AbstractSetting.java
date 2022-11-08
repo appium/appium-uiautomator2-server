@@ -16,11 +16,12 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import java.util.Objects;
+
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.utils.Logger;
 
 public abstract class AbstractSetting<T> implements ISetting<T> {
-
     private final Class<T> valueType;
     private final String settingName;
 
@@ -29,16 +30,18 @@ public abstract class AbstractSetting<T> implements ISetting<T> {
         this.settingName = settingName;
     }
 
+    @Override
     public void update(Object value) {
         Logger.debug(String.format("Set the %s to %s", getName(), value));
         T convertedValue = convertValue(value);
         try {
             apply(convertedValue);
         } catch (Exception e) {
-            Logger.error(String.format("Unable to update the setting %s: %s", getName(), e.toString()));
+            Logger.error(String.format("Unable to update the setting %s", getName()), e);
         }
     }
 
+    @Override
     public String getName() {
         return settingName;
     }
@@ -47,9 +50,21 @@ public abstract class AbstractSetting<T> implements ISetting<T> {
         return valueType;
     }
 
-    public abstract T getValue();
-
     protected abstract void apply(T value);
+
+    @Override
+    public boolean reset() {
+        if (Objects.equals(getDefaultValue(), getValue())) {
+            return false;
+        }
+        apply(getDefaultValue());
+        return true;
+    }
+
+    @Override
+    public boolean isTiedToSession() {
+        return true;
+    }
 
     private T convertValue(Object value) {
         try {

@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.model.settings;
 
 public class ElementResponseAttributes extends AbstractSetting<String> {
-
     private static final String SETTING_NAME = "elementResponseAttributes";
     private static final String DEFAULT_ATTRIBUTES = "name,text";
     private String value = DEFAULT_ATTRIBUTES;
@@ -31,6 +30,11 @@ public class ElementResponseAttributes extends AbstractSetting<String> {
         return value;
     }
 
+    @Override
+    public String getDefaultValue() {
+        return DEFAULT_ATTRIBUTES;
+    }
+
     public String[] asArray() {
         return value.split(",");
     }
@@ -39,5 +43,4 @@ public class ElementResponseAttributes extends AbstractSetting<String> {
     protected void apply(String elementResponseAttributes) {
         value = elementResponseAttributes;
     }
-
 }

@@ -19,8 +19,8 @@ package io.appium.uiautomator2.model.settings;
 import io.appium.uiautomator2.model.NotificationListener;
 
 public class EnableNotificationListener extends AbstractSetting<Boolean> {
-
     private static final String SETTING_NAME = "enableNotificationListener";
+    private static final boolean DEFAULT_VALUE = true;
 
     public EnableNotificationListener() {
         super(Boolean.class, SETTING_NAME);
@@ -29,6 +29,11 @@ public class EnableNotificationListener extends AbstractSetting<Boolean> {
     @Override
     public Boolean getValue() {
         return NotificationListener.getInstance().isListening();
+    }
+
+    @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

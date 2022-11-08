@@ -17,9 +17,9 @@
 package io.appium.uiautomator2.model.settings;
 
 public class AllowInvisibleElements extends AbstractSetting<Boolean> {
-
     private static final String SETTING_NAME = "allowInvisibleElements";
-    private Boolean value = false;
+    private static final Boolean DEFAULT_VALUE = false;
+    private Boolean value = DEFAULT_VALUE;
 
     public AllowInvisibleElements() {
         super(Boolean.class, SETTING_NAME);
@@ -31,8 +31,12 @@ public class AllowInvisibleElements extends AbstractSetting<Boolean> {
     }
 
     @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
+    }
+
+    @Override
     protected void apply(Boolean allowInvisibleElements) {
         value = allowInvisibleElements;
     }
-
 }

@@ -17,9 +17,9 @@
 package io.appium.uiautomator2.model.settings;
 
 public class UseResourcesForOrientationDetection extends AbstractSetting<Boolean> {
-
     private static final String SETTING_NAME = "useResourcesForOrientationDetection";
-    private Boolean value = false;
+    private static final boolean DEFAULT_VALUE = false;
+    private Boolean value = DEFAULT_VALUE;
 
     public UseResourcesForOrientationDetection() {
         super(Boolean.class, SETTING_NAME);
@@ -28,6 +28,11 @@ public class UseResourcesForOrientationDetection extends AbstractSetting<Boolean
     @Override
     public Boolean getValue() {
         return value;
+    }
+
+    @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

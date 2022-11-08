@@ -76,7 +76,7 @@ public class AbstractSettingTests {
         Assert.assertEquals(Integer.valueOf(123), dummyIntegerSetting.getValue());
     }
 
-    private class DummyIntegerSetting extends AbstractSetting<Integer> {
+    static private class DummyIntegerSetting extends AbstractSetting<Integer> {
         private Integer value = null;
 
         public DummyIntegerSetting() {
@@ -86,6 +86,11 @@ public class AbstractSettingTests {
         @Override
         public Integer getValue() {
             return value;
+        }
+
+        @Override
+        public Integer getDefaultValue() {
+            return null;
         }
 
         @Override
@@ -129,7 +134,7 @@ public class AbstractSettingTests {
         Assert.assertEquals(Long.valueOf(123), dummyLongSetting.getValue());
     }
 
-    private class DummyLongSetting extends AbstractSetting<Long> {
+    static private class DummyLongSetting extends AbstractSetting<Long> {
         private Long value = null;
 
         public DummyLongSetting() {
@@ -139,6 +144,11 @@ public class AbstractSettingTests {
         @Override
         public Long getValue() {
             return value;
+        }
+
+        @Override
+        public Long getDefaultValue() {
+            return null;
         }
 
         @Override

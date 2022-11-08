@@ -17,9 +17,8 @@
 package io.appium.uiautomator2.model.settings;
 
 public class LimitXpathContextScope extends AbstractSetting<Boolean> {
-
     private static final String SETTING_NAME = "limitXPathContextScope";
-
+    private static final boolean DEFAULT_VALUE = true;
     private boolean limitXpathContextScope = true;
 
     public LimitXpathContextScope() {
@@ -29,6 +28,11 @@ public class LimitXpathContextScope extends AbstractSetting<Boolean> {
     @Override
     public Boolean getValue() {
         return limitXpathContextScope;
+    }
+
+    @Override
+    public Boolean getDefaultValue() {
+        return DEFAULT_VALUE;
     }
 
     @Override

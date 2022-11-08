@@ -30,7 +30,7 @@ import io.appium.uiautomator2.server.ServerConfig;
  */
 public class MjpegServerFramerate extends AbstractSetting<Integer> {
     public static final String SETTING_NAME = "mjpegServerFramerate";
-
+    private static final int DEFAULT_VALUE = 10;
     public MjpegServerFramerate() {
         super(Integer.class, SETTING_NAME);
     }
@@ -38,6 +38,16 @@ public class MjpegServerFramerate extends AbstractSetting<Integer> {
     @Override
     public Integer getValue() {
         return ServerConfig.getMjpegServerFramerate();
+    }
+
+    @Override
+    public Integer getDefaultValue() {
+        return DEFAULT_VALUE;
+    }
+
+    @Override
+    public boolean isTiedToSession() {
+        return false;
     }
 
     @Override

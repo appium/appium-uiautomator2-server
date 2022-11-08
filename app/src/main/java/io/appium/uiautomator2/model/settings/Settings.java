@@ -65,6 +65,14 @@ public enum Settings {
                 settingType.getCanonicalName()));
     }
 
+    public static void resetForNewSession() {
+        for (Settings enumItem: values()) {
+            if (enumItem.getSetting().isTiedToSession()) {
+                enumItem.getSetting().reset();
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return setting.getName();

@@ -19,7 +19,6 @@ package io.appium.uiautomator2.model.settings;
 import io.appium.uiautomator2.server.ServerInstrumentation;
 
 public class WakeLockTimeout extends AbstractSetting<Long> {
-
     private static final String SETTING_NAME = "wakeLockTimeout";
 
     public WakeLockTimeout() {
@@ -29,6 +28,16 @@ public class WakeLockTimeout extends AbstractSetting<Long> {
     @Override
     public Long getValue() {
         return ServerInstrumentation.getInstance().getWakeLockTimeout();
+    }
+
+    @Override
+    public Long getDefaultValue() {
+        return ServerInstrumentation.MAX_TEST_DURATION;
+    }
+
+    @Override
+    public boolean isTiedToSession() {
+        return false;
     }
 
     @Override
