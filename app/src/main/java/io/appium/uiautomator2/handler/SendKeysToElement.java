@@ -74,7 +74,8 @@ public class SendKeysToElement extends SafeRequestHandler {
             String currentText = element.getText();
             if (!isEmpty(currentText)) {
                 element.clear();
-                if (!isEmpty(element.getText())) {
+                //if getText is the hintText, we clear the currentText value.
+                if (!isEmpty(element.getText()) && currentText.equals(element.getText())) {
                     // clear could have failed, or we could have a hint in the field
                     // we'll assume it is the latter
                     Logger.debug("Could not clear the text. Assuming the remainder is a hint text.");
