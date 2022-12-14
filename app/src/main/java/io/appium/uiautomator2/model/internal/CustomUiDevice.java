@@ -71,7 +71,7 @@ public class CustomUiDevice {
 
     private CustomUiDevice() {
         this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
-        this.API_LEVEL_ACTUAL = getField(UiDevice.class, FIELD_API_LEVEL_ACTUAL, Device.getUiDevice());
+        this.API_LEVEL_ACTUAL = 33;
         this.ByMatcherClass = ReflectionUtils.getClass("androidx.test.uiautomator.ByMatcher");
         this.METHOD_FIND_MATCH = getMethod(ByMatcherClass, "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
         this.METHOD_FIND_MATCHES = getMethod(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);

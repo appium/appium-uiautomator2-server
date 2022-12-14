@@ -102,9 +102,7 @@ public class AXWindowHelpers {
     public static AccessibilityNodeInfo[] getCachedWindowRoots() {
         if (cachedWindowRoots == null) {
             // Multi-window searches are supported since API level 21
-            boolean shouldRetrieveAllWindowRoots = CustomUiDevice.getInstance()
-                    .getApiLevelActual() >= Build.VERSION_CODES.LOLLIPOP
-                    && Settings.get(EnableMultiWindows.class).getValue();
+            boolean shouldRetrieveAllWindowRoots = Settings.get(EnableMultiWindows.class).getValue();
             /*
              * ENABLE_MULTI_WINDOWS is disabled by default
              * because UIAutomatorViewer captures active window properties and
