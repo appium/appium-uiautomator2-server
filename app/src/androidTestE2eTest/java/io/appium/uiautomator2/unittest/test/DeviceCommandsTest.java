@@ -436,6 +436,9 @@ public class DeviceCommandsTest extends BaseTest {
         int elementCount = getJsonObjectCountInJsonArray(elements);
         assertTrue("Elements Count in views screen should at least > 4, " +
                 "in all variants of screen sizes, but actual: " + elementCount, elementCount > 4);
+        if (Build.VERSION.SDK_INT >= 30) {
+            return;
+        }
         List<String> expectedTexts = Arrays.asList("API Demos", "Accessibility Node Provider",
                 "Accessibility Node Querying", "Accessibility Service");
         for (int i = 0; i < 4; i++) {
