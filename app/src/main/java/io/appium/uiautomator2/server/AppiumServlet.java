@@ -162,7 +162,7 @@ public class AppiumServlet implements IHttpServlet {
 
     private void registerGetHandler() {
         register(getHandler, new Status("/status"));
-        register(getHandler,new Getpackages("/getAppList"));
+        register(getHandler,new Getpackages("/apps"));
         register(getHandler, new GetSessions("/sessions"));
         register(getHandler, new GetSessionDetails("/session/:sessionId"));
         register(getHandler, new CaptureScreenshot("/session/:sessionId/screenshot"));
