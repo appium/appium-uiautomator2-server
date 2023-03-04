@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
 
     <application android:allowBackup="true" tools:ignore="GoogleAppIndexingWarning">
         <receiver android:name="io.appium.uiautomator2.server.ServerInstrumentation$PowerConnectionReceiver"

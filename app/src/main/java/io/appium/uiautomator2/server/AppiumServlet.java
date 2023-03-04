@@ -56,6 +56,7 @@ import io.appium.uiautomator2.handler.GetSettings;
 import io.appium.uiautomator2.handler.GetSize;
 import io.appium.uiautomator2.handler.GetSystemBars;
 import io.appium.uiautomator2.handler.GetText;
+import io.appium.uiautomator2.handler.Getpackages;
 import io.appium.uiautomator2.handler.Location;
 import io.appium.uiautomator2.handler.LongPressKeyCode;
 import io.appium.uiautomator2.handler.MultiPointerGesture;
@@ -161,6 +162,7 @@ public class AppiumServlet implements IHttpServlet {
 
     private void registerGetHandler() {
         register(getHandler, new Status("/status"));
+        register(getHandler,new Getpackages("/getAppList"));
         register(getHandler, new GetSessions("/sessions"));
         register(getHandler, new GetSessionDetails("/session/:sessionId"));
         register(getHandler, new CaptureScreenshot("/session/:sessionId/screenshot"));
