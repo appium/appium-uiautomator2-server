@@ -19,31 +19,20 @@ package io.appium.uiautomator2.model.api.touch.appium;
 import javax.annotation.Nullable;
 
 public class PackageModel {
-    private String packageName;
-    private String packageActivity;
-    private String appName;
+    private final @Nullable
+    String packageName;
+    private final @Nullable
+    String packageActivity;
+    private final @Nullable
+    String appName;
 
-    public @Nullable String getAppName() {
-        return appName;
-    }
-
-    public @Nullable String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
+    public PackageModel(
+            String packageName,
+            String packageActivity,
+            String appName) {
         this.packageName = packageName;
-    }
-
-    public void setAppName(String appName) {
+        this.packageActivity = packageActivity;
         this.appName = appName;
     }
 
-    public @Nullable String getPackageActivity() {
-        return packageActivity;
-    }
-
-    public void setPackageActivity(String packageActivity) {
-        this.packageActivity = packageActivity;
-    }
 }

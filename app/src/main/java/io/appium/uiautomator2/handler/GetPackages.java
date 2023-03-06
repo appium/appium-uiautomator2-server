@@ -18,10 +18,13 @@ package io.appium.uiautomator2.handler;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.uiautomator2.model.Session.NO_ID;
+
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.appium.uiautomator2.handler.request.NoSessionCommandHandler;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
@@ -33,23 +36,21 @@ public class GetPackages extends SafeRequestHandler implements NoSessionCommandH
     public GetPackages(String mappedUri) {
         super(mappedUri);
     }
+
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         List<PackageModel> appDetails = new ArrayList<PackageModel>();
-        try{
+        try {
             PackageManager manager = getApplicationContext().getPackageManager();
             List<ApplicationInfo> apps = manager.getInstalledApplications(manager.GET_META_DATA);
-            for(ApplicationInfo appInfo: apps) {
-                PackageModel model = new PackageModel();
-                if(manager.getLaunchIntentForPackage(appInfo.packageName)!=null) {
-                    model.setPackageName(appInfo.packageName);
-                    model.setAppName((String) manager.getApplicationLabel(appInfo));
-                    model.setPackageActivity(manager.getLaunchIntentForPackage(appInfo.packageName).getComponent().getClassName());
-                    appDetails.add(model);
+            for (ApplicationInfo appInfo : apps) {
+                if (manager.getLaunchIntentForPackage(appInfo.packageName) != null) {
+                    appDetails.add(new PackageModel(appInfo.packageName,
+                            manager.getLaunchIntentForPackage(appInfo.packageName).getComponent().getClassName(),
+                            (String) manager.getApplicationLabel(appInfo)));
                 }
             }
-
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             Logger.error("Unexpected Runtime Exception: ", e);
         }
         return new AppiumResponse(NO_ID, appDetails);

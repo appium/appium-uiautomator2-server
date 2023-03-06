@@ -45,7 +45,9 @@ public class ServerInstrumentation {
     private static final int MAX_PORT = 65535;
     private static final String WAKE_LOCK_TAG = "UiAutomator2:ScreenKeeper";
     public static final long MAX_TEST_DURATION = 24 * 60 * 60 * 1000;
+
     private static ServerInstrumentation instance;
+
     private final PowerManager powerManager;
     private final int serverPort;
     private final int mjpegServerPort;
@@ -78,11 +80,11 @@ public class ServerInstrumentation {
             this.serverPort = serverPort;
         } else {
             Logger.warn(String.format(
-                "The server port is out of valid range [%s;%s]: %s -- using default: %s",
-                MIN_PORT,
-                MAX_PORT,
-                serverPort,
-                ServerConfig.DEFAULT_SERVER_PORT
+                    "The server port is out of valid range [%s;%s]: %s -- using default: %s",
+                    MIN_PORT,
+                    MAX_PORT,
+                    serverPort,
+                    ServerConfig.DEFAULT_SERVER_PORT
             ));
             this.serverPort = ServerConfig.DEFAULT_SERVER_PORT;
         }
@@ -91,11 +93,11 @@ public class ServerInstrumentation {
             this.mjpegServerPort = mjpegServerPort;
         } else {
             Logger.warn(String.format(
-                "The MJPEG server port is out of valid range [%s;%s]: %s -- using default: %s",
-                MIN_PORT,
-                MAX_PORT,
-                mjpegServerPort,
-                ServerConfig.DEFAULT_MJPEG_SERVER_PORT
+                    "The MJPEG server port is out of valid range [%s;%s]: %s -- using default: %s",
+                    MIN_PORT,
+                    MAX_PORT,
+                    mjpegServerPort,
+                    ServerConfig.DEFAULT_MJPEG_SERVER_PORT
             ));
             this.mjpegServerPort = ServerConfig.DEFAULT_MJPEG_SERVER_PORT;
         }
@@ -108,9 +110,9 @@ public class ServerInstrumentation {
     public static synchronized ServerInstrumentation getInstance() {
         if (instance == null) {
             instance = new ServerInstrumentation(
-                getApplicationContext(),
-                getServerPort(),
-                getMjpegServerPort()
+                    getApplicationContext(),
+                    getServerPort(),
+                    getMjpegServerPort()
             );
         }
         return instance;
