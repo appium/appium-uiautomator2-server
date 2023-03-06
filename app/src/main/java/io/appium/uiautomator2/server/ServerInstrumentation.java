@@ -45,7 +45,6 @@ public class ServerInstrumentation {
     private static final int MAX_PORT = 65535;
     private static final String WAKE_LOCK_TAG = "UiAutomator2:ScreenKeeper";
     public static final long MAX_TEST_DURATION = 24 * 60 * 60 * 1000;
-    public static Context ServerContext = null;
     private static ServerInstrumentation instance;
     private final PowerManager powerManager;
     private final int serverPort;
@@ -75,7 +74,6 @@ public class ServerInstrumentation {
     }
 
     private ServerInstrumentation(Context context, int serverPort, int mjpegServerPort) {
-        ServerContext=context;
         if (isValidPort(serverPort)) {
             this.serverPort = serverPort;
         } else {

@@ -16,8 +16,8 @@
 
 package io.appium.uiautomator2.handler;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.uiautomator2.model.Session.NO_ID;
-import static io.appium.uiautomator2.server.ServerInstrumentation.ServerContext;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class GetPackages extends SafeRequestHandler implements NoSessionCommandH
     protected AppiumResponse safeHandle(IHttpRequest request) {
         List<PackageModel> appDetails = new ArrayList<PackageModel>();
         try{
-            PackageManager manager = ServerContext.getPackageManager();
+            PackageManager manager = getApplicationContext().getPackageManager();
             List<ApplicationInfo> apps = manager.getInstalledApplications(manager.GET_META_DATA);
             for(ApplicationInfo appInfo: apps) {
                 PackageModel model = new PackageModel();
