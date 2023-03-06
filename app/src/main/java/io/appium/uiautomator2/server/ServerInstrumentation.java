@@ -40,7 +40,6 @@ import static io.appium.uiautomator2.server.ServerConfig.getMjpegServerPort;
 import static io.appium.uiautomator2.server.ServerConfig.getServerPort;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 
-
 public class ServerInstrumentation {
     private static final int MIN_PORT = 1024;
     private static final int MAX_PORT = 65535;
@@ -48,7 +47,6 @@ public class ServerInstrumentation {
     public static final long MAX_TEST_DURATION = 24 * 60 * 60 * 1000;
     public static Context ServerContext = null;
     private static ServerInstrumentation instance;
-
     private final PowerManager powerManager;
     private final int serverPort;
     private final int mjpegServerPort;
