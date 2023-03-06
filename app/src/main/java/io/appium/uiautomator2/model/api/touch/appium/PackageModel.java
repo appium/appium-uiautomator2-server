@@ -19,11 +19,11 @@ package io.appium.uiautomator2.model.api.touch.appium;
 import javax.annotation.Nullable;
 
 public class PackageModel {
-    private final @Nullable
+    private final
     String packageName;
     private final @Nullable
     String packageActivity;
-    private final @Nullable
+    private final
     String appName;
 
     public PackageModel(
