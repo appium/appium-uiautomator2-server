@@ -35,4 +35,18 @@ public class PackageModel {
         this.appName = appName;
     }
 
+    @Nullable
+    public String getPackageName() {
+        return packageName;
+    }
+
+    @Nullable
+    public String getPackageActivity() {
+        return packageActivity;
+    }
+
+    @Nullable
+    public String getAppName() {
+        return appName;
+    }
 }

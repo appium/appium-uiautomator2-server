@@ -30,7 +30,6 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.api.touch.appium.PackageModel;
-import io.appium.uiautomator2.utils.Logger;
 
 public class GetPackages extends SafeRequestHandler implements NoSessionCommandHandler {
     public GetPackages(String mappedUri) {
@@ -40,18 +39,15 @@ public class GetPackages extends SafeRequestHandler implements NoSessionCommandH
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         List<PackageModel> appDetails = new ArrayList<PackageModel>();
-        try {
-            PackageManager manager = getApplicationContext().getPackageManager();
-            List<ApplicationInfo> apps = manager.getInstalledApplications(manager.GET_META_DATA);
-            for (ApplicationInfo appInfo : apps) {
-                if (manager.getLaunchIntentForPackage(appInfo.packageName) != null) {
-                    appDetails.add(new PackageModel(appInfo.packageName,
-                            manager.getLaunchIntentForPackage(appInfo.packageName).getComponent().getClassName(),
-                            (String) manager.getApplicationLabel(appInfo)));
-                }
+        PackageManager manager = getApplicationContext().getPackageManager();
+        List<ApplicationInfo> apps = manager.getInstalledApplications(manager.GET_META_DATA);
+        for (ApplicationInfo appInfo : apps) {
+            // Filtering out unnecessary sub packages without Intent
+            if (manager.getLaunchIntentForPackage(appInfo.packageName) != null) {
+                appDetails.add(new PackageModel(appInfo.packageName,
+                        manager.getLaunchIntentForPackage(appInfo.packageName).getComponent().getClassName(),
+                        (String) manager.getApplicationLabel(appInfo)));
             }
-        } catch (RuntimeException e) {
-            Logger.error("Unexpected Runtime Exception: ", e);
         }
         return new AppiumResponse(NO_ID, appDetails);
     }
