@@ -48,6 +48,7 @@ import io.appium.uiautomator2.handler.GetElementAttribute;
 import io.appium.uiautomator2.handler.GetElementScreenshot;
 import io.appium.uiautomator2.handler.GetName;
 import io.appium.uiautomator2.handler.GetOrientation;
+import io.appium.uiautomator2.handler.GetPackages;
 import io.appium.uiautomator2.handler.GetRect;
 import io.appium.uiautomator2.handler.GetRotation;
 import io.appium.uiautomator2.handler.GetSessionDetails;
@@ -56,7 +57,6 @@ import io.appium.uiautomator2.handler.GetSettings;
 import io.appium.uiautomator2.handler.GetSize;
 import io.appium.uiautomator2.handler.GetSystemBars;
 import io.appium.uiautomator2.handler.GetText;
-import io.appium.uiautomator2.handler.Getpackages;
 import io.appium.uiautomator2.handler.Location;
 import io.appium.uiautomator2.handler.LongPressKeyCode;
 import io.appium.uiautomator2.handler.MultiPointerGesture;
@@ -162,7 +162,7 @@ public class AppiumServlet implements IHttpServlet {
 
     private void registerGetHandler() {
         register(getHandler, new Status("/status"));
-        register(getHandler,new Getpackages("/apps"));
+        register(getHandler,new GetPackages("/appium/device/apps"));
         register(getHandler, new GetSessions("/sessions"));
         register(getHandler, new GetSessionDetails("/session/:sessionId"));
         register(getHandler, new CaptureScreenshot("/session/:sessionId/screenshot"));
