@@ -18,6 +18,7 @@ package io.appium.uiautomator2.handler;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.uiautomator2.model.Session.NO_ID;
+import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -31,6 +32,7 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.api.touch.appium.PackageModel;
 
+
 public class GetPackages extends SafeRequestHandler implements NoSessionCommandHandler {
     public GetPackages(String mappedUri) {
         super(mappedUri);
@@ -38,7 +40,7 @@ public class GetPackages extends SafeRequestHandler implements NoSessionCommandH
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        List<PackageModel> appDetails = new ArrayList<PackageModel>();
+        List<PackageModel> appDetails = new ArrayList<>();
         PackageManager manager = getApplicationContext().getPackageManager();
         List<ApplicationInfo> apps = manager.getInstalledApplications(manager.GET_META_DATA);
         for (ApplicationInfo appInfo : apps) {
@@ -46,7 +48,7 @@ public class GetPackages extends SafeRequestHandler implements NoSessionCommandH
             if (manager.getLaunchIntentForPackage(appInfo.packageName) != null) {
                 appDetails.add(new PackageModel(appInfo.packageName,
                         manager.getLaunchIntentForPackage(appInfo.packageName).getComponent().getClassName(),
-                        (String) manager.getApplicationLabel(appInfo)));
+                        charSequenceToNullableString(manager.getApplicationLabel(appInfo))));
             }
         }
         return new AppiumResponse(NO_ID, appDetails);
