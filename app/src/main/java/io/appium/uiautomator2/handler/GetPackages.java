@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package io.appium.uiautomator2.handler;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
@@ -32,7 +33,7 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.api.touch.appium.PackageModel;
 
-
+//Get list of all applications (System and Installed) with packageActivity
 public class GetPackages extends SafeRequestHandler implements NoSessionCommandHandler {
     public GetPackages(String mappedUri) {
         super(mappedUri);
