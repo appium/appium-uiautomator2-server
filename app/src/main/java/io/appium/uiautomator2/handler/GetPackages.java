@@ -33,7 +33,8 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.api.touch.appium.PackageModel;
 
-// Get list of all applications (System and Installed) with packageActivity
+// Get a list of all applications (System and Installed) with packageActivity.
+// It does not include applications wich has no launchable activities in the manifest.
 public class GetPackages extends SafeRequestHandler implements NoSessionCommandHandler {
     public GetPackages(String mappedUri) {
         super(mappedUri);
