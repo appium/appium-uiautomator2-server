@@ -47,6 +47,7 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElements;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getDeviceSize;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getInfo;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getListApplications;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getScreenOrientation;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getSettings;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.rotateScreen;
@@ -824,4 +825,11 @@ public class DeviceCommandsTest extends BaseTest {
         assertEquals(info.getString("platformVersion"), Build.VERSION.RELEASE);
         assertTrue(info.getJSONArray("networks").length() > 0);
     }
+
+    @Test
+    public void shouldExtractDeviceApplications() throws JSONException {
+        JSONArray apps = getListApplications().getValue();
+        assertTrue(apps.length() > 0);
+    }
+
 }

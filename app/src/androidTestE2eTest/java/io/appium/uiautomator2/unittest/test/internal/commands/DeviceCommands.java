@@ -368,4 +368,13 @@ public class DeviceCommands {
         payload.put("actions", actions);
         return Client.post("/actions", payload);
     }
+
+    /**
+     * Gets the system amd installed applications with main activity
+     *
+     * @return Response from UiAutomator2 server
+     */
+    public static Response getListApplications() {
+        return Client.get("/appium/device/apps");
+    }
 }

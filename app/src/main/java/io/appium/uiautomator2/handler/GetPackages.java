@@ -33,7 +33,7 @@ import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.api.touch.appium.PackageModel;
 
-//Get list of all applications (System and Installed) with packageActivity
+// Get list of all applications (System and Installed) with packageActivity
 public class GetPackages extends SafeRequestHandler implements NoSessionCommandHandler {
     public GetPackages(String mappedUri) {
         super(mappedUri);
@@ -52,6 +52,6 @@ public class GetPackages extends SafeRequestHandler implements NoSessionCommandH
                         charSequenceToNullableString(manager.getApplicationLabel(appInfo))));
             }
         }
-        return new AppiumResponse(NO_ID, appDetails);
+        return new AppiumResponse(getSessionId(request) == null ? NO_ID : getSessionId(request), appDetails);
     }
 }
