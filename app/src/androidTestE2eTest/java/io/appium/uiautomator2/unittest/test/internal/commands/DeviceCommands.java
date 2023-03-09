@@ -374,7 +374,7 @@ public class DeviceCommands {
      *
      * @return Response from UiAutomator2 server
      */
-    public static Response getListApplications() {
+    public static Response getPackages() {
         return Client.get("/appium/device/apps");
     }
 }
