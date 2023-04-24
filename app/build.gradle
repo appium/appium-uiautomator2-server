@@ -5,7 +5,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath 'com.android.tools.build:gradle:7.4.2'
         classpath 'com.github.bjoernq:unmockplugin:0.7.9'
     }
 }
@@ -60,6 +60,7 @@ android {
     lint {
         abortOnError false
     }
+    namespace 'io.appium.uiautomator2.test'
 }
 
 unMock {
