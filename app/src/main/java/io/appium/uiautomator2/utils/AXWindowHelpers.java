@@ -83,11 +83,13 @@ public class AXWindowHelpers {
                         "manager could do its work", SystemClock.uptimeMillis() - start));
     }
 
+    private static List<AccessibilityWindowInfo> getWindows() {
+        return CustomUiDevice.getInstance().getUiAutomation().getWindows();
+    }
+
     private static AccessibilityNodeInfo[] getWindowRoots() {
         List<AccessibilityNodeInfo> result = new ArrayList<>();
-        List<AccessibilityWindowInfo> windows = CustomUiDevice.getInstance()
-                .getUiAutomation()
-                .getWindows();
+        List<AccessibilityWindowInfo> windows = getWindows();
         for (AccessibilityWindowInfo window : windows) {
             AccessibilityNodeInfo root = window.getRoot();
             if (root == null) {
