@@ -108,9 +108,8 @@ public class AXWindowHelpers {
 
     private static AccessibilityNodeInfo getTopmostWindowRootFromActivePackage() {
         CharSequence activeRootPackageName = checkNotNull(getActiveWindowRoot().getPackageName());
-        List<AccessibilityWindowInfo> windows = getWindows();
 
-        return windows.stream()
+        return getWindows().stream()
                 .filter(window -> window.getRoot() != null)
                 .filter(window -> Objects.equals(window.getRoot().getPackageName(), activeRootPackageName))
                 .max(Comparator.comparing(AccessibilityWindowInfo::getLayer))
