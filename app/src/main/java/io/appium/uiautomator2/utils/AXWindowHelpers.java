@@ -24,6 +24,7 @@ import android.view.accessibility.AccessibilityWindowInfo;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -110,7 +111,7 @@ public class AXWindowHelpers {
 
         return windows.stream()
                 .filter(window -> window.getRoot() != null)
-                .filter(window -> window.getRoot().getPackageName().toString().contentEquals(activeRootPackageName))
+                .filter(window -> Objects.equals(window.getRoot().getPackageName().toString(), activeRootPackageName))
                 .max(Comparator.comparing(AccessibilityWindowInfo::getLayer))
                 .map(AccessibilityWindowInfo::getRoot)
                 .orElseThrow(() -> new UiAutomator2Exception("No active window root found"));
