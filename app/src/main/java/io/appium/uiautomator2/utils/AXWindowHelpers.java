@@ -108,13 +108,11 @@ public class AXWindowHelpers {
         CharSequence activeRootPackageName = getActiveWindowRoot().getPackageName();
         List<AccessibilityWindowInfo> windows = getWindows();
 
-        Optional<AccessibilityNodeInfo> topmostWindowRootFromActivePackage = windows.stream()
+        return windows.stream()
                 .filter(window -> window.getRoot() != null)
                 .filter(window -> window.getRoot().getPackageName().toString().contentEquals(activeRootPackageName))
                 .max(Comparator.comparing(AccessibilityWindowInfo::getLayer))
-                .map(AccessibilityWindowInfo::getRoot);
-
-        return topmostWindowRootFromActivePackage
+                .map(AccessibilityWindowInfo::getRoot)
                 .orElseThrow(() -> new UiAutomator2Exception("No active window root found"));
     }
 
