@@ -114,11 +114,8 @@ public class AXWindowHelpers {
                 .max(Comparator.comparing(AccessibilityWindowInfo::getLayer))
                 .map(AccessibilityWindowInfo::getRoot);
 
-        if (topmostWindowRootFromActivePackage.isPresent()) {
-            return topmostWindowRootFromActivePackage.get();
-        } else {
-            throw new UiAutomator2Exception("No active window root found");
-        }
+        return topmostWindowRootFromActivePackage
+                .orElseThrow(() -> new UiAutomator2Exception("No active window root found"));
     }
 
     public static AccessibilityNodeInfo[] getCachedWindowRoots() {
