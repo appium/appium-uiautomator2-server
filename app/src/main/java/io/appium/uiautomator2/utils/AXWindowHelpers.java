@@ -22,12 +22,15 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.settings.EnableMultiWindows;
+import io.appium.uiautomator2.model.settings.EnableTopmostWindowFromActivePackage;
 import io.appium.uiautomator2.model.settings.Settings;
 
 public class AXWindowHelpers {
@@ -101,20 +104,46 @@ public class AXWindowHelpers {
         return result.toArray(new AccessibilityNodeInfo[0]);
     }
 
+    private static AccessibilityNodeInfo getTopmostWindowRootFromActivePackage() {
+        CharSequence activeRootPackageName = getActiveWindowRoot().getPackageName();
+        List<AccessibilityWindowInfo> windows = getWindows();
+
+        Optional<AccessibilityNodeInfo> topmostWindowRootFromActivePackage = windows.stream()
+                .filter(window -> window.getRoot() != null)
+                .filter(window -> window.getRoot().getPackageName().toString().contentEquals(activeRootPackageName))
+                .max(Comparator.comparing(AccessibilityWindowInfo::getLayer))
+                .map(AccessibilityWindowInfo::getRoot);
+
+        if (topmostWindowRootFromActivePackage.isPresent()) {
+            return topmostWindowRootFromActivePackage.get();
+        } else {
+            throw new UiAutomator2Exception("No active window root found");
+        }
+    }
+
     public static AccessibilityNodeInfo[] getCachedWindowRoots() {
         if (cachedWindowRoots == null) {
             // Multi-window searches are supported since API level 21
-            boolean shouldRetrieveAllWindowRoots = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+            boolean isMultiWindowSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+            boolean shouldRetrieveAllWindowRoots = isMultiWindowSupported
                     && Settings.get(EnableMultiWindows.class).getValue();
+            // Multi-window retrieval is needed to search the topmost window from active package.
+            boolean shouldRetrieveTopmostWindowRootFromActivePackage = isMultiWindowSupported
+                    && Settings.get(EnableTopmostWindowFromActivePackage.class).getValue();
             /*
-             * ENABLE_MULTI_WINDOWS is disabled by default
+             * ENABLE_MULTI_WINDOWS and ENABLE_TOPMOST_WINDOW_FROM_ACTIVE_PACKAGE
+             * are disabled by default
              * because UIAutomatorViewer captures active window properties and
              * end users always rely on its output while writing their tests.
              * https://code.google.com/p/android/issues/detail?id=207569
              */
             cachedWindowRoots = shouldRetrieveAllWindowRoots
                     ? getWindowRoots()
-                    : new AccessibilityNodeInfo[]{getActiveWindowRoot()};
+                    : new AccessibilityNodeInfo[] {
+                            shouldRetrieveTopmostWindowRootFromActivePackage
+                                    ? getTopmostWindowRootFromActivePackage()
+                                    : getActiveWindowRoot()
+                    };
         }
         return cachedWindowRoots;
     }
