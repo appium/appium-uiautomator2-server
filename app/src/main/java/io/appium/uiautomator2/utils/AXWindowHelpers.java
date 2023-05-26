@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static androidx.test.internal.util.Checks.checkNotNull;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -106,7 +107,7 @@ public class AXWindowHelpers {
     }
 
     private static AccessibilityNodeInfo getTopmostWindowRootFromActivePackage() {
-        CharSequence activeRootPackageName = getActiveWindowRoot().getPackageName();
+        CharSequence activeRootPackageName = checkNotNull(getActiveWindowRoot().getPackageName());
         List<AccessibilityWindowInfo> windows = getWindows();
 
         return windows.stream()
