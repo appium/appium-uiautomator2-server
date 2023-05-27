@@ -16,17 +16,10 @@
 
 package io.appium.uiautomator2.handler.gestures;
 
-import android.graphics.Point;
-import android.graphics.Rect;
-
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.AndroidElement;
-import io.appium.uiautomator2.model.AppiumUIA2Driver;
-import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.model.api.gestures.DoubleClickModel;
-import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
@@ -39,28 +32,7 @@ public class DoubleClick extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         DoubleClickModel doubleClickModel = toModel(request, DoubleClickModel.class);
-        final String elementId = doubleClickModel.origin == null ? null : doubleClickModel.origin.getUnifiedId();
-        if (elementId == null) {
-            if (doubleClickModel.offset == null) {
-                throw new IllegalArgumentException("Double click offset coordinates must be provided " +
-                        "if element is not set");
-            }
-            CustomUiDevice.getInstance().getGestureController().doubleClick(
-                    doubleClickModel.offset.toNativePoint()
-            );
-        } else {
-            Session session = AppiumUIA2Driver.getInstance().getSessionOrThrow();
-            AndroidElement element = session.getElementsCache().get(elementId);
-            if (doubleClickModel.offset == null) {
-                element.doubleClick();
-            } else {
-                Rect bounds = element.getBounds();
-                Point location = new Point(bounds.left + doubleClickModel.offset.x.intValue(),
-                        bounds.top + doubleClickModel.offset.y.intValue());
-                CustomUiDevice.getInstance().getGestureController().doubleClick(location);
-            }
-        }
-
+        io.appium.uiautomator2.utils.gestures.DoubleClick.perform(doubleClickModel);
         return new AppiumResponse(getSessionId(request));
     }
 }

@@ -13,8 +13,11 @@ import io.appium.uiautomator2.model.api.BaseModel;
 
 public class ModelUtils {
     public static <T extends BaseModel> T toModel(IHttpRequest request, Class<T> modelCls) {
-        //noinspection unchecked
-        return (T) new Gson().fromJson(request.body(), modelCls).validate();
+        return toModel(request.body(), modelCls);
+    }
+
+    public static <T extends BaseModel> T toModel(String body, Class<T> modelCls) {
+        return modelCls.cast(new Gson().fromJson(body, modelCls).validate());
     }
 
     public static Object toObject(JSONArray json, Type type) {

@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.api.gestures;
+package io.appium.uiautomator2.model.api.scheduled;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import io.appium.uiautomator2.model.api.BaseModel;
-import io.appium.uiautomator2.model.api.ElementModel;
-import io.appium.uiautomator2.model.api.FindElementModel;
 
-public class ClickModel extends BaseModel {
-    public ElementModel origin;
-    public FindElementModel locator;
-    public PointModel offset;
+public class ScheduledActionStepsHistoryModel extends BaseModel {
+    public long repeats = 0L;
+    public List<List<ScheduledActionStepResultModel>> stepResults = new LinkedList<>();
+
+    public ScheduledActionStepsHistoryModel() {}
+
+    public ScheduledActionStepsHistoryModel(List<List<ScheduledActionStepResultModel>> stepResults) {
+        this.stepResults = stepResults;
+    }
 }

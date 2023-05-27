@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.api.gestures;
+package io.appium.uiautomator2.model.api.scheduled;
 
 import io.appium.uiautomator2.model.api.BaseModel;
-import io.appium.uiautomator2.model.api.ElementModel;
-import io.appium.uiautomator2.model.api.FindElementModel;
 
-public class ClickModel extends BaseModel {
-    public ElementModel origin;
-    public FindElementModel locator;
-    public PointModel offset;
+public class ScheduledActionStepResultModel extends BaseModel {
+    public String name;
+    public String type;
+    public long timestamp;
+    public boolean passed;
+    public Object result;
+    public ScheduledActionStepExceptionModel exception;
+
+    public ScheduledActionStepResultModel() {}
+
+    public ScheduledActionStepResultModel(String name, String type, long timestamp
+    ) {
+        this.name = name;
+        this.type = type;
+        this.timestamp = timestamp;
+    }
 }

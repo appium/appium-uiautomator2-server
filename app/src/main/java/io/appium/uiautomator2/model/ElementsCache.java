@@ -43,7 +43,7 @@ public class ElementsCache {
         this.cache = new LruCache<>(maxSize);
     }
 
-    private static AndroidElement toAndroidElement(AccessibleUiObject element, boolean isSingleMatch,
+    public static AndroidElement toAndroidElement(AccessibleUiObject element, boolean isSingleMatch,
                                                    @Nullable By by, @Nullable String contextId) {
         return toAndroidElement(element, isSingleMatch, by, contextId, null);
     }

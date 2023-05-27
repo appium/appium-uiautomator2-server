@@ -26,6 +26,7 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.Session;
 import io.appium.uiautomator2.server.ServerInstrumentation;
+import io.appium.uiautomator2.utils.actions_scheduler.ScheduledActionsManager;
 
 public class DeleteSession extends SafeRequestHandler {
 
@@ -40,6 +41,7 @@ public class DeleteSession extends SafeRequestHandler {
         if (currentSession == null || !Objects.equals(sessionId, currentSession.getSessionId())) {
             throw new NoSuchDriverException(String.format("The session %s cannot be found", sessionId));
         }
+        ScheduledActionsManager.getInstance().clear();
         NotificationListener.getInstance().stop();
         ServerInstrumentation.getInstance().stopServer();
         return new AppiumResponse(sessionId);

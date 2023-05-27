@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
-import io.appium.uiautomator2.common.exceptions.NotImplementedException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
@@ -33,15 +32,10 @@ import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.ElementsCache;
 import io.appium.uiautomator2.model.api.FindElementModel;
-import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.ElementsLookupStrategy;
-import io.appium.uiautomator2.utils.ByUiAutomatorFinder;
 import io.appium.uiautomator2.utils.Logger;
-import io.appium.uiautomator2.utils.NodeInfoList;
 
-import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshAccessibilityCache;
-import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
-import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
+import static io.appium.uiautomator2.utils.ElementLocationHelpers.findElements;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 import static io.appium.uiautomator2.utils.StringHelpers.pluralize;
@@ -72,8 +66,8 @@ public class FindElements extends SafeRequestHandler {
         List<AccessibleUiObject> elements;
         try {
             elements = contextId == null
-                    ? this.findElements(by)
-                    : this.findElements(by, elementsCache.get(contextId));
+                    ? findElements(by)
+                    : findElements(by, elementsCache.get(contextId));
         } catch (ElementNotFoundException e) {
             Logger.warn(String.format("Got an exception while looking for multiple matches using " +
                     "selector %s", by));
@@ -97,51 +91,4 @@ public class FindElements extends SafeRequestHandler {
         Logger.info(String.format("Cached %s", pluralize(result.size(), "element")));
         return new AppiumResponse(getSessionId(request), result);
     }
-
-    private List<AccessibleUiObject> findElements(By by) {
-        refreshAccessibilityCache();
-
-        if (by instanceof By.ById) {
-            String locator = rewriteIdLocator((By.ById) by);
-            return CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.res(locator));
-        } else if (by instanceof By.ByAccessibilityId) {
-            return CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.desc(by.getElementLocator()));
-        } else if (by instanceof By.ByClass) {
-            return CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.clazz(by.getElementLocator()));
-        } else if (by instanceof By.ByXPath) {
-            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), null, true);
-            return matchedNodes.isEmpty()
-                    ? Collections.<AccessibleUiObject>emptyList()
-                    : CustomUiDevice.getInstance().findObjects(matchedNodes);
-        } else if (by instanceof By.ByAndroidUiAutomator) {
-            return new ByUiAutomatorFinder().findMany((By.ByAndroidUiAutomator) by);
-        }
-
-        throw new NotImplementedException(
-                String.format("%s locator is not supported", by.getClass().getSimpleName())
-        );
-    }
-
-    private List<AccessibleUiObject> findElements(By by, AndroidElement context) {
-        if (by instanceof By.ById) {
-            String locator = rewriteIdLocator((By.ById) by);
-            return context.getChildren(androidx.test.uiautomator.By.res(locator), by);
-        } else if (by instanceof By.ByAccessibilityId) {
-            return context.getChildren(androidx.test.uiautomator.By.desc(by.getElementLocator()), by);
-        } else if (by instanceof By.ByClass) {
-            return context.getChildren(androidx.test.uiautomator.By.clazz(by.getElementLocator()), by);
-        } else if (by instanceof By.ByXPath) {
-            final NodeInfoList matchedNodes = getXPathNodeMatch(by.getElementLocator(), context, true);
-            return matchedNodes.isEmpty()
-                    ? Collections.<AccessibleUiObject>emptyList()
-                    : CustomUiDevice.getInstance().findObjects(matchedNodes);
-        } else if (by instanceof By.ByAndroidUiAutomator) {
-            return new ByUiAutomatorFinder().findMany((By.ByAndroidUiAutomator) by, context);
-        }
-
-        throw new NotImplementedException(
-                String.format("%s locator is not supported", by.getClass().getSimpleName())
-        );
-    }
-
 }

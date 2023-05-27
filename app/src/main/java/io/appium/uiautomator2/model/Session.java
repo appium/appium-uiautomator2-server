@@ -24,6 +24,7 @@ import java.util.Map;
 
 import io.appium.uiautomator2.model.settings.ISetting;
 import io.appium.uiautomator2.model.settings.Settings;
+import io.appium.uiautomator2.utils.actions_scheduler.ScheduledActionsManager;
 
 public class Session {
     public static final String NO_ID = "None";
@@ -36,6 +37,7 @@ public class Session {
 
     Session(String sessionId, Map<String, Object> capabilities) {
         this.sessionId = sessionId;
+        ScheduledActionsManager.getInstance().clear();
         for (Map.Entry<String, Object> capability: capabilities.entrySet()) {
             boolean isSetting = false;
             for (Settings settingsEnumItem: Settings.values()) {

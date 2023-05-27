@@ -65,6 +65,7 @@ import io.appium.uiautomator2.handler.NewSession;
 import io.appium.uiautomator2.handler.OpenNotification;
 import io.appium.uiautomator2.handler.PressBack;
 import io.appium.uiautomator2.handler.PressKeyCode;
+import io.appium.uiautomator2.handler.ScheduleAction;
 import io.appium.uiautomator2.handler.ScrollTo;
 import io.appium.uiautomator2.handler.ScrollToElement;
 import io.appium.uiautomator2.handler.SendKeysToElement;
@@ -79,6 +80,7 @@ import io.appium.uiautomator2.handler.TouchDown;
 import io.appium.uiautomator2.handler.TouchLongClick;
 import io.appium.uiautomator2.handler.TouchMove;
 import io.appium.uiautomator2.handler.TouchUp;
+import io.appium.uiautomator2.handler.UnscheduleAction;
 import io.appium.uiautomator2.handler.UpdateSettings;
 import io.appium.uiautomator2.handler.W3CActions;
 import io.appium.uiautomator2.handler.request.BaseRequestHandler;
@@ -158,6 +160,9 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new io.appium.uiautomator2.handler.gestures.PinchOpen("/session/:sessionId/appium/gestures/pinch_open"));
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Scroll("/session/:sessionId/appium/gestures/scroll"));
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Swipe("/session/:sessionId/appium/gestures/swipe"));
+
+        register(postHandler, new ScheduleAction("/session/:sessionId/appium/schedule_action"));
+        register(postHandler, new UnscheduleAction("/session/:sessionId/appium/unschedule_action"));
     }
 
     private void registerGetHandler() {
