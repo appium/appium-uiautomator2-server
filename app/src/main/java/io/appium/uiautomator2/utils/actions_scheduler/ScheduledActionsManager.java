@@ -70,6 +70,11 @@ public class ScheduledActionsManager {
                     "The amount of provided action steps must be greater than zero"
             );
         }
+        if (actionToSchedule.maxHistory < 1) {
+            throw new InvalidArgumentException(
+                    "The amount of maximum action history items must be greater than zero"
+            );
+        }
         if (scheduledActions.containsKey(actionToSchedule.name)) {
             throw new InvalidArgumentException(String.format(
                     "The action with the same name '%s' has been already scheduled. Please remove it first",
