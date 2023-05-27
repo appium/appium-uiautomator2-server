@@ -23,7 +23,6 @@ public enum Settings {
     ELEMENT_RESPONSE_ATTRIBUTES(new ElementResponseAttributes()),
     ENABLE_MULTI_WINDOWS(new EnableMultiWindows()),
     ENABLE_NOTIFICATION_LISTENER(new EnableNotificationListener()),
-    ENABLE_TOPMOST_WINDOW_FROM_ACTIVE_PACKAGE(new EnableTopmostWindowFromActivePackage()),
     KEY_INJECTION_DELAY(new KeyInjectionDelay()),
     SCROLL_ACKNOWLEDGMENT_TIMEOUT(new ScrollAcknowledgmentTimeout()),
     SHOULD_USE_COMPACT_RESPONSES(new ShouldUseCompactResponses()),
