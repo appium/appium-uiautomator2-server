@@ -27,8 +27,8 @@ public class ScheduledActionModel extends BaseModel {
     @RequiredField
     public List<ScheduledActionStepModel> steps;
     public int times = 1;
-    public long interval = 1000L; // in milliseconds
-    public int maxHistory = 20;
+    public long intervalMs = 1000L; // in milliseconds
+    public int maxHistoryItems = 20;
 
     public ScheduledActionModel() {}
 }

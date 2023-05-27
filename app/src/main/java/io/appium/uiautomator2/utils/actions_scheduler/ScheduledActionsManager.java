@@ -59,10 +59,10 @@ public class ScheduledActionsManager {
         if (isBlank(actionToSchedule.name)) {
             throw new InvalidArgumentException("Action name must not be blank");
         }
-        if (actionToSchedule.interval < 0) {
+        if (actionToSchedule.intervalMs < 0) {
             throw new InvalidArgumentException(String.format(
                     "The scheduled action interval must not be negative. You have provided %s",
-                    actionToSchedule.interval
+                    actionToSchedule.intervalMs
             ));
         }
         if (actionToSchedule.steps.isEmpty()) {
@@ -70,7 +70,7 @@ public class ScheduledActionsManager {
                     "The amount of provided action steps must be greater than zero"
             );
         }
-        if (actionToSchedule.maxHistory < 1) {
+        if (actionToSchedule.maxHistoryItems < 1) {
             throw new InvalidArgumentException(
                     "The amount of maximum action history items must be greater than zero"
             );
@@ -131,7 +131,7 @@ public class ScheduledActionsManager {
                 "About to run steps of the scheduled action '%s' (execution %s of %s)",
                 info.name, history.repeats + 1, info.times
         ));
-        if (history.stepResults.size() >= info.maxHistory) {
+        if (history.stepResults.size() >= info.maxHistoryItems) {
             // Remove the oldest step, so we still have the space for the current one
             history.stepResults.remove(history.stepResults.size() - 1);
         }
@@ -155,9 +155,9 @@ public class ScheduledActionsManager {
         if (info.times < history.repeats) {
             Logger.info(String.format(
                     "Will run the repeatable scheduled action '%s' again in %s milliseconds " +
-                    "(completed %s of %s repeats)", info.name, info.interval, history.repeats, info.times
+                    "(completed %s of %s repeats)", info.name, info.intervalMs, history.repeats, info.times
             ));
-            new Handler(Looper.getMainLooper()).postDelayed(() -> runActionSteps(info), info.interval);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> runActionSteps(info), info.intervalMs);
         } else {
             Logger.info(String.format(
                     "The scheduled action '%s' has been executed %s times in total", info.name, info.times
