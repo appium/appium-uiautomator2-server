@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.api.scheduled;
+package io.appium.uiautomator2.utils.actions_scheduler;
 
-import android.util.Log;
+import java.util.Arrays;
 
-import io.appium.uiautomator2.model.api.BaseModel;
+import io.appium.uiautomator2.model.api.scheduled.ScheduledActionStepModel;
 
-public class ScheduledActionStepExceptionModel extends BaseModel {
-    public String name;
-    public String message;
-    public String stacktrace;
-
-    public ScheduledActionStepExceptionModel() {}
-
-    public ScheduledActionStepExceptionModel(Throwable exc) {
-        this.name = exc.getClass().getName();
-        this.message = exc.getMessage();
-        this.stacktrace = Log.getStackTraceString(exc);
+public class UnknownStepTypeException extends Exception {
+    public UnknownStepTypeException(ScheduledActionStepModel model, String[] availableTypes) {
+        super(String.format(
+                "The value '%s' of '%s' field in step '%s' is unknown. " +
+                        "Only the following kinds are supported: %s",
+                model.type ,Constants.STEP_TYPE, model.name, Arrays.toString(availableTypes)
+        ));
     }
 }

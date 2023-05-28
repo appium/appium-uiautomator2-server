@@ -14,22 +14,9 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.api.scheduled;
+package io.appium.uiautomator2.utils.actions_scheduler;
 
-import android.util.Log;
-
-import io.appium.uiautomator2.model.api.BaseModel;
-
-public class ScheduledActionStepExceptionModel extends BaseModel {
-    public String name;
-    public String message;
-    public String stacktrace;
-
-    public ScheduledActionStepExceptionModel() {}
-
-    public ScheduledActionStepExceptionModel(Throwable exc) {
-        this.name = exc.getClass().getName();
-        this.message = exc.getMessage();
-        this.stacktrace = Log.getStackTraceString(exc);
-    }
+public interface Constants {
+    String STEP_SUBTYPE = "subtype";
+    String STEP_TYPE = "type";
 }

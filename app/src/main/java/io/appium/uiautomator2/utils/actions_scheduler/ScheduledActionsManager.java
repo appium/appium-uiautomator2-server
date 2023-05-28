@@ -16,13 +16,14 @@
 
 package io.appium.uiautomator2.utils.actions_scheduler;
 
+import static io.appium.uiautomator2.utils.ModelUtils.toJsonString;
+import static io.appium.uiautomator2.utils.StringHelpers.abbreviate;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 import android.os.Handler;
 import android.os.Looper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -105,15 +106,15 @@ public class ScheduledActionsManager {
         return this;
     }
 
-    private ScheduledActionStepResultModel runActionStep(ScheduledActionStepModel step) {
+    private ScheduledActionStepResultModel runActionStep(
+            ScheduledActionStepModel step
+    ) throws UnknownStepTypeException {
         if (GestureStep.TYPE.equals(step.type)) {
             return new GestureStep(step).run();
+        } else if (SourceStep.TYPE.equals(step.type)) {
+            return new SourceStep(step).run();
         }
-
-        throw new InvalidArgumentException(String.format(
-                "The step type '%s' is not known. Only the following step types are supported: %s",
-                step.type, Arrays.toString(new String[]{GestureStep.TYPE})
-        ));
+        throw new UnknownStepTypeException(step, new String[] { GestureStep.TYPE, SourceStep.TYPE });
     }
 
     private void runActionSteps(ScheduledActionModel info) {
@@ -139,10 +140,24 @@ public class ScheduledActionsManager {
         int stepIndex = 1;
         for (ScheduledActionStepModel step: info.steps) {
             Logger.info(String.format(
-                    "About to run step '%s (%s)' (%s of %s) belonging to the scheduled action '%s'",
+                    "About to run the step '%s (%s)' (%s of %s) belonging to the scheduled action '%s'",
                     step.name, step.type, stepIndex, info.steps.size(), info.name
             ));
-            stepResults.add(runActionStep(step));
+            ScheduledActionStepResultModel stepResult;
+            try {
+                stepResult = runActionStep(step);
+            } catch (UnknownStepTypeException e) {
+                stepResult = new ScheduledActionStepResultModel(
+                        step.name, step.type, System.currentTimeMillis(), e
+                );
+            }
+            stepResults.add(stepResult);
+            Logger.info(String.format(
+                    "Finished running the step '%s' (type '%s') (%s of %s) belonging to the " +
+                            "scheduled action '%s'. Step result: %s",
+                    step.name, step.type, stepIndex, info.steps.size(), info.name,
+                    abbreviate(toJsonString(stepResult), 200)
+            ));
             stepIndex++;
         }
         // Newest steps go first

@@ -28,10 +28,17 @@ public class ScheduledActionStepResultModel extends BaseModel {
 
     public ScheduledActionStepResultModel() {}
 
-    public ScheduledActionStepResultModel(String name, String type, long timestamp
-    ) {
+    public ScheduledActionStepResultModel(String name, String type, long timestamp) {
         this.name = name;
         this.type = type;
         this.timestamp = timestamp;
+    }
+
+    public ScheduledActionStepResultModel(String name, String type, long timestamp, Throwable exc) {
+        this.name = name;
+        this.type = type;
+        this.timestamp = timestamp;
+        this.passed = false;
+        this.exception = new ScheduledActionStepExceptionModel(exc);
     }
 }
