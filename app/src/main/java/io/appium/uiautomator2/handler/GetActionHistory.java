@@ -26,9 +26,9 @@ import io.appium.uiautomator2.model.api.scheduled.ScheduledActionStepsHistoryMod
 import io.appium.uiautomator2.model.api.scheduled.FindActionModel;
 import io.appium.uiautomator2.utils.actions_scheduler.ScheduledActionsManager;
 
-public class UnscheduleAction extends SafeRequestHandler {
+public class GetActionHistory extends SafeRequestHandler {
 
-    public UnscheduleAction(String mappedUri) {
+    public GetActionHistory(String mappedUri) {
         super(mappedUri);
     }
 
@@ -42,7 +42,6 @@ public class UnscheduleAction extends SafeRequestHandler {
                 "The action name '%s' is not known. Have you scheduled it before?", model.name
             ));
         }
-        manager.remove(model.name);
         return new AppiumResponse(getSessionId(request), history);
     }
 }

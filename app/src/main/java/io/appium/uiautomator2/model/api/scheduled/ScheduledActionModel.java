@@ -29,6 +29,8 @@ public class ScheduledActionModel extends BaseModel {
     public int times = 1;
     public long intervalMs = 1000L; // in milliseconds
     public int maxHistoryItems = 20;
+    public int maxPass = -1;
+    public int maxFail = -1;
 
     public ScheduledActionModel() {}
 }

@@ -19,9 +19,9 @@ package io.appium.uiautomator2.model.api.scheduled;
 import io.appium.uiautomator2.model.RequiredField;
 import io.appium.uiautomator2.model.api.BaseModel;
 
-public class UncheduledActionModel extends BaseModel {
+public class FindActionModel extends BaseModel {
     @RequiredField
     public String name;
 
-    public UncheduledActionModel() {}
+    public FindActionModel() {}
 }

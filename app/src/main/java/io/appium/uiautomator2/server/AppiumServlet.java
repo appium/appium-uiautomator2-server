@@ -37,6 +37,7 @@ import io.appium.uiautomator2.handler.FindElement;
 import io.appium.uiautomator2.handler.FindElements;
 import io.appium.uiautomator2.handler.FirstVisibleView;
 import io.appium.uiautomator2.handler.Flick;
+import io.appium.uiautomator2.handler.GetActionHistory;
 import io.appium.uiautomator2.handler.GetAlertText;
 import io.appium.uiautomator2.handler.GetBatteryInfo;
 import io.appium.uiautomator2.handler.GetClipboard;
@@ -162,6 +163,7 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Swipe("/session/:sessionId/appium/gestures/swipe"));
 
         register(postHandler, new ScheduleAction("/session/:sessionId/appium/schedule_action"));
+        register(postHandler, new GetActionHistory("/session/:sessionId/appium/action_history"));
         register(postHandler, new UnscheduleAction("/session/:sessionId/appium/unschedule_action"));
     }
 

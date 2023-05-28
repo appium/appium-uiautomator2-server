@@ -53,6 +53,12 @@ public class ScheduledActionsManager {
     private final Map<String, ScheduledActionModel> scheduledActions = new HashMap<>();
     private final Map<String, ScheduledActionStepsHistoryModel> scheduledActionsHistory = new HashMap<>();
     private final Set<String> activeActionNames = new HashSet<>();
+    private final Map<String, PassFailCounter> actionResultCounts = new HashMap<>();
+
+    private static class PassFailCounter {
+        public int passCount = 0;
+        public int failCount = 0;
+    }
 
     private ScheduledActionsManager() {}
 
@@ -96,6 +102,7 @@ public class ScheduledActionsManager {
         activeActionNames.remove(name);
         scheduledActions.remove(name);
         scheduledActionsHistory.remove(name);
+        actionResultCounts.remove(name);
         return this;
     }
 
@@ -103,6 +110,7 @@ public class ScheduledActionsManager {
         activeActionNames.clear();
         scheduledActions.clear();
         scheduledActionsHistory.clear();
+        actionResultCounts.clear();
         return this;
     }
 
@@ -138,6 +146,7 @@ public class ScheduledActionsManager {
         }
         List<ScheduledActionStepResultModel> stepResults = new ArrayList<>();
         int stepIndex = 1;
+        boolean didFail = false;
         for (ScheduledActionStepModel step: info.steps) {
             Logger.info(String.format(
                     "About to run the step '%s (%s)' (%s of %s) belonging to the scheduled action '%s'",
@@ -158,6 +167,9 @@ public class ScheduledActionsManager {
                     step.name, step.type, stepIndex, info.steps.size(), info.name,
                     abbreviate(toJsonString(stepResult), 200)
             ));
+            if (!didFail && !stepResult.passed) {
+                didFail = true;
+            }
             stepIndex++;
         }
         // Newest steps go first
@@ -167,18 +179,47 @@ public class ScheduledActionsManager {
             history.stepResults.add(0, stepResults);
         }
         history.repeats++;
-        if (info.times < history.repeats) {
-            Logger.info(String.format(
-                    "Will run the repeatable scheduled action '%s' again in %s milliseconds " +
-                    "(completed %s of %s repeats)", info.name, info.intervalMs, history.repeats, info.times
-            ));
-            new Handler(Looper.getMainLooper()).postDelayed(() -> runActionSteps(info), info.intervalMs);
+        PassFailCounter resultCounts;
+        if (actionResultCounts.containsKey(info.name)) {
+            resultCounts = Objects.requireNonNull(actionResultCounts.get(info.name));
         } else {
+            resultCounts = new PassFailCounter();
+            actionResultCounts.put(info.name, resultCounts);
+        }
+        if (didFail) {
+            resultCounts.failCount++;
+        } else {
+            resultCounts.passCount++;
+        }
+        boolean shouldUnschedule = false;
+        if (info.maxPass > 0 && resultCounts.passCount >= info.maxPass) {
+            Logger.info(String.format(
+                    "The scheduled action '%s' has passed %s time(s) and will be unscheduled as requested",
+                    info.name, resultCounts.passCount
+            ));
+            shouldUnschedule = true;
+        } else if (info.maxFail > 0 && resultCounts.failCount >= info.maxFail) {
+            Logger.info(String.format(
+                    "The scheduled action '%s' has failed %s time(s) and will be unscheduled as requested",
+                    info.name, resultCounts.failCount
+            ));
+            shouldUnschedule = true;
+        } else if (info.times >= history.repeats) {
             Logger.info(String.format(
                     "The scheduled action '%s' has been executed %s times in total", info.name, info.times
             ));
-            activeActionNames.remove(info.name);
+            shouldUnschedule = true;
         }
+        if (shouldUnschedule) {
+            activeActionNames.remove(info.name);
+            return;
+        }
+
+        Logger.info(String.format(
+                "Will run the repeatable scheduled action '%s' again in %s milliseconds " +
+                "(completed %s of %s repeats)", info.name, info.intervalMs, history.repeats, info.times
+        ));
+        new Handler(Looper.getMainLooper()).postDelayed(() -> runActionSteps(info), info.intervalMs);
     }
 
     private ScheduledActionsManager scheduleAction(ScheduledActionModel info) {
