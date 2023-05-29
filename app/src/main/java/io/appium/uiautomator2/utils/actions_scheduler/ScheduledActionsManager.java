@@ -117,12 +117,17 @@ public class ScheduledActionsManager {
     private ScheduledActionStepResultModel runActionStep(
             ScheduledActionStepModel step
     ) throws UnknownStepTypeException {
+        final BaseActionStep actionStep;
         if (GestureStep.TYPE.equals(step.type)) {
-            return new GestureStep(step).run();
+            actionStep = new GestureStep(step);
         } else if (SourceStep.TYPE.equals(step.type)) {
-            return new SourceStep(step).run();
+            actionStep = new SourceStep(step);
+        } else if (ScreenshotStep.TYPE.equals(step.type)) {
+            actionStep = new ScreenshotStep(step);
+        } else {
+            throw new UnknownStepTypeException(step, new String[]{GestureStep.TYPE, SourceStep.TYPE});
         }
-        throw new UnknownStepTypeException(step, new String[] { GestureStep.TYPE, SourceStep.TYPE });
+        return actionStep.run();
     }
 
     private void runActionSteps(ScheduledActionModel info) {

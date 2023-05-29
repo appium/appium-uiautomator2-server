@@ -16,36 +16,27 @@
 
 package io.appium.uiautomator2.utils.actions_scheduler;
 
-import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshAccessibilityCache;
-
-import java.util.Collections;
-
-import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 import io.appium.uiautomator2.model.api.scheduled.ScheduledActionStepModel;
+import io.appium.uiautomator2.utils.ScreenshotHelper;
 
-public class SourceStep extends BaseActionStep {
-    public static final String TYPE = "source";
-    private static final String XML = "xml";
+public class ScreenshotStep extends BaseActionStep {
+    public static final String TYPE = "screenshot";
+    private static final String PNG = "png";
 
-    public SourceStep(ScheduledActionStepModel model) {
+    public ScreenshotStep(ScheduledActionStepModel model) {
         super(model);
     }
 
     @Override
     protected String[] getSupportedSubtypes() {
-        return new String[]{XML};
+        return new String[]{PNG};
     }
 
     @Override
     protected Object runInternalImplementation(String subtype) throws UnknownStepSubtypeException {
-        if (XML.equals(subtype)) {
-            return fetchXmlSource();
+        if (PNG.equals(subtype)) {
+            return ScreenshotHelper.takeScreenshot();
         }
         throw new UnknownStepSubtypeException(model, subtype, getSupportedSubtypes());
-    }
-
-    private String fetchXmlSource() {
-        refreshAccessibilityCache();
-        return new AccessibilityNodeInfoDumper(null, Collections.emptySet()).dumpToXml();
     }
 }

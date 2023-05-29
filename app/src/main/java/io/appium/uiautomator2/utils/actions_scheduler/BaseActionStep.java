@@ -18,8 +18,6 @@ package io.appium.uiautomator2.utils.actions_scheduler;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
 import io.appium.uiautomator2.model.api.scheduled.ScheduledActionStepExceptionModel;
 import io.appium.uiautomator2.model.api.scheduled.ScheduledActionStepModel;
 import io.appium.uiautomator2.model.api.scheduled.ScheduledActionStepResultModel;
@@ -45,7 +43,6 @@ public abstract class BaseActionStep {
         return (String) Objects.requireNonNull(model.payload.get(Constants.STEP_SUBTYPE));
     }
 
-    @Nullable
     protected abstract Object runInternalImplementation(String subtype) throws UnknownStepSubtypeException;
 
     public ScheduledActionStepResultModel run() {
