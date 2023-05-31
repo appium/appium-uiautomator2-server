@@ -123,7 +123,9 @@ public class AXWindowHelpers {
                 return root;
             }
         }
-        throw new UiAutomator2Exception("No active window root found");
+        throw new UiAutomator2Exception(
+                String.format("Unable to find the active topmost window associated with %s package",
+                        activeRootPackageName));
     }
 
     public static AccessibilityNodeInfo[] getCachedWindowRoots() {
