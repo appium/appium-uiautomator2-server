@@ -39,6 +39,7 @@ import java.util.Set;
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.IncludeExtrasInPageSource;
+import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
@@ -55,8 +56,6 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableS
 @TargetApi(18)
 public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElementSnapshot> {
     private final static String ROOT_NODE_NAME = "hierarchy";
-    // https://github.com/appium/appium/issues/12545
-    private final static int DEFAULT_MAX_DEPTH = 70;
     // The same order will be used for node attributes in xml page source
     public final static Attribute[] SUPPORTED_ATTRIBUTES = new Attribute[]{
             Attribute.INDEX, Attribute.PACKAGE, Attribute.CLASS, Attribute.TEXT,
@@ -95,7 +94,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
     private UiElementSnapshot(AccessibilityNodeInfo node, int index, int depth,
                               Set<Attribute> includedAttributes) {
-        this(node, index, depth, DEFAULT_MAX_DEPTH, includedAttributes);
+        this(node, index, depth, Settings.get(SnapshotMaxDepth.class).getValue(), includedAttributes);
     }
 
     private UiElementSnapshot(AccessibilityNodeInfo[] childNodes,
@@ -103,7 +102,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         super(null);
         this.depth = 0;
         this.index = 0;
-        this.maxDepth = DEFAULT_MAX_DEPTH;
+        this.maxDepth = Settings.get(SnapshotMaxDepth.class).getValue();
         Map<Attribute, Object> attribs = new LinkedHashMap<>();
         putAttribute(attribs, Attribute.INDEX, this.index);
         putAttribute(attribs, Attribute.CLASS, ROOT_NODE_NAME);

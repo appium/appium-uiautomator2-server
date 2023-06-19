@@ -18,9 +18,11 @@ package io.appium.uiautomator2.model.settings;
 
 public class SnapshotMaxDepth extends AbstractSetting<Integer> {
     public static final String SETTING_NAME = "snapshotMaxDepth";
+    // Set DEFAULT_VALUE as 70 to avoid StackOverflow from infinite recursion
+    // https://github.com/appium/appium/issues/12545
     // https://github.com/appium/appium/issues/12892
     private static final Integer DEFAULT_VALUE = 70;
-    private Integer snapshotMaxDepth = DEFAULT_VALUE;
+    private Integer value = DEFAULT_VALUE;
 
     public SnapshotMaxDepth() {
         super(Integer.class, SETTING_NAME);
@@ -28,7 +30,7 @@ public class SnapshotMaxDepth extends AbstractSetting<Integer> {
 
     @Override
     public Integer getValue() {
-        return snapshotMaxDepth;
+        return value;
     }
 
     @Override
@@ -38,6 +40,6 @@ public class SnapshotMaxDepth extends AbstractSetting<Integer> {
 
     @Override
     protected void apply(Integer value) {
-        snapshotMaxDepth = value;
+        this.value = value;
     }
 }
