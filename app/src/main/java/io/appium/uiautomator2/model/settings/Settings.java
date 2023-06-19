@@ -44,7 +44,8 @@ public enum Settings {
     MJPEG_SCALING_FACTOR(new MjpegScalingFactor()),
     MJPEG_SERVER_SCREENSHOT_QUALITY(new MjpegServerScreenshotQuality()),
     MJPEG_BILINEAR_FILTERING(new MjpegBilinearFiltering()),
-    USE_RESOURCES_FOR_ORIENTATION_DETECTION(new UseResourcesForOrientationDetection());
+    USE_RESOURCES_FOR_ORIENTATION_DETECTION(new UseResourcesForOrientationDetection()),
+    SNAPSHOT_MAX_DEPTH(new SnapshotMaxDepth());
 
     private final ISetting<?> setting;
 

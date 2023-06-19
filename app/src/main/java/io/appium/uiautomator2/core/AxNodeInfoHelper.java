@@ -37,6 +37,7 @@ import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
+import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -48,8 +49,6 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
  * This class contains static helper methods to work with {@link AccessibilityNodeInfo}
  */
 public class AxNodeInfoHelper {
-    // https://github.com/appium/appium/issues/12892
-    private static final int MAX_DEPTH = 70;
     private static final long UNDEFINED_NODE_ID =
             (((long) Integer.MAX_VALUE) << 32) | Integer.MAX_VALUE;
     private static final int UNDEFINED_WINDOW_ID = -1;
@@ -233,7 +232,7 @@ public class AxNodeInfoHelper {
     }
 
     /**
-     * Returns the node's bounds clipped to the size of the display, limited by the MAX_DEPTH
+     * Returns the node's bounds clipped to the size of the display, limited by the SnapshotMaxDepth
      * The implementation is borrowed from `getVisibleBounds` method of `UiObject2` class
      *
      * @return Empty rect if node is null, else a Rect containing visible bounds
@@ -263,7 +262,7 @@ public class AxNodeInfoHelper {
         Set<AccessibilityNodeInfo> ancestors = new HashSet<>();
         AccessibilityNodeInfo ancestor = node.getParent();
         // An erroneous situation is possible where node parent equals to the node itself
-        while (++currentDepth < MAX_DEPTH && ancestor != null && !ancestors.contains(ancestor)) {
+        while (++currentDepth < Settings.get(SnapshotMaxDepth.class).getValue() && ancestor != null && !ancestors.contains(ancestor)) {
             // If this ancestor is scrollable
             if (ancestor.isScrollable()) {
                 // Trim any portion of the bounds that are hidden by the non-visible portion of our
