@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.model.settings;
 
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
+
 public class SnapshotMaxDepth extends AbstractSetting<Integer> {
     public static final String SETTING_NAME = "snapshotMaxDepth";
     // Set DEFAULT_VALUE as 70 to avoid StackOverflow from infinite recursion
@@ -40,6 +42,13 @@ public class SnapshotMaxDepth extends AbstractSetting<Integer> {
 
     @Override
     protected void apply(Integer value) {
+        if (value == null || value < 10 || value > 200) {
+            throw new InvalidArgumentException(String.format(
+                "Invalid %s value specified, must be in range 10..200. %s was given",
+                SETTING_NAME,
+                value
+            ));
+        }
         this.value = value;
     }
 }
