@@ -21,7 +21,7 @@ public class SnapshotMaxDepth extends AbstractSetting<Integer> {
     // Set DEFAULT_VALUE as 70 to avoid StackOverflow from infinite recursion
     // https://github.com/appium/appium/issues/12545
     // https://github.com/appium/appium/issues/12892
-    private static final Integer DEFAULT_VALUE = 70;
+    private static final int DEFAULT_VALUE = 70;
     private Integer value = DEFAULT_VALUE;
 
     public SnapshotMaxDepth() {
