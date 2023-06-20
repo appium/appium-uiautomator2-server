@@ -262,7 +262,8 @@ public class AxNodeInfoHelper {
         Set<AccessibilityNodeInfo> ancestors = new HashSet<>();
         AccessibilityNodeInfo ancestor = node.getParent();
         // An erroneous situation is possible where node parent equals to the node itself
-        while (++currentDepth < Settings.get(SnapshotMaxDepth.class).getValue() && ancestor != null && !ancestors.contains(ancestor)) {
+        while (++currentDepth < Settings.get(SnapshotMaxDepth.class).getValue()
+                && ancestor != null && !ancestors.contains(ancestor)) {
             // If this ancestor is scrollable
             if (ancestor.isScrollable()) {
                 // Trim any portion of the bounds that are hidden by the non-visible portion of our
