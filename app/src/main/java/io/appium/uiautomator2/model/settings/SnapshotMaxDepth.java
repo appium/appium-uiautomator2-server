@@ -24,6 +24,8 @@ public class SnapshotMaxDepth extends AbstractSetting<Integer> {
     // https://github.com/appium/appium/issues/12545
     // https://github.com/appium/appium/issues/12892
     private static final int DEFAULT_VALUE = 70;
+    private static final int MIN_DEPTH = 10;
+    private static final int MAX_DEPTH = 500;
     private Integer value = DEFAULT_VALUE;
 
     public SnapshotMaxDepth() {
@@ -42,10 +44,12 @@ public class SnapshotMaxDepth extends AbstractSetting<Integer> {
 
     @Override
     protected void apply(Integer value) {
-        if (value == null || value < 10 || value > 200) {
+        if (value == null || value < MIN_DEPTH || value > MAX_DEPTH) {
             throw new InvalidArgumentException(String.format(
-                "Invalid %s value specified, must be in range 10..200. %s was given",
+                "Invalid %s value specified, must be in range %s..%s. %s was given",
                 SETTING_NAME,
+                MIN_DEPTH,
+                MAX_DEPTH,
                 value
             ));
         }
