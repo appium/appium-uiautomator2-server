@@ -24,7 +24,7 @@ public class SnapshotMaxDepth extends AbstractSetting<Integer> {
     // https://github.com/appium/appium/issues/12545
     // https://github.com/appium/appium/issues/12892
     private static final int DEFAULT_VALUE = 70;
-    private static final int MIN_DEPTH = 10;
+    private static final int MIN_DEPTH = 1;
     private static final int MAX_DEPTH = 500;
     private Integer value = DEFAULT_VALUE;
 
