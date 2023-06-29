@@ -113,14 +113,20 @@ public class ActionsTokenizer {
 
     private static long extractDuration(final W3CItemModel item, final W3CGestureModel gesture) {
         if (gesture.duration == null) {
-            throw new ActionsParseException(String.format(
+            throw new ActionsParseException(
+                String.format(
                     "Missing %s key for action item '%s' of action with id '%s'",
-                    ACTION_ITEM_DURATION_KEY, gesture, item.id));
+                    ACTION_ITEM_DURATION_KEY, gesture.type, item.id
+                )
+            );
         }
         if (gesture.duration < 0) {
-            throw new ActionsParseException(String.format(
+            throw new ActionsParseException(
+                String.format(
                     "%s key cannot be negative for action item '%s' of action with id '%s'",
-                    ACTION_ITEM_DURATION_KEY, gesture, item.id));
+                    ACTION_ITEM_DURATION_KEY, gesture.type, item.id
+                )
+            );
         }
         return gesture.duration;
     }
@@ -176,6 +182,10 @@ public class ActionsTokenizer {
         return MotionEvent.TOOL_TYPE_FINGER;
     }
 
+    private static String gestureToString(W3CGestureModel gesture, int index) {
+        return String.format("'%s' #%s", gesture.type, index + 1);
+    }
+
     private static MotionEvent.PointerCoords extractElementCoordinates(
             final String actionId, final W3CGestureModel gesture, final Object originValue) {
         String elementId = null;
@@ -190,9 +200,12 @@ public class ActionsTokenizer {
             elementId = new ElementModel((Map<String, Object>) originValue).getUnifiedId();
         }
         if (elementId == null) {
-            throw new ActionsParseException(String.format(
+            throw new ActionsParseException(
+                String.format(
                     "An unknown element '%s' is set for action item '%s' of action '%s'",
-                    originValue, gesture, actionId));
+                    originValue, gesture.type, actionId
+                )
+            );
         }
         final MotionEvent.PointerCoords result = new MotionEvent.PointerCoords();
         Rect bounds;
@@ -201,14 +214,20 @@ public class ActionsTokenizer {
             final AndroidElement element = session.getElementsCache().get(elementId);
             bounds = element.getBounds();
             if (bounds.width() == 0 || bounds.height() == 0) {
-                throw new ActionsParseException(String.format(
-                        "The element with id '%s' has zero width/height in the action item '%s' of action '%s'",
-                        elementId, gesture, actionId));
+                throw new ActionsParseException(
+                    String.format(
+                        "The element with id '%s' has zero width/height in the action item %s of action '%s'",
+                        elementId, gesture.type, actionId
+                    )
+                );
             }
         } catch (NullPointerException e) {
-            throw new ActionsParseException(String.format(
+            throw new ActionsParseException(
+                String.format(
                     "An unknown element id '%s' is set for the action item '%s' of action '%s'",
-                    elementId, gesture, actionId));
+                    elementId, gesture.type, actionId
+                )
+            );
         }
         // https://w3c.github.io/webdriver/webdriver-spec.html#pointer-actions
         // > Let x element and y element be the result of calculating the in-view center point of element.
@@ -229,18 +248,24 @@ public class ActionsTokenizer {
                                                                 final List<W3CGestureModel> gestures,
                                                                 final int itemIdx) {
         if (itemIdx < 0) {
-            throw new ActionsParseException(String.format(
+            throw new ActionsParseException(
+                String.format(
                     "The first item of action '%s' cannot define HOVER move, " +
-                            "because its start coordinates are not set", actionId));
+                    "because its start coordinates are not set", actionId
+                )
+            );
         }
         final W3CGestureModel gesture = gestures.get(itemIdx);
         if (!ACTION_ITEM_TYPE_POINTER_MOVE.equals(gesture.type)) {
             if (itemIdx > 0) {
                 return extractCoordinates(actionId, gestures, itemIdx - 1);
             }
-            throw new ActionsParseException(String.format(
-                    "Action item '%s' of action '%s' should be preceded with at least one item " +
-                            "with coordinates", gesture, actionId));
+            throw new ActionsParseException(
+                String.format(
+                    "Action item %s of action '%s' should be preceded with at least one item " +
+                    "with coordinates", gestureToString(gesture, itemIdx), actionId
+                )
+            );
         }
         Object origin = gesture.origin == null ? ACTION_ITEM_ORIGIN_VIEWPORT : gesture.origin;
         final MotionEvent.PointerCoords result = new MotionEvent.PointerCoords();
@@ -249,9 +274,12 @@ public class ActionsTokenizer {
         if (origin instanceof String) {
             if (origin.equals(ACTION_ITEM_ORIGIN_VIEWPORT)) {
                 if (gesture.x == null || gesture.y == null) {
-                    throw new ActionsParseException(String.format(
-                            "Both coordinates must be be set for action item '%s' of action '%s'",
-                            gesture, actionId));
+                    throw new ActionsParseException(
+                        String.format(
+                            "Both coordinates must be be set for action item %s of action '%s'",
+                            gestureToString(gesture, itemIdx), actionId
+                        )
+                    );
                 }
                 result.x = gesture.x.floatValue();
                 result.y = gesture.y.floatValue();
@@ -269,9 +297,12 @@ public class ActionsTokenizer {
                     }
                     return result;
                 }
-                throw new ActionsParseException(String.format(
-                        "Action item '%s' of action '%s' should be preceded with at least one item " +
-                                "containing absolute coordinates", gesture, actionId));
+                throw new ActionsParseException(
+                    String.format(
+                        "Action item %s of action '%s' should be preceded with at least one item " +
+                        "containing absolute coordinates", gestureToString(gesture, itemIdx), actionId
+                    )
+                );
             }
         }
         return extractElementCoordinates(actionId, gesture, origin);
@@ -300,9 +331,12 @@ public class ActionsTokenizer {
         long timeDelta = 0;
         for (final W3CGestureModel gesture : gestures) {
             if (!ACTION_ITEM_TYPE_PAUSE.equals(gesture.type)) {
-                throw new ActionsParseException(String.format(
+                throw new ActionsParseException(
+                    String.format(
                         "Unexpected action item %s '%s' in action with id '%s'",
-                        ACTION_ITEM_TYPE_KEY, gesture.type, item.id));
+                        ACTION_ITEM_TYPE_KEY, gesture.type, item.id
+                    )
+                );
             }
             timeDelta += alignDuration(extractDuration(item, gesture));
             recordEventParams(timeDelta, null);
@@ -323,14 +357,20 @@ public class ActionsTokenizer {
                     chainEntryPointDelta = timeDelta;
                 case ACTION_ITEM_TYPE_KEY_UP:
                     if (gesture.value == null) {
-                        throw new ActionsParseException(String.format(
+                        throw new ActionsParseException(
+                            String.format(
                                 "Missing %s key for action item '%s' of action with id '%s'",
-                                ACTION_ITEM_VALUE_KEY, gesture, item.id));
+                                ACTION_ITEM_VALUE_KEY, gesture.type, item.id
+                            )
+                        );
                     }
                     if (gesture.value.isEmpty()) {
-                        throw new ActionsParseException(String.format(
+                        throw new ActionsParseException(
+                            String.format(
                                 "%s key cannot be empty for action item '%s' of action with id '%s'",
-                                ACTION_ITEM_VALUE_KEY, gesture, item.id));
+                                ACTION_ITEM_VALUE_KEY, gesture.type, item.id
+                            )
+                        );
                     }
                     final KeyInputEventParams evtParams = new KeyInputEventParams(
                             chainEntryPointDelta,
@@ -343,9 +383,12 @@ public class ActionsTokenizer {
                     chainEntryPointDelta = timeDelta;
                     break;
                 default:
-                    throw new ActionsParseException(String.format(
+                    throw new ActionsParseException(
+                        String.format(
                             "Unexpected action item %s '%s' in action with id '%s'",
-                            ACTION_ITEM_TYPE_KEY, gesture.type, item.id));
+                            ACTION_ITEM_TYPE_KEY, gesture.type, item.id
+                        )
+                    );
             }
         }
     }
@@ -353,13 +396,19 @@ public class ActionsTokenizer {
     private static void assertPointersCount(int toolType, int pointerIndex) {
         if (toolType == MotionEvent.TOOL_TYPE_MOUSE && pointerIndex > 0) {
             throw new ActionsParseException(
-                    String.format("No more that one simultaneous pointer is supported for %s %s",
-                            PARAMETERS_KEY_POINTER_TYPE, POINTER_TYPE_MOUSE));
+                String.format(
+                    "No more that one simultaneous pointer is supported for %s %s",
+                    PARAMETERS_KEY_POINTER_TYPE, POINTER_TYPE_MOUSE
+                )
+            );
         }
         if (toolType == MotionEvent.TOOL_TYPE_STYLUS && pointerIndex > 0) {
             throw new ActionsParseException(
-                    String.format("No more that one simultaneous pointer is supported for %s %s",
-                            PARAMETERS_KEY_POINTER_TYPE, POINTER_TYPE_PEN));
+                String.format(
+                    "No more that one simultaneous pointer is supported for %s %s",
+                    PARAMETERS_KEY_POINTER_TYPE, POINTER_TYPE_PEN
+                )
+            );
         }
     }
 
@@ -379,6 +428,7 @@ public class ActionsTokenizer {
         boolean isHovering = false;
         int recentButton = 0;
         final List<W3CGestureModel> gestures = item.actions;
+        boolean isFirstPointerMoveAction = true;
         for (int actionItemIdx = 0; actionItemIdx < gestures.size(); actionItemIdx++) {
             final W3CGestureModel gesture = gestures.get(actionItemIdx);
             switch (gesture.type) {
@@ -389,9 +439,12 @@ public class ActionsTokenizer {
                 break;
                 case ACTION_ITEM_TYPE_POINTER_DOWN: {
                     if (isPointerDown || recentDownDelta == timeDelta) {
-                        throw new ActionsParseException(String.format(
+                        throw new ActionsParseException(
+                            String.format(
                                 "You cannot perform two or more '%s' actions without a pause between them at " +
-                                        "%sms in '%s' chain", gesture.type, timeDelta, actionId));
+                                        "%sms in '%s' chain", gesture.type, timeDelta, actionId
+                            )
+                        );
                     }
 
                     chainEntryPointDelta = timeDelta;
@@ -406,9 +459,12 @@ public class ActionsTokenizer {
                     // Due to issue #470, removed restriction to demand PointerDown before PointerUp
 
                     if (recentUpDelta == timeDelta) {
-                        throw new ActionsParseException(String.format(
+                        throw new ActionsParseException(
+                            String.format(
                                 "You cannot perform two or more '%s' actions without a pause between them at " +
-                                        "%sms in '%s' chain", gesture.type, timeDelta, actionId));
+                                        "%sms in '%s' chain", gesture.type, timeDelta, actionId
+                            )
+                        );
                     }
 
                     recentButton = extractButton(gesture, props.toolType);
@@ -420,16 +476,16 @@ public class ActionsTokenizer {
                     recentUpDelta = timeDelta;
                 }
                 break;
-                case ACTION_ITEM_TYPE_POINTER_MOVE: {
+                case ACTION_ITEM_TYPE_POINTER_MOVE:
+                try {
                     long duration = alignDuration(extractDuration(item, gesture));
                     if (duration < EVENT_INJECTION_DELAY_MS) {
                         break;
                     }
-                    if (actionItemIdx == 0) {
-                        // Selenium client sets the default move duration
-                        // to 250 ms, but it won't work if this is the very first
+                    if (isFirstPointerMoveAction
+                            && (gesture.origin == null || ACTION_ITEM_ORIGIN_VIEWPORT.equals(gesture.origin))) {
+                        // Pointer move won't work if this is the very first
                         // action item, since gesture start coordinate is undefined.
-                        // It would be better to set the default duration to zero.
                         timeDelta += duration;
                         recordEventParams(timeDelta, null);
                         break;
@@ -475,12 +531,17 @@ public class ActionsTokenizer {
                         timeDelta += EVENT_INJECTION_DELAY_MS;
                     }
                     timeDelta = startDelta + duration;
+                } finally {
+                    isFirstPointerMoveAction = false;
                 }
                 break;
                 default:
-                    throw new ActionsParseException(String.format(
+                    throw new ActionsParseException(
+                        String.format(
                             "Unexpected action item %s '%s' in action with id '%s'",
-                            ACTION_ITEM_TYPE_KEY, gesture.type, actionId));
+                            ACTION_ITEM_TYPE_KEY, gesture.type, actionId
+                        )
+                    );
             }
         }
     }
