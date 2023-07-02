@@ -20,17 +20,14 @@ import android.view.KeyEvent;
 
 import java.util.List;
 
-import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.api.touch.w3c.W3CActionsModel;
 import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
-import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.w3c.ActionTokens;
 import io.appium.uiautomator2.utils.w3c.ActionsExecutor;
-import io.appium.uiautomator2.utils.w3c.ActionsParseException;
 import io.appium.uiautomator2.utils.w3c.ActionsPreprocessor;
 import io.appium.uiautomator2.utils.w3c.ActionsTokenizer;
 
@@ -75,21 +72,16 @@ public class W3CActions extends SafeRequestHandler {
      */
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        try {
-            final List<W3CItemModel> actions = actionsPreprocessor.preprocess(
-                    toModel(request, W3CActionsModel.class).actions
-            );
-
-            final ActionTokens actionTokens = actionsTokenizer.tokenize(actions);
-            if (new ActionsExecutor(actionTokens).execute()) {
-                return new AppiumResponse(getSessionId(request));
-            }
-            throw new InvalidElementStateException(
-                    "Unable to perform W3C actions. Check the logcat output " +
-                            "for possible error reports and make sure your input actions chain is valid.");
-        } catch (ActionsParseException e) {
-            Logger.error("Exception while reading JSON: ", e);
-            throw new InvalidArgumentException("Exception while reading JSON", e);
+        final List<W3CItemModel> actions = actionsPreprocessor.preprocess(
+                toModel(request, W3CActionsModel.class).actions
+        );
+        final ActionTokens actionTokens = actionsTokenizer.tokenize(actions);
+        if (new ActionsExecutor(actionTokens).execute()) {
+            return new AppiumResponse(getSessionId(request));
         }
+        throw new InvalidElementStateException(
+            "Unable to perform W3C actions. Check the logcat output " +
+            "for possible error reports and make sure your input actions chain is valid."
+        );
     }
 }

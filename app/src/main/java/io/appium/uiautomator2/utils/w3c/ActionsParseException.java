@@ -16,7 +16,9 @@
 
 package io.appium.uiautomator2.utils.w3c;
 
-public class ActionsParseException extends RuntimeException {
+import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
+
+public class ActionsParseException extends InvalidArgumentException {
     ActionsParseException(String message) {
         super(message);
     }

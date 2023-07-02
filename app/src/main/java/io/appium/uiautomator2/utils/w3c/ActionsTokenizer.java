@@ -250,8 +250,7 @@ public class ActionsTokenizer {
         if (itemIdx < 0) {
             throw new ActionsParseException(
                 String.format(
-                    "The first item of action '%s' cannot define HOVER move, " +
-                    "because its start coordinates are not set", actionId
+                    "The first item of the action '%s' must only use absolute coordinates", actionId
                 )
             );
         }
@@ -262,8 +261,8 @@ public class ActionsTokenizer {
             }
             throw new ActionsParseException(
                 String.format(
-                    "Action item %s of action '%s' should be preceded with at least one item " +
-                    "with coordinates", gestureToString(gesture, itemIdx), actionId
+                    "Action item %s of the action '%s' should be preceded with at least one item " +
+                    "having absolute coordinates", gestureToString(gesture, itemIdx), actionId
                 )
             );
         }
@@ -482,10 +481,10 @@ public class ActionsTokenizer {
                     if (duration < EVENT_INJECTION_DELAY_MS) {
                         break;
                     }
-                    if (isFirstPointerMoveAction
-                            && (gesture.origin == null || ACTION_ITEM_ORIGIN_VIEWPORT.equals(gesture.origin))) {
-                        // Pointer move won't work if this is the very first
-                        // action item, since gesture start coordinate is undefined.
+                    if (isFirstPointerMoveAction && !ACTION_ITEM_ORIGIN_POINTER.equals(gesture.origin)) {
+                        // Assume we want to set action start coordinates here,
+                        // because we don't know what the actual screen cursor position is
+                        // before the action starts
                         timeDelta += duration;
                         recordEventParams(timeDelta, null);
                         break;
