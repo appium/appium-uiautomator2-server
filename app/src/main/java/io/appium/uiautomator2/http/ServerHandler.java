@@ -39,6 +39,9 @@ import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class ServerHandler extends ChannelInboundHandlerAdapter {
+
+    private static final String LEGACY_URI_PREFIX = "/wd/hub";
+
     private final List<IHttpServlet> httpHandlers;
 
     public ServerHandler(List<IHttpServlet> handlers) {
@@ -62,8 +65,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
         Logger.info(String.format("channel read: %s %s", request.getMethod().toString(), request.getUri()));
 
-        if (request.getUri().startsWith("/wd/hub")) {
-            request.setUri(request.getUri().substring(7));
+        // Check if the request URI starts with the legacy prefix, and remove it if present
+        // This ensures compatibility with clients using older versions
+        if (request.getUri().startsWith(LEGACY_URI_PREFIX)) {
+            request.setUri(request.getUri().substring(LEGACY_URI_PREFIX.length()));
         }
 
         IHttpRequest httpRequest = new NettyHttpRequest(request);
