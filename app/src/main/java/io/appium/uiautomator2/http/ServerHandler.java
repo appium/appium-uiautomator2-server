@@ -62,6 +62,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
         Logger.info(String.format("channel read: %s %s", request.getMethod().toString(), request.getUri()));
 
+        if (request.getUri().startsWith("/wd/hub")) {
+            request.setUri(request.getUri().substring(7));
+        }
+
         IHttpRequest httpRequest = new NettyHttpRequest(request);
         IHttpResponse httpResponse = new NettyHttpResponse(response);
         for (IHttpServlet handler : httpHandlers) {
