@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
+import android.view.accessibility.AccessibilityWindowInfo;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
@@ -252,8 +253,9 @@ public class AxNodeInfoHelper {
 
         // Trim any portion of the bounds that are outside the window
         Rect window = new Rect();
-        if (node.getWindow() != null) {
-            node.getWindow().getBoundsInScreen(window);
+        AccessibilityWindowInfo nodeWindow = node.getWindow();
+        if (nodeWindow != null) {
+            nodeWindow.getBoundsInScreen(window);
             ret.intersect(window);
         }
 
