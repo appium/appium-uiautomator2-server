@@ -42,7 +42,7 @@
     "test": "./gradlew testServerDebugUnitTest"
   },
   "devDependencies": {
-    "@appium/eslint-config-appium": "^6.0.0",
+    "@appium/eslint-config-appium": "^8.0.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "android-apidemos": "^4.0.0",
@@ -50,7 +50,7 @@
     "bluebird": "^3.7.2",
     "conventional-changelog-conventionalcommits": "^7.0.1",
     "fancy-log": "^2.0.0",
-    "eslint": "^7.32.0",
+    "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-promise": "^6.0.0",
     "semantic-release": "^22.0.5",
