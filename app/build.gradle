@@ -87,7 +87,7 @@ dependencies {
     //noinspection GradleDependency
     implementation 'com.ibm.icu:icu4j:60.2'
     unmock 'org.robolectric:android-all:7.1.0_r7-robolectric-0'
-    testImplementation 'androidx.test.ext:junit:1.1.3'
+    testImplementation 'androidx.test.ext:junit:1.1.5'
     //noinspection GradleDependency
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20190722'
@@ -96,7 +96,7 @@ dependencies {
     testImplementation 'org.powermock:powermock-module-junit4-rule:2.0.9'
     testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
     testImplementation 'org.robolectric:robolectric:4.5.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'com.squareup.okhttp:okhttp:2.7.5'
     androidTestImplementation 'androidx.test.espresso:espresso-web:3.4.0'
     //noinspection GradleDependency
