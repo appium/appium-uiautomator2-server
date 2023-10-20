@@ -74,7 +74,7 @@ dependencies {
     // https://download.eclipse.org/oomph/archive/reports/download.eclipse.org/releases/2021-09/index/org.eclipse.wst.xml.xpath2.processor_2.1.101.v201903222120.html
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    implementation 'androidx.test:core:1.4.0'
+    implementation 'androidx.test:core:1.5.0'
     implementation 'androidx.test:runner:1.4.0'
     implementation 'com.google.code.gson:gson:2.8.9'
     //noinspection GradleDependency
