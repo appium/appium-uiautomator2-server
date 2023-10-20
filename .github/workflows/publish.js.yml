@@ -15,10 +15,10 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: lts/*
-    - name: Set up JDK 11
+    - name: Set up JDK
       uses: actions/setup-java@v2
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
         cache: gradle
     - run: npm install --no-package-lock
