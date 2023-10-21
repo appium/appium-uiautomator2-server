@@ -28,8 +28,6 @@ import android.view.Display;
 
 import androidx.annotation.Nullable;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -95,7 +93,7 @@ public class ScreenshotHelper {
             try {
                 ParcelFileDescriptor pfd = automation.executeShellCommand("screencap -p");
                 try (InputStream is = new FileInputStream(pfd.getFileDescriptor())) {
-                    byte[] pngBytes = IOUtils.toByteArray(is);
+                    byte[] pngBytes = StringHelpers.inputStreamToByteArray(is);
                     if (pngBytes.length <= PNG_MAGIC_LENGTH) {
                         throw new IllegalStateException("screencap returned an invalid response");
                     }

@@ -19,7 +19,15 @@ package io.appium.uiautomator2.utils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+
 public class StringHelpers {
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
+    private static final int EOF = -1;
+
     public static String abbreviate(@Nullable String str, int maxLen) {
         if (str == null) {
             return null;
@@ -68,8 +76,27 @@ public class StringHelpers {
     @NonNull
     public static String pluralize(long count, String singularWord, boolean includeCount) {
         if (count == 1) {
-            return includeCount ? String.format("%s %s", count, singularWord) : String.valueOf(singularWord);
+            return includeCount
+                    ? String.format("%s %s", count, singularWord)
+                    : String.valueOf(singularWord);
         }
-        return includeCount ? String.format("%s %ss", count, singularWord) : String.format("%ss", singularWord);
+        return includeCount
+                ? String.format("%s %ss", count, singularWord)
+                : String.format("%ss", singularWord);
+    }
+
+    public static byte[] inputStreamToByteArray(InputStream input) throws IOException {
+        try (ByteArrayOutputStream result = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            int length;
+            while ((length = input.read(buffer)) != EOF) {
+                result.write(buffer, 0, length);
+            }
+            return result.toByteArray();
+        }
+    }
+
+    public static String inputStramToString(InputStream input, Charset encoding) throws IOException {
+        return new String(inputStreamToByteArray(input), encoding);
     }
 }

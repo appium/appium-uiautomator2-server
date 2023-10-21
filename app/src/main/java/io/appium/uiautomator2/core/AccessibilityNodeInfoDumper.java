@@ -27,7 +27,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
 import org.eclipse.wst.xml.xpath2.api.Item;
 import org.eclipse.wst.xml.xpath2.api.ResultSequence;
@@ -48,6 +47,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -244,7 +244,7 @@ public class AccessibilityNodeInfoDumper {
             throw new UiAutomator2Exception(e);
         }
         try (InputStream xmlStream = toStream(false)) {
-            return IOUtils.toString(xmlStream, XML_ENCODING);
+            return StringHelpers.inputStramToString(xmlStream, Charset.forName(XML_ENCODING));
         } catch (IOException e) {
             throw new UiAutomator2Exception(e);
         } finally {
