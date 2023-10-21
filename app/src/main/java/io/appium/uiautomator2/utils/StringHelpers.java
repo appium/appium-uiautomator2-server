@@ -96,7 +96,7 @@ public class StringHelpers {
         }
     }
 
-    public static String inputStramToString(InputStream input, Charset encoding) throws IOException {
+    public static String inputStreamToString(InputStream input, Charset encoding) throws IOException {
         return new String(inputStreamToByteArray(input), encoding);
     }
 }

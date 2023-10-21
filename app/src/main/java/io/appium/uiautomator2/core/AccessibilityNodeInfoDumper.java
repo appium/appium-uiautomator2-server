@@ -244,7 +244,7 @@ public class AccessibilityNodeInfoDumper {
             throw new UiAutomator2Exception(e);
         }
         try (InputStream xmlStream = toStream(false)) {
-            return StringHelpers.inputStramToString(xmlStream, Charset.forName(XML_ENCODING));
+            return StringHelpers.inputStreamToString(xmlStream, Charset.forName(XML_ENCODING));
         } catch (IOException e) {
             throw new UiAutomator2Exception(e);
         } finally {
