@@ -100,7 +100,7 @@ dependencies {
     implementation 'com.github.vbmacher:java-cup-runtime:11b-20160615-1'
     //noinspection GradleDependency
     implementation 'com.ibm.icu:icu4j:60.2'
-    testImplementation 'androidx.test.ext:junit:1.1.3'
+    testImplementation 'androidx.test.ext:junit:1.1.5'
     //noinspection GradleDependency
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.json:json:20231013'
@@ -109,7 +109,7 @@ dependencies {
     testImplementation 'org.powermock:powermock-module-junit4-rule:2.0.9'
     testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
     testImplementation 'org.robolectric:robolectric:4.10.3'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'com.squareup.okhttp:okhttp:2.7.5'
     //noinspection GradleDependency
     androidTestImplementation 'junit:junit:4.12'
