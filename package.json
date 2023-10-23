@@ -51,7 +51,7 @@
     "conventional-changelog-conventionalcommits": "^7.0.1",
     "fancy-log": "^2.0.0",
     "eslint": "^8.40.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "semantic-release": "^22.0.5",
     "semver": "^7.3.7"
