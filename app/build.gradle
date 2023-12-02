@@ -69,10 +69,7 @@ android {
         }
     }
     packagingOptions {
-        resources {
-            excludes += ['META-INF/maven/com.google.guava/guava/pom.properties', 'META-INF/maven/com.google.guava/guava/pom.xml']
-        }
-        pickFirst 'META-INF/INDEX.LIST'
+        pickFirst 'META-INF/*'
     }
     lint {
         abortOnError false
