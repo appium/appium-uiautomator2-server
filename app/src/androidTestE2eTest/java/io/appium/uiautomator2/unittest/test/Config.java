@@ -20,7 +20,7 @@ import io.appium.uiautomator2.server.ServerConfig;
 public class Config {
     public static final Long NETTY_STATUS_TIMEOUT = 32_000L;
     public static final Long EXPLICIT_TIMEOUT = 16_000L;
-    public static final Long IMPLICIT_TIMEOUT = 8_000L;
+    public static final Long IMPLICIT_TIMEOUT = 15_000L;
     public static final Long APP_LAUNCH_TIMEOUT = 32_000L;
     public static final int DEFAULT_POLLING_INTERVAL = 300;
     public static final String APP_PKG = "io.appium.android.apis";
