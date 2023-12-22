@@ -97,7 +97,7 @@ dependencies {
     implementation 'net.gcardone.junidecode:junidecode:0.4.1'
     // The next three dependencies are required for XPath search to work
     implementation 'xerces:xercesImpl:2.12.2'
-    implementation 'com.github.vbmacher:java-cup-runtime:11b-20160615-2'
+    implementation 'com.github.vbmacher:java-cup-runtime:11b-20160615-3'
     //noinspection GradleDependency
     implementation 'com.ibm.icu:icu4j:60.2'
     testImplementation 'junit:junit:4.13.2'
