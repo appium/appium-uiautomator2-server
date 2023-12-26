@@ -1,3 +1,10 @@
+## [5.13.0](https://github.com/appium/appium-uiautomator2-server/compare/v5.12.18...v5.13.0) (2023-12-26)
+
+
+### Features
+
+* bump targetSdkVersion from 30 to 31, and to 32 ([#582](https://github.com/appium/appium-uiautomator2-server/issues/582)) ([1b0563a](https://github.com/appium/appium-uiautomator2-server/commit/1b0563a1d72a442602083c3121bac8fca4ca1fd8))
+
 ## [5.12.18](https://github.com/appium/appium-uiautomator2-server/compare/v5.12.17...v5.12.18) (2023-12-23)
 
 
