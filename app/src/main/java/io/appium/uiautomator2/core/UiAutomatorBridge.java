@@ -15,7 +15,11 @@
  */
 package io.appium.uiautomator2.core;
 
+import android.app.Instrumentation;
+import android.app.Service;
 import android.app.UiAutomation;
+import android.hardware.display.DisplayManager;
+import android.os.Build;
 import android.view.Display;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -54,6 +58,14 @@ public class UiAutomatorBridge {
     }
 
     public Display getDefaultDisplay() throws UiAutomator2Exception {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Instrumentation instrumentation = (Instrumentation) invoke(getMethod(UiDevice.class, "getInstrumentation"), Device.getUiDevice());
+            DisplayManager displayManager = (DisplayManager) instrumentation.getContext().getSystemService(Service.DISPLAY_SERVICE);
+            return displayManager.getDisplay(Display.DEFAULT_DISPLAY);
+        }
+
+        // "getDefaultDisplay" called inside the UiDevice calls
+        // https://developer.android.com/reference/android/view/WindowManager#getDefaultDisplay()
         return (Display) invoke(getMethod(UiDevice.class, "getDefaultDisplay"), Device.getUiDevice());
     }
 }
