@@ -15,7 +15,6 @@
  */
 package io.appium.uiautomator2.core;
 
-import android.app.Instrumentation;
 import android.app.Service;
 import android.app.UiAutomation;
 import android.hardware.display.DisplayManager;
@@ -30,6 +29,8 @@ import io.appium.uiautomator2.utils.Device;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
+
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 public class UiAutomatorBridge {
     private static UiAutomatorBridge INSTANCE = null;
@@ -59,8 +60,9 @@ public class UiAutomatorBridge {
 
     public Display getDefaultDisplay() throws UiAutomator2Exception {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            Instrumentation instrumentation = (Instrumentation) invoke(getMethod(UiDevice.class, "getInstrumentation"), Device.getUiDevice());
-            DisplayManager displayManager = (DisplayManager) instrumentation.getContext().getSystemService(Service.DISPLAY_SERVICE);
+            // Device.getUiDevice gets the instance via 'androidx.test.platform.app.InstrumentationRegistry.getInstrumentation'
+            // context, thus here directly calls the method.
+            DisplayManager displayManager = (DisplayManager) getInstrumentation().getContext().getSystemService(Service.DISPLAY_SERVICE);
             return displayManager.getDisplay(Display.DEFAULT_DISPLAY);
         }
 
