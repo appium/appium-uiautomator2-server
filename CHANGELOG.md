@@ -1,3 +1,10 @@
+## [5.14.0](https://github.com/appium/appium-uiautomator2-server/compare/v5.13.0...v5.14.0) (2023-12-28)
+
+
+### Features
+
+* get default display via displaymanager ([#585](https://github.com/appium/appium-uiautomator2-server/issues/585)) ([5c731ce](https://github.com/appium/appium-uiautomator2-server/commit/5c731cee9c6759c157fa8098185f0ddbf2019505))
+
 ## [5.13.0](https://github.com/appium/appium-uiautomator2-server/compare/v5.12.18...v5.13.0) (2023-12-26)
 
 
