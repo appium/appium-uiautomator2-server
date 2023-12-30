@@ -1,3 +1,10 @@
+## [5.15.1](https://github.com/appium/appium-uiautomator2-server/compare/v5.15.0...v5.15.1) (2023-12-30)
+
+
+### Miscellaneous Chores
+
+* use newer gradle ([#586](https://github.com/appium/appium-uiautomator2-server/issues/586)) ([5ae65f9](https://github.com/appium/appium-uiautomator2-server/commit/5ae65f9009b3d1eb8f5b13d2531f88e8860cb6aa))
+
 ## [5.15.0](https://github.com/appium/appium-uiautomator2-server/compare/v5.14.0...v5.15.0) (2023-12-29)
 
 
