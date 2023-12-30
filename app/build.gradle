@@ -14,11 +14,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'de.mobilej.unmock'
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId 'io.appium.uiautomator2'
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 148
         archivesBaseName = 'appium-uiautomator2'
         /**
