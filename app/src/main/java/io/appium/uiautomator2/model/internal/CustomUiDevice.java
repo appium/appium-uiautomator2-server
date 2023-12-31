@@ -99,19 +99,21 @@ public class CustomUiDevice {
             // FIXME: The 'selector' should be proper By instance as non-null in the interaction.
             Logger.debug("FIXME: selector argument should not be null in androidx.test.uiautomator:uiautomator:2.3.0");
         }
-        if (node == null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            // TODO: remove this comment after upgrading to androidx.test.uiautomator:uiautomator:2.3.0
-            // UiObject2 with androidx.test.uiautomator:uiautomator:2.3.0 has below code to crate the instance,
-            // thus if the node was None, it should create an empty element for the AccessibilityNodeInfo.
-            //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            //        AccessibilityWindowInfo window = UiObject2.Api21Impl.getWindow(cachedNode);
-            //        mDisplayId = window == null ? Display.DEFAULT_DISPLAY : UiObject2.Api30Impl.getDisplayId(window);
-            //    } else {
-            //        mDisplayId = Display.DEFAULT_DISPLAY;
-            //    }
-            node = new AccessibilityNodeInfo();
-        }
-        Object[] constructorParams = {getUiDevice(), selector, node};
+
+        // TODO: remove this comment after upgrading to androidx.test.uiautomator:uiautomator:2.3.0
+        // UiObject2 with androidx.test.uiautomator:uiautomator:2.3.0 has below code to crate the instance,
+        // thus if the node was None, it should create an empty element for the AccessibilityNodeInfo.
+        //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        //        AccessibilityWindowInfo window = UiObject2.Api21Impl.getWindow(cachedNode);
+        //        mDisplayId = window == null ? Display.DEFAULT_DISPLAY : UiObject2.Api30Impl.getDisplayId(window);
+        //    } else {
+        //        mDisplayId = Display.DEFAULT_DISPLAY;
+        //    }
+        AccessibilityNodeInfo accessibilityNodeInfo =
+                (node == null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
+                        ?  new AccessibilityNodeInfo()
+                        : node;
+        Object[] constructorParams = {getUiDevice(), selector, accessibilityNodeInfo};
         try {
             return (UiObject2) uiObject2Constructor.newInstance(constructorParams);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
