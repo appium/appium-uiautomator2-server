@@ -111,8 +111,8 @@ public class CustomUiDevice {
         //    }
         AccessibilityNodeInfo accessibilityNodeInfo =
                 (node == null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
-                        ?  new AccessibilityNodeInfo()
-                        : node;
+                ?  new AccessibilityNodeInfo()
+                : node;
         Object[] constructorParams = {getUiDevice(), selector, accessibilityNodeInfo};
         try {
             return (UiObject2) uiObject2Constructor.newInstance(constructorParams);
