@@ -58,27 +58,17 @@ public class BySelectorHelper {
         result = result == null
                 ? By.checkable(node.isCheckable())
                 : result.checkable(node.isCheckable());
-        result = result == null
-                ? By.clickable(node.isClickable())
-                : result.clickable(node.isClickable());
-        result = result == null
-                ? By.longClickable(node.isLongClickable())
-                : result.longClickable(node.isLongClickable());
-        result = result == null
-                ? By.focusable(node.isFocusable())
-                : result.focusable(node.isFocusable());
-        result = result == null
-                ? By.scrollable(node.isScrollable())
-                : result.scrollable(node.isScrollable());
-
-        return result == null ? makeDummySelector() : result;
+        return result.clickable(node.isClickable())
+                .longClickable(node.isLongClickable())
+                .focusable(node.isFocusable())
+                .scrollable(node.isScrollable());
     }
 
     private static boolean hasValue(@Nullable CharSequence cs) {
         return cs != null && cs.length() > 0;
     }
 
-    public static BySelector makeDummySelector() {
-        return By.res(String.format("DUMMY:id/%s", UUID.randomUUID()));
+    private static BySelector makeDummySelector() {
+        return By.text(String.format("DUMMY:%s", UUID.randomUUID()));
     }
 }

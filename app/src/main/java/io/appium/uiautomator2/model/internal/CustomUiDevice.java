@@ -47,7 +47,6 @@ import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
-import static io.appium.uiautomator2.model.BySelectorHelper.makeDummySelector;
 import static io.appium.uiautomator2.model.BySelectorHelper.toBySelector;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -154,9 +153,32 @@ public class CustomUiDevice {
 
     public synchronized GestureController getGestureController() {
         if (gestureController == null) {
-            UiObject2 dummyElement = toUiObject2(makeDummySelector(), null);
-            Gestures gestures = new Gestures(getField("mGestures", dummyElement));
-            gestureController = new GestureController(getField("mGestureController", dummyElement), gestures);
+            Class<?> gesturesClass = ReflectionUtils.getClass("androidx.test.uiautomator.Gestures");
+            // TODO: UIAutomator lib has changed this class significantly in v2.3.0,
+            // TODO: so this approach won't work anymore
+            Method gesturesFactory = ReflectionUtils.getMethod(
+                    gesturesClass, "getInstance", UiDevice.class
+            );
+            Gestures gestures;
+            try {
+                gestures = new Gestures(gesturesFactory.invoke(gesturesClass, getUiDevice()));
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                throw new UiAutomator2Exception("Cannot get an instance of the Gestures class", e);
+            }
+            Class<?> gestureControllerClass = ReflectionUtils.getClass(
+                    "androidx.test.uiautomator.GestureController"
+            );
+            Method gestureControllerFactory = ReflectionUtils.getMethod(
+                    gestureControllerClass, "getInstance", UiDevice.class
+            );
+            try {
+                gestureController = new GestureController(
+                        gestureControllerFactory.invoke(gestureControllerClass, getUiDevice()),
+                        gestures
+                );
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                throw new UiAutomator2Exception("Cannot get an instance of the GestureController class", e);
+            }
         }
         return gestureController;
     }

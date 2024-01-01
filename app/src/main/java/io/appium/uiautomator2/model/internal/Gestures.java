@@ -21,7 +21,6 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 import android.graphics.Point;
 import android.graphics.Rect;
 
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
