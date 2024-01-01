@@ -28,8 +28,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import static androidx.test.internal.util.Checks.checkNotNull;
-
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -116,7 +114,7 @@ public class AXWindowHelpers {
     }
 
     private static AccessibilityNodeInfo getTopmostWindowRootFromActivePackage() {
-        CharSequence activeRootPackageName = checkNotNull(getActiveWindowRoot().getPackageName());
+        CharSequence activeRootPackageName = Objects.requireNonNull(getActiveWindowRoot().getPackageName());
 
         List<AccessibilityWindowInfo> windows = getWindows();
         Collections.sort(windows, new Comparator<AccessibilityWindowInfo>() {
@@ -139,13 +137,11 @@ public class AXWindowHelpers {
 
     public static AccessibilityNodeInfo[] getCachedWindowRoots() {
         if (cachedWindowRoots == null) {
-            // Multi-window searches are supported since API level 21
-            boolean isMultiWindowSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-            boolean shouldRetrieveAllWindowRoots = isMultiWindowSupported
-                    && Settings.get(EnableMultiWindows.class).getValue();
+            boolean shouldRetrieveAllWindowRoots = Settings.get(EnableMultiWindows.class).getValue();
             // Multi-window retrieval is needed to search the topmost window from active package.
-            boolean shouldRetrieveTopmostWindowRootFromActivePackage = isMultiWindowSupported
-                    && Settings.get(EnableTopmostWindowFromActivePackage.class).getValue();
+            boolean shouldRetrieveTopmostWindowRootFromActivePackage = Settings.get(
+                    EnableTopmostWindowFromActivePackage.class
+            ).getValue();
             /*
              * ENABLE_MULTI_WINDOWS and ENABLE_TOPMOST_WINDOW_FROM_ACTIVE_PACKAGE
              * are disabled by default

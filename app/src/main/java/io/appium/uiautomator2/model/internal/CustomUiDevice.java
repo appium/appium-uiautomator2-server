@@ -22,8 +22,8 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
@@ -47,6 +47,7 @@ import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
+import static io.appium.uiautomator2.model.BySelectorHelper.toBySelector;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getConstructor;
@@ -56,7 +57,6 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
 public class CustomUiDevice {
     private static final int CHANGE_ROTATION_TIMEOUT_MS = 2000;
-
     private static final String FIELD_M_INSTRUMENTATION = "mInstrumentation";
 
     private static CustomUiDevice INSTANCE = null;
@@ -66,6 +66,7 @@ public class CustomUiDevice {
     private final Constructor<?> uiObject2Constructor;
     private final Instrumentation mInstrumentation;
     private GestureController gestureController;
+
 
     private CustomUiDevice() {
         this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
@@ -94,24 +95,21 @@ public class CustomUiDevice {
         return getInstrumentation().getUiAutomation();
     }
 
-    private UiObject2 toUiObject2(@Nullable Object selector, @Nullable AccessibilityNodeInfo node) {
-        if (selector == null) {
-            // FIXME: The 'selector' should be proper By instance as non-null in the interaction.
-            Logger.debug("FIXME: selector argument should not be null in androidx.test.uiautomator:uiautomator:2.3.0");
-        }
-
+    private UiObject2 toUiObject2(@NonNull BySelector selector, @Nullable AccessibilityNodeInfo node) {
         // TODO: remove this comment after upgrading to androidx.test.uiautomator:uiautomator:2.3.0
         // UiObject2 with androidx.test.uiautomator:uiautomator:2.3.0 has below code to crate the instance,
         // thus if the node was None, it should create an empty element for the AccessibilityNodeInfo.
+        // <pre>
         //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         //        AccessibilityWindowInfo window = UiObject2.Api21Impl.getWindow(cachedNode);
         //        mDisplayId = window == null ? Display.DEFAULT_DISPLAY : UiObject2.Api30Impl.getDisplayId(window);
         //    } else {
         //        mDisplayId = Display.DEFAULT_DISPLAY;
         //    }
+        // </pre>
         AccessibilityNodeInfo accessibilityNodeInfo =
                 (node == null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
-                ?  new AccessibilityNodeInfo()
+                ? new AccessibilityNodeInfo()
                 : node;
         Object[] constructorParams = {getUiDevice(), selector, accessibilityNodeInfo};
         try {
@@ -131,26 +129,31 @@ public class CustomUiDevice {
     @Nullable
     public AccessibleUiObject findObject(Object selector) throws UiAutomator2Exception {
         final AccessibilityNodeInfo node;
+        final BySelector realSelector;
         if (selector instanceof BySelector) {
             node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcherClass,
                     Device.getUiDevice(), selector, getCachedWindowRoots());
+            realSelector = (BySelector) selector;
         } else if (selector instanceof NodeInfoList) {
             node = ((NodeInfoList) selector).getFirst();
-            selector = toSelector(node);
+            realSelector = toBySelector(node);
         } else if (selector instanceof AccessibilityNodeInfo) {
             node = (AccessibilityNodeInfo) selector;
-            selector = toSelector(node);
+            realSelector = toBySelector(node);
         } else if (selector instanceof UiSelector) {
             return toAccessibleUiObject(getUiDevice().findObject((UiSelector) selector));
         } else {
-            throw new InvalidSelectorException("Selector of type " + selector.getClass().getName() + " not supported");
+            throw new InvalidSelectorException(String.format(
+                    "Selector of type %s not supported",
+                    selector == null ? null : selector.getClass().getName()
+            ));
         }
-        return node == null ? null : new AccessibleUiObject(toUiObject2(selector, node), node);
+        return node == null ? null : new AccessibleUiObject(toUiObject2(realSelector, node), node);
     }
 
     public synchronized GestureController getGestureController() {
         if (gestureController == null) {
-            UiObject2 dummyElement = toUiObject2(null, null);
+            UiObject2 dummyElement = toUiObject2(toBySelector(null), null);
             Gestures gestures = new Gestures(getField("mGestures", dummyElement));
             gestureController = new GestureController(getField("mGestureController", dummyElement), gestures);
         }
@@ -171,23 +174,17 @@ public class CustomUiDevice {
         } else if (selector instanceof NodeInfoList) {
             axNodesList = ((NodeInfoList) selector).getAll();
         } else {
-            throw new InvalidSelectorException("Selector of type " + selector.getClass().getName() + " not supported");
+            throw new InvalidSelectorException(String.format(
+                    "Selector of type %s not supported",
+                    selector == null ? null : selector.getClass().getName()
+            ));
         }
         for (AccessibilityNodeInfo node : axNodesList) {
-            UiObject2 uiObject2 = toUiObject2(toSelector(node), node);
+            UiObject2 uiObject2 = toUiObject2(toBySelector(node), node);
             ret.add(new AccessibleUiObject(uiObject2, node));
         }
 
         return ret;
-    }
-
-    @Nullable
-    private static BySelector toSelector(@Nullable AccessibilityNodeInfo nodeInfo) {
-        if (nodeInfo == null) {
-            return null;
-        }
-        final CharSequence className = nodeInfo.getClassName();
-        return className == null ? null : By.clazz(className.toString());
     }
 
     public ScreenRotation setRotationSync(ScreenRotation desired) {
@@ -204,6 +201,6 @@ public class CustomUiDevice {
             SystemClock.sleep(100);
         } while (System.currentTimeMillis() - start < CHANGE_ROTATION_TIMEOUT_MS);
         throw new InvalidElementStateException(String.format("Screen rotation cannot be changed to %s after %sms. " +
-                "Is it locked programmatically?", desired.toString(), CHANGE_ROTATION_TIMEOUT_MS));
+                "Is it locked programmatically?", desired, CHANGE_ROTATION_TIMEOUT_MS));
     }
 }

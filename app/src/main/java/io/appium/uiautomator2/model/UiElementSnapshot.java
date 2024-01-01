@@ -16,10 +16,7 @@
 
 package io.appium.uiautomator2.model;
 
-import android.annotation.TargetApi;
 import android.os.Build;
-import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
@@ -44,8 +41,6 @@ import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
 
-import static androidx.test.internal.util.Checks.checkNotNull;
-import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
@@ -53,7 +48,6 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableS
  * A UiElement that gets attributes via the Accessibility API.
  * https://android.googlesource.com/platform/frameworks/testing/+/476328047e3f82d6d9be8ab23f502a670613f94c/uiautomator/library/src/com/android/uiautomator/core/AccessibilityNodeInfoDumper.java
  */
-@TargetApi(18)
 public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElementSnapshot> {
     private final static String ROOT_NODE_NAME = "hierarchy";
     // The same order will be used for node attributes in xml page source
@@ -81,7 +75,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
     private UiElementSnapshot(AccessibilityNodeInfo node, int index, int depth, int maxDepth,
                               Set<Attribute> includedAttributes) {
-        super(checkNotNull(node));
+        super(Objects.requireNonNull(node));
         this.depth = depth;
         this.maxDepth = maxDepth;
         this.index = index;
