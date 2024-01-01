@@ -26,10 +26,6 @@ import androidx.test.uiautomator.BySelector;
 import java.util.UUID;
 
 public class BySelectorHelper {
-    private static BySelector makeDummySelector() {
-        return By.res(String.format("DUMMY:%s", UUID.randomUUID()));
-    }
-
     @NonNull
     public static BySelector toBySelector(@Nullable AccessibilityNodeInfo node) {
         if (node == null) {
@@ -37,27 +33,25 @@ public class BySelectorHelper {
         }
 
         BySelector result = null;
-        // This might be simplified, but needs API 24+ with lambdas support
+        // The below conditions might be simplified, but need API 24+ with lambdas support
         CharSequence className = node.getClassName();
-        if (className != null) {
+        if (hasValue(className)) {
             result = By.clazz(className.toString());
         }
-        CharSequence description = node.getContentDescription();
-        if (description != null) {
-            result = result == null
-                    ? By.desc(description.toString())
-                    : result.desc(description.toString());
+        CharSequence desc = node.getContentDescription();
+        if (hasValue(desc)) {
+            result = result == null ? By.desc(desc.toString()) : result.desc(desc.toString());
         }
         CharSequence pkg = node.getPackageName();
-        if (pkg != null) {
+        if (hasValue(pkg)) {
             result = result == null ? By.pkg(pkg.toString()) : result.pkg(pkg.toString());
         }
         CharSequence res = node.getViewIdResourceName();
-        if (res != null) {
+        if (hasValue(res)) {
             result = result == null ? By.res(res.toString()) : result.res(res.toString());
         }
         CharSequence text = node.getText();
-        if (text != null) {
+        if (hasValue(text)) {
             result = result == null ? By.text(text.toString()) : result.text(text.toString());
         }
 
@@ -65,30 +59,26 @@ public class BySelectorHelper {
                 ? By.checkable(node.isCheckable())
                 : result.checkable(node.isCheckable());
         result = result == null
-                ? By.checked(node.isChecked())
-                : result.checked(node.isChecked());
-        result = result == null
                 ? By.clickable(node.isClickable())
                 : result.clickable(node.isClickable());
         result = result == null
                 ? By.longClickable(node.isLongClickable())
                 : result.longClickable(node.isLongClickable());
         result = result == null
-                ? By.enabled(node.isEnabled())
-                : result.enabled(node.isEnabled());
-        result = result == null
                 ? By.focusable(node.isFocusable())
                 : result.focusable(node.isFocusable());
         result = result == null
-                ? By.focused(node.isFocused())
-                : result.focused(node.isFocused());
-        result = result == null
                 ? By.scrollable(node.isScrollable())
                 : result.scrollable(node.isScrollable());
-        result = result == null
-                ? By.selected(node.isSelected())
-                : result.selected(node.isSelected());
 
         return result == null ? makeDummySelector() : result;
+    }
+
+    private static boolean hasValue(@Nullable CharSequence cs) {
+        return cs != null && cs.length() > 0;
+    }
+
+    public static BySelector makeDummySelector() {
+        return By.res(String.format("DUMMY:id/%s", UUID.randomUUID()));
     }
 }

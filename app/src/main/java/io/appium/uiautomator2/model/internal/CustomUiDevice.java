@@ -47,6 +47,7 @@ import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
+import static io.appium.uiautomator2.model.BySelectorHelper.makeDummySelector;
 import static io.appium.uiautomator2.model.BySelectorHelper.toBySelector;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -153,7 +154,7 @@ public class CustomUiDevice {
 
     public synchronized GestureController getGestureController() {
         if (gestureController == null) {
-            UiObject2 dummyElement = toUiObject2(toBySelector(null), null);
+            UiObject2 dummyElement = toUiObject2(makeDummySelector(), null);
             Gestures gestures = new Gestures(getField("mGestures", dummyElement));
             gestureController = new GestureController(getField("mGestureController", dummyElement), gestures);
         }
