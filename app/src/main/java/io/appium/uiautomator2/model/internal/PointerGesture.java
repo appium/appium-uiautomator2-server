@@ -43,15 +43,15 @@ public class PointerGesture {
 
     private static synchronized Constructor<?> getWrappedConstructor() {
         if (pointerGestureConstructor == null) {
-            pointerGestureConstructor = getConstructor(getWrappedClass(), Point.class);
+            pointerGestureConstructor = getConstructor(getWrappedClass(), Point.class, int.class);
         }
         return pointerGestureConstructor;
     }
 
-    public PointerGesture(Object wrappedInstanceOrPoint) {
+    public PointerGesture(Object wrappedInstanceOrPoint, int displayId) {
         if (wrappedInstanceOrPoint instanceof Point) {
             try {
-                this.wrappedInstance = getWrappedConstructor().newInstance(wrappedInstanceOrPoint);
+                this.wrappedInstance = getWrappedConstructor().newInstance(wrappedInstanceOrPoint, displayId);
             } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 throw new IllegalStateException(String.format("Cannot perform gesture at %s", wrappedInstanceOrPoint), e);
             }

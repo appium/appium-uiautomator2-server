@@ -101,13 +101,13 @@ public class GestureController {
     }
 
     public void click(Point point) {
-        performGesture(new PointerGesture(point).pause(0L));
+        performGesture(new PointerGesture(point, gestures.getDisplayId()).pause(0L));
     }
 
     public void doubleClick(Point point) {
-        performGesture(new PointerGesture(point).pause(0L));
+        performGesture(new PointerGesture(point, gestures.getDisplayId()).pause(0L));
         SystemClock.sleep(ViewConfiguration.getDoubleTapTimeout() / 2);
-        performGesture(new PointerGesture(point).pause(0L));
+        performGesture(new PointerGesture(point, gestures.getDisplayId()).pause(0L));
     }
 
     public void longClick(Point point, @Nullable Long durationMs) {
@@ -115,7 +115,7 @@ public class GestureController {
         if (duration < 0) {
             throw new IllegalArgumentException("Long click duration cannot be negative");
         }
-        performGesture(new PointerGesture(point).pause(duration));
+        performGesture(new PointerGesture(point, gestures.getDisplayId()).pause(duration));
     }
 
     private static int checkSpeed(int speed) {

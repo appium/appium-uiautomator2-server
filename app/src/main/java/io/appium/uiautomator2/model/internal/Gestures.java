@@ -44,12 +44,19 @@ public class Gestures {
         this.wrappedClass = ReflectionUtils.getClass("androidx.test.uiautomator.Gestures");
     }
 
+    public int getDisplayId() {
+        return displayId;
+    }
+
     public PointerGesture drag(Point start, Point end, int speed) {
         Method dragMethod = getMethod(
                 wrappedClass, "drag",
                 Point.class, Point.class, int.class, int.class
         );
-        return new PointerGesture(invoke(dragMethod, wrappedClass, start, end, speed, displayId));
+        return new PointerGesture(
+                invoke(dragMethod, wrappedClass, start, end, speed, displayId),
+                displayId
+        );
     }
 
     public PointerGesture[] pinchClose(Rect area, float percent, int speed) {
@@ -78,14 +85,15 @@ public class Gestures {
                 Rect.class, Direction.class, float.class, int.class, int.class
         );
         return new PointerGesture(
-                invoke(swipeRectMethod, wrappedClass, area, direction, percent, speed, displayId)
+                invoke(swipeRectMethod, wrappedClass, area, direction, percent, speed, displayId),
+                displayId
         );
     }
 
-    private static PointerGesture[] toGesturesArray(Object result) {
+    private PointerGesture[] toGesturesArray(Object result) {
         List<PointerGesture> list = new ArrayList<>();
         for (int i = 0; i < Array.getLength(result); ++i) {
-            list.add(new PointerGesture(Array.get(result, i)));
+            list.add(new PointerGesture(Array.get(result, i), displayId));
         }
         return list.toArray(new PointerGesture[0]);
     }
