@@ -21,8 +21,10 @@ import android.app.UiAutomation;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.SystemClock;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityWindowInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -239,5 +241,20 @@ public class CustomUiDevice {
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new UiAutomator2Exception(e);
         }
+    }
+
+    public int getTopmostWindowDisplayId() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            SparseArray<List<AccessibilityWindowInfo>> windows = getUiAutomation().getWindowsOnAllDisplays();
+            for (int i = 0; i < windows.size(); i++) {
+                int key = windows.keyAt(i);
+                List<AccessibilityWindowInfo> windowsList = windows.get(key);
+                if (windowsList.isEmpty()) {
+                    continue;
+                }
+                return windowsList.get(0).getDisplayId();
+            }
+        }
+        return Display.DEFAULT_DISPLAY;
     }
 }
