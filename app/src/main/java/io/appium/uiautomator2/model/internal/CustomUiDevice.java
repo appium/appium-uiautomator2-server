@@ -18,8 +18,10 @@ package io.appium.uiautomator2.model.internal;
 
 import android.app.Instrumentation;
 import android.app.UiAutomation;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.SystemClock;
+import android.view.Display;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
@@ -214,5 +216,28 @@ public class CustomUiDevice {
         } while (System.currentTimeMillis() - start < CHANGE_ROTATION_TIMEOUT_MS);
         throw new InvalidElementStateException(String.format("Screen rotation cannot be changed to %s after %sms. " +
                 "Is it locked programmatically?", desired, CHANGE_ROTATION_TIMEOUT_MS));
+    }
+
+    @Nullable
+    public Display getDisplayById(int displayId) {
+        Method getDisplayByIdMethod = ReflectionUtils.getMethod(
+                UiDevice.class, "getDisplayById", int.class
+        );
+        try {
+            return (Display) getDisplayByIdMethod.invoke(getUiDevice(), displayId);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new UiAutomator2Exception(e);
+        }
+    }
+
+    public Point getDisplaySize(int displayId) {
+        Method getDisplaySizeMethod = ReflectionUtils.getMethod(
+                UiDevice.class, "getDisplaySize", int.class
+        );
+        try {
+            return (Point) getDisplaySizeMethod.invoke(getUiDevice(), displayId);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new UiAutomator2Exception(e);
+        }
     }
 }

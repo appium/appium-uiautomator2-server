@@ -69,4 +69,9 @@ public class PointerGesture {
     public Object getWrappedInstance() {
         return this.wrappedInstance;
     }
+
+    @Override
+    public String toString() {
+        return wrappedInstance.toString();
+    }
 }

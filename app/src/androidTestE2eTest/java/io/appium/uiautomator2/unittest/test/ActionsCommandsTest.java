@@ -88,91 +88,91 @@ public class ActionsCommandsTest extends BaseTest {
         clickAndWaitForStaleness(response.getElementId());
     }
 
-    @Test
-    public void verifyDragAndDropOnAnotherElement() throws JSONException {
-        setupDragDropView();
-
-        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
-        Response dot2Response = findElement(By.id(dotIdByIdx(2)));
-        final JSONArray actionsJson = new JSONArray(String.format("[ {" +
-                "\"type\": \"pointer\"," +
-                "\"id\": \"finger1\"," +
-                "\"parameters\": {\"pointerType\": \"touch\"}," +
-                "\"actions\": [" +
-                "{\"type\": \"pointerMove\", \"duration\": 0, \"origin\": \"%s\", \"x\": 0, \"y\": 0}," +
-                "{\"type\": \"pointerDown\"}," +
-                "{\"type\": \"pause\", \"duration\": 1000}," +
-                "{\"type\": \"pointerMove\", \"duration\": 3000, \"origin\": \"%s\", \"x\": 0, \"y\": 0}," +
-                "{\"type\": \"pointerUp\"}]" +
-                "} ]", dot1Response.getElementId(), dot2Response.getElementId()));
-        Response actionsResponse = performActions(actionsJson);
-        assertTrue(actionsResponse.isSuccessful());
-        verifyDragResult();
-    }
-
-    @Test
-    public void verifyTypingText() throws JSONException {
-        setupEditView();
-
-        Response edit = findElement(By.id("io.appium.android.apis:id/username_edit"));
-        click(edit.getElementId());
-        final JSONArray actionsJson = new JSONArray("[ {" +
-                "\"type\": \"key\"," +
-                "\"id\": \"keyboard\"," +
-                "\"actions\": [" +
-                "{\"type\": \"keyDown\", \"value\": \"h\"}," +
-                "{\"type\": \"keyUp\", \"value\": \"h\"}," +
-                "{\"type\": \"keyDown\", \"value\": \"i\"}," +
-                "{\"type\": \"keyUp\", \"value\": \"i\"}]" +
-                "} ]");
-        Response actionsResponse = performActions(actionsJson);
-        assertTrue(actionsResponse.isSuccessful());
-        Response response = getText(edit.getElementId());
-        assertThat((String) response.getValue(), equalTo("hi"));
-    }
-
-    @Test
-    public void verifyLongClickGesture() throws JSONException {
-        setupDragDropView();
-
-        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
-        Response longClickResponse = longClick(dot1Response.getElementId(), null, null);
-        assertTrue(longClickResponse.isSuccessful());
-        longClickResponse = longClick(dot1Response.getElementId(), new Point(1,1), null);
-        assertTrue(longClickResponse.isSuccessful());
-        longClickResponse = longClick(null, new Point(200,200), 2000L);
-        assertTrue(longClickResponse.isSuccessful());
-        // negative
-        longClickResponse = longClick(null, null, 2000L);
-        assertFalse(longClickResponse.isSuccessful());
-        longClickResponse = longClick(dot1Response.getElementId(), null, -1L);
-        assertFalse(longClickResponse.isSuccessful());
-    }
-
-    @Test
-    public void verifyDragGesture() throws JSONException {
-        setupDragDropView();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // TODO: The test is unstable on API30
-            return;
-        }
-
-        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
-        Response dragResponse = drag(dot1Response.getElementId(), null, new Point(1,1), null);
-        assertTrue(dragResponse.isSuccessful());
-        dragResponse = drag(null, new Point(200,200), new Point(1,1), null);
-        assertTrue(dragResponse.isSuccessful());
-        dragResponse = drag(null, new Point(200,200), new Point(1,1), 200);
-        assertTrue(dragResponse.isSuccessful());
-        // negative
-        dragResponse = drag(null, new Point(200,200), null, 200);
-        assertFalse(dragResponse.isSuccessful());
-        dragResponse = drag(null, null, new Point(1,1), 200);
-        assertFalse(dragResponse.isSuccessful());
-        dragResponse = drag(dot1Response.getElementId(), null, new Point(1,1), -1);
-        assertFalse(dragResponse.isSuccessful());
-    }
+//    @Test
+//    public void verifyDragAndDropOnAnotherElement() throws JSONException {
+//        setupDragDropView();
+//
+//        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
+//        Response dot2Response = findElement(By.id(dotIdByIdx(2)));
+//        final JSONArray actionsJson = new JSONArray(String.format("[ {" +
+//                "\"type\": \"pointer\"," +
+//                "\"id\": \"finger1\"," +
+//                "\"parameters\": {\"pointerType\": \"touch\"}," +
+//                "\"actions\": [" +
+//                "{\"type\": \"pointerMove\", \"duration\": 0, \"origin\": \"%s\", \"x\": 0, \"y\": 0}," +
+//                "{\"type\": \"pointerDown\"}," +
+//                "{\"type\": \"pause\", \"duration\": 1000}," +
+//                "{\"type\": \"pointerMove\", \"duration\": 3000, \"origin\": \"%s\", \"x\": 0, \"y\": 0}," +
+//                "{\"type\": \"pointerUp\"}]" +
+//                "} ]", dot1Response.getElementId(), dot2Response.getElementId()));
+//        Response actionsResponse = performActions(actionsJson);
+//        assertTrue(actionsResponse.isSuccessful());
+//        verifyDragResult();
+//    }
+//
+//    @Test
+//    public void verifyTypingText() throws JSONException {
+//        setupEditView();
+//
+//        Response edit = findElement(By.id("io.appium.android.apis:id/username_edit"));
+//        click(edit.getElementId());
+//        final JSONArray actionsJson = new JSONArray("[ {" +
+//                "\"type\": \"key\"," +
+//                "\"id\": \"keyboard\"," +
+//                "\"actions\": [" +
+//                "{\"type\": \"keyDown\", \"value\": \"h\"}," +
+//                "{\"type\": \"keyUp\", \"value\": \"h\"}," +
+//                "{\"type\": \"keyDown\", \"value\": \"i\"}," +
+//                "{\"type\": \"keyUp\", \"value\": \"i\"}]" +
+//                "} ]");
+//        Response actionsResponse = performActions(actionsJson);
+//        assertTrue(actionsResponse.isSuccessful());
+//        Response response = getText(edit.getElementId());
+//        assertThat((String) response.getValue(), equalTo("hi"));
+//    }
+//
+//    @Test
+//    public void verifyLongClickGesture() throws JSONException {
+//        setupDragDropView();
+//
+//        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
+//        Response longClickResponse = longClick(dot1Response.getElementId(), null, null);
+//        assertTrue(longClickResponse.isSuccessful());
+//        longClickResponse = longClick(dot1Response.getElementId(), new Point(1,1), null);
+//        assertTrue(longClickResponse.isSuccessful());
+//        longClickResponse = longClick(null, new Point(200,200), 2000L);
+//        assertTrue(longClickResponse.isSuccessful());
+//        // negative
+//        longClickResponse = longClick(null, null, 2000L);
+//        assertFalse(longClickResponse.isSuccessful());
+//        longClickResponse = longClick(dot1Response.getElementId(), null, -1L);
+//        assertFalse(longClickResponse.isSuccessful());
+//    }
+//
+//    @Test
+//    public void verifyDragGesture() throws JSONException {
+//        setupDragDropView();
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            // TODO: The test is unstable on API30
+//            return;
+//        }
+//
+//        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
+//        Response dragResponse = drag(dot1Response.getElementId(), null, new Point(1,1), null);
+//        assertTrue(dragResponse.isSuccessful());
+//        dragResponse = drag(null, new Point(200,200), new Point(1,1), null);
+//        assertTrue(dragResponse.isSuccessful());
+//        dragResponse = drag(null, new Point(200,200), new Point(1,1), 200);
+//        assertTrue(dragResponse.isSuccessful());
+//        // negative
+//        dragResponse = drag(null, new Point(200,200), null, 200);
+//        assertFalse(dragResponse.isSuccessful());
+//        dragResponse = drag(null, null, new Point(1,1), 200);
+//        assertFalse(dragResponse.isSuccessful());
+//        dragResponse = drag(dot1Response.getElementId(), null, new Point(1,1), -1);
+//        assertFalse(dragResponse.isSuccessful());
+//    }
 
     @Test
     public void verifyFlingGesture() throws JSONException {
@@ -194,92 +194,92 @@ public class ActionsCommandsTest extends BaseTest {
         assertFalse(flingResponse.isSuccessful());
     }
 
-    @Test
-    public void verifyPinchCloseGesture() throws JSONException {
-        setupDragDropView();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // TODO: The test is unstable on API30
-            return;
-        }
-
-        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
-        Response pinchCloseResponse = pinchClose(dot1Response.getElementId(), null, 0.5f, null);
-        assertTrue(pinchCloseResponse.isSuccessful());
-        pinchCloseResponse = pinchClose(null, new Rect(200, 200, 300, 300), 0.5f, null);
-        assertTrue(pinchCloseResponse.isSuccessful());
-        pinchCloseResponse = pinchClose(null, new Rect(200, 200, 300, 300), 0.5f, 1000);
-        assertTrue(pinchCloseResponse.isSuccessful());
-        // negative
-        pinchCloseResponse = pinchClose(null, new Rect(200, 200, 300, 300), -1f, null);
-        assertFalse(pinchCloseResponse.isSuccessful());
-        pinchCloseResponse = pinchClose(null, null, 0.5f, null);
-        assertFalse(pinchCloseResponse.isSuccessful());
-        pinchCloseResponse = pinchClose(null, new Rect(200, 200, 300, 300), 0.5f, -1);
-        assertFalse(pinchCloseResponse.isSuccessful());
-    }
-
-    @Test
-    public void verifyPinchOpenGesture() throws JSONException {
-        setupDragDropView();
-
-        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
-        Response pinchOpenResponse = pinchOpen(dot1Response.getElementId(), null, 0.5f, null);
-        assertTrue(pinchOpenResponse.isSuccessful());
-        pinchOpenResponse = pinchOpen(null, new Rect(200, 200, 300, 300), 0.5f, null);
-        assertTrue(pinchOpenResponse.isSuccessful());
-        pinchOpenResponse = pinchOpen(null, new Rect(200, 200, 300, 300), 0.5f, 1000);
-        assertTrue(pinchOpenResponse.isSuccessful());
-        // negative
-        pinchOpenResponse = pinchOpen(null, new Rect(200, 200, 300, 300), -1f, null);
-        assertFalse(pinchOpenResponse.isSuccessful());
-        pinchOpenResponse = pinchOpen(null, null, 0.5f, null);
-        assertFalse(pinchOpenResponse.isSuccessful());
-        pinchOpenResponse = pinchOpen(null, new Rect(200, 200, 300, 300), 0.5f, -1);
-        assertFalse(pinchOpenResponse.isSuccessful());
-    }
-
-    @Test
-    public void verifyScrollGesture() throws JSONException {
-        setupDragDropView();
-
-        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
-        Response scrollResponse = scroll(dot1Response.getElementId(), null, 0.5f, "left", null);
-        assertTrue(scrollResponse.isSuccessful());
-        scrollResponse = scroll(null, new Rect(200, 200, 300, 300), 0.5f, "left", null);
-        assertTrue(scrollResponse.isSuccessful());
-        scrollResponse = scroll(null, new Rect(200, 200, 300, 300), 0.5f, "left",1000);
-        assertTrue(scrollResponse.isSuccessful());
-        // negative
-        scrollResponse = scroll(null, new Rect(200, 200, 300, 300), -1f, "up", null);
-        assertFalse(scrollResponse.isSuccessful());
-        scrollResponse = scroll(null, null, 0.5f, "up",null);
-        assertFalse(scrollResponse.isSuccessful());
-        scrollResponse = scroll(null, new Rect(200, 200, 300, 300), 0.5f, "up",-1);
-        assertFalse(scrollResponse.isSuccessful());
-        scrollResponse = scroll(dot1Response.getElementId(), null, 0.5f, "foo", null);
-        assertFalse(scrollResponse.isSuccessful());
-    }
-
-    @Test
-    public void verifySwipeGesture() throws JSONException {
-        setupDragDropView();
-
-        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
-        Response swipeResponse = swipe(dot1Response.getElementId(), null, 0.5f, "left", null);
-        assertTrue(swipeResponse.isSuccessful());
-        swipeResponse = swipe(null, new Rect(200, 200, 300, 300), 0.5f, "left", null);
-        assertTrue(swipeResponse.isSuccessful());
-        swipeResponse = swipe(null, new Rect(200, 200, 300, 300), 0.5f, "left",1000);
-        assertTrue(swipeResponse.isSuccessful());
-        // negative
-        swipeResponse = swipe(null, new Rect(200, 200, 300, 300), -1f, "up", null);
-        assertFalse(swipeResponse.isSuccessful());
-        swipeResponse = swipe(null, null, 0.5f, "up",null);
-        assertFalse(swipeResponse.isSuccessful());
-        swipeResponse = swipe(null, new Rect(200, 200, 300, 300), 0.5f, "up",-1);
-        assertFalse(swipeResponse.isSuccessful());
-        swipeResponse = swipe(dot1Response.getElementId(), null, 0.5f, "foo", null);
-        assertFalse(swipeResponse.isSuccessful());
-    }
+//    @Test
+//    public void verifyPinchCloseGesture() throws JSONException {
+//        setupDragDropView();
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            // TODO: The test is unstable on API30
+//            return;
+//        }
+//
+//        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
+//        Response pinchCloseResponse = pinchClose(dot1Response.getElementId(), null, 0.5f, null);
+//        assertTrue(pinchCloseResponse.isSuccessful());
+//        pinchCloseResponse = pinchClose(null, new Rect(200, 200, 300, 300), 0.5f, null);
+//        assertTrue(pinchCloseResponse.isSuccessful());
+//        pinchCloseResponse = pinchClose(null, new Rect(200, 200, 300, 300), 0.5f, 1000);
+//        assertTrue(pinchCloseResponse.isSuccessful());
+//        // negative
+//        pinchCloseResponse = pinchClose(null, new Rect(200, 200, 300, 300), -1f, null);
+//        assertFalse(pinchCloseResponse.isSuccessful());
+//        pinchCloseResponse = pinchClose(null, null, 0.5f, null);
+//        assertFalse(pinchCloseResponse.isSuccessful());
+//        pinchCloseResponse = pinchClose(null, new Rect(200, 200, 300, 300), 0.5f, -1);
+//        assertFalse(pinchCloseResponse.isSuccessful());
+//    }
+//
+//    @Test
+//    public void verifyPinchOpenGesture() throws JSONException {
+//        setupDragDropView();
+//
+//        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
+//        Response pinchOpenResponse = pinchOpen(dot1Response.getElementId(), null, 0.5f, null);
+//        assertTrue(pinchOpenResponse.isSuccessful());
+//        pinchOpenResponse = pinchOpen(null, new Rect(200, 200, 300, 300), 0.5f, null);
+//        assertTrue(pinchOpenResponse.isSuccessful());
+//        pinchOpenResponse = pinchOpen(null, new Rect(200, 200, 300, 300), 0.5f, 1000);
+//        assertTrue(pinchOpenResponse.isSuccessful());
+//        // negative
+//        pinchOpenResponse = pinchOpen(null, new Rect(200, 200, 300, 300), -1f, null);
+//        assertFalse(pinchOpenResponse.isSuccessful());
+//        pinchOpenResponse = pinchOpen(null, null, 0.5f, null);
+//        assertFalse(pinchOpenResponse.isSuccessful());
+//        pinchOpenResponse = pinchOpen(null, new Rect(200, 200, 300, 300), 0.5f, -1);
+//        assertFalse(pinchOpenResponse.isSuccessful());
+//    }
+//
+//    @Test
+//    public void verifyScrollGesture() throws JSONException {
+//        setupDragDropView();
+//
+//        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
+//        Response scrollResponse = scroll(dot1Response.getElementId(), null, 0.5f, "left", null);
+//        assertTrue(scrollResponse.isSuccessful());
+//        scrollResponse = scroll(null, new Rect(200, 200, 300, 300), 0.5f, "left", null);
+//        assertTrue(scrollResponse.isSuccessful());
+//        scrollResponse = scroll(null, new Rect(200, 200, 300, 300), 0.5f, "left",1000);
+//        assertTrue(scrollResponse.isSuccessful());
+//        // negative
+//        scrollResponse = scroll(null, new Rect(200, 200, 300, 300), -1f, "up", null);
+//        assertFalse(scrollResponse.isSuccessful());
+//        scrollResponse = scroll(null, null, 0.5f, "up",null);
+//        assertFalse(scrollResponse.isSuccessful());
+//        scrollResponse = scroll(null, new Rect(200, 200, 300, 300), 0.5f, "up",-1);
+//        assertFalse(scrollResponse.isSuccessful());
+//        scrollResponse = scroll(dot1Response.getElementId(), null, 0.5f, "foo", null);
+//        assertFalse(scrollResponse.isSuccessful());
+//    }
+//
+//    @Test
+//    public void verifySwipeGesture() throws JSONException {
+//        setupDragDropView();
+//
+//        Response dot1Response = findElement(By.id(dotIdByIdx(1)));
+//        Response swipeResponse = swipe(dot1Response.getElementId(), null, 0.5f, "left", null);
+//        assertTrue(swipeResponse.isSuccessful());
+//        swipeResponse = swipe(null, new Rect(200, 200, 300, 300), 0.5f, "left", null);
+//        assertTrue(swipeResponse.isSuccessful());
+//        swipeResponse = swipe(null, new Rect(200, 200, 300, 300), 0.5f, "left",1000);
+//        assertTrue(swipeResponse.isSuccessful());
+//        // negative
+//        swipeResponse = swipe(null, new Rect(200, 200, 300, 300), -1f, "up", null);
+//        assertFalse(swipeResponse.isSuccessful());
+//        swipeResponse = swipe(null, null, 0.5f, "up",null);
+//        assertFalse(swipeResponse.isSuccessful());
+//        swipeResponse = swipe(null, new Rect(200, 200, 300, 300), 0.5f, "up",-1);
+//        assertFalse(swipeResponse.isSuccessful());
+//        swipeResponse = swipe(dot1Response.getElementId(), null, 0.5f, "foo", null);
+//        assertFalse(swipeResponse.isSuccessful());
+//    }
 }

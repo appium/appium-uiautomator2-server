@@ -30,10 +30,6 @@ import android.view.accessibility.AccessibilityWindowInfo;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
-import androidx.test.uiautomator.UiDevice;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
@@ -43,7 +39,6 @@ import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
 import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
 import io.appium.uiautomator2.utils.Logger;
 
-import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
@@ -55,6 +50,13 @@ public class AxNodeInfoHelper {
     private static final long UNDEFINED_NODE_ID =
             (((long) Integer.MAX_VALUE) << 32) | Integer.MAX_VALUE;
     private static final int UNDEFINED_WINDOW_ID = -1;
+    private static final float DEFAULT_GESTURE_MARGIN_PERCENT = 0.1f;
+    private static final Margins mMargins = new PercentMargins(
+            DEFAULT_GESTURE_MARGIN_PERCENT,
+            DEFAULT_GESTURE_MARGIN_PERCENT,
+            DEFAULT_GESTURE_MARGIN_PERCENT,
+            DEFAULT_GESTURE_MARGIN_PERCENT
+    );
 
     @Nullable
     public static String toUuid(AccessibilityNodeInfo info) {
@@ -116,16 +118,7 @@ public class AxNodeInfoHelper {
 
     private static Rect getBoundsForGestures(AccessibilityNodeInfo node) {
         Rect bounds = getBounds(node);
-        // The default margin values are copied from UiObject2 class:
-        // private int mMarginLeft   = 5;
-        // private int mMarginTop    = 5;
-        // private int mMarginRight  = 5;
-        // private int mMarginBottom = 5;
-        bounds.left = bounds.left + 5;
-        bounds.top = bounds.top + 5;
-        bounds.right = bounds.right - 5;
-        bounds.bottom = bounds.bottom - 5;
-        return bounds;
+        return mMargins.apply(bounds);
     }
 
     public static void click(AccessibilityNodeInfo node) {
@@ -170,7 +163,7 @@ public class AxNodeInfoHelper {
     }
 
     public static int getAxNodeDisplayId(AccessibilityNodeInfo node) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (node != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             AccessibilityWindowInfo window = node.getWindow();
             if (window != null) {
                 return window.getDisplayId();
@@ -192,7 +185,9 @@ public class AxNodeInfoHelper {
         swipe(node, direction, percent, null);
     }
 
-    public static void swipe(AccessibilityNodeInfo node, Direction direction, float percent, @Nullable Integer speed) {
+    public static void swipe(
+            AccessibilityNodeInfo node, Direction direction, float percent, @Nullable Integer speed
+    ) {
         Rect bounds = getBoundsForGestures(node);
         makeGestureController(node).swipe(bounds, direction, percent, speed);
     }
@@ -201,7 +196,9 @@ public class AxNodeInfoHelper {
         return scroll(node, direction, percent, null);
     }
 
-    public static boolean scroll(AccessibilityNodeInfo node, Direction direction, float percent, @Nullable Integer speed) {
+    public static boolean scroll(
+            AccessibilityNodeInfo node, Direction direction, float percent, @Nullable Integer speed
+    ) {
         Rect bounds = getBoundsForGestures(node);
         return makeGestureController(node).scroll(bounds, direction, percent, speed);
     }
@@ -210,29 +207,72 @@ public class AxNodeInfoHelper {
         return fling(node, direction, null);
     }
 
-    public static boolean fling(AccessibilityNodeInfo node, Direction direction, @Nullable Integer speed) {
+    public static boolean fling(
+            AccessibilityNodeInfo node, Direction direction, @Nullable Integer speed
+    ) {
         Rect bounds = getBoundsForGestures(node);
         return makeGestureController(node).fling(bounds, direction, speed);
     }
 
-    /**
-     * Returns the node's bounds clipped to the size of the display
-     *
-     * @return Empty Rect if node is null, else a Rect containing visible bounds
-     */
     public static Rect getBounds(@Nullable AccessibilityNodeInfo node) {
-        Rect rect = new Rect();
-        if (node == null) {
-            return rect;
+        int displayId = AxNodeInfoHelper.getAxNodeDisplayId(node);
+        final boolean isDisplayAccessible = CustomUiDevice.getInstance().getDisplayById(displayId) != null;
+        Rect screen = null;
+        if (isDisplayAccessible) {
+            Point displaySize = CustomUiDevice.getInstance().getDisplaySize(displayId);
+            screen = new Rect(0, 0, displaySize.x, displaySize.y);
         }
-        if (Settings.get(SimpleBoundsCalculation.class).getValue()) {
-            node.getBoundsInScreen(rect);
-            return rect;
+        if (node == null) {
+            return screen == null ? new Rect() : screen;
+        }
+        return getVisibleBoundsInScreen(
+                node,
+                screen,
+                Boolean.FALSE.equals(Settings.get(SimpleBoundsCalculation.class).getValue()),
+                0
+        );
+    }
+
+    @SuppressLint("CheckResult")
+    private static Rect getVisibleBoundsInScreen(
+            AccessibilityNodeInfo node, Rect displayRect, boolean trimScrollableParent, int depth
+    ) {
+        Rect nodeRect = new Rect();
+        node.getBoundsInScreen(nodeRect);
+
+        if (displayRect == null) {
+            displayRect = new Rect();
+        }
+        nodeRect.intersect(displayRect);
+
+        // Trim any portion of the bounds that are outside the window
+        Rect bounds = new Rect();
+        AccessibilityWindowInfo window = node.getWindow();
+        if (window != null) {
+            window.getBoundsInScreen(bounds);
+            nodeRect.intersect(bounds);
         }
 
-        UiDevice uiDevice = getUiDevice();
-        Rect screenRect = new Rect(0, 0, uiDevice.getDisplayWidth(), uiDevice.getDisplayHeight());
-        return getBounds(node, screenRect, 0);
+        // Trim the bounds into any scrollable ancestor, if required.
+        if (trimScrollableParent) {
+            for (AccessibilityNodeInfo ancestor = node.getParent();
+                 ancestor != null;
+                 ancestor = ancestor.getParent()
+            ) {
+                if (ancestor.isScrollable()) {
+                    if (depth >= Settings.get(SnapshotMaxDepth.class).getValue()) {
+                        break;
+                    }
+                    Rect ancestorRect = getVisibleBoundsInScreen(
+                            ancestor, displayRect, true, depth + 1
+                    );
+                    nodeRect.intersect(ancestorRect);
+                    break;
+                }
+            }
+        }
+
+        return nodeRect;
     }
 
     public static int calculateIndex(AccessibilityNodeInfo node) {
@@ -246,55 +286,6 @@ public class AxNodeInfoHelper {
             }
         }
         return 0;
-    }
-
-    /**
-     * Returns the node's bounds clipped to the size of the display, limited by the SnapshotMaxDepth
-     * The implementation is borrowed from `getVisibleBounds` method of `UiObject2` class
-     *
-     * @return Empty rect if node is null, else a Rect containing visible bounds
-     */
-    @SuppressLint("CheckResult")
-    private static Rect getBounds(@Nullable AccessibilityNodeInfo node, Rect displayRect, int depth) {
-        Rect ret = new Rect();
-        if (node == null) {
-            return ret;
-        }
-
-        // Get the object bounds in screen coordinates
-        node.getBoundsInScreen(ret);
-
-        // Trim any portion of the bounds that are not on the screen
-        ret.intersect(displayRect);
-
-        // Trim any portion of the bounds that are outside the window
-        Rect window = new Rect();
-        AccessibilityWindowInfo nodeWindow = node.getWindow();
-        if (nodeWindow != null) {
-            nodeWindow.getBoundsInScreen(window);
-            ret.intersect(window);
-        }
-
-        // Find the visible bounds of our first scrollable ancestor
-        int currentDepth = depth;
-        Set<AccessibilityNodeInfo> ancestors = new HashSet<>();
-        AccessibilityNodeInfo ancestor = node.getParent();
-        // An erroneous situation is possible where node parent equals to the node itself
-        while (++currentDepth < Settings.get(SnapshotMaxDepth.class).getValue()
-                && ancestor != null && !ancestors.contains(ancestor)) {
-            // If this ancestor is scrollable
-            if (ancestor.isScrollable()) {
-                // Trim any portion of the bounds that are hidden by the non-visible portion of our
-                // ancestor
-                Rect ancestorRect = getBounds(ancestor, displayRect, currentDepth);
-                ret.intersect(ancestorRect);
-                return ret;
-            }
-            ancestors.add(ancestor);
-            ancestor = ancestor.getParent();
-        }
-
-        return ret;
     }
 
     /**
@@ -345,5 +336,27 @@ public class AxNodeInfoHelper {
             return text.substring(0, maxTextLength);
         }
         return text;
+    }
+
+    private interface Margins {
+        Rect apply(Rect bounds);
+    }
+
+    private static class PercentMargins implements Margins {
+        float mLeft, mTop, mRight, mBottom;
+        PercentMargins(float left, float top, float right, float bottom) {
+            mLeft = left;
+            mTop = top;
+            mRight = right;
+            mBottom = bottom;
+        }
+
+        @Override
+        public Rect apply(Rect bounds) {
+            return new Rect(bounds.left + (int) (bounds.width() * mLeft),
+                    bounds.top + (int) (bounds.height() * mTop),
+                    bounds.right - (int) (bounds.width() * mRight),
+                    bounds.bottom - (int) (bounds.height() * mBottom));
+        }
     }
 }

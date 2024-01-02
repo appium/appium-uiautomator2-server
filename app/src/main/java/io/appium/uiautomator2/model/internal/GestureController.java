@@ -32,6 +32,7 @@ import androidx.test.uiautomator.Until;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
@@ -93,6 +94,11 @@ public class GestureController {
         @Override
         public void run() {
             performGesture(mGestures);
+        }
+
+        @Override
+        public String toString() {
+            return Arrays.toString(mGestures);
         }
     }
 
@@ -159,17 +165,17 @@ public class GestureController {
 
         Direction swipeDirection = Direction.reverse(direction);
         int scrollSpeed = speed == null ? Gestures.getDefaultScrollSpeed() : checkSpeed(speed);
-        float swipePercent = percent;
-        while (swipePercent > 0.0f) {
+        for (float swipePercent = percent; swipePercent > 0.0f; swipePercent -= 1.0f) {
             float segment = Math.min(swipePercent, 1.0f);
             PointerGesture swipe = gestures.swipe(area, swipeDirection, segment, scrollSpeed).pause(250);
 
             // Perform the gesture and return early if we reached the end
-            if (performGestureAndWait(Until.scrollFinished(direction), Gestures.getScrollTimeout(), swipe)) {
+            Boolean scrollFinishedResult = performGestureAndWait(
+                    Until.scrollFinished(direction), Gestures.getScrollTimeout(), swipe
+            );
+            if (!Boolean.FALSE.equals(scrollFinishedResult)) {
                 return false;
             }
-
-            swipePercent -= 1.0f;
         }
         // We never reached the end
         return true;
@@ -181,7 +187,8 @@ public class GestureController {
         int flingSpeed = speed == null ? Gestures.getDefaultFlingSpeed() : speed;
         if (flingSpeed < minVelocity) {
             throw new IllegalArgumentException(String.format(
-                    "Speed %s is less than the minimum fling velocity %s", speed, minVelocity));
+                    "Speed %s is less than the minimum fling velocity %s", speed, minVelocity)
+            );
         }
 
         // To fling, we swipe in the opposite direction
@@ -189,6 +196,11 @@ public class GestureController {
         PointerGesture swipe = gestures.swipe(area, swipeDirection, 1.0f, flingSpeed);
 
         // Perform the gesture and return true if we did not reach the end
-        return !performGestureAndWait(Until.scrollFinished(direction), Gestures.getFlingTimeout(), swipe);
+        Boolean scrollFinishedResult = performGestureAndWait(
+                Until.scrollFinished(direction),
+                Gestures.getFlingTimeout(),
+                swipe
+        );
+        return Boolean.FALSE.equals(scrollFinishedResult);
     }
 }
