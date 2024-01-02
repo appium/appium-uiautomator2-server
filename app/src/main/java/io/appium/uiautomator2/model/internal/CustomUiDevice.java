@@ -40,6 +40,7 @@ import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.AccessibleUiObject;
+import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.ScreenRotation;
 import io.appium.uiautomator2.utils.Device;
 import io.appium.uiautomator2.utils.Logger;
@@ -65,15 +66,24 @@ public class CustomUiDevice {
     private final Class<?> ByMatcherClass;
     private final Constructor<?> uiObject2Constructor;
     private final Instrumentation mInstrumentation;
-    private GestureController gestureController;
-
+    private final Object nativeGestureController;
 
     private CustomUiDevice() {
         this.mInstrumentation = (Instrumentation) getField(UiDevice.class, FIELD_M_INSTRUMENTATION, Device.getUiDevice());
         this.ByMatcherClass = ReflectionUtils.getClass("androidx.test.uiautomator.ByMatcher");
-        this.METHOD_FIND_MATCH = getMethod(ByMatcherClass, "findMatch", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
-        this.METHOD_FIND_MATCHES = getMethod(ByMatcherClass, "findMatches", UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class);
-        this.uiObject2Constructor = getConstructor(UiObject2.class, UiDevice.class, BySelector.class, AccessibilityNodeInfo.class);
+        this.METHOD_FIND_MATCH = getMethod(
+                ByMatcherClass, "findMatch",
+                UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class
+        );
+        this.METHOD_FIND_MATCHES = getMethod(
+                ByMatcherClass, "findMatches",
+                UiDevice.class, BySelector.class, AccessibilityNodeInfo[].class
+        );
+        this.uiObject2Constructor = getConstructor(
+                UiObject2.class,
+                UiDevice.class, BySelector.class, AccessibilityNodeInfo.class
+        );
+        this.nativeGestureController = getNativeGestureControllerInstance();
     }
 
     public static synchronized CustomUiDevice getInstance() {
@@ -96,17 +106,6 @@ public class CustomUiDevice {
     }
 
     private UiObject2 toUiObject2(@NonNull BySelector selector, @Nullable AccessibilityNodeInfo node) {
-        // TODO: remove this comment after upgrading to androidx.test.uiautomator:uiautomator:2.3.0
-        // UiObject2 with androidx.test.uiautomator:uiautomator:2.3.0 has below code to crate the instance,
-        // thus if the node was None, it should create an empty element for the AccessibilityNodeInfo.
-        // <pre>
-        //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        //        AccessibilityWindowInfo window = UiObject2.Api21Impl.getWindow(cachedNode);
-        //        mDisplayId = window == null ? Display.DEFAULT_DISPLAY : UiObject2.Api30Impl.getDisplayId(window);
-        //    } else {
-        //        mDisplayId = Display.DEFAULT_DISPLAY;
-        //    }
-        // </pre>
         AccessibilityNodeInfo accessibilityNodeInfo =
                 (node == null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
                 ? new AccessibilityNodeInfo()
@@ -151,36 +150,26 @@ public class CustomUiDevice {
         return node == null ? null : new AccessibleUiObject(toUiObject2(realSelector, node), node);
     }
 
-    public synchronized GestureController getGestureController() {
-        if (gestureController == null) {
-            Class<?> gesturesClass = ReflectionUtils.getClass("androidx.test.uiautomator.Gestures");
-            // TODO: UIAutomator lib has changed this class significantly in v2.3.0,
-            // TODO: so this approach won't work anymore
-            Method gesturesFactory = ReflectionUtils.getMethod(
-                    gesturesClass, "getInstance", UiDevice.class
-            );
-            Gestures gestures;
-            try {
-                gestures = new Gestures(gesturesFactory.invoke(gesturesClass, getUiDevice()));
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                throw new UiAutomator2Exception("Cannot get an instance of the Gestures class", e);
-            }
-            Class<?> gestureControllerClass = ReflectionUtils.getClass(
-                    "androidx.test.uiautomator.GestureController"
-            );
-            Method gestureControllerFactory = ReflectionUtils.getMethod(
-                    gestureControllerClass, "getInstance", UiDevice.class
-            );
-            try {
-                gestureController = new GestureController(
-                        gestureControllerFactory.invoke(gestureControllerClass, getUiDevice()),
-                        gestures
-                );
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                throw new UiAutomator2Exception("Cannot get an instance of the GestureController class", e);
-            }
+    private Object getNativeGestureControllerInstance() {
+        Class <?> gestureControllerClass = ReflectionUtils.getClass("androidx.test.uiautomator.GestureController");
+        Method gestureControllerFactory = ReflectionUtils.getMethod(gestureControllerClass, "getInstance", UiDevice.class);
+        try {
+            return gestureControllerFactory.invoke(gestureControllerClass, getUiDevice());
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new UiAutomator2Exception("Cannot get an instance of the GestureController class", e);
         }
-        return gestureController;
+    }
+
+    public GestureController getGestureController(int displayId) {
+        return new GestureController(nativeGestureController, displayId);
+    }
+
+    public GestureController getGestureController() {
+        return new GestureController(nativeGestureController);
+    }
+
+    public GestureController getGestureController(AndroidElement element) {
+        return getGestureController(element.getDisplayId());
     }
 
     /**

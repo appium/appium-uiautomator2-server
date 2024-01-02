@@ -39,6 +39,7 @@ import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
+import static io.appium.uiautomator2.core.AxNodeInfoHelper.getAxNodeDisplayId;
 import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
 import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObjects;
 import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeException;
@@ -150,6 +151,11 @@ public class UiObjectElement extends BaseElement {
             return null;
         }
         return (result instanceof String) ? (String) result : String.valueOf(result);
+    }
+
+    @Override
+    public int getDisplayId() {
+        return getAxNodeDisplayId(toAxNodeInfo(element));
     }
 
     @Override

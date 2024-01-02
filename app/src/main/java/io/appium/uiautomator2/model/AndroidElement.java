@@ -30,6 +30,8 @@ public interface AndroidElement {
 
     @Nullable String getContextId();
 
+    int getDisplayId();
+
     boolean isSingleMatch();
 
     void clear() throws UiObjectNotFoundException;

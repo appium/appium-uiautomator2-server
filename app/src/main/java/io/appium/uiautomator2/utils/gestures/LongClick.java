@@ -60,7 +60,7 @@ public class LongClick extends BaseGesture {
                 Rect bounds = element.getBounds();
                 Point location = new Point(bounds.left + longClickModel.offset.x.intValue(),
                         bounds.top + longClickModel.offset.y.intValue());
-                CustomUiDevice.getInstance().getGestureController().longClick(location,
+                CustomUiDevice.getInstance().getGestureController(element).longClick(location,
                         longClickModel.duration == null ? null : longClickModel.duration.longValue()
                 );
             }

@@ -162,6 +162,11 @@ public class UiObject2Element extends BaseElement {
     }
 
     @Override
+    public int getDisplayId() {
+        return element.getDisplayId();
+    }
+
+    @Override
     public void clear() {
         element.clear();
     }

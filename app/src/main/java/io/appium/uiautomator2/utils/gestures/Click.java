@@ -55,7 +55,7 @@ public class Click extends BaseGesture {
                         bounds.left + clickModel.offset.x.intValue(),
                         bounds.top + clickModel.offset.y.intValue()
                 );
-                CustomUiDevice.getInstance().getGestureController().click(location);
+                CustomUiDevice.getInstance().getGestureController(element).click(location);
             }
         }
         return null;

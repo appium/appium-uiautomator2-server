@@ -56,8 +56,9 @@ public class Drag extends SafeRequestHandler {
                 Rect bounds = element.getBounds();
                 Point start = new Point(bounds.left + dragModel.start.x.intValue(),
                         bounds.top + dragModel.start.y.intValue());
-                CustomUiDevice.getInstance().getGestureController().drag(start, dragModel.end.toNativePoint(),
-                        dragModel.speed);
+                CustomUiDevice.getInstance().getGestureController(element).drag(
+                        start, dragModel.end.toNativePoint(), dragModel.speed
+                );
             }
         }
 

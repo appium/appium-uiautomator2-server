@@ -21,6 +21,7 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.SystemClock;
+import android.view.Display;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.Nullable;
@@ -35,15 +36,28 @@ import java.lang.reflect.Method;
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
 public class GestureController {
-
     private final Object wrappedInstance;
     private final Method performGestureMethod;
     private final Gestures gestures;
 
-    GestureController(Object wrappedInstance, Gestures gestures) {
+    GestureController(Object wrappedInstance, int displayId) {
         this.wrappedInstance = wrappedInstance;
         this.performGestureMethod = extractPerformGestureMethod(wrappedInstance);
-        this.gestures = gestures;
+        this.gestures = new Gestures(displayId);
+    }
+
+    GestureController(Object wrappedInstance) {
+        this(wrappedInstance, getCurrentDisplayId());
+    }
+
+    private static int getCurrentDisplayId() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            Display display = getInstrumentation().getTargetContext().getDisplay();
+            if (display != null) {
+                return display.getDisplayId();
+            }
+        }
+        return Display.DEFAULT_DISPLAY;
     }
 
     private static Method extractPerformGestureMethod(Object wrappedInstance) {
@@ -70,7 +84,7 @@ public class GestureController {
     }
 
     private class GestureRunnable implements Runnable {
-        private PointerGesture[] mGestures;
+        private final PointerGesture[] mGestures;
 
         public GestureRunnable(PointerGesture[] gestures) {
             mGestures = gestures;

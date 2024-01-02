@@ -55,7 +55,7 @@ public class DoubleClick extends BaseGesture {
                 Rect bounds = element.getBounds();
                 Point location = new Point(bounds.left + doubleClickModel.offset.x.intValue(),
                         bounds.top + doubleClickModel.offset.y.intValue());
-                CustomUiDevice.getInstance().getGestureController().doubleClick(location);
+                CustomUiDevice.getInstance().getGestureController(element).doubleClick(location);
             }
         }
         return null;

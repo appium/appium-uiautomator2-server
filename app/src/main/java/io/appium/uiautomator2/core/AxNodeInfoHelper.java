@@ -23,6 +23,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Pair;
+import android.view.Display;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import android.view.accessibility.AccessibilityWindowInfo;
@@ -36,6 +37,7 @@ import java.util.Set;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.model.internal.GestureController;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
 import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
@@ -128,12 +130,12 @@ public class AxNodeInfoHelper {
 
     public static void click(AccessibilityNodeInfo node) {
         Rect bounds = getBounds(node);
-        CustomUiDevice.getInstance().getGestureController().click(getCenterPoint(bounds));
+        makeGestureController(node).click(getCenterPoint(bounds));
     }
 
     public static void doubleClick(AccessibilityNodeInfo node) {
         Rect bounds = getBounds(node);
-        CustomUiDevice.getInstance().getGestureController().doubleClick(getCenterPoint(bounds));
+        makeGestureController(node).doubleClick(getCenterPoint(bounds));
     }
 
     public static void longClick(AccessibilityNodeInfo node) {
@@ -142,7 +144,7 @@ public class AxNodeInfoHelper {
 
     public static void longClick(AccessibilityNodeInfo node, @Nullable Long durationMs) {
         Rect bounds = getBounds(node);
-        CustomUiDevice.getInstance().getGestureController().longClick(getCenterPoint(bounds), durationMs);
+        makeGestureController(node).longClick(getCenterPoint(bounds), durationMs);
     }
 
     public static void drag(AccessibilityNodeInfo node, Point end) {
@@ -151,7 +153,7 @@ public class AxNodeInfoHelper {
 
     public static void drag(AccessibilityNodeInfo node, Point end, @Nullable Integer speed) {
         Rect bounds = getBounds(node);
-        CustomUiDevice.getInstance().getGestureController().drag(getCenterPoint(bounds), end, speed);
+        makeGestureController(node).drag(getCenterPoint(bounds), end, speed);
     }
 
     public static void pinchClose(AccessibilityNodeInfo node, float percent) {
@@ -160,7 +162,21 @@ public class AxNodeInfoHelper {
 
     public static void pinchClose(AccessibilityNodeInfo node, float percent, @Nullable Integer speed) {
         Rect bounds = getBoundsForGestures(node);
-        CustomUiDevice.getInstance().getGestureController().pinchClose(bounds, percent, speed);
+        makeGestureController(node).pinchClose(bounds, percent, speed);
+    }
+
+    private static GestureController makeGestureController(AccessibilityNodeInfo node) {
+        return CustomUiDevice.getInstance().getGestureController(getAxNodeDisplayId(node));
+    }
+
+    public static int getAxNodeDisplayId(AccessibilityNodeInfo node) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            AccessibilityWindowInfo window = node.getWindow();
+            if (window != null) {
+                return window.getDisplayId();
+            }
+        }
+        return Display.DEFAULT_DISPLAY;
     }
 
     public static void pinchOpen(AccessibilityNodeInfo node, float percent) {
@@ -169,7 +185,7 @@ public class AxNodeInfoHelper {
 
     public static void pinchOpen(AccessibilityNodeInfo node, float percent, @Nullable Integer speed) {
         Rect bounds = getBoundsForGestures(node);
-        CustomUiDevice.getInstance().getGestureController().pinchOpen(bounds, percent, speed);
+        makeGestureController(node).pinchOpen(bounds, percent, speed);
     }
 
     public static void swipe(AccessibilityNodeInfo node, Direction direction, float percent) {
@@ -178,7 +194,7 @@ public class AxNodeInfoHelper {
 
     public static void swipe(AccessibilityNodeInfo node, Direction direction, float percent, @Nullable Integer speed) {
         Rect bounds = getBoundsForGestures(node);
-        CustomUiDevice.getInstance().getGestureController().swipe(bounds, direction, percent, speed);
+        makeGestureController(node).swipe(bounds, direction, percent, speed);
     }
 
     public static boolean scroll(AccessibilityNodeInfo node, Direction direction, float percent) {
@@ -187,7 +203,7 @@ public class AxNodeInfoHelper {
 
     public static boolean scroll(AccessibilityNodeInfo node, Direction direction, float percent, @Nullable Integer speed) {
         Rect bounds = getBoundsForGestures(node);
-        return CustomUiDevice.getInstance().getGestureController().scroll(bounds, direction, percent, speed);
+        return makeGestureController(node).scroll(bounds, direction, percent, speed);
     }
 
     public static boolean fling(AccessibilityNodeInfo node, Direction direction) {
@@ -196,7 +212,7 @@ public class AxNodeInfoHelper {
 
     public static boolean fling(AccessibilityNodeInfo node, Direction direction, @Nullable Integer speed) {
         Rect bounds = getBoundsForGestures(node);
-        return CustomUiDevice.getInstance().getGestureController().fling(bounds, direction, speed);
+        return makeGestureController(node).fling(bounds, direction, speed);
     }
 
     /**
