@@ -245,14 +245,12 @@ public class CustomUiDevice {
 
     public int getTopmostWindowDisplayId() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            SparseArray<List<AccessibilityWindowInfo>> windows = getUiAutomation().getWindowsOnAllDisplays();
-            for (int i = 0; i < windows.size(); i++) {
-                int key = windows.keyAt(i);
-                List<AccessibilityWindowInfo> windowsList = windows.get(key);
-                if (windowsList.isEmpty()) {
-                    continue;
+            SparseArray<List<AccessibilityWindowInfo>> windowsMap = getUiAutomation().getWindowsOnAllDisplays();
+            for (int i = 0; i < windowsMap.size(); i++) {
+                int displayId = windowsMap.keyAt(i);
+                if (displayId >= 0) {
+                    return displayId;
                 }
-                return windowsList.get(0).getDisplayId();
             }
         }
         return Display.DEFAULT_DISPLAY;
