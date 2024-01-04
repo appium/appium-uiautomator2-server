@@ -661,12 +661,11 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollByUiSelectorTest() throws JSONException {
-        startActivity(".preference.PreferencesFromCode");
-        waitForElement(By.id("android:id/list"));
+        startActivity(".ApiDemos");
+        Response response = findElement(By.accessibilityId("Views"));
+        clickAndWaitForStaleness(response.getElementId());
 
-        String uiSelectorSpec = "new UiSelector()" +
-                ".classNameMatches(\"android.widget.RelativeLayout\")" +
-                ".childSelector(new UiSelector().textStartsWith(\"Parent checkbox\"))";
+        String uiSelectorSpec = "new UiSelector().textStartsWith(\"WebView\")";
 
         By by = By.androidUiAutomator(uiSelectorSpec);
 
