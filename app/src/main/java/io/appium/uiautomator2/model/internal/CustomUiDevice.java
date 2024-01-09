@@ -110,10 +110,14 @@ public class CustomUiDevice {
     }
 
     private UiObject2 toUiObject2(@NonNull BySelector selector, @Nullable AccessibilityNodeInfo node) {
-        AccessibilityNodeInfo accessibilityNodeInfo =
-                (node == null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
+        AccessibilityNodeInfo accessibilityNodeInfo;
+        if (node == null) {
+            accessibilityNodeInfo = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R)
                 ? new AccessibilityNodeInfo()
-                : node;
+                : AccessibilityNodeInfo.obtain();
+        } else {
+            accessibilityNodeInfo = node;
+        }
         Object[] constructorParams = {getUiDevice(), selector, accessibilityNodeInfo};
         try {
             return (UiObject2) uiObject2Constructor.newInstance(constructorParams);
