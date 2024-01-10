@@ -16,8 +16,6 @@
 
 package io.appium.uiautomator2.utils;
 
-import android.accessibilityservice.AccessibilityService;
-import android.os.Build;
 import android.os.SystemClock;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
@@ -27,8 +25,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
@@ -49,13 +45,8 @@ public class AXWindowHelpers {
      */
     private static void clearAccessibilityCache() {
         try {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                AccessibilityService accessibilityService = getInstrumentation().getContext().getSystemService(AccessibilityService.class);
-                accessibilityService.clearCache();
-            } else {
-                // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
-                UiAutomatorBridge.getInstance().getUiAutomation().setServiceInfo(null);
-            }
+            // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
+            UiAutomatorBridge.getInstance().getUiAutomation().setServiceInfo(null);
         } catch (NullPointerException npe) {
             // it is fine
             // ignore
