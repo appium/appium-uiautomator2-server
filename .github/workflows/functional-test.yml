@@ -12,18 +12,26 @@ jobs:
       fail-fast: false
       matrix:
         include:
+        - platformVersion: "13.0"
+          apiLevel: 33
+          emuTag: google_apis
+          arch: x86_64
         - platformVersion: "11.0"
           apiLevel: 30
           emuTag: google_apis
+          arch: x86
         - platformVersion: "9.0"
           apiLevel: 28
           emuTag: default
+          arch: x86
         - platformVersion: "7.1"
           apiLevel: 25
           emuTag: default
+          arch: x86
         - platformVersion: "5.1"
           apiLevel: 22
           emuTag: default
+          arch: x86
 
     env:
       CI: true
@@ -58,6 +66,7 @@ jobs:
         api-level: ${{ matrix.apiLevel }}
         disable-spellchecker: true
         target: ${{ matrix.emuTag }}
+        arch: ${{ matrix.arch }}
     - name: Save logcat output
       if: ${{ always() }}
       uses: actions/upload-artifact@master
