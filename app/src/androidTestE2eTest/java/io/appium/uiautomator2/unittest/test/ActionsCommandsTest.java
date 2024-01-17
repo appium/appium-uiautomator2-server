@@ -31,7 +31,6 @@ import io.appium.uiautomator2.unittest.test.internal.Response;
 
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.performActions;
-import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.drag;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.fling;
