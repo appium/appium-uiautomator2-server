@@ -71,11 +71,11 @@ public class ActionsCommandsTest extends BaseTest {
     }
 
     private void setupDragDropView() throws JSONException {
-        startActivity("io.appium.android.apis.view.DragAndDropDemo");
+        startActivity(".view.DragAndDropDemo");
     }
 
     private void setupEditView() throws JSONException {
-        startActivity("io.appium.android.apis.app.AlertDialogSamples");
+        startActivity(".app.AlertDialogSamples");
     }
 
     @Test
