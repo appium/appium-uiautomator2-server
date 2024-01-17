@@ -34,7 +34,7 @@ jobs:
       _FORCE_LOGS: 1
     # No hardware acceleration is available for emulators on Ubuntu:
     # https://github.com/marketplace/actions/android-emulator-runner#can-i-use-this-action-on-linux-vms
-    runs-on: macos-latest
+    runs-on: macos-13-arm64
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
