@@ -30,6 +30,7 @@ import io.appium.uiautomator2.model.Point;
 import io.appium.uiautomator2.unittest.test.internal.BaseTest;
 import io.appium.uiautomator2.unittest.test.internal.Response;
 
+import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElement;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.performActions;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
@@ -73,11 +74,12 @@ public class ActionsCommandsTest extends BaseTest {
 
     private void setupDragDropView() throws JSONException {
         startActivity(".view.DragAndDropDemo");
+        waitForElement(By.id("io.appium.android.apis:id/drag_explanation"));
     }
 
     private void setupEditView() throws JSONException {
         startActivity(".app.AlertDialogSamples");
-        Response response = findElement(By.accessibilityId("Text Entry dialog"));
+        Response response = waitForElement(By.accessibilityId("Text Entry dialog"));
         clickAndWaitForStaleness(response.getElementId());
     }
 
