@@ -22,6 +22,7 @@ import android.os.SystemClock;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.appium.uiautomator2.model.By;
@@ -217,6 +218,7 @@ public class ActionsCommandsTest extends BaseTest {
         assertFalse(pinchCloseResponse.isSuccessful());
     }
 
+    @Ignore("This test is not stable on CI as probably slow response. Please enable again once we move the CI instance to faster emulator one such as M1 macOS instance. Local run works.")
     @Test
     public void verifyPinchOpenGesture() throws JSONException {
         setupDragDropView();
