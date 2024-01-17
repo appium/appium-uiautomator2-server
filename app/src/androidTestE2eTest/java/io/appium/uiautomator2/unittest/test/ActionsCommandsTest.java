@@ -76,6 +76,14 @@ public class ActionsCommandsTest extends BaseTest {
 
     private void setupEditView() throws JSONException {
         startActivity(".app.AlertDialogSamples");
+        Response response = findElement(By.accessibilityId("Text Entry dialog"));
+        clickAndWaitForStaleness(response.getElementId());
+    }
+
+    @Override
+    public void launchAUT() {
+        // Skip some setup to avoid redundant setup.
+        dismissSystemAlert();
     }
 
     @Test
