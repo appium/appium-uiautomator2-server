@@ -72,20 +72,11 @@ public class ActionsCommandsTest extends BaseTest {
     }
 
     private void setupDragDropView() throws JSONException {
-        scrollToText("Views"); // Due to 'Views' option not visible on small screen
-        Response response = findElement(By.accessibilityId("Views"));
-        clickAndWaitForStaleness(response.getElementId());
-        response = findElement(By.accessibilityId("Drag and Drop"));
-        clickAndWaitForStaleness(response.getElementId());
+        startActivity("io.appium.android.apis.view.DragAndDropDemo");
     }
 
     private void setupEditView() throws JSONException {
-        Response response = findElement(By.accessibilityId("App"));
-        clickAndWaitForStaleness(response.getElementId());
-        response = findElement(By.accessibilityId("Alert Dialogs"));
-        clickAndWaitForStaleness(response.getElementId());
-        response = findElement(By.accessibilityId("Text Entry dialog"));
-        clickAndWaitForStaleness(response.getElementId());
+        startActivity("io.appium.android.apis.app.AlertDialogSamples");
     }
 
     @Test
