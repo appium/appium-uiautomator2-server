@@ -65,7 +65,7 @@ public class AlertCommandsTest extends BaseTest {
         Response response = findElement(By.accessibilityId("OK Cancel dialog with a long message"));
         clickAndWaitForStaleness(response.getElementId());
 
-        if (Build.VERSION.SDK_INT <= 29) {
+        if (Build.VERSION.SDK_INT > 28) {
             response = dismissAlert("Cancel");
         } else {
             response = dismissAlert("CANCEL");

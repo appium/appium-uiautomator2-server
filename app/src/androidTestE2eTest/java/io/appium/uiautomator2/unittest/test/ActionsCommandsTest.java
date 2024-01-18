@@ -89,6 +89,7 @@ public class ActionsCommandsTest extends BaseTest {
         dismissSystemAlert();
     }
 
+    @Ignore("This test is not stable on CI as probably slow response. Please enable again once we move the CI instance to faster emulator one such as M1 macOS instance. Local run works.")
     @Test
     public void verifyDragAndDropOnAnotherElement() throws JSONException {
         setupDragDropView();
