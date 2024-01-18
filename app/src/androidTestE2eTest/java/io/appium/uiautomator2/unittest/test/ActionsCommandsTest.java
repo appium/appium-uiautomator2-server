@@ -112,6 +112,7 @@ public class ActionsCommandsTest extends BaseTest {
         verifyDragResult();
     }
 
+    @Ignore("This test is not stable on CI as probably slow response. Please enable again once we move the CI instance to faster emulator one such as M1 macOS instance. Local run works.")
     @Test
     public void verifyTypingText() throws JSONException {
         setupEditView();
