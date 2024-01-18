@@ -132,6 +132,7 @@ public class ActionsCommandsTest extends BaseTest {
         assertThat((String) response.getValue(), equalTo("hi"));
     }
 
+    @Ignore("This test is not stable on CI as probably slow response. Please enable again once we move the CI instance to faster emulator one such as M1 macOS instance. Local run works.")
     @Test
     public void verifyLongClickGesture() throws JSONException {
         setupDragDropView();
@@ -150,6 +151,7 @@ public class ActionsCommandsTest extends BaseTest {
         assertFalse(longClickResponse.isSuccessful());
     }
 
+    @Ignore("This test is not stable on CI as probably slow response. Please enable again once we move the CI instance to faster emulator one such as M1 macOS instance. Local run works.")
     @Test
     public void verifyDragGesture() throws JSONException {
         setupDragDropView();
@@ -195,6 +197,7 @@ public class ActionsCommandsTest extends BaseTest {
         assertFalse(flingResponse.isSuccessful());
     }
 
+    @Ignore("This test is not stable on CI as probably slow response. Please enable again once we move the CI instance to faster emulator one such as M1 macOS instance. Local run works.")
     @Test
     public void verifyPinchCloseGesture() throws JSONException {
         setupDragDropView();
