@@ -26,6 +26,7 @@ import io.appium.uiautomator2.unittest.test.internal.BaseTest;
 import io.appium.uiautomator2.unittest.test.internal.Response;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
+import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElement;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.acceptAlert;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.dismissAlert;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
@@ -38,10 +39,8 @@ import static org.junit.Assert.assertTrue;
 public class AlertCommandsTest extends BaseTest {
 
     private void setupView() throws JSONException {
-        Response response = findElement(By.accessibilityId("App"));
-        clickAndWaitForStaleness(response.getElementId());
-        response = findElement(By.accessibilityId("Alert Dialogs"));
-        clickAndWaitForStaleness(response.getElementId());
+        startActivity(".app.AlertDialogSamples");
+        waitForElement(By.accessibilityId("List dialog"));
     }
 
     @Test
@@ -66,7 +65,11 @@ public class AlertCommandsTest extends BaseTest {
         Response response = findElement(By.accessibilityId("OK Cancel dialog with a long message"));
         clickAndWaitForStaleness(response.getElementId());
 
-        response = dismissAlert("CANCEL");
+        if (Build.VERSION.SDK_INT > 28) {
+            response = dismissAlert("Cancel");
+        } else {
+            response = dismissAlert("CANCEL");
+        }
         assertTrue(response.isSuccessful());
     }
 
