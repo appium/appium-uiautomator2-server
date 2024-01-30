@@ -58,14 +58,16 @@ public class ScreenshotHelper {
             return takeDeviceScreenshot(String.class);
         }
 
-        Bitmap screenshot = takeDeviceScreenshot(Bitmap.class);
+        Bitmap fullScreenshot = takeDeviceScreenshot(Bitmap.class);
+        Bitmap elementScreenshot = null;
         try {
-            final Bitmap elementScreenshot = crop(screenshot, cropArea);
-            screenshot.recycle();
-            screenshot = elementScreenshot;
-            return Base64.encodeToString(compress(screenshot), Base64.NO_WRAP);
+            elementScreenshot = crop(fullScreenshot, cropArea);
+            return Base64.encodeToString(compress(elementScreenshot), Base64.NO_WRAP);
         } finally {
-            screenshot.recycle();
+            fullScreenshot.recycle();
+            if (elementScreenshot != null && elementScreenshot != fullScreenshot) {
+                elementScreenshot.recycle();
+            }
         }
     }
 
