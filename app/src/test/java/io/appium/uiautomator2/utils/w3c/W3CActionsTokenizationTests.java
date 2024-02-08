@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
+import io.appium.uiautomator2.model.api.actions.W3CItemModel;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toObject;
 import static org.hamcrest.CoreMatchers.equalTo;

@@ -1,4 +1,4 @@
-package io.appium.uiautomator2.model.api.touch.w3c;
+package io.appium.uiautomator2.model.api.actions;
 
 import io.appium.uiautomator2.model.RequiredField;
 import io.appium.uiautomator2.model.api.BaseModel;

@@ -31,7 +31,7 @@ import io.appium.uiautomator2.handler.request.NoSessionCommandHandler;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.model.api.touch.appium.PackageModel;
+import io.appium.uiautomator2.model.api.PackageModel;
 
 // Get a list of all applications (System and Installed) with packageActivity.
 // It does not include applications wich has no launchable activities in the manifest.

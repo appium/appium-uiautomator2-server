@@ -21,8 +21,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.appium.uiautomator2.model.api.touch.w3c.W3CGestureModel;
-import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
+import io.appium.uiautomator2.model.api.actions.W3CGestureModel;
+import io.appium.uiautomator2.model.api.actions.W3CItemModel;
 
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_TYPE_KEY;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.ACTION_ITEM_TYPE_POINTER_CANCEL;

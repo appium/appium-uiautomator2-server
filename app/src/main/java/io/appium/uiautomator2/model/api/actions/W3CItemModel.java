@@ -1,4 +1,4 @@
-package io.appium.uiautomator2.model.api.touch.w3c;
+package io.appium.uiautomator2.model.api.actions;
 
 import java.util.List;
 

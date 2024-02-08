@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.api;
+package io.appium.uiautomator2.model.api.actions;
+
+import java.util.List;
 
 import io.appium.uiautomator2.model.RequiredField;
+import io.appium.uiautomator2.model.api.BaseModel;
 
-public class DragModel extends BaseModel {
-    public String elementId;
-    public String destElId;
-    public Double startX;
-    public Double startY;
-    public Double endX;
-    public Double endY;
+public class W3CActionsModel extends BaseModel {
     @RequiredField
-    public Integer steps;
+    public List<W3CItemModel> actions;
 
-
-    public DragModel() {}
+    public W3CActionsModel() {}
 }

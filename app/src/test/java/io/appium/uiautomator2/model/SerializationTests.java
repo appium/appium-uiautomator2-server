@@ -23,8 +23,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.api.KeyCodeModel;
-import io.appium.uiautomator2.model.api.touch.w3c.W3CActionsModel;
-import io.appium.uiautomator2.model.api.touch.w3c.W3CItemModel;
+import io.appium.uiautomator2.model.api.actions.W3CActionsModel;
+import io.appium.uiautomator2.model.api.actions.W3CItemModel;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 import static org.hamcrest.CoreMatchers.equalTo;

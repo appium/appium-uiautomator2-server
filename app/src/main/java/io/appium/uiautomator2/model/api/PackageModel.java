@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model.api.touch.appium;
+package io.appium.uiautomator2.model.api;
 
 import javax.annotation.Nullable;
 
