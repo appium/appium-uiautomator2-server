@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.handler;
+package io.appium.uiautomator2.handler.gestures;
 
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
