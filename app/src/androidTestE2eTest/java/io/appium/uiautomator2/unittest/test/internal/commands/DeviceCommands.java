@@ -243,7 +243,7 @@ public class DeviceCommands {
         params.put("multiple", false);
 
         postBody.put("params", params);
-        return Client.post("/touch/scroll", postBody);
+        return Client.post("/gestures/scroll_to", postBody);
     }
 
     /**
@@ -266,7 +266,7 @@ public class DeviceCommands {
         params.put("multiple", false);
 
         postBody.put("params", params);
-        return Client.post("/touch/scroll", postBody);
+        return Client.post("/gestures/scroll_to", postBody);
     }
 
     /**
@@ -305,7 +305,7 @@ public class DeviceCommands {
         }
 
         postBody.put("params", params);
-        return Client.post("/touch/scroll", postBody);
+        return Client.post("/gestures/scroll_to", postBody);
     }
 
     /**
