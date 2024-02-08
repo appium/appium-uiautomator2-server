@@ -64,6 +64,7 @@ import io.appium.uiautomator2.handler.OpenNotification;
 import io.appium.uiautomator2.handler.PressBack;
 import io.appium.uiautomator2.handler.PressKeyCode;
 import io.appium.uiautomator2.handler.ScheduleAction;
+import io.appium.uiautomator2.handler.W3CActions;
 import io.appium.uiautomator2.handler.gestures.ScrollTo;
 import io.appium.uiautomator2.handler.gestures.ScrollToElement;
 import io.appium.uiautomator2.handler.SendKeysToElement;
@@ -129,6 +130,7 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new SetClipboard("/session/:sessionId/appium/device/set_clipboard"));
         register(postHandler, new AcceptAlert("/session/:sessionId/alert/accept"));
         register(postHandler, new DismissAlert("/session/:sessionId/alert/dismiss"));
+        register(postHandler, new W3CActions("/session/:sessionId/actions"));
 
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Drag("/session/:sessionId/appium/gestures/drag"));
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Fling("/session/:sessionId/appium/gestures/fling"));
