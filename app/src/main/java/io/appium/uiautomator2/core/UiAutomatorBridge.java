@@ -18,7 +18,6 @@ package io.appium.uiautomator2.core;
 import android.app.Service;
 import android.app.UiAutomation;
 import android.hardware.display.DisplayManager;
-import android.os.Build;
 import android.view.Display;
 import android.view.accessibility.AccessibilityNodeInfo;
 

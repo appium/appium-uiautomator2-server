@@ -33,6 +33,7 @@ import java.util.List;
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Attribute;
+import io.appium.uiautomator2.utils.ContentSizeHelpers;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
@@ -93,7 +94,7 @@ public class UiObject2Element extends BaseElement {
                 result = element.getResourceName();
                 break;
             case CONTENT_SIZE:
-                result = ElementHelpers.getContentSize(this);
+                result = ContentSizeHelpers.getContentSize(this);
                 break;
             case ENABLED:
                 result = element.isEnabled();

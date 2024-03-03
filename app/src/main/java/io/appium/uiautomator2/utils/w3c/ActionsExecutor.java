@@ -120,7 +120,7 @@ public class ActionsExecutor {
                             eventTime, keyAction, event.getKeyCode(), 0,
                             event.getMetaState() | metaKeysToState(depressedMetaKeys),
                             KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0);
-                    result &= interactionController.injectEventSync(keyEvent, false);
+                    result &= interactionController.injectEventSync(keyEvent);
                     logEvent(keyEvent, eventTime, result);
                 }
             }
@@ -141,7 +141,7 @@ public class ActionsExecutor {
         final KeyEvent keyEvent = new KeyEvent(startTimestamp + eventParam.startDelta,
                 eventTime, keyAction, w3CKeyCode.getAndroidCodePoint(), 0,
                 metaKeysToState(depressedMetaKeys), KeyCharacterMap.VIRTUAL_KEYBOARD, 0, 0);
-        result = interactionController.injectEventSync(keyEvent, false);
+        result = interactionController.injectEventSync(keyEvent);
         logEvent(keyEvent, eventTime, result);
         return result;
     }
@@ -250,7 +250,7 @@ public class ActionsExecutor {
                     break;
             } // switch
             if (synthesizedEvent != null) {
-                result &= interactionController.injectEventSync(synthesizedEvent, false);
+                result &= interactionController.injectEventSync(synthesizedEvent);
                 logEvent(synthesizedEvent, eventTime, result);
                 synthesizedEvent.recycle();
             }

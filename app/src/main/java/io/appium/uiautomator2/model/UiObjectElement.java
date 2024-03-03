@@ -34,6 +34,7 @@ import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.ByUiAutomatorFinder;
+import io.appium.uiautomator2.utils.ContentSizeHelpers;
 import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
@@ -85,7 +86,7 @@ public class UiObjectElement extends BaseElement {
                 result = toAxNodeInfo(element).getViewIdResourceName();
                 break;
             case CONTENT_SIZE:
-                result = ElementHelpers.getContentSize(this);
+                result = ContentSizeHelpers.getContentSize(this);
                 break;
             case ENABLED:
                 result = element.isEnabled();
