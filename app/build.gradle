@@ -102,7 +102,7 @@ dependencies {
     implementation 'com.ibm.icu:icu4j:60.2'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.test.ext:junit:1.1.5'
-    testImplementation 'org.json:json:20240205'
+    testImplementation 'org.json:json:20240303'
     testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
     testImplementation 'org.powermock:powermock-classloading-xstream:2.0.9'
     testImplementation 'org.powermock:powermock-module-junit4-rule:2.0.9'
