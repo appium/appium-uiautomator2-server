@@ -15,15 +15,19 @@ jobs:
         - platformVersion: "11.0"
           apiLevel: 30
           emuTag: google_apis
+          arch: x86
         - platformVersion: "9.0"
           apiLevel: 28
           emuTag: default
+          arch: x86
         - platformVersion: "7.1"
           apiLevel: 25
           emuTag: default
+          arch: x86
         - platformVersion: "5.1"
           apiLevel: 22
           emuTag: default
+          arch: x86
 
     env:
       CI: true
@@ -32,11 +36,14 @@ jobs:
       PLATFORM_VERSION: ${{ matrix.platformVersion }}
       EMU_TAG: ${{ matrix.emuTag }}
       _FORCE_LOGS: 1
-    # No hardware acceleration is available for emulators on Ubuntu:
-    # https://github.com/marketplace/actions/android-emulator-runner#can-i-use-this-action-on-linux-vms
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Enable KVM group perms
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
     - uses: actions/setup-node@v3
       with:
         node-version: lts/*
@@ -47,6 +54,28 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
+    - name: AVD cache
+      uses: actions/cache@v3
+      id: avd-cache
+      with:
+        path: |
+          ~/.android/avd/*
+          ~/.android/adb*
+        key: avd-${{ matrix.apiLevel }}
+    # https://github.com/marketplace/actions/android-emulator-runner
+    - uses: reactivecircus/android-emulator-runner@v2
+      if: steps.avd-cache.outputs.cache-hit != 'true'
+      name: Generate AVD snapshot for caching
+      with:
+        script: echo "Generated AVD snapshot for caching."
+        avd-name: ${{ env.ANDROID_AVD }}
+        force-avd-creation: false
+        api-level: ${{ matrix.apiLevel }}
+        disable-spellchecker: true
+        target: ${{ matrix.emuTag }}
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+        arch: ${{ matrix.arch }}
+        disable-animations: true
     - run: nohup adb logcat > logcat.log &
       name: Capture Logcat
     - uses: reactivecircus/android-emulator-runner@v2
@@ -54,10 +83,13 @@ jobs:
       with:
         script: scripts/e2e.sh
         avd-name: ${{ env.ANDROID_AVD }}
-        sdcard-path-or-size: 1500M
+        force-avd-creation: false
         api-level: ${{ matrix.apiLevel }}
         disable-spellchecker: true
         target: ${{ matrix.emuTag }}
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+        arch: ${{ matrix.arch }}
+        disable-animations: true
     - name: Save logcat output
       if: ${{ always() }}
       uses: actions/upload-artifact@master
