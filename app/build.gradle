@@ -107,7 +107,7 @@ dependencies {
     testImplementation 'org.powermock:powermock-classloading-xstream:2.0.9'
     testImplementation 'org.powermock:powermock-module-junit4-rule:2.0.9'
     testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
-    testImplementation 'org.robolectric:robolectric:4.12.1'
+    testImplementation 'org.robolectric:robolectric:4.12.2'
     androidTestImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'com.squareup.okhttp:okhttp:2.7.5'
