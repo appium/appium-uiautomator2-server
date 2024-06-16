@@ -209,7 +209,7 @@ public class ScheduledActionsManager {
                     info.name, resultCounts.failCount
             ));
             shouldUnschedule = true;
-        } else if (info.times >= history.repeats) {
+        } else if (history.repeats >= info.times) {
             Logger.info(String.format(
                     "The scheduled action '%s' has been executed %s times in total", info.name, info.times
             ));
