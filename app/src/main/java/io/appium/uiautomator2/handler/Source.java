@@ -16,34 +16,18 @@
 
 package io.appium.uiautomator2.handler;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
-import io.appium.uiautomator2.utils.Attribute;
 
 import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshAccessibilityCache;
+import static io.appium.uiautomator2.utils.Attribute.xmlExposableAttributes;
 
 /**
  * Get page source. Return as string of XML doc
  */
 public class Source extends SafeRequestHandler {
-    private static final Set<Attribute> includedAttributes = new HashSet<>();
-
-    private static synchronized Set<Attribute> getXmlSourceAttributes() {
-        if (includedAttributes.isEmpty()) {
-            for (Attribute attribute : Attribute.values()) {
-                if (attribute.isExposableToXml()) {
-                    includedAttributes.add(attribute);
-                }
-            }
-        }
-        return includedAttributes;
-    }
-
     public Source(String mappedUri) {
         super(mappedUri);
     }
@@ -51,7 +35,7 @@ public class Source extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         refreshAccessibilityCache();
-        String xmlSource = new AccessibilityNodeInfoDumper(null, getXmlSourceAttributes()).dumpToXml();
+        String xmlSource = new AccessibilityNodeInfoDumper(null, xmlExposableAttributes()).dumpToXml();
         return new AppiumResponse(getSessionId(request), xmlSource);
     }
 }

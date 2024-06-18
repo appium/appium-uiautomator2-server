@@ -17,8 +17,7 @@
 package io.appium.uiautomator2.utils.actions_scheduler;
 
 import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshAccessibilityCache;
-
-import java.util.Collections;
+import static io.appium.uiautomator2.utils.Attribute.xmlExposableAttributes;
 
 import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
 import io.appium.uiautomator2.model.api.scheduled.ScheduledActionStepModel;
@@ -46,6 +45,6 @@ public class SourceStep extends BaseActionStep {
 
     private String fetchXmlSource() {
         refreshAccessibilityCache();
-        return new AccessibilityNodeInfoDumper(null, Collections.emptySet()).dumpToXml();
+        return new AccessibilityNodeInfoDumper(null, xmlExposableAttributes()).dumpToXml();
     }
 }
