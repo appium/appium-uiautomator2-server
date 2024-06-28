@@ -19,7 +19,7 @@ package io.appium.uiautomator2.utils.gestures;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;

@@ -16,7 +16,7 @@
 
 package io.appium.uiautomator2.model.api;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class PackageModel {
     private final String packageName;

@@ -21,7 +21,7 @@ import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
 import java.util.Map;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import io.appium.uiautomator2.model.api.gestures.ClickModel;
 import io.appium.uiautomator2.model.api.gestures.DoubleClickModel;
