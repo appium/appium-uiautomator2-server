@@ -1,8 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const semver = require('semver');
-const log = require('fancy-log');
+const {logger} = require('@appium/support');
 
+const log = logger.getLogger('Versioner');
 const VERSION_NAME_PATTERN = /^\s*versionName\s+['"](.+)['"]$/gm;
 const VERSION_CODE_PATTERN = /^\s*versionCode\s+(.+)$/gm;
 
