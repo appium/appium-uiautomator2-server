@@ -34,6 +34,8 @@ import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertEquals;
 
+import static io.appium.uiautomator2.utils.XMLHelpers.toSafeString;
+
 import android.os.SystemClock;
 
 import java.io.ByteArrayInputStream;
@@ -236,6 +238,12 @@ public class XMLHelpersTests {
         } catch (XPathExpressionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public void createsSafeXmlString() {
+        String text = toSafeString("°C\u000b", "?");
+        assertEquals(text, "°C?");
     }
 
     @Test
