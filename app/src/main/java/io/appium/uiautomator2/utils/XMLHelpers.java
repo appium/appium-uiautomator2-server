@@ -18,7 +18,6 @@ package io.appium.uiautomator2.utils;
 
 import androidx.annotation.Nullable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 public abstract class XMLHelpers {
@@ -51,18 +50,7 @@ public abstract class XMLHelpers {
     @Nullable
     public static String toSafeString(@Nullable Object source, String replacement) {
         return source == null ? null : XML10_PATTERN
-                .matcher(toSafeUtf8String(String.valueOf(source)))
+                .matcher(String.valueOf(source))
                 .replaceAll(replacement);
-    }
-
-    @Nullable
-    public static String toSafeUtf8String(@Nullable String source) {
-        if (source == null) {
-            return null;
-        }
-
-        // This method always replaces malformed-input and unmappable-character sequences
-        // with this charset's default replacement byte array.
-        return new String(source.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
     }
 }
