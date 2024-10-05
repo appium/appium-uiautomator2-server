@@ -51,7 +51,7 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '22'
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
     - run: npm install --no-package-lock
