@@ -108,6 +108,7 @@ dependencies {
     testImplementation 'org.powermock:powermock-module-junit4-rule:2.0.9'
     testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
     testImplementation 'org.robolectric:robolectric:4.13'
+    testImplementation 'org.javassist:javassist:3.30.2-GA'
     androidTestImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'com.squareup.okhttp:okhttp:2.7.5'
