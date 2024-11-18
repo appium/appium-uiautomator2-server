@@ -94,7 +94,7 @@ dependencies {
     implementation 'androidx.test:runner:1.6.2'
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'io.netty:netty-all:4.0.41.Final'
-    implementation 'net.gcardone.junidecode:junidecode:0.5.1'
+    implementation 'net.gcardone.junidecode:junidecode:0.5.2'
     // The next three dependencies are required for XPath search to work
     implementation 'xerces:xercesImpl:2.12.2'
     implementation 'com.github.vbmacher:java-cup-runtime:11b-20160615-3'
