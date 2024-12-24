@@ -241,10 +241,11 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
         List<UiElementSnapshot> children = new ArrayList<>(childCount);
         boolean areInvisibleElementsAllowed = Settings.get(AllowInvisibleElements.class).getValue();
+        List<Integer> nullNodeIndexes = new ArrayList<>();
         for (int index = 0; index < childCount; ++index) {
             AccessibilityNodeInfo child = node.getChild(index);
             if (child == null) {
-                Logger.info(String.format("The child node #%s of %s is null", index, node));
+                nullNodeIndexes.add(index);
                 continue;
             }
 
@@ -252,6 +253,11 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             if (areInvisibleElementsAllowed || child.isVisibleToUser()) {
                 children.add(take(child, index, depth + 1, includedAttributes));
             }
+        }
+        if (!nullNodeIndexes.isEmpty()) {
+            Logger.info(String.format(
+                    "The following child nodes of %s are nulls: %s", node, nullNodeIndexes
+            ));
         }
         return children;
     }
