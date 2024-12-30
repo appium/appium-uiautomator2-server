@@ -102,8 +102,10 @@ class MjpegScreenshotClient {
         }
 
         try {
-            while (!in.ready()) {
+            if (!in.ready()) {
                SystemClock.sleep(INPUT_NOT_READY_SLEEP_TIME_MS);
+               // Client initialization will be retried on the next frame
+               return;
             }
 
             Logger.info(String.format(
