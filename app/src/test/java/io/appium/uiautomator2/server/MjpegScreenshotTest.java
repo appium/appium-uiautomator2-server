@@ -32,9 +32,16 @@ public class MjpegScreenshotTest {
     // Create a MJPEG server with a mocked getScreenshot method
     MjpegScreenshotStream mockScreenshotStreamSpy =
         spy(new MjpegScreenshotStream(Collections.emptyList()));
-    byte[] mockScreenshotData = "screenshot data".getBytes(StandardCharsets.UTF_8);
+    String mockScreenshotData = "screenshot data";
+    byte[] mockHTTPResponse =
+        ("HTTP/1.1 200 OK\n"
+                + "Content-Length: "
+                + mockScreenshotData.length()
+                + "\n\n"
+                + mockScreenshotData)
+            .getBytes(StandardCharsets.UTF_8);
     PowerMockito.stub(PowerMockito.method(MjpegScreenshotStream.class, "getScreenshot"))
-        .toReturn(mockScreenshotData);
+        .toReturn(mockHTTPResponse);
     PowerMockito.whenNew(MjpegScreenshotStream.class)
         .withAnyArguments()
         .thenReturn(mockScreenshotStreamSpy);
