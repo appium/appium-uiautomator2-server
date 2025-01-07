@@ -42,7 +42,7 @@
     "test": "./gradlew testServerDebugUnitTest"
   },
   "devDependencies": {
-    "@appium/eslint-config-appium": "^8.0.0",
+    "@appium/eslint-config-appium-ts": "^1.0.0",
     "@appium/support": "^6.0.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",

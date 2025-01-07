@@ -23,7 +23,7 @@ async function gradleVersionUpdate() {
   const gradleFile = path.resolve(__dirname, '..', 'app', 'build.gradle');
   try {
     await fs.promises.access(gradleFile, fs.constants.W_OK);
-  } catch (e) {
+  } catch {
     throw new Error(`No '${gradleFile}' file found or it is not writeable`);
   }
 
