@@ -58,7 +58,12 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.FOCUSABLE, Attribute.FOCUSED, Attribute.LONG_CLICKABLE,
             Attribute.PASSWORD, Attribute.SCROLLABLE, Attribute.SELECTION_START,
             Attribute.SELECTION_END, Attribute.SELECTED, Attribute.BOUNDS, Attribute.DISPLAYED,
-            Attribute.HINT, Attribute.EXTRAS
+            Attribute.HINT, Attribute.EXTRAS, Attribute.IMPORTANT_FOR_ACCESSIBILITY,
+            Attribute.SCREEN_READER_FOCUSABLE, Attribute.INPUT_TYPE, Attribute.DRAWING_ORDER,
+            Attribute.SHOWING_HINT_TEXT, Attribute.TEXT_ENTRY_KEY, Attribute.MULTI_LINE,
+            Attribute.DISMISSABLE, Attribute.ACCESSIBILITY_FOCUSED, Attribute.HEADING,
+            Attribute.LIVE_REGION, Attribute.CONTEXT_CLICKABLE, Attribute.MAX_TEXT_LENGTH,
+            Attribute.CONTENT_INVALID, Attribute.ERROR_TEXT, Attribute.PANE_TITLE, Attribute.ACTIONS
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
     };
     private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[] {
@@ -163,6 +168,49 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 } else {
                     return null;
                 }
+            case IMPORTANT_FOR_ACCESSIBILITY:
+                return node.isImportantForAccessibility();
+            case SCREEN_READER_FOCUSABLE:
+                return node.isScreenReaderFocusable();
+            case INPUT_TYPE:
+                return node.getInputType();
+            case DRAWING_ORDER:
+                return node.getDrawingOrder();
+            case SHOWING_HINT_TEXT:
+                return node.isShowingHintText();
+            case ACTIONS:
+//                return node.getActions(); //deprecated bitmask
+                StringBuilder actionsBuilder = new StringBuilder();
+                List<AccessibilityNodeInfo.AccessibilityAction> actionList = node.getActionList();
+                for (AccessibilityNodeInfo.AccessibilityAction action : actionList) {
+                    actionsBuilder.append(action.toString().split(" ")[1]);
+                    actionsBuilder.append(",");
+                }
+                if(actionsBuilder.length() > 0)
+                    actionsBuilder.deleteCharAt(actionsBuilder.length()-1);
+                return actionsBuilder.toString();
+            case TEXT_ENTRY_KEY:
+                return node.isTextEntryKey();
+            case MULTI_LINE:
+                return node.isMultiLine();
+            case DISMISSABLE:
+                return node.isDismissable();
+            case ACCESSIBILITY_FOCUSED:
+                return node.isAccessibilityFocused();
+            case HEADING:
+                return node.isHeading();
+            case LIVE_REGION:
+                return node.getLiveRegion();
+            case CONTEXT_CLICKABLE:
+                return node.isContextClickable();
+            case MAX_TEXT_LENGTH:
+                return node.getMaxTextLength();
+            case CONTENT_INVALID:
+                return node.isContentInvalid();
+            case ERROR_TEXT:
+                return node.getError();
+            case PANE_TITLE:
+                return node.getPaneTitle();
             case EXTRAS:
                 return BaseElement.getExtrasAsString(node);
             case ORIGINAL_TEXT:
