@@ -66,7 +66,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.CONTENT_INVALID, Attribute.ERROR_TEXT, Attribute.PANE_TITLE, Attribute.ACTIONS
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
     };
-    private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[] {
+    private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[]{
             Attribute.TEXT, Attribute.CLASS, Attribute.PACKAGE, Attribute.DISPLAYED,
             Attribute.INDEX
     };
@@ -171,7 +171,11 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case IMPORTANT_FOR_ACCESSIBILITY:
                 return node.isImportantForAccessibility();
             case SCREEN_READER_FOCUSABLE:
-                return node.isScreenReaderFocusable();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    return node.isScreenReaderFocusable();
+                } else {
+                    return null;
+                }
             case INPUT_TYPE:
                 return node.getInputType();
             case DRAWING_ORDER:
@@ -179,7 +183,6 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case SHOWING_HINT_TEXT:
                 return node.isShowingHintText();
             case ACTIONS:
-//                return node.getActions(); //deprecated bitmask
                 StringBuilder actionsBuilder = new StringBuilder();
                 List<AccessibilityNodeInfo.AccessibilityAction> actionList = node.getActionList();
                 for (AccessibilityNodeInfo.AccessibilityAction action : actionList) {
@@ -190,7 +193,11 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                     actionsBuilder.deleteCharAt(actionsBuilder.length()-1);
                 return actionsBuilder.toString();
             case TEXT_ENTRY_KEY:
-                return node.isTextEntryKey();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    return node.isTextEntryKey();
+                } else {
+                    return null;
+                }
             case MULTI_LINE:
                 return node.isMultiLine();
             case DISMISSABLE:
