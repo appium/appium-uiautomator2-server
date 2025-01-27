@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.model;
 
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
@@ -163,25 +164,17 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case TEXT:
                 return AxNodeInfoHelper.getText(node, true);
             case HINT:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    return node.getHintText();
-                } else {
-                    return null;
-                }
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? node.getHintText() : null;
             case IMPORTANT_FOR_ACCESSIBILITY:
-                return node.isImportantForAccessibility();
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? node.isImportantForAccessibility() : null;
             case SCREEN_READER_FOCUSABLE:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    return node.isScreenReaderFocusable();
-                } else {
-                    return null;
-                }
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? node.isScreenReaderFocusable() : null;
             case INPUT_TYPE:
-                return node.getInputType();
+                return node.getInputType() != 0 ? node.getInputType() : null;
             case DRAWING_ORDER:
-                return node.getDrawingOrder();
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? node.getDrawingOrder() : null;
             case SHOWING_HINT_TEXT:
-                return node.isShowingHintText();
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? node.isShowingHintText() : null;
             case ACTIONS:
                 StringBuilder actionsBuilder = new StringBuilder();
                 List<AccessibilityNodeInfo.AccessibilityAction> actionList = node.getActionList();
@@ -193,31 +186,27 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                     actionsBuilder.deleteCharAt(actionsBuilder.length()-1);
                 return actionsBuilder.toString();
             case TEXT_ENTRY_KEY:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    return node.isTextEntryKey();
-                } else {
-                    return null;
-                }
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? node.isTextEntryKey() : null;
             case MULTI_LINE:
-                return node.isMultiLine();
+                return node.getMaxTextLength() != -1 ? node.isMultiLine() : null;
             case DISMISSABLE:
                 return node.isDismissable();
             case ACCESSIBILITY_FOCUSED:
                 return node.isAccessibilityFocused();
             case HEADING:
-                return node.isHeading();
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? node.isHeading() : null;
             case LIVE_REGION:
                 return node.getLiveRegion();
             case CONTEXT_CLICKABLE:
-                return node.isContextClickable();
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? node.isContextClickable() : null;
             case MAX_TEXT_LENGTH:
-                return node.getMaxTextLength();
+                return node.getMaxTextLength() != -1 ? node.getMaxTextLength() : null;
             case CONTENT_INVALID:
                 return node.isContentInvalid();
             case ERROR_TEXT:
-                return node.getError();
+                return charSequenceToNullableString(node.getError());
             case PANE_TITLE:
-                return node.getPaneTitle();
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? charSequenceToNullableString(node.getPaneTitle()) : null;
             case EXTRAS:
                 return BaseElement.getExtrasAsString(node);
             case ORIGINAL_TEXT:
