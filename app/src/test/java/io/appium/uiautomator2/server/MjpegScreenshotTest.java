@@ -32,7 +32,7 @@ public class MjpegScreenshotTest {
   public void setUp() throws Exception {
     // Test is flaky in CI because we have to wait for the server to actually start
     // Adding a sleep or a loop to wait on the server to be ready could help: skip it for now
-    Assume.assumeTrue("true".equalsIgnoreCase(System.getenv("CI")));
+    Assume.assumeTrue(System.getenv("CI") == null);
 
     // Create a MJPEG server with a mocked getScreenshot method
     MjpegScreenshotStream mockScreenshotStreamSpy =
