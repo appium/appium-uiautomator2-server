@@ -273,11 +273,15 @@ public abstract class BaseElement implements AndroidElement {
 
     @Nullable
     public static String getA11yActionsAsString(AccessibilityNodeInfo nodeInfo) {
-        StringBuilder actionsBuilder = new StringBuilder();
         List<AccessibilityAction> actionList = nodeInfo.getActionList();
         if (actionList.isEmpty()) {
             return null;
         }
+
+        // Typical output of AccessibilityAction::toString() consists of
+        // "AccessibilityAction" + Action ID + Nullable Label, so it looks like:
+        // "AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null"
+        StringBuilder actionsBuilder = new StringBuilder();
         for (AccessibilityAction action : actionList) {
             String[] split = action.toString().split(" ");
             if (split.length < 2) {
