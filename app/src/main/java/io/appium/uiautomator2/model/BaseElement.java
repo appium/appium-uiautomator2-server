@@ -20,6 +20,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
@@ -268,5 +269,26 @@ public abstract class BaseElement implements AndroidElement {
             }
         }
         return TextUtils.join(EXTRAS_SEPARATOR, extras);
+    }
+
+    @Nullable
+    public static String getA11yActionsAsString(AccessibilityNodeInfo nodeInfo) {
+        StringBuilder actionsBuilder = new StringBuilder();
+        List<AccessibilityAction> actionList = nodeInfo.getActionList();
+        if (actionList.isEmpty()) {
+            return null;
+        }
+        for (AccessibilityAction action : actionList) {
+            String[] split = action.toString().split(" ");
+            if (split.length < 2) {
+                return null;
+            }
+            actionsBuilder.append(split[1]);
+            actionsBuilder.append(",");
+        }
+        if (actionsBuilder.length() > 0) {
+            actionsBuilder.deleteCharAt(actionsBuilder.length() - 1);
+        }
+        return actionsBuilder.toString();
     }
 }

@@ -55,7 +55,7 @@ public enum Attribute {
     CONTENT_SIZE(new String[]{"contentSize"}, true, false),
 
     IMPORTANT_FOR_ACCESSIBILITY(new String[]{"a11y-important", "importantForAccessibility"}),
-    SCREEN_READER_FOCUSABLE(new String[]{"screenReaderFocusable"}),
+    SCREEN_READER_FOCUSABLE(new String[]{"screen-reader-focusable", "screenReaderFocusable"}),
     INPUT_TYPE(new String[]{"input-type", "inputType"}),
     DRAWING_ORDER(new String[]{"drawing-order", "drawingOrder"}),
     SHOWING_HINT_TEXT(new String[]{"showing-hint", "showingHintText"}),

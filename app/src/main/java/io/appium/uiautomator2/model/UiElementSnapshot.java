@@ -36,6 +36,7 @@ import java.util.Set;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
+import io.appium.uiautomator2.model.settings.IncludeA11yActionsInPageSource;
 import io.appium.uiautomator2.model.settings.IncludeExtrasInPageSource;
 import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
 import io.appium.uiautomator2.model.settings.Settings;
@@ -166,9 +167,13 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case HINT:
                 return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? node.getHintText() : null;
             case IMPORTANT_FOR_ACCESSIBILITY:
-                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? node.isImportantForAccessibility() : null;
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                        ? node.isImportantForAccessibility()
+                        : null;
             case SCREEN_READER_FOCUSABLE:
-                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? node.isScreenReaderFocusable() : null;
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                        ? node.isScreenReaderFocusable()
+                        : null;
             case INPUT_TYPE:
                 return node.getInputType() != 0 ? node.getInputType() : null;
             case DRAWING_ORDER:
@@ -176,15 +181,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case SHOWING_HINT_TEXT:
                 return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? node.isShowingHintText() : null;
             case ACTIONS:
-                StringBuilder actionsBuilder = new StringBuilder();
-                List<AccessibilityNodeInfo.AccessibilityAction> actionList = node.getActionList();
-                for (AccessibilityNodeInfo.AccessibilityAction action : actionList) {
-                    actionsBuilder.append(action.toString().split(" ")[1]);
-                    actionsBuilder.append(",");
-                }
-                if(actionsBuilder.length() > 0)
-                    actionsBuilder.deleteCharAt(actionsBuilder.length()-1);
-                return actionsBuilder.toString();
+                return BaseElement.getA11yActionsAsString(node);
             case TEXT_ENTRY_KEY:
                 return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? node.isTextEntryKey() : null;
             case MULTI_LINE:
@@ -198,7 +195,9 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case LIVE_REGION:
                 return node.getLiveRegion();
             case CONTEXT_CLICKABLE:
-                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? node.isContextClickable() : null;
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        ? node.isContextClickable()
+                        : null;
             case MAX_TEXT_LENGTH:
                 return node.getMaxTextLength() != -1 ? node.getMaxTextLength() : null;
             case CONTENT_INVALID:
@@ -206,7 +205,9 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case ERROR_TEXT:
                 return charSequenceToNullableString(node.getError());
             case PANE_TITLE:
-                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? charSequenceToNullableString(node.getPaneTitle()) : null;
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                        ? charSequenceToNullableString(node.getPaneTitle())
+                        : null;
             case EXTRAS:
                 return BaseElement.getExtrasAsString(node);
             case ORIGINAL_TEXT:
@@ -227,6 +228,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         for (Attribute attr : SUPPORTED_ATTRIBUTES) {
             if (attr.equals(Attribute.EXTRAS) &&
                     !Settings.get(IncludeExtrasInPageSource.class).getValue()) {
+                continue;
+            }
+            if (attr.equals(Attribute.ACTIONS) &&
+                    !Settings.get(IncludeA11yActionsInPageSource.class).getValue()) {
                 continue;
             }
             if (includedAttributes.isEmpty() || includedAttributes.contains(attr)) {
