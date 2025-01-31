@@ -35,6 +35,7 @@ import java.util.Set;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
+import io.appium.uiautomator2.model.settings.IncludeA11yActionsInPageSource;
 import io.appium.uiautomator2.model.settings.IncludeExtrasInPageSource;
 import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
 import io.appium.uiautomator2.model.settings.Settings;
@@ -58,10 +59,15 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.FOCUSABLE, Attribute.FOCUSED, Attribute.LONG_CLICKABLE,
             Attribute.PASSWORD, Attribute.SCROLLABLE, Attribute.SELECTION_START,
             Attribute.SELECTION_END, Attribute.SELECTED, Attribute.BOUNDS, Attribute.DISPLAYED,
-            Attribute.HINT, Attribute.EXTRAS
+            Attribute.HINT, Attribute.EXTRAS, Attribute.IMPORTANT_FOR_ACCESSIBILITY,
+            Attribute.SCREEN_READER_FOCUSABLE, Attribute.INPUT_TYPE, Attribute.DRAWING_ORDER,
+            Attribute.SHOWING_HINT_TEXT, Attribute.TEXT_ENTRY_KEY, Attribute.MULTI_LINE,
+            Attribute.DISMISSABLE, Attribute.ACCESSIBILITY_FOCUSED, Attribute.HEADING,
+            Attribute.LIVE_REGION, Attribute.CONTEXT_CLICKABLE, Attribute.MAX_TEXT_LENGTH,
+            Attribute.CONTENT_INVALID, Attribute.ERROR_TEXT, Attribute.PANE_TITLE, Attribute.ACTIONS
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
     };
-    private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[] {
+    private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[]{
             Attribute.TEXT, Attribute.CLASS, Attribute.PACKAGE, Attribute.DISPLAYED,
             Attribute.INDEX
     };
@@ -158,11 +164,49 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case TEXT:
                 return AxNodeInfoHelper.getText(node, true);
             case HINT:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    return node.getHintText();
-                } else {
-                    return null;
-                }
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? node.getHintText() : null;
+            case IMPORTANT_FOR_ACCESSIBILITY:
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                        ? node.isImportantForAccessibility()
+                        : null;
+            case SCREEN_READER_FOCUSABLE:
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                        ? node.isScreenReaderFocusable()
+                        : null;
+            case INPUT_TYPE:
+                return node.getInputType() != 0 ? node.getInputType() : null;
+            case DRAWING_ORDER:
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? node.getDrawingOrder() : null;
+            case SHOWING_HINT_TEXT:
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? node.isShowingHintText() : null;
+            case ACTIONS:
+                return BaseElement.getA11yActionsAsString(node);
+            case TEXT_ENTRY_KEY:
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ? node.isTextEntryKey() : null;
+            case MULTI_LINE:
+                return node.getMaxTextLength() != -1 ? node.isMultiLine() : null;
+            case DISMISSABLE:
+                return node.isDismissable();
+            case ACCESSIBILITY_FOCUSED:
+                return node.isAccessibilityFocused();
+            case HEADING:
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P ? node.isHeading() : null;
+            case LIVE_REGION:
+                return node.getLiveRegion();
+            case CONTEXT_CLICKABLE:
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        ? node.isContextClickable()
+                        : null;
+            case MAX_TEXT_LENGTH:
+                return node.getMaxTextLength() != -1 ? node.getMaxTextLength() : null;
+            case CONTENT_INVALID:
+                return node.isContentInvalid();
+            case ERROR_TEXT:
+                return charSequenceToNullableString(node.getError());
+            case PANE_TITLE:
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                        ? charSequenceToNullableString(node.getPaneTitle())
+                        : null;
             case EXTRAS:
                 return BaseElement.getExtrasAsString(node);
             case ORIGINAL_TEXT:
@@ -183,6 +227,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         for (Attribute attr : SUPPORTED_ATTRIBUTES) {
             if (attr.equals(Attribute.EXTRAS) &&
                     !Settings.get(IncludeExtrasInPageSource.class).getValue()) {
+                continue;
+            }
+            if (attr.equals(Attribute.ACTIONS) &&
+                    !Settings.get(IncludeA11yActionsInPageSource.class).getValue()) {
                 continue;
             }
             if (includedAttributes.isEmpty() || includedAttributes.contains(attr)) {

@@ -45,13 +45,32 @@ public enum Attribute {
     TEXT(new String[]{"text", "name"}),
     HINT(new String[]{"hint"}),
     EXTRAS(new String[]{"extras"}),
+
     // The main difference of this attribute from the preceding one is that
     // it does not replace null values with empty strings
     ORIGINAL_TEXT(new String[]{"original-text"}, false, false),
     BOUNDS(new String[]{"bounds"}),
     INDEX(new String[]{"index"}, false, true),
     DISPLAYED(new String[]{"displayed"}),
-    CONTENT_SIZE(new String[]{"contentSize"}, true, false);
+    CONTENT_SIZE(new String[]{"contentSize"}, true, false),
+
+    IMPORTANT_FOR_ACCESSIBILITY(new String[]{"a11y-important", "importantForAccessibility"}),
+    SCREEN_READER_FOCUSABLE(new String[]{"screen-reader-focusable", "screenReaderFocusable"}),
+    INPUT_TYPE(new String[]{"input-type", "inputType"}),
+    DRAWING_ORDER(new String[]{"drawing-order", "drawingOrder"}),
+    SHOWING_HINT_TEXT(new String[]{"showing-hint", "showingHintText"}),
+    TEXT_ENTRY_KEY(new String[]{"text-entry-key", "textEntryKey"}),
+    MULTI_LINE(new String[]{"multiline", "multiLine"}),
+    DISMISSABLE(new String[]{"dismissable"}),
+    ACCESSIBILITY_FOCUSED(new String[]{"a11y-focused", "accessibilityFocused"}),
+    HEADING(new String[]{"heading"}),
+    LIVE_REGION(new String[]{"live-region", "liveRegion"}),
+    CONTEXT_CLICKABLE(new String[]{"context-clickable", "contextClickable"}),
+    MAX_TEXT_LENGTH(new String[]{"max-text-length", "maxTextLength"}),
+    CONTENT_INVALID(new String[]{"content-invalid", "contentInvalid"}),
+    ERROR_TEXT(new String[]{"error", "errorText"}),
+    PANE_TITLE(new String[]{"pane-title", "paneTitle"}),
+    ACTIONS(new String[]{"actions"});
 
     private final String[] aliases;
     // Defines if the attribute is visible to the user from getAttribute call

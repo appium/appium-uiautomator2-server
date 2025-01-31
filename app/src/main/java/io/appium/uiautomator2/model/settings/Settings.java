@@ -34,6 +34,7 @@ public enum Settings {
     DISABLE_IDS_AUTOCOMPLETION(new DisableIdLocatorAutocompletion()),
     LIMIT_XPATH_CONTEXT_SCOPE(new LimitXpathContextScope()),
     INCLUDE_EXTRAS_IN_PAGE_SOURCE(new IncludeExtrasInPageSource()),
+    INCLUDE_A11Y_ACTIONS_IN_PAGE_SOURCE(new IncludeA11yActionsInPageSource()),
     SHUTDOWN_ON_POWER_DISCONNECT(new ShutdownOnPowerDisconnect()),
     SIMPLE_BOUNDS_CALCULATION(new SimpleBoundsCalculation()),
     TRACK_SCROLL_EVENTS(new TrackScrollEvents()),
