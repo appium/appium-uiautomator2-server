@@ -54,7 +54,7 @@ public class DeleteSession extends SafeRequestHandler {
                     public void run() {
                         ServerInstrumentation.getInstance().stop();
                     }
-                }, 100
+                }, 15
         );
         return new AppiumResponse(sessionId);
     }
