@@ -36,8 +36,6 @@ import io.appium.uiautomator2.utils.Logger;
 
 import static android.content.Intent.ACTION_POWER_DISCONNECTED;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-import static io.appium.uiautomator2.server.ServerConfig.getMjpegServerPort;
-import static io.appium.uiautomator2.server.ServerConfig.getServerPort;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 
 import java.util.concurrent.CountDownLatch;
@@ -51,54 +49,29 @@ public class ServerInstrumentation {
     private static ServerInstrumentation instance;
 
     private final PowerManager powerManager;
-    private final int serverPort;
+    private final int httpServerPort;
     private final int mjpegServerPort;
-    private HttpdThread serverThread;
+    private HttpdThread httpServerThread;
     private MjpegScreenshotServer mjpegScreenshotServerThread;
     private PowerManager.WakeLock wakeLock;
     private long wakeLockAcquireTimestampMs = 0;
     private long wakeLockTimeoutMs = 0;
     private CountDownLatch shutdownLatch;
 
-    private ServerInstrumentation(Context context, int serverPort, int mjpegServerPort) {
-        if (isValidPort(serverPort)) {
-            this.serverPort = serverPort;
-        } else {
-            Logger.warn(String.format(
-                "The server port is out of valid range [%s;%s]: %s -- using default: %s",
-                MIN_PORT,
-                MAX_PORT,
-                serverPort,
-                ServerConfig.DEFAULT_SERVER_PORT
-            ));
-            this.serverPort = ServerConfig.DEFAULT_SERVER_PORT;
-        }
-
-        if (isValidPort(mjpegServerPort)) {
-            this.mjpegServerPort = mjpegServerPort;
-        } else {
-            Logger.warn(String.format(
-                "The MJPEG server port is out of valid range [%s;%s]: %s -- using default: %s",
-                MIN_PORT,
-                MAX_PORT,
-                mjpegServerPort,
-                ServerConfig.DEFAULT_MJPEG_SERVER_PORT
-            ));
-            this.mjpegServerPort = ServerConfig.DEFAULT_MJPEG_SERVER_PORT;
-        }
-
-        this.powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-
+    private ServerInstrumentation() {
+        this.httpServerPort = requireValidPort(
+                ServerConfig.getServerPort(), ServerConfig.DEFAULT_SERVER_PORT, "server"
+        );
+        this.mjpegServerPort = requireValidPort(
+                ServerConfig.getMjpegServerPort(), ServerConfig.DEFAULT_MJPEG_SERVER_PORT, "MJPEG"
+        );
+        this.powerManager = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
         setAccessibilityServiceState();
     }
 
     public static synchronized ServerInstrumentation getInstance() {
         if (instance == null) {
-            instance = new ServerInstrumentation(
-                getApplicationContext(),
-                getServerPort(),
-                getMjpegServerPort()
-            );
+            instance = new ServerInstrumentation();
         }
         return instance;
     }
@@ -210,32 +183,44 @@ public class ServerInstrumentation {
     }
 
     private void startHttpServer() {
-        if (serverThread != null) {
+        if (httpServerThread != null) {
             return;
         }
 
-        serverThread = new HttpdThread(this.serverPort);
-        serverThread.start();
+        httpServerThread = new HttpdThread(this.httpServerPort);
+        httpServerThread.start();
     }
 
     private void stopHttpServer() {
         try {
-            if (serverThread == null || !serverThread.isAlive()) {
+            if (httpServerThread == null || !httpServerThread.isAlive()) {
                 return;
             }
 
-            serverThread.interrupt();
+            httpServerThread.interrupt();
             try {
-                serverThread.join();
+                httpServerThread.join();
             } catch (InterruptedException ignored) {
             }
         } finally {
-            serverThread = null;
+            httpServerThread = null;
         }
     }
 
-    private boolean isValidPort(int port) {
-        return port >= MIN_PORT && port <= MAX_PORT;
+    private static int requireValidPort(int port, int defaultPort, String entityName) {
+        if (port >= MIN_PORT && port <= MAX_PORT) {
+            return port;
+        }
+
+        Logger.warn(String.format(
+                "The %s port is out of valid range [%s;%s]: %s -- using default: %s",
+                entityName,
+                MIN_PORT,
+                MAX_PORT,
+                port,
+                defaultPort
+        ));
+        return defaultPort;
     }
 
     private void releaseWakeLock() {

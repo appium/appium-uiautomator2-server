@@ -17,17 +17,15 @@
 package io.appium.uiautomator2.utils;
 
 public class Logger {
-    public static final String TAG = "appium";
+    public static final String TAG = "AppiumUIA2Server";
 
     private static String getString(Object... args) {
         StringBuilder content = new StringBuilder();
-
         for (Object arg : args) {
             if (arg != null) {
-                content.append(arg.toString());
+                content.append(arg);
             }
         }
-
         return content.toString();
     }
 

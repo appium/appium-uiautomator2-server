@@ -34,12 +34,12 @@ public class AppiumUiAutomator2Server {
      */
     @Test
     public void startServer() throws InterruptedException {
-        Logger.info("[AppiumUiAutomator2Server]", "Entering the main test");
+        Logger.info( ">>>Entry point start<<<");
         ServerInstrumentation.getInstance().start();
         CountDownLatch shutdownLatch = ServerInstrumentation.getInstance().getShutdownLatch();
         if (shutdownLatch != null) {
             shutdownLatch.await();
         }
-        Logger.info("[AppiumUiAutomator2Server]", "The main test has been finished");
+        Logger.info(">>>Entry point finish<<<");
     }
 }
