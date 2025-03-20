@@ -93,6 +93,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.test.uiautomator:uiautomator:2.3.0'
     implementation 'androidx.test:core:1.6.1'
+    implementation 'androidx.test.ext:junit:1.2.1'
     implementation 'androidx.test:runner:1.6.2'
     implementation 'com.google.code.gson:gson:2.12.1'
     implementation 'io.netty:netty-all:4.0.41.Final'
@@ -102,7 +103,6 @@ dependencies {
     implementation 'com.github.vbmacher:java-cup-runtime:11b-20160615-3'
     //noinspection GradleDependency
     implementation 'com.ibm.icu:icu4j:60.2'
-    implementation 'androidx.test.ext:junit:1.2.1'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.json:json:20250107'
     testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
@@ -112,7 +112,6 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.14.1'
     testImplementation 'org.javassist:javassist:3.30.2-GA'
     androidTestImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'com.squareup.okhttp:okhttp:2.7.5'
 }
 
