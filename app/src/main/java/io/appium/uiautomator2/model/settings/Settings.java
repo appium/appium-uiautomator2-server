@@ -46,7 +46,8 @@ public enum Settings {
     MJPEG_SERVER_SCREENSHOT_QUALITY(new MjpegServerScreenshotQuality()),
     MJPEG_BILINEAR_FILTERING(new MjpegBilinearFiltering()),
     USE_RESOURCES_FOR_ORIENTATION_DETECTION(new UseResourcesForOrientationDetection()),
-    SNAPSHOT_MAX_DEPTH(new SnapshotMaxDepth());
+    SNAPSHOT_MAX_DEPTH(new SnapshotMaxDepth()),
+    CURRENT_DISPLAY_ID(new CurrentDisplayId());
 
     private final ISetting<?> setting;
 
