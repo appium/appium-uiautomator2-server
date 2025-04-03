@@ -31,7 +31,7 @@ public class GetDisplayDensity extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         DisplayMetrics metrics = new DisplayMetrics();
-        UiAutomatorBridge.getInstance().getDefaultDisplay().getMetrics(metrics);
+        UiAutomatorBridge.getInstance().getCurrentDisplay().getMetrics(metrics);
         return new AppiumResponse(getSessionId(request), metrics.densityDpi);
     }
 }
