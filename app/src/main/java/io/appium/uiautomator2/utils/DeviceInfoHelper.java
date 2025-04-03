@@ -136,7 +136,7 @@ public class DeviceInfoHelper {
      * @return The logical density of the display in Density Independent Pixel units.
      */
     public int getDisplayDensity() {
-        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+        Display display = UiAutomatorBridge.getInstance().getCurrentDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getRealMetrics(metrics);
         return (int) (metrics.density * 160);
@@ -262,7 +262,7 @@ public class DeviceInfoHelper {
      * @return The display size in 'WxH' format
      */
     public String getRealDisplaySize() {
-        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+        Display display = UiAutomatorBridge.getInstance().getCurrentDisplay();
         android.graphics.Point p = new android.graphics.Point();
         display.getRealSize(p);
         return String.format("%sx%s", p.x, p.y);
