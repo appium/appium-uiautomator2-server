@@ -1,16 +1,12 @@
 buildscript {
-    repositories {
-        mavenCentral()
-        google()
-        maven { url 'https://jitpack.io' }
-    }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.9.1'
-        classpath 'com.github.bjoernq:unmockplugin:0.9.0'
+        classpath libs.unmockplugin
     }
 }
-
-apply plugin: 'com.android.application'
+plugins{
+    alias(libs.plugins.android.application)
+}
+// Apply UnMock plugin via legacy syntax (not published to Plugin Portal)
 apply plugin: 'de.mobilej.unmock'
 
 android {
@@ -91,28 +87,23 @@ unMock {
 dependencies {
     // https://download.eclipse.org/oomph/archive/reports/download.eclipse.org/releases/2021-09/index/org.eclipse.wst.xml.xpath2.processor_2.1.101.v201903222120.html
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.test.uiautomator:uiautomator:2.3.0'
-    implementation 'androidx.test:core:1.6.1'
-    implementation 'androidx.test.ext:junit:1.2.1'
-    implementation 'androidx.test:runner:1.6.2'
-    implementation 'com.google.code.gson:gson:2.12.1'
-    implementation 'io.netty:netty-all:4.0.41.Final'
-    implementation 'net.gcardone.junidecode:junidecode:0.5.2'
+    implementation libs.bundles.androix.test
+    implementation libs.uiautomator
+    implementation libs.gson
+    implementation libs.netty.all
+    implementation libs.junidecode
     // The next three dependencies are required for XPath search to work
-    implementation 'xerces:xercesImpl:2.12.2'
-    implementation 'com.github.vbmacher:java-cup-runtime:11b-20160615-3'
+    implementation libs.xercesimpl
+    implementation libs.java.cup.runtime
     //noinspection GradleDependency
-    implementation 'com.ibm.icu:icu4j:60.2'
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.json:json:20250107'
-    testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
-    testImplementation 'org.powermock:powermock-classloading-xstream:2.0.9'
-    testImplementation 'org.powermock:powermock-module-junit4-rule:2.0.9'
-    testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
-    testImplementation 'org.robolectric:robolectric:4.14.1'
-    testImplementation 'org.javassist:javassist:3.30.2-GA'
-    androidTestImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation libs.icu4j
+    testImplementation libs.junit
+    testImplementation libs.json
+    testImplementation libs.bundles.powermock
+    testImplementation libs.robolectric
+    testImplementation libs.javassist
+    androidTestImplementation libs.junit
+    androidTestImplementation libs.okhttp
 }
 
 task installAUT(type: Exec) {
