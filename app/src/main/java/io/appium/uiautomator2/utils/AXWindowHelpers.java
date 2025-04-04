@@ -89,17 +89,18 @@ public class AXWindowHelpers {
     }
 
     private static List<AccessibilityWindowInfo> getWindows() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            int currentDisplayId = UiAutomatorBridge.getInstance().getCurrentDisplayId();
-
-            SparseArray<List<AccessibilityWindowInfo>> windowsOnAllDisplays= CustomUiDevice.getInstance().getUiAutomation().getWindowsOnAllDisplays();
-
-            return windowsOnAllDisplays.get(currentDisplayId);
-        }
-        else {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             return CustomUiDevice.getInstance().getUiAutomation().getWindows();
         }
 
+        int currentDisplayId = UiAutomatorBridge.getInstance().getCurrentDisplayId();
+
+        SparseArray<List<AccessibilityWindowInfo>> windowsOnAllDisplays= CustomUiDevice
+                .getInstance()
+                .getUiAutomation()
+                .getWindowsOnAllDisplays();
+
+        return windowsOnAllDisplays.get(currentDisplayId);
     }
 
     private static AccessibilityNodeInfo[] getWindowRoots() {

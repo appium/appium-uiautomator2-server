@@ -35,6 +35,9 @@ import java.util.Arrays;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
+import io.appium.uiautomator2.model.settings.CurrentDisplayId;
+import io.appium.uiautomator2.model.settings.Settings;
+
 public class GestureController {
     private final Object wrappedInstance;
     private final Method performGestureMethod;
@@ -47,7 +50,7 @@ public class GestureController {
     }
 
     GestureController(Object wrappedInstance) {
-        this(wrappedInstance, CustomUiDevice.getInstance().getTopmostWindowDisplayId());
+        this(wrappedInstance, Settings.get(CurrentDisplayId.class).getValue());
     }
 
     private static Method extractPerformGestureMethod(Object wrappedInstance) {

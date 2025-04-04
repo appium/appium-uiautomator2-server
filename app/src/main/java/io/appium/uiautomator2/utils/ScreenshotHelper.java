@@ -95,8 +95,8 @@ public class ScreenshotHelper {
             try {
                 String shellScreenCapCommand = "screencap -p";
 
-                long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
-                if (physicalDisplayId != -1) {
+                Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
+                if (physicalDisplayId != null) {
                     shellScreenCapCommand = "screencap -d " + physicalDisplayId + " -p";
                 }
 
