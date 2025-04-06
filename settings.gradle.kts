@@ -17,5 +17,6 @@ dependencyResolutionManagement {
         google()
     }
 }
-include ':app'
-
+rootProject.name = "appium-uiautomator2-server"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+include(":app")
