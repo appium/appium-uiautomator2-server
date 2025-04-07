@@ -1,16 +1,12 @@
 package io.appium.uiautomator2.model.settings;
 
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-
-import android.app.Service;
-import android.hardware.display.DisplayManager;
+import android.text.TextUtils;
 import android.view.Display;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
+import io.appium.uiautomator2.core.UiAutomation;
 
 public class CurrentDisplayId extends AbstractSetting<Integer> {
     private static final String SETTING_NAME = "currentDisplayId";
@@ -33,11 +29,11 @@ public class CurrentDisplayId extends AbstractSetting<Integer> {
 
     @Override
     protected void apply(Integer currentDisplayId) {
-        DisplayManager displayManager = (DisplayManager) getInstrumentation().getContext().getSystemService(Service.DISPLAY_SERVICE);
-        List<Integer> displayIds = Arrays.stream(displayManager.getDisplays()).map(Display::getDisplayId).collect(Collectors.toList());
+        List<Integer> displayIds = UiAutomation.getInstance().getDisplayIds();
 
         if (!displayIds.contains(currentDisplayId)) {
-            String possibleValuesMessage = displayIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+            String possibleValuesMessage = TextUtils.join(",", displayIds);
+
             throw new InvalidArgumentException(String.format(
                     "Invalid %s value specified, must be one of %s. %s was given",
                     SETTING_NAME,
@@ -45,7 +41,7 @@ public class CurrentDisplayId extends AbstractSetting<Integer> {
                     currentDisplayId
             ));
         }
-
+    
         value = currentDisplayId;
     }
 }

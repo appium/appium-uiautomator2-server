@@ -95,10 +95,14 @@ public class AXWindowHelpers {
 
         int currentDisplayId = UiAutomatorBridge.getInstance().getCurrentDisplayId();
 
-        SparseArray<List<AccessibilityWindowInfo>> windowsOnAllDisplays= CustomUiDevice
+        SparseArray<List<AccessibilityWindowInfo>> windowsOnAllDisplays = CustomUiDevice
                 .getInstance()
                 .getUiAutomation()
                 .getWindowsOnAllDisplays();
+
+        if (!windowsOnAllDisplays.contains(currentDisplayId)) {
+            return new ArrayList<>();
+        }
 
         return windowsOnAllDisplays.get(currentDisplayId);
     }

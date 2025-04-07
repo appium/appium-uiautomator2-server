@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.utils.w3c;
 
+import android.os.Build;
 import android.os.SystemClock;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
@@ -255,12 +256,15 @@ public class ActionsExecutor {
                     break;
             } // switch
             if (synthesizedEvent != null) {
-                final int displayId = Settings.get(CurrentDisplayId.class).getValue();
-                try {
-                    // Method is marked as public with @hide in AOSP https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/core/java/android/view/MotionEvent.java;l=2419;drc=61197364367c9e404c7da6900658f1b16c42d0da;bpv=1;bpt=1?q=MotionEvent
-                    invoke(getMethod(synthesizedEvent.getClass(), "setDisplayId", int.class), synthesizedEvent, displayId);
-                } catch (UiAutomator2Exception e) {
-                    Logger.error("Unable to set displayId on motion event", e);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    final int displayId = Settings.get(CurrentDisplayId.class).getValue();
+                    try {
+                        // Method is marked as public with @hide in AOSP https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/core/java/android/view/MotionEvent.java;l=2419;drc=61197364367c9e404c7da6900658f1b16c42d0da;bpv=1;bpt=1?q=MotionEvent
+                        invoke(getMethod(synthesizedEvent.getClass(), "setDisplayId", int.class), synthesizedEvent, displayId);
+                    } catch (UiAutomator2Exception e) {
+                        Logger.error("Unable to set displayId on motion event", e);
+                    }
                 }
 
                 result &= interactionController.injectEventSync(synthesizedEvent);
