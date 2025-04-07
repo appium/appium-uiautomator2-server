@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 
 import io.appium.uiautomator2.common.exceptions.CompressScreenshotException;
 import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
@@ -97,7 +98,8 @@ public class ScreenshotHelper {
 
                 Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
                 if (physicalDisplayId != null) {
-                    shellScreenCapCommand = "screencap -d " + physicalDisplayId + " -p";
+                    shellScreenCapCommand =
+                            String.format("screencap -d %d -p", physicalDisplayId);
                 }
 
                 ParcelFileDescriptor pfd = automation.executeShellCommand(shellScreenCapCommand);

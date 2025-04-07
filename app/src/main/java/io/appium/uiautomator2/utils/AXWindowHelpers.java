@@ -101,7 +101,7 @@ public class AXWindowHelpers {
                 .getWindowsOnAllDisplays();
 
         if (!windowsOnAllDisplays.contains(currentDisplayId)) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         return windowsOnAllDisplays.get(currentDisplayId);
