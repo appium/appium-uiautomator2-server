@@ -1,23 +1,29 @@
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.android.build.api.variant.BuildConfigField
+import com.android.build.gradle.internal.tasks.UninstallTask
+import com.android.build.gradle.tasks.PackageAndroidArtifact
 import java.io.ByteArrayOutputStream
+
 buildscript {
     dependencies {
-        classpath(libs.unmockplugin)
+        classpath(libs.unmockplugin){
+            exclude(group = "com.android.tools.build", module = "gradle")
+        }
     }
 }
-
+// Apply UnMock plugin via legacy syntax because it's not properly published
+apply(plugin = "de.mobilej.unmock")
 plugins {
     alias(libs.plugins.android.application)
 }
-
-// Apply UnMock plugin via legacy syntax because it's not properly published
-apply(plugin = "de.mobilej.unmock")
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
+
+project.base.archivesName = "appium-uiautomator2"
 
 android {
     namespace = "io.appium.uiautomator2.test"
@@ -35,25 +41,27 @@ android {
         buildFeatures {
             buildConfig = true
         }
+
     }
     buildTypes {
-        val debug by getting {
+        getByName("debug") {
             isDebuggable = true
+            vcsInfo {
+                include = true
+            }
         }
         create("customDebuggableBuildType") {
             isDebuggable = true
         }
     }
-
     androidComponents {
         onVariants { variant ->
-            variant.outputs.forEach { output ->
-                val outputImpl = output as? com.android.build.api.variant.impl.VariantOutputImpl
-                outputImpl?.outputFileName?.set(
-                    outputImpl.outputFileName.get()
-                        .replace("debug.apk", "v${defaultConfig.versionName}.apk")
+            // Add build-time information to BuildConfig so it can be accessed at runtime.
+            variant.buildConfigFields.put(
+                "BUILD_TIME", BuildConfigField(
+                    "String", "\"" + System.currentTimeMillis().toString() + "\"", "build timestamp"
                 )
-            }
+            )
         }
     }
 
@@ -188,8 +196,54 @@ val installAUT by tasks.register("installAUT", Exec::class) {
         }
     }
 }
+val uninstallAUT by tasks.register("uninstallAUT", Exec::class){
+    group = "install"
+    description = "Uninstall app under test (ApiDemos) using AGP's ADB."
+    val extension = project.extensions.getByType(ApplicationAndroidComponentsExtension::class.java)
+    val adbFileProvider: Provider<RegularFile> = extension.sdkComponents.adb
+    val targetSerial = System.getenv("ANDROID_SERIAL")
+    doFirst {
+        executable = adbFileProvider.get().asFile.absolutePath
+        val commandArgs = mutableListOf<String>()
+        if (!targetSerial.isNullOrBlank()) {
+            commandArgs.add("-s")
+            commandArgs.add(targetSerial)
+            logger.quiet("Uninstalling to device: $targetSerial")
+        }
+        commandArgs.addAll(listOf("uninstall", "io.appium.android.apis"))
+        setArgs(commandArgs)
+        isIgnoreExitValue = true
+    }
+}
+
 afterEvaluate {
+//    val uninstallAUT by tasks.register("uninstallAUT", UninstallTask::class){
+//        group = "install"
+//        applicationId = "io.appium.android.apis"
+//        androidComponents.sdkComponents
+//// 通过GlobalTaskCreationConfig或com.android.build.gradle.internal.TaskManager.getManagedDevices管理和操作设备
+//    }
     tasks.named("connectedE2eTestDebugAndroidTest").configure {
         dependsOn(installAUT)
     }
+    tasks.named("uninstallAll").configure {
+        dependsOn(uninstallAUT)
+    }
 }
+// Note: The androidComponents.onVariants block does not apply to the androidTest artifact outputs.
+// We configure the APK renaming below using tasks.withType.
+tasks.withType(PackageAndroidArtifact::class).configureEach {
+    val fileList = mutableSetOf<File>()
+    doFirst {
+        fileList.addAll(outputDirectory.asFileTree.filter { it.name.endsWith(".apk") }.files)
+    }
+    doLast {
+        val versionName = outputsHandler.get().mainVersionName?:android.defaultConfig.versionName
+        outputDirectory.asFileTree.filter { it.name.endsWith(".apk") }.files.forEach {
+            val newFilename = it.name.replaceFirst("debug", "v${versionName}")
+            logger.info("PackageApplication doLast: ${it.path}, new: $newFilename")
+            it.renameTo(outputDirectory.file(newFilename).get().asFile)
+        }
+    }
+}
+

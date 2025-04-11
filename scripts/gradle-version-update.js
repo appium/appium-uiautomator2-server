@@ -4,8 +4,8 @@ const semver = require('semver');
 const {logger} = require('@appium/support');
 
 const log = logger.getLogger('Versioner');
-const VERSION_NAME_PATTERN = /^\s*versionName\s+['"](.+)['"]$/gm;
-const VERSION_CODE_PATTERN = /^\s*versionCode\s+(.+)$/gm;
+const VERSION_NAME_PATTERN = /^\s*versionName\s*=\s*['"](.+)['"]$/gm;
+const VERSION_CODE_PATTERN = /^\s*versionCode\s*=\s*(.+)$/gm;
 
 function parseArgValue (argName) {
   const argNamePattern = new RegExp(`^--${argName}\\b`);
@@ -20,7 +20,7 @@ function parseArgValue (argName) {
 
 
 async function gradleVersionUpdate() {
-  const gradleFile = path.resolve(__dirname, '..', 'app', 'build.gradle');
+  const gradleFile = path.resolve(__dirname, '..', 'app', 'build.gradle.kts');
   try {
     await fs.promises.access(gradleFile, fs.constants.W_OK);
   } catch {
@@ -42,13 +42,13 @@ async function gradleVersionUpdate() {
   if (!versionNameMatch) {
     throw new Error(`Cannot find the versionName field in '${gradleFile}'`);
   }
-  // match will be like `versionName '1.2.3'`
+  // match will be like `versionName = "1.2.3"`
   const newVersionName = versionNameMatch[0].replace(/\d+\.\d+\.\d+/, version);
   const versionCodeMatch = VERSION_CODE_PATTERN.exec(gradleFilePayload);
   if (!versionCodeMatch) {
     throw new Error(`Cannot find the versionCode field in '${gradleFile}'`);
   }
-  // match will be like `versionCode 42`
+  // match will be like `versionCode = 42`
   const newCode = parseInt(versionCodeMatch[1], 10) + 1;
   log.info(`Updating gradle build file '${gradleFile}' to version name '${version}' and version code '${newCode}'`);
   const newVersionCode = versionCodeMatch[0].replace(/\d+/, `${newCode}`);
