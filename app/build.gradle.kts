@@ -32,11 +32,11 @@ android {
         applicationId = "io.appium.uiautomator2"
         minSdk = 21
         targetSdk = 34
-        versionCode = 210
+        versionCode = 211
         /**
          * versionName should be updated and inline with version in package.json for every npm release.
          */
-        versionName = "7.3.1"
+        versionName = "7.4.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildFeatures {
             buildConfig = true
