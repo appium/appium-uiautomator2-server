@@ -16,7 +16,9 @@
 
 package io.appium.uiautomator2.utils;
 
+import android.os.Build;
 import android.os.SystemClock;
+import android.util.SparseArray;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
@@ -87,7 +89,22 @@ public class AXWindowHelpers {
     }
 
     private static List<AccessibilityWindowInfo> getWindows() {
-        return CustomUiDevice.getInstance().getUiAutomation().getWindows();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            return CustomUiDevice.getInstance().getUiAutomation().getWindows();
+        }
+
+        int currentDisplayId = UiAutomatorBridge.getInstance().getCurrentDisplayId();
+
+        SparseArray<List<AccessibilityWindowInfo>> windowsOnAllDisplays = CustomUiDevice
+                .getInstance()
+                .getUiAutomation()
+                .getWindowsOnAllDisplays();
+
+        if (!windowsOnAllDisplays.contains(currentDisplayId)) {
+            return Collections.emptyList();
+        }
+
+        return windowsOnAllDisplays.get(currentDisplayId);
     }
 
     private static AccessibilityNodeInfo[] getWindowRoots() {

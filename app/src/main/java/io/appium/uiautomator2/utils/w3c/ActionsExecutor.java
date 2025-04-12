@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.utils.w3c;
 
+import android.os.Build;
 import android.os.SystemClock;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
@@ -29,10 +30,15 @@ import java.util.List;
 import java.util.Set;
 
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
+import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.InteractionController;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
+import io.appium.uiautomator2.model.settings.CurrentDisplayId;
+import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Logger;
 
+import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
+import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 import static io.appium.uiautomator2.utils.w3c.ActionHelpers.normalizeSequence;
 import static io.appium.uiautomator2.utils.w3c.ActionsConstants.EVENT_INJECTION_DELAY_MS;
 
@@ -250,6 +256,17 @@ public class ActionsExecutor {
                     break;
             } // switch
             if (synthesizedEvent != null) {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    final int displayId = Settings.get(CurrentDisplayId.class).getValue();
+                    try {
+                        // Method is marked as public with @hide in AOSP https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/core/java/android/view/MotionEvent.java;l=2419;drc=61197364367c9e404c7da6900658f1b16c42d0da;bpv=1;bpt=1?q=MotionEvent
+                        invoke(getMethod(synthesizedEvent.getClass(), "setDisplayId", int.class), synthesizedEvent, displayId);
+                    } catch (UiAutomator2Exception e) {
+                        Logger.error("Unable to set displayId on motion event", e);
+                    }
+                }
+
                 result &= interactionController.injectEventSync(synthesizedEvent);
                 logEvent(synthesizedEvent, eventTime, result);
                 synthesizedEvent.recycle();

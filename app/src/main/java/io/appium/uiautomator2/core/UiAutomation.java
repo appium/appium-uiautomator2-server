@@ -15,11 +15,19 @@
  */
 package io.appium.uiautomator2.core;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
+import android.app.Service;
 import android.app.UiAutomation.OnAccessibilityEventListener;
+import android.hardware.display.DisplayManager;
+import android.view.Display;
 
 import androidx.annotation.Nullable;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UiAutomation {
     private static final String FIELD_ON_ACCESSIBILITY_EVENT_LISTENER =
@@ -52,5 +60,17 @@ public class UiAutomation {
 
     public void setOnAccessibilityEventListener(OnAccessibilityEventListener listener) {
         uiAutomation.setOnAccessibilityEventListener(listener);
+    }
+
+    public List<Integer> getDisplayIds() {
+        DisplayManager displayManager = (DisplayManager) getInstrumentation().getContext()
+                .getSystemService(Service.DISPLAY_SERVICE);
+
+        List<Integer> displayIds = new ArrayList<>();
+        for (Display display : displayManager.getDisplays()) {
+            displayIds.add(display.getDisplayId());
+        }
+
+        return displayIds;
     }
 }

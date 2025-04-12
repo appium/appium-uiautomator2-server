@@ -1,3 +1,9 @@
+## [7.4.0](https://github.com/appium/appium-uiautomator2-server/compare/v7.3.1...v7.4.0) (2025-04-07)
+
+### Features
+
+* add support for setting the current display ([#694](https://github.com/appium/appium-uiautomator2-server/issues/694)) ([a6ab99e](https://github.com/appium/appium-uiautomator2-server/commit/a6ab99e22a5f8ddcc79fb08a1c23ff886b8a0d93))
+
 ## [7.3.1](https://github.com/appium/appium-uiautomator2-server/compare/v7.3.0...v7.3.1) (2025-03-26)
 
 ### Miscellaneous Chores

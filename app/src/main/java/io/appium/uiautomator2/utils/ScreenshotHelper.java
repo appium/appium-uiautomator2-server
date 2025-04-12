@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 
 import io.appium.uiautomator2.common.exceptions.CompressScreenshotException;
 import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
@@ -83,7 +84,7 @@ public class ScreenshotHelper {
      * @throws TakeScreenshotException if there was an error while taking the screenshot
      */
     private static <T> T takeDeviceScreenshot(Class<T> outputType) throws TakeScreenshotException {
-        Display display = UiAutomatorBridge.getInstance().getDefaultDisplay();
+        Display display = UiAutomatorBridge.getInstance().getCurrentDisplay();
         UiAutomation automation = CustomUiDevice.getInstance().getUiAutomation();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
@@ -93,7 +94,15 @@ public class ScreenshotHelper {
         // executeShellCommand seems to be faulty on Android 5
         if (metrics.densityDpi != DENSITY_DEFAULT && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             try {
-                ParcelFileDescriptor pfd = automation.executeShellCommand("screencap -p");
+                String shellScreenCapCommand = "screencap -p";
+
+                Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
+                if (physicalDisplayId != null) {
+                    shellScreenCapCommand =
+                            String.format("screencap -d %d -p", physicalDisplayId);
+                }
+
+                ParcelFileDescriptor pfd = automation.executeShellCommand(shellScreenCapCommand);
                 try (InputStream is = new FileInputStream(pfd.getFileDescriptor())) {
                     byte[] pngBytes = StringHelpers.inputStreamToByteArray(is);
                     if (pngBytes.length <= PNG_MAGIC_LENGTH) {
