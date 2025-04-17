@@ -4,8 +4,8 @@ const semver = require('semver');
 const {logger} = require('@appium/support');
 
 const log = logger.getLogger('Versioner');
-const VERSION_NAME_PATTERN = /^\s*versionName\s+['"](.+)['"]$/gm;
-const VERSION_CODE_PATTERN = /^\s*versionCode\s+(.+)$/gm;
+const VERSION_NAME_PATTERN = /^\s*versionName\s*=\s*(.+)$/gm;
+const VERSION_CODE_PATTERN = /^\s*versionCode\s*=\s*(\d+)$/gm;
 
 function parseArgValue (argName) {
   const argNamePattern = new RegExp(`^--${argName}\\b`);
@@ -20,7 +20,7 @@ function parseArgValue (argName) {
 
 
 async function gradleVersionUpdate() {
-  const gradleFile = path.resolve(__dirname, '..', 'app', 'build.gradle');
+  const gradleFile = path.resolve(__dirname, '..', 'gradle.properties');
   try {
     await fs.promises.access(gradleFile, fs.constants.W_OK);
   } catch {

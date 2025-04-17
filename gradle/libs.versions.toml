@@ -1,0 +1,49 @@
+[versions]
+androidGradlePlugin = "8.9.1"
+gson = "2.13.0"
+icu4j = "60.2"
+javaCupRuntime = "11b-20160615-3"
+javassist = "3.30.2-GA"
+json = "20250107"
+junidecode = "0.5.2"
+junit = "4.13.2"
+nettyAll = "4.0.41.Final"
+okhttp = "2.7.5"
+powermockApiMockito2 = "2.0.9"
+robolectric = "4.14.1"
+unmockplugin = "0.9.0"
+uiautomator = "2.3.0"
+androidx-test-core = "1.6.1"
+androidx-test-junit = "1.2.1"
+androidx-test-runner = "1.6.2"
+xercesimpl = "2.12.2"
+
+[libraries]
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+icu4j = { module = "com.ibm.icu:icu4j", version.ref = "icu4j" }
+java-cup-runtime = { module = "com.github.vbmacher:java-cup-runtime", version.ref = "javaCupRuntime" }
+javassist = { module = "org.javassist:javassist", version.ref = "javassist" }
+json = { module = "org.json:json", version.ref = "json" }
+junidecode = { module = "net.gcardone.junidecode:junidecode", version.ref = "junidecode" }
+junit = { module = "junit:junit", version.ref = "junit" }
+netty-all = { module = "io.netty:netty-all", version.ref = "nettyAll" }
+okhttp = { module = "com.squareup.okhttp:okhttp", version.ref = "okhttp" }
+powermock-api-mockito2 = { module = "org.powermock:powermock-api-mockito2", version.ref = "powermockApiMockito2" }
+powermock-classloading-xstream = { module = "org.powermock:powermock-classloading-xstream", version.ref = "powermockApiMockito2" }
+powermock-module-junit4 = { module = "org.powermock:powermock-module-junit4", version.ref = "powermockApiMockito2" }
+powermock-module-junit4-rule = { module = "org.powermock:powermock-module-junit4-rule", version.ref = "powermockApiMockito2" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+unmockplugin = { module = "com.github.bjoernq:unmockplugin", version.ref = "unmockplugin" }
+uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test-core" }
+androidx-test-junit = {module = "androidx.test.ext:junit",version.ref = "androidx-test-junit"}
+androidx-test-runner = {module = "androidx.test:runner", version.ref = "androidx-test-runner"}
+xercesimpl = { module = "xerces:xercesImpl", version.ref = "xercesimpl" }
+
+[bundles]
+androix-test = ["androidx-test-core","androidx-test-junit","androidx-test-runner"]
+powermock = ["powermock-api-mockito2","powermock-classloading-xstream","powermock-module-junit4","powermock-module-junit4-rule"]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+unmockplugin = { id = "de.mobilej.unmock", version.ref = "unmockplugin" }
