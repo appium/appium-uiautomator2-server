@@ -12,3 +12,4 @@ apks/
 package-lock.json*
 .settings
 .classpath
+.tool-versions
