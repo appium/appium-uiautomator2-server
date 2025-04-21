@@ -185,31 +185,30 @@ val installAUT by tasks.register("installAUT", Exec::class) {
             commandArgs.add(targetSerial)
             logger.quiet("Installing to device: $targetSerial")
         }
+        val apiLevel : Int = runCatching {
+            val getPropCommand = mutableListOf<String>()
+            getPropCommand.addFirst(adbFileProvider.get().asFile.absolutePath)
+            getPropCommand.addAll(commandArgs)
+            getPropCommand.addAll(listOf("shell","getprop","ro.build.version.sdk"))
+            ProcessBuilder( getPropCommand)
+                .start()
+                .inputStream.bufferedReader().use { it.readText() }.trim().toIntOrNull()
+        }.getOrNull()?:23
 
-        commandArgs.addAll(listOf("install", "-r", "-g", apkFile.path))
+        commandArgs.add("install")
+        if (apiLevel >= 23){
+            commandArgs.add("-g")
+        }
+        commandArgs.add("-r")
+        commandArgs.addLast(apkFile.absolutePath)
         setArgs(commandArgs)
-        isIgnoreExitValue = true
+        isIgnoreExitValue = false
         errorOutput = ByteArrayOutputStream()
         standardOutput = ByteArrayOutputStream()
     }
 
     doLast {
-        logger.info(standardOutput.toString())
-        executionResult.get().let { res ->
-            if (res.exitValue != 0) {
-                if ("no devices/emulators found" !in errorOutput.toString()) {
-                    logger.warn(
-                        """
-                >>>Note: This installation used '-g' flag which requires API 23+.
-                For older devices, if needed, use:
-                adb ${if (!targetSerial.isNullOrBlank()) "-s $targetSerial " else ""}install -r "${apkFile.path}"
-            """.trimIndent()
-                    )
-                }
-            }
-            logger.error(errorOutput.toString())
-            res.assertNormalExitValue()
-        }
+        logger.info("exitValue: ${executionResult.get().exitValue},\nstandardOutput: $standardOutput,\nerrorOutput: $errorOutput")
     }
 }
 val uninstallAUT by tasks.register("uninstallAUT", Exec::class) {
