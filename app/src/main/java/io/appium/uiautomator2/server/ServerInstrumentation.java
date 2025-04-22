@@ -32,12 +32,19 @@ import androidx.test.uiautomator.Configurator;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.ShutdownOnPowerDisconnect;
 import io.appium.uiautomator2.server.mjpeg.MjpegScreenshotServer;
+import io.appium.uiautomator2.test.BuildConfig;
 import io.appium.uiautomator2.utils.Logger;
 
 import static android.content.Intent.ACTION_POWER_DISCONNECTED;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 
+import com.google.gson.Gson;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class ServerInstrumentation {
@@ -142,6 +149,7 @@ public class ServerInstrumentation {
             }
 
             Logger.info("Starting ServerInstrumentation");
+            Logger.info("buildConfig: ",new Gson().toJson(getBuildConfig()));
             shutdownLatch = new CountDownLatch(1);
             acquireWakeLock(MAX_TEST_DURATION);
             startHttpServer();
@@ -318,5 +326,21 @@ public class ServerInstrumentation {
             server.stop();
             super.interrupt();
         }
+    }
+    public static Map<String, Object> getBuildConfig() {
+        final Map<String, Object> fieldMap = new HashMap<>();
+
+        for (Field field : BuildConfig.class.getDeclaredFields()) {
+            if (Modifier.isStatic(field.getModifiers())) {
+                try {
+                    field.setAccessible(true);
+                    Object value = field.get(null);
+                    fieldMap.put(field.getName(), value);
+                } catch (IllegalAccessException e) {
+                    Logger.error("Field access denied for: " + field.getName(), e);
+                }
+            }
+        }
+        return fieldMap;
     }
 }
