@@ -1,4 +1,4 @@
-name: "Validate Gradle Wrapper"
+name: "Gradle Dependency Submission"
 on:
   push:
     branches:
@@ -6,11 +6,25 @@ on:
   pull_request:
     branches:
       - master
+permissions:
+  contents: write
 
 jobs:
-  validation:
-    name: "Validation"
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: gradle/wrapper-validation-action@v1
+    - name: Checkout sources
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '22'
+
+    - name: Setup Gradle  # Starting with v4 the setup-gradle action will perform wrapper validation on each execution. 
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Submit Dependencies (main branch only)
+      if: github.ref == 'refs/heads/master'
+      uses: gradle/actions/dependency-submission@v4
