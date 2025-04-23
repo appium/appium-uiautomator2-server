@@ -21,7 +21,8 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '22'
-
+        cache: 'gradle'
+        
     - name: Setup Gradle  # Starting with v4 the setup-gradle action will perform wrapper validation on each execution. 
       uses: gradle/actions/setup-gradle@v4
 
