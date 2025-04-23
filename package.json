@@ -28,7 +28,7 @@
   ],
   "homepage": "https://github.com/appium/appium-uiautomator2-server",
   "scripts": {
-    "bump-gradle-version": "node ./scripts/gradle-version-update.js --package-version=${npm_package_version} && git add app/build.gradle.kts",
+    "bump-gradle-version": "node ./scripts/gradle-version-update.js --package-version=${npm_package_version} && git add gradle.properties",
     "build": "./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks && npm run sign-apk",
     "sign-apk": "node ./scripts/sign-apk.js",
     "lint:java": "./gradlew lint",
