@@ -16,20 +16,12 @@
 package io.appium.uiautomator2.server.test;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import com.google.gson.Gson;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
-import io.appium.uiautomator2.test.BuildConfig;
 import io.appium.uiautomator2.server.ServerInstrumentation;
 import io.appium.uiautomator2.utils.Logger;
 
