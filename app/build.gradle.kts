@@ -18,10 +18,12 @@ plugins {
 }
 
 java {
-    // Ensures JDK 22+Adoptium consistency across dev/CI environments and avoids vendor-specific build issues
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(22)
-        vendor = JvmVendorSpec.ADOPTIUM
+    // Ensures JDK 22+ Adoptium consistency across CI environments and avoids vendor-specific build issues
+    if (System.getenv("CI") != null) {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(22)
+            vendor = JvmVendorSpec.ADOPTIUM
+        }
     }
 }
 
