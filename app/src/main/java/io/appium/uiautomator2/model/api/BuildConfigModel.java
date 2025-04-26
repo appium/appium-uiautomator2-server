@@ -16,20 +16,17 @@
 
 package io.appium.uiautomator2.model.api;
 
-public class StatusModel extends BaseModel {
-    public Boolean ready;
-    public String message;
-    public BuildConfigModel build;
+public class BuildConfigModel extends BaseModel {
+    public String version;
+    public int versionCode;
 
-    public StatusModel() {}
+    public BuildConfigModel() {}
 
-    public StatusModel(
-            Boolean ready,
-            String message,
-            BuildConfigModel build
+    public BuildConfigModel(
+            String version,
+            int versionCode
     ) {
-        this.ready = ready;
-        this.message = message;
-        this.build = build;
+        this.version = version;
+        this.versionCode = versionCode;
     }
 }

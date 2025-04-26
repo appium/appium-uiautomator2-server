@@ -20,9 +20,13 @@ import io.appium.uiautomator2.handler.request.NoSessionCommandHandler;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.api.BuildConfigModel;
 import io.appium.uiautomator2.model.api.StatusModel;
 
 import static io.appium.uiautomator2.model.Session.NO_ID;
+import static io.appium.uiautomator2.utils.BuildUtils.getBuildConfig;
+
+import java.util.Map;
 
 public class Status extends SafeRequestHandler implements NoSessionCommandHandler {
 
@@ -32,8 +36,15 @@ public class Status extends SafeRequestHandler implements NoSessionCommandHandle
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        return new AppiumResponse(NO_ID, new StatusModel(true,
-                "UiAutomator2 Server is ready to accept commands"
+        Map<String, Object> buildConfig = getBuildConfig();
+        //noinspection DataFlowIssue
+        return new AppiumResponse(NO_ID, new StatusModel(
+                true,
+                "UiAutomator2 Server is ready to accept commands",
+                new BuildConfigModel(
+                        (String) buildConfig.get("VERSION_NAME"),
+                        (int) buildConfig.get("VERSION_CODE")
+                )
         ));
     }
 }
