@@ -24,20 +24,25 @@ import java.util.Map;
 import io.appium.uiautomator2.test.BuildConfig;
 
 public class BuildUtils {
-    public static Map<String, Object> getBuildConfig() {
-        final Map<String, Object> fieldMap = new HashMap<>();
+    private static Map<String, Object> cachedBuildConfig;
 
+    public static synchronized Map<String, Object> getBuildConfig() {
+        if (cachedBuildConfig != null) {
+            return cachedBuildConfig;
+        }
+
+        cachedBuildConfig = new HashMap<>();
         for (Field field : BuildConfig.class.getDeclaredFields()) {
             if (Modifier.isStatic(field.getModifiers())) {
                 try {
                     field.setAccessible(true);
                     Object value = field.get(null);
-                    fieldMap.put(field.getName(), value);
+                    cachedBuildConfig.put(field.getName(), value);
                 } catch (IllegalAccessException e) {
                     Logger.error("Field access denied for: " + field.getName(), e);
                 }
             }
         }
-        return fieldMap;
+        return cachedBuildConfig;
     }
 }
