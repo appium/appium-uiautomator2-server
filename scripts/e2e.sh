@@ -1,5 +1,9 @@
 #!/bin/bash -xe
 
+adb shell settings put global hidden_api_policy  1
+adb shell settings put global hidden_api_policy_pre_p_apps  1
+adb shell settings put global hidden_api_policy_p_apps 1
+
 classes=(AlertCommandsTest ActionsCommandsTest ElementCommandsTest DeviceCommandsTest)
 did_fail=0
 for cls_name in "${classes[@]}"; do
