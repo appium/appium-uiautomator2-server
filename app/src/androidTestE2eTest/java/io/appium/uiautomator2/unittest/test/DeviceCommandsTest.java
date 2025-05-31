@@ -145,6 +145,9 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void findElementsUsingUiAutomatorTest() throws JSONException {
+        startActivity(".ApiDemos");
+        waitForElement(By.accessibilityId("Accessibility"));
+
         By by = By.androidUiAutomator("resourceId(\"android:id/text1\")");
         Response response = findElements(by);
         assertTrue(by + " should be found", response.isSuccessful());
@@ -159,7 +162,10 @@ public class DeviceCommandsTest extends BaseTest {
      * Test for findElements
      */
     @Test
-    public void findElementsTest() {
+    public void findElementsTest() throws JSONException {
+        startActivity(".ApiDemos");
+        waitForElement(By.accessibilityId("Accessibility"));
+
         By by = By.className("android.widget.TextView");
         Response response = findElements(by);
         assertTrue(by + " should be found", response.isSuccessful());
