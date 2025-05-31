@@ -145,12 +145,8 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void findElementsUsingUiAutomatorTest() throws JSONException {
-        scrollToText("Views"); // Due to 'Views' option not visible on small screen
-        Response response = findElement(By.accessibilityId("Views"));
-        clickAndWaitForStaleness(response.getElementId());
-
         By by = By.androidUiAutomator("resourceId(\"android:id/text1\")");
-        response = findElements(by);
+        Response response = findElements(by);
         assertTrue(by + " should be found", response.isSuccessful());
 
         JSONArray elements = response.getValue();
@@ -661,8 +657,8 @@ public class DeviceCommandsTest extends BaseTest {
      */
     @Test
     public void scrollByUiSelectorTest() throws JSONException {
-        startActivity(".ApiDemos");
-        Response response = waitForElement(By.accessibilityId("Views"));
+        scrollToText("Views"); // Due to 'Views' option not visible on small screen
+        Response response = findElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
 
         String uiSelectorSpec = "new UiSelector().textStartsWith(\"WebView\")";
