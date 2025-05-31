@@ -662,7 +662,7 @@ public class DeviceCommandsTest extends BaseTest {
     @Test
     public void scrollByUiSelectorTest() throws JSONException {
         startActivity(".ApiDemos");
-        Response response = findElement(By.accessibilityId("Views"));
+        Response response = waitForElement(By.accessibilityId("Views"));
         clickAndWaitForStaleness(response.getElementId());
 
         String uiSelectorSpec = "new UiSelector().textStartsWith(\"WebView\")";
