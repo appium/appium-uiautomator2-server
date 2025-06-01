@@ -48,7 +48,7 @@ public class ScreenshotHelper {
     private static final int PNG_MAGIC_LENGTH = 8;
 
     /**
-     * Grab device screenshot and crop it to specifyed area if cropArea is not null.
+     * Grab device screenshot and crop it to specified area if cropArea is not null.
      * Compress it to PGN format and convert to Base64 byte-string.
      *
      * @param cropArea Area to crop.
