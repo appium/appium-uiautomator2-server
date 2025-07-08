@@ -297,8 +297,11 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 continue;
             }
 
+	        // See https://issuetracker.google.com/issues/354958193
+	        boolean mayContainVisibleChildren = node.getClassName().equals("androidx.compose.ui.viewinterop.ViewFactoryHolder");
+
             // Ignore if the element is not visible on the screen
-            if (areInvisibleElementsAllowed || child.isVisibleToUser()) {
+            if (areInvisibleElementsAllowed || child.isVisibleToUser() || mayContainVisibleChildren) {
                 children.add(take(child, index, depth + 1, includedAttributes));
             }
         }
