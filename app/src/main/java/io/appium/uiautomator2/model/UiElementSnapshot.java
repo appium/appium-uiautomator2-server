@@ -324,7 +324,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             }
 
             // Ignore if the element is not visible on the screen
-            if (areInvisibleElementsAllowed || child.isVisibleToUser() || this.shouldTraverseIfRequested(node)) {
+            if (
+                areInvisibleElementsAllowed
+                || child.isVisibleToUser()
+                || shouldTraverseIfRequested(node)) {
                 children.add(take(child, index, depth + 1, includedAttributes));
             }
         }

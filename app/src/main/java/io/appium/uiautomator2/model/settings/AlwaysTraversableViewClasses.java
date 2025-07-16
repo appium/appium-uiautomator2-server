@@ -38,7 +38,7 @@ public class AlwaysTraversableViewClasses extends AbstractSetting<String> {
     private static final String DEFAULT_CLASSNAMES = "";
     private String value = DEFAULT_CLASSNAMES;
 
-    private String[] asArray = new String[] {};
+    private String[] patternArray = new String[] {};
 
     public AlwaysTraversableViewClasses() {
         super(String.class, SETTING_NAME);
@@ -55,7 +55,7 @@ public class AlwaysTraversableViewClasses extends AbstractSetting<String> {
     }
 
     public String[] asArray() {
-        return asArray;
+        return patternArray;
     }
 
     @Override
@@ -65,6 +65,6 @@ public class AlwaysTraversableViewClasses extends AbstractSetting<String> {
         for (String name : value.split(",")) {
             patterns.add(GlobMatcher.globToRegex(name.trim()));
         }
-        asArray = patterns.toArray(new String[]{});
+        patternArray = patterns.toArray(new String[]{});
     }
 }
