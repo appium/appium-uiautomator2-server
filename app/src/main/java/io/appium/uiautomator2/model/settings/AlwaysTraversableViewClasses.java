@@ -33,6 +33,8 @@ public class AlwaysTraversableViewClasses extends AbstractSetting<String> {
     private static final String DEFAULT_CLASSNAMES = "";
     private String value = DEFAULT_CLASSNAMES;
 
+    private String[] asArray = new String[] {};
+
     public AlwaysTraversableViewClasses() {
         super(String.class, SETTING_NAME);
     }
@@ -48,11 +50,12 @@ public class AlwaysTraversableViewClasses extends AbstractSetting<String> {
     }
 
     public String[] asArray() {
-        return value.split(",");
+        return asArray;
     }
 
     @Override
     protected void apply(String traversableViewClasses) {
         value = traversableViewClasses;
+        asArray = value.split(",");
     }
 }

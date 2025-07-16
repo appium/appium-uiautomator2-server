@@ -282,17 +282,16 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
      * Detects if the tree traversal should continue, because we hope to find visible children under
      * this node
      * @param className the class name of the current node
-     * @param traversableClassPrefixes a list of class prefixes that
      * @see <a href="https://issuetracker.google.com/issues/354958193">https://issuetracker.google.com/issues/354958193</a>
      * @return true, if the given node should be traversed further else false
      */
-    private boolean mayContainVisibleChildren(@Nullable String className, String[] traversableClassPrefixes) {
+    private boolean shouldTraverseIfRequested(@Nullable String className) {
         if (className == null) {
             return false;
         }
 
-        for (String name : traversableClassPrefixes) {
-            if (className.startsWith(name)) {
+        for (String prefix : Settings.get(AlwaysTraversableViewClasses.class).asArray()) {
+            if (className.startsWith(prefix)) {
                 return true;
             }
         }
@@ -313,13 +312,14 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         List<UiElementSnapshot> children = new ArrayList<>(childCount);
         boolean areInvisibleElementsAllowed = Settings.get(AllowInvisibleElements.class).getValue();
 
-        // we don't need to get the setting if invisible elements are allowed anyway
-        String[] classesThatMayContainVisibleChildren = {};
         String className = null;
 
+        // we don't need to get the setting if invisible elements are allowed anyway
         if (!areInvisibleElementsAllowed) {
-            className = node.getClassName().toString();
-            classesThatMayContainVisibleChildren = Settings.get(AlwaysTraversableViewClasses.class).asArray();
+            CharSequence rawName = node.getClassName();
+            if (rawName != null) {
+                className = rawName.toString();
+            }
         }
 
         List<Integer> nullNodeIndexes = new ArrayList<>();
@@ -331,7 +331,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             }
 
             // Ignore if the element is not visible on the screen
-            if (areInvisibleElementsAllowed || child.isVisibleToUser() || this.mayContainVisibleChildren(className, classesThatMayContainVisibleChildren)) {
+            if (areInvisibleElementsAllowed || child.isVisibleToUser() || this.shouldTraverseIfRequested(className)) {
                 children.add(take(child, index, depth + 1, includedAttributes));
             }
         }
