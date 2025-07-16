@@ -287,12 +287,12 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
      * @return true, if the given node should be traversed further else false
      */
     private boolean mayContainVisibleChildren(@Nullable String className, String[] traversableClassPrefixes) {
-        if(className == null) {
+        if (className == null) {
             return false;
         }
 
-        for(String name : traversableClassPrefixes) {
-            if(className.startsWith(name)) {
+        for (String name : traversableClassPrefixes) {
+            if (className.startsWith(name)) {
                 return true;
             }
         }
@@ -317,7 +317,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         String[] classesThatMayContainVisibleChildren = {};
         String className = null;
 
-        if(!areInvisibleElementsAllowed) {
+        if (!areInvisibleElementsAllowed) {
             className = node.getClassName().toString();
             classesThatMayContainVisibleChildren = Settings.get(AlwaysTraversableViewClasses.class).asArray();
         }
