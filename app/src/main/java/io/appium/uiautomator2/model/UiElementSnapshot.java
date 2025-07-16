@@ -286,7 +286,11 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
      * @see <a href="https://issuetracker.google.com/issues/354958193">https://issuetracker.google.com/issues/354958193</a>
      * @return true, if the given node should be traversed further else false
      */
-    private boolean mayContainVisibleChildren(String className, String[] traversableClassPrefixes) {
+    private boolean mayContainVisibleChildren(@Nullable String className, String[] traversableClassPrefixes) {
+        if(className == null) {
+            return false;
+        }
+
         for(String name : traversableClassPrefixes) {
             if(className.startsWith(name)) {
                 return true;
@@ -310,7 +314,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         boolean areInvisibleElementsAllowed = Settings.get(AllowInvisibleElements.class).getValue();
 
         // we don't need to get the setting if invisible elements are allowed anyway
-        String[] classesThatMayContainVisibleChildren = null;
+        String[] classesThatMayContainVisibleChildren = {};
         String className = null;
 
         if(!areInvisibleElementsAllowed) {
