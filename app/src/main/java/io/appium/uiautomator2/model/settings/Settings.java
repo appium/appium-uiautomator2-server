@@ -47,7 +47,8 @@ public enum Settings {
     MJPEG_BILINEAR_FILTERING(new MjpegBilinearFiltering()),
     USE_RESOURCES_FOR_ORIENTATION_DETECTION(new UseResourcesForOrientationDetection()),
     SNAPSHOT_MAX_DEPTH(new SnapshotMaxDepth()),
-    CURRENT_DISPLAY_ID(new CurrentDisplayId());
+    CURRENT_DISPLAY_ID(new CurrentDisplayId()),
+    ALWAYS_TRAVERSABLE_VIEW_CLASSES(new AlwaysTraversableViewClasses());
 
     private final ISetting<?> setting;
 

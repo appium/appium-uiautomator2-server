@@ -35,6 +35,7 @@ import java.util.Set;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
+import io.appium.uiautomator2.model.settings.AlwaysTraversableViewClasses;
 import io.appium.uiautomator2.model.settings.IncludeA11yActionsInPageSource;
 import io.appium.uiautomator2.model.settings.IncludeExtrasInPageSource;
 import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
@@ -277,6 +278,24 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 new HashSet<>(Arrays.asList(TOAST_NODE_ATTRIBUTES))));
     }
 
+    /**
+     * Detects if the tree traversal should continue, because we hope to find visible children under
+     * this node
+     * @param className the class name of the current node
+     * @param traversableClassPrefixes a list of class prefixes that
+     * @see <a href="https://issuetracker.google.com/issues/354958193">https://issuetracker.google.com/issues/354958193</a>
+     * @return true, if the given node should be traversed further else false
+     */
+    private boolean mayContainVisibleChildren(String className, String[] traversableClassPrefixes) {
+        for(String name : traversableClassPrefixes) {
+            if(className.startsWith(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private List<UiElementSnapshot> buildChildren(AccessibilityNodeInfo node) {
         final int childCount = node.getChildCount();
         if (childCount == 0 || (maxDepth >= 0 && depth >= maxDepth)) {
@@ -289,6 +308,16 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
         List<UiElementSnapshot> children = new ArrayList<>(childCount);
         boolean areInvisibleElementsAllowed = Settings.get(AllowInvisibleElements.class).getValue();
+
+        // we don't need to get the setting if invisible elements are allowed anyway
+        String[] classesThatMayContainVisibleChildren = null;
+        String className = null;
+
+        if(!areInvisibleElementsAllowed) {
+            className = node.getClassName().toString();
+            classesThatMayContainVisibleChildren = Settings.get(AlwaysTraversableViewClasses.class).asArray();
+        }
+
         List<Integer> nullNodeIndexes = new ArrayList<>();
         for (int index = 0; index < childCount; ++index) {
             AccessibilityNodeInfo child = node.getChild(index);
@@ -297,11 +326,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 continue;
             }
 
-            // See https://issuetracker.google.com/issues/354958193
-            boolean mayContainVisibleChildren = node.getClassName().equals("androidx.compose.ui.viewinterop.ViewFactoryHolder");
-
             // Ignore if the element is not visible on the screen
-            if (areInvisibleElementsAllowed || child.isVisibleToUser() || mayContainVisibleChildren) {
+            if (areInvisibleElementsAllowed || child.isVisibleToUser() || this.mayContainVisibleChildren(className, classesThatMayContainVisibleChildren)) {
                 children.add(take(child, index, depth + 1, includedAttributes));
             }
         }
