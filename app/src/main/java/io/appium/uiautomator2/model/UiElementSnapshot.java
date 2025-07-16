@@ -16,6 +16,9 @@
 
 package io.appium.uiautomator2.model;
 
+import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
+import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
+
 import android.os.Build;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -32,19 +35,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.AlwaysTraversableViewClasses;
 import io.appium.uiautomator2.model.settings.IncludeA11yActionsInPageSource;
 import io.appium.uiautomator2.model.settings.IncludeExtrasInPageSource;
-import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
 import io.appium.uiautomator2.model.settings.Settings;
+import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.Logger;
-
-import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
-import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
+import io.appium.uiautomator2.utils.StringHelpers;
 
 /**
  * A UiElement that gets attributes via the Accessibility API.
@@ -279,19 +281,20 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     }
 
     /**
-     * Detects if the tree traversal should continue, because we hope to find visible children under
+     * Decides if the tree traversal should continue, because we hope to find visible children under
      * this node
-     * @param className the class name of the current node
+     * @param node the node to check against the class patterns for invisible exemptions
      * @see <a href="https://issuetracker.google.com/issues/354958193">https://issuetracker.google.com/issues/354958193</a>
      * @return true, if the given node should be traversed further else false
      */
-    private boolean shouldTraverseIfRequested(@Nullable String className) {
+    private boolean shouldTraverseIfRequested(AccessibilityNodeInfo node) {
+        String className = StringHelpers.charSequenceToNullableString(node.getClassName());
         if (className == null) {
             return false;
         }
 
-        for (String prefix : Settings.get(AlwaysTraversableViewClasses.class).asArray()) {
-            if (className.startsWith(prefix)) {
+        for (String pattern : Settings.get(AlwaysTraversableViewClasses.class).asArray()) {
+            if (Pattern.matches(pattern, className)) {
                 return true;
             }
         }
@@ -312,16 +315,6 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         List<UiElementSnapshot> children = new ArrayList<>(childCount);
         boolean areInvisibleElementsAllowed = Settings.get(AllowInvisibleElements.class).getValue();
 
-        String className = null;
-
-        // we don't need to get the setting if invisible elements are allowed anyway
-        if (!areInvisibleElementsAllowed) {
-            CharSequence rawName = node.getClassName();
-            if (rawName != null) {
-                className = rawName.toString();
-            }
-        }
-
         List<Integer> nullNodeIndexes = new ArrayList<>();
         for (int index = 0; index < childCount; ++index) {
             AccessibilityNodeInfo child = node.getChild(index);
@@ -331,7 +324,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             }
 
             // Ignore if the element is not visible on the screen
-            if (areInvisibleElementsAllowed || child.isVisibleToUser() || this.shouldTraverseIfRequested(className)) {
+            if (areInvisibleElementsAllowed || child.isVisibleToUser() || this.shouldTraverseIfRequested(node)) {
                 children.add(take(child, index, depth + 1, includedAttributes));
             }
         }
