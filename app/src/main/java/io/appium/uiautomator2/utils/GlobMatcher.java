@@ -35,8 +35,20 @@ public class GlobMatcher {
                 case '}':
                 case '[':
                 case ']':
+                    // Escape special regex characters
+                    regex.append("\\").append(c);
+                    break;
                 case '\\':
-                    regex.append("\\").append(c); // Escape special regex characters
+                    if (i + 1 < glob.length())
+                    {
+                        char nextChar = glob.charAt(i + 1);
+                        // Escape the glob patterns
+                        if (nextChar == '?' || nextChar == '*') {
+                            c = nextChar;
+                            ++i;
+                        }
+                    }
+                    regex.append("\\").append(c);
                     break;
                 default:
                     regex.append(c);
