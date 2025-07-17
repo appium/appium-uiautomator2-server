@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.model.settings;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.appium.uiautomator2.utils.GlobMatcher;
 
@@ -61,7 +62,7 @@ public class AlwaysTraversableViewClasses extends AbstractSetting<String> {
     @Override
     protected void apply(String traversableViewClasses) {
         value = traversableViewClasses;
-        ArrayList<String> patterns = new ArrayList<String>();
+        List<String> patterns = new ArrayList<String>();
         for (String name : value.split(",")) {
             patterns.add(GlobMatcher.globToRegex(name.trim()));
         }
