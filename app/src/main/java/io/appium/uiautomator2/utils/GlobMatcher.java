@@ -39,8 +39,7 @@ public class GlobMatcher {
                     regex.append("\\").append(c);
                     break;
                 case '\\':
-                    if (i + 1 < glob.length())
-                    {
+                    if (i + 1 < glob.length()) {
                         char nextChar = glob.charAt(i + 1);
                         // Escape the glob patterns
                         if (nextChar == '?' || nextChar == '*') {
