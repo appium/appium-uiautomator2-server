@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.model.api.scheduled;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
