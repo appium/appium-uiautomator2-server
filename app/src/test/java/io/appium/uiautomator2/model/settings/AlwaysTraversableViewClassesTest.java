@@ -39,15 +39,15 @@ public class AlwaysTraversableViewClassesTest {
     }
 
     @Test
-    public void shouldBeAbleToDisableElementResponseAttributes() {
+    public void shouldBeAbleToDisableTraversableViewClasses() {
         alwaysTraversableViewClasses.apply("");
         Assert.assertEquals("", alwaysTraversableViewClasses.getValue());
     }
 
     @Test
-    public void shouldBeAbleToEnableElementResponseAttributes() {
+    public void shouldBeAbleToEnableTraversableViewClasses() {
         alwaysTraversableViewClasses.apply("a,b");
         Assert.assertEquals("a,b", alwaysTraversableViewClasses.getValue());
-        Assert.assertArrayEquals(new String[] {"a", "b"}, alwaysTraversableViewClasses.asArray());
+        Assert.assertArrayEquals(new String[] {"^a$", "^b$"}, alwaysTraversableViewClasses.asArray());
     }
 }
