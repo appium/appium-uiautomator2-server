@@ -70,6 +70,8 @@ public enum Attribute {
     CONTENT_INVALID(new String[]{"content-invalid", "contentInvalid"}),
     ERROR_TEXT(new String[]{"error", "errorText"}),
     PANE_TITLE(new String[]{"pane-title", "paneTitle"}),
+    TOOLTIP_TEXT(new String[]{"tooltip-text", "tooltipText"}),
+    TEXT_HAS_CLICKABLE_SPAN(new String[]{"text-has-clickable-span", "textHasClickableSpan"}),
     ACTIONS(new String[]{"actions"});
 
     private final String[] aliases;

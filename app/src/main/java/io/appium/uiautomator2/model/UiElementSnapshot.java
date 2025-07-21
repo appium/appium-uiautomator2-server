@@ -17,6 +17,9 @@
 package io.appium.uiautomator2.model;
 
 import android.os.Build;
+import android.text.Spanned;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
@@ -64,7 +67,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.SHOWING_HINT_TEXT, Attribute.TEXT_ENTRY_KEY, Attribute.MULTI_LINE,
             Attribute.DISMISSABLE, Attribute.ACCESSIBILITY_FOCUSED, Attribute.HEADING,
             Attribute.LIVE_REGION, Attribute.CONTEXT_CLICKABLE, Attribute.MAX_TEXT_LENGTH,
-            Attribute.CONTENT_INVALID, Attribute.ERROR_TEXT, Attribute.PANE_TITLE, Attribute.ACTIONS
+            Attribute.CONTENT_INVALID, Attribute.ERROR_TEXT, Attribute.PANE_TITLE,
+            Attribute.TOOLTIP_TEXT, Attribute.TEXT_HAS_CLICKABLE_SPAN, Attribute.ACTIONS
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
     };
     private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[]{
@@ -207,6 +211,12 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
                         ? charSequenceToNullableString(node.getPaneTitle())
                         : null;
+            case TOOLTIP_TEXT:
+                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                        ? charSequenceToNullableString(node.getTooltipText())
+                        : null;
+            case TEXT_HAS_CLICKABLE_SPAN:
+                return isTextView(node) && textHasClickableSpan(node) ? true : null;
             case EXTRAS:
                 return BaseElement.getExtrasAsString(node);
             case ORIGINAL_TEXT:
@@ -318,5 +328,24 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     @Override
     protected Map<Attribute, Object> getAttributes() {
         return attributes;
+    }
+
+    private static boolean isTextView(AccessibilityNodeInfo node) {
+        CharSequence className = node.getClassName();
+        return className != null && "android.widget.TextView".equals(className.toString());
+    }
+
+    private static boolean textHasClickableSpan(AccessibilityNodeInfo node) {
+        CharSequence text = node.getText();
+        if (!(text instanceof Spanned)) {
+            return false;
+        }
+        Spanned spanned = (Spanned) text;
+        return hasSpansOfType(spanned, ClickableSpan.class) ||
+                hasSpansOfType(spanned, URLSpan.class);
+    }
+
+    private static <T> boolean hasSpansOfType(Spanned spanned, Class<T> type) {
+        return spanned.getSpans(0, spanned.length(), type).length > 0;
     }
 }
