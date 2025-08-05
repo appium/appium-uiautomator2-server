@@ -23,7 +23,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.test.uiautomator.UiDevice;
 
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.model.settings.CurrentDisplayId;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Device;
@@ -49,12 +48,12 @@ public class UiAutomatorBridge {
         return Settings.get(CurrentDisplayId.class).getValue();
     }
 
-    public InteractionController getInteractionController() throws UiAutomator2Exception {
+    public InteractionController getInteractionController() {
         return new InteractionController(invoke(getMethod(UiDevice.class, "getInteractionController"),
                 Device.getUiDevice()));
     }
 
-    public AccessibilityNodeInfo getAccessibilityRootNode() throws UiAutomator2Exception {
+    public AccessibilityNodeInfo getAccessibilityRootNode() {
         Object queryController = invoke(getMethod(UiDevice.class, "getQueryController"), Device.getUiDevice());
         return (AccessibilityNodeInfo) invoke(getMethod(queryController.getClass(), "getRootNode"), queryController);
     }
@@ -63,13 +62,12 @@ public class UiAutomatorBridge {
         return (UiAutomation) invoke(getMethod(UiDevice.class, "getUiAutomation"), Device.getUiDevice());
     }
 
-    public Display getCurrentDisplay() throws UiAutomator2Exception {
-        // 'getDefaultDisplay' will be removed from androidx.test.uiautomator.UiDevice in 2.3.0-beta01,
-        // thus here only relies on the getDisplay.
-
-        // Device.getUiDevice gets the instance via 'androidx.test.platform.app.InstrumentationRegistry.getInstrumentation'
+    public Display getCurrentDisplay() {
+        // Device.getUiDevice gets the instance via
+        // 'androidx.test.platform.app.InstrumentationRegistry.getInstrumentation'
         // context, thus here directly calls the method.
-        DisplayManager displayManager = (DisplayManager) getInstrumentation().getContext().getSystemService(Service.DISPLAY_SERVICE);
+        DisplayManager displayManager = (DisplayManager) getInstrumentation().getTargetContext()
+                .getSystemService(Service.DISPLAY_SERVICE);
         return displayManager.getDisplay(this.getCurrentDisplayId());
     }
 }

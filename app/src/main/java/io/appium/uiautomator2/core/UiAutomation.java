@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UiAutomation {
@@ -63,14 +64,16 @@ public class UiAutomation {
     }
 
     public List<Integer> getDisplayIds() {
-        DisplayManager displayManager = (DisplayManager) getInstrumentation().getContext()
+        DisplayManager displayManager = (DisplayManager) getInstrumentation().getTargetContext()
                 .getSystemService(Service.DISPLAY_SERVICE);
+        if (displayManager == null) {
+            return Collections.emptyList();
+        }
 
         List<Integer> displayIds = new ArrayList<>();
         for (Display display : displayManager.getDisplays()) {
             displayIds.add(display.getDisplayId());
         }
-
         return displayIds;
     }
 }
