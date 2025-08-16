@@ -1,3 +1,30 @@
+## [8.0.0](https://github.com/appium/appium-uiautomator2-server/compare/v7.7.1...v8.0.0) (2025-08-16)
+
+### ⚠ BREAKING CHANGES
+
+* Required Node.js version has been bumped to ^20.19.0 || ^22.12.0 || >=24.0.0
+* Required npm version has been bumped to >=10
+
+### Features
+
+* Bump Node.js version ([#716](https://github.com/appium/appium-uiautomator2-server/issues/716)) ([e43fdc6](https://github.com/appium/appium-uiautomator2-server/commit/e43fdc6ae68ae31e01df4e2f80eb1d1550382ecc))
+
+## [7.7.1](https://github.com/appium/appium-uiautomator2-server/compare/v7.7.0...v7.7.1) (2025-08-05)
+
+### Bug Fixes
+
+* Use getTargetContext to fetch the display service ([#715](https://github.com/appium/appium-uiautomator2-server/issues/715)) ([11e0980](https://github.com/appium/appium-uiautomator2-server/commit/11e0980af9a510ba185d92da603070f2e14f9f04))
+
+## [7.7.0](https://github.com/appium/appium-uiautomator2-server/compare/v7.6.2...v7.7.0) (2025-07-22)
+
+### Features
+
+* add tooltip-text and text-has-clickable-span attributes to UI elements ([b75c841](https://github.com/appium/appium-uiautomator2-server/commit/b75c8413b88ef046cfe2deb682f706c3ee4e3cc1))
+
+### Code Refactoring
+
+* remove unused import ([#707](https://github.com/appium/appium-uiautomator2-server/issues/707)) ([4e8d800](https://github.com/appium/appium-uiautomator2-server/commit/4e8d800aecd22e4c86aedb8ec803a400baed582f))
+
 ## [7.6.2](https://github.com/appium/appium-uiautomator2-server/compare/v7.6.1...v7.6.2) (2025-06-02)
 
 ### Miscellaneous Chores
