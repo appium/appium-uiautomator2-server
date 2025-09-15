@@ -25,7 +25,7 @@ import io.appium.uiautomator2.utils.GlobMatcher;
  * Allows to continue the tree traversal for user defined classes even though the node itself is invisible
  * The default logic for the UI tree traversal is to stop recursing when an invisible node is found.
  * However, with certain Jetpack Compose classes (e.g. androidx.compose.ui.viewinterop.ViewFactoryHolder),
- * it is possible that invisible parent nodes have visible children.
+ * it is possible that invisible parent nodes have visible child nodes.
  *
  * You can provide a comma separated list of glob patterns that will be used as an exemption list:
  * e.g. "androidx.compose.ui.viewinterop.*,android.widget.ImageButton"
