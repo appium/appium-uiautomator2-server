@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.LockSupport;
 
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -47,6 +48,7 @@ public class ActionsExecutor {
     private static final List<Integer> HOVERING_ACTIONS = Arrays.asList(
             MotionEvent.ACTION_HOVER_ENTER, MotionEvent.ACTION_HOVER_EXIT, MotionEvent.ACTION_HOVER_MOVE
     );
+    private static final long NANOSECONDS_IN_MILLISECOND = 1000000;
     private final ActionTokens actionTokens;
     private final InteractionController interactionController;
 
@@ -275,11 +277,9 @@ public class ActionsExecutor {
         return result;
     }
 
-    private static void sleepTillNextEvent(long nextEventTimestamp) {
-        final long currentTimestamp = SystemClock.uptimeMillis();
-        if (currentTimestamp < nextEventTimestamp) {
-            SystemClock.sleep(nextEventTimestamp - currentTimestamp);
-        }
+    private static void sleepTillNextEvent(long nextEventTimestampNs) {
+        // LockSupport.parkNanos is precise, unlike Thread.sleep
+        LockSupport.parkNanos(nextEventTimestampNs - System.nanoTime());
     }
 
     public boolean execute() {
@@ -289,13 +289,17 @@ public class ActionsExecutor {
 
         boolean result = true;
         final Set<Integer> depressedMetaKeys = new HashSet<>();
-        final long startTimestamp = SystemClock.uptimeMillis();
-        final long maxDelta = actionTokens.maxTimeDelta();
-        Logger.debug(String.format("Max actions chain time delta: %sms", maxDelta));
-        for (long currentDelta = 0; currentDelta <= maxDelta; currentDelta += EVENT_INJECTION_DELAY_MS) {
-            final List<InputEventParams> events = actionTokens.eventsAt(currentDelta);
+        final long startTimestampMs = SystemClock.uptimeMillis();
+        final long startTimestampNs = System.nanoTime();
+        final long maxDeltaMs = actionTokens.maxTimeDelta();
+        Logger.debug(String.format("Max actions chain time delta: %sms", maxDeltaMs));
+        for (long currentDeltaMs = 0; currentDeltaMs <= maxDeltaMs; currentDeltaMs += EVENT_INJECTION_DELAY_MS) {
+            final List<InputEventParams> events = actionTokens.eventsAt(currentDeltaMs);
+            final long nextEventTimestampNs = (
+                    startTimestampNs + (currentDeltaMs + EVENT_INJECTION_DELAY_MS) * NANOSECONDS_IN_MILLISECOND
+            );
             if (events == null || events.isEmpty()) {
-                sleepTillNextEvent(startTimestamp + currentDelta + EVENT_INJECTION_DELAY_MS);
+                sleepTillNextEvent(nextEventTimestampNs);
                 continue;
             }
 
@@ -309,13 +313,13 @@ public class ActionsExecutor {
                 }
             }
             if (!keyEvents.isEmpty()) {
-                result &= executeKeyEvents(keyEvents, startTimestamp, depressedMetaKeys);
+                result &= executeKeyEvents(keyEvents, startTimestampMs, depressedMetaKeys);
             }
             if (!motionEvents.isEmpty()) {
-                result &= executeMotionEvents(motionEvents, startTimestamp, depressedMetaKeys);
+                result &= executeMotionEvents(motionEvents, startTimestampMs, depressedMetaKeys);
             }
 
-            sleepTillNextEvent(startTimestamp + currentDelta + EVENT_INJECTION_DELAY_MS);
+            sleepTillNextEvent(nextEventTimestampNs);
         }
         return result;
     }
