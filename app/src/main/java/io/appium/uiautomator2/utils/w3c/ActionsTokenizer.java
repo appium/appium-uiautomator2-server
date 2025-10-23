@@ -28,6 +28,7 @@ import com.google.gson.JsonSyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.appium.uiautomator2.model.AndroidElement;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
@@ -75,13 +76,9 @@ public class ActionsTokenizer {
 
     private static List<W3CItemModel> filterActionsByType(final List<W3CItemModel> items,
                                                           final String type) {
-        final List<W3CItemModel> result = new ArrayList<>();
-        for (final W3CItemModel item : items) {
-            if (type.equals(item.type)) {
-                result.add(item);
-            }
-        }
-        return result;
+        return items.stream()
+                .filter(item -> type.equals(item.type))
+                .collect(Collectors.toList());
     }
 
     private static int extractButton(final W3CGestureModel gesture, final int toolType) {

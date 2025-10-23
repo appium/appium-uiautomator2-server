@@ -16,17 +16,18 @@
 
 package io.appium.uiautomator2.utils;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class Logger {
     public static final String TAG = "appium";
 
     private static String getString(Object... args) {
-        StringBuilder content = new StringBuilder();
-        for (Object arg : args) {
-            if (arg != null) {
-                content.append(arg);
-            }
-        }
-        return content.toString();
+        return Arrays.stream(args)
+                .filter(Objects::nonNull)
+                .map(Object::toString)
+                .collect(Collectors.joining());
     }
 
     /**

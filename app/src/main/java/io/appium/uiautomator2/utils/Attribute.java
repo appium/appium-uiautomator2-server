@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -137,13 +138,10 @@ public enum Attribute {
             return null;
         }
 
-        for (Attribute attribute : Attribute.values()) {
-            for (String attrAlias : attribute.aliases) {
-                if (attrAlias.equalsIgnoreCase(alias)) {
-                    return attribute;
-                }
-            }
-        }
-        return null;
+        return Arrays.stream(Attribute.values())
+                .filter(attribute -> Arrays.stream(attribute.aliases)
+                        .anyMatch(attrAlias -> attrAlias.equalsIgnoreCase(alias)))
+                .findFirst()
+                .orElse(null);
     }
 }

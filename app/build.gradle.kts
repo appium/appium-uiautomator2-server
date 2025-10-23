@@ -37,7 +37,7 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "io.appium.uiautomator2"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 34
         versionCode = project.findProperty("versionCode").toString().toIntOrNull() ?: 1
         /**
@@ -129,6 +129,10 @@ android {
     lint {
         abortOnError = false
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }
 
 extensions.configure<de.mobilej.unmock.UnMockExtension>("unMock") {
@@ -190,7 +194,7 @@ val installAUT by tasks.register("installAUT", Exec::class) {
         }
         val apiLevel : Int = runCatching {
             val getPropCommand = mutableListOf<String>()
-            getPropCommand.addFirst(adbFileProvider.get().asFile.absolutePath)
+            getPropCommand.add(0, adbFileProvider.get().asFile.absolutePath)
             getPropCommand.addAll(commandArgs)
             getPropCommand.addAll(listOf("shell","getprop","ro.build.version.sdk"))
             ProcessBuilder( getPropCommand)
@@ -203,7 +207,7 @@ val installAUT by tasks.register("installAUT", Exec::class) {
             commandArgs.add("-g")
         }
         commandArgs.add("-r")
-        commandArgs.addLast(apkFile.absolutePath)
+        commandArgs.add(apkFile.absolutePath)
         setArgs(commandArgs)
         isIgnoreExitValue = false
         errorOutput = ByteArrayOutputStream()

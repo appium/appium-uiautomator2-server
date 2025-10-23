@@ -58,40 +58,33 @@ public class ActionsExecutor {
         this.interactionController = UiAutomatorBridge.getInstance().getInteractionController();
     }
 
+    private static boolean shouldIncludeEvent(MotionInputEventParams eventParams, boolean shouldHovering) {
+        if (shouldHovering) {
+            return HOVERING_ACTIONS.contains(eventParams.actionCode)
+                    && eventParams.properties.toolType == MotionEvent.TOOL_TYPE_MOUSE;
+        }
+        return !HOVERING_ACTIONS.contains(eventParams.actionCode);
+    }
+
     private static MotionEvent.PointerProperties[] filterPointerProperties(
             final List<MotionInputEventParams> motionEventsParams, final boolean shouldHovering) {
-        final List<MotionEvent.PointerProperties> result = new ArrayList<>();
-        for (final MotionInputEventParams eventParams : motionEventsParams) {
-            if (shouldHovering && HOVERING_ACTIONS.contains(eventParams.actionCode)
-                    && eventParams.properties.toolType == MotionEvent.TOOL_TYPE_MOUSE) {
-                result.add(eventParams.properties);
-            } else if (!shouldHovering && !HOVERING_ACTIONS.contains(eventParams.actionCode)) {
-                result.add(eventParams.properties);
-            }
-        }
-        return result.toArray(new MotionEvent.PointerProperties[0]);
+        return motionEventsParams.stream()
+                .filter(eventParams -> shouldIncludeEvent(eventParams, shouldHovering))
+                .map(eventParams -> eventParams.properties)
+                .toArray(MotionEvent.PointerProperties[]::new);
     }
 
     private static MotionEvent.PointerCoords[] filterPointerCoordinates(
             final List<MotionInputEventParams> motionEventsParams, final boolean shouldHovering) {
-        final List<MotionEvent.PointerCoords> result = new ArrayList<>();
-        for (final MotionInputEventParams eventParams : motionEventsParams) {
-            if (shouldHovering && HOVERING_ACTIONS.contains(eventParams.actionCode) &&
-                    eventParams.properties.toolType == MotionEvent.TOOL_TYPE_MOUSE) {
-                result.add(eventParams.coordinates);
-            } else if (!shouldHovering && !HOVERING_ACTIONS.contains(eventParams.actionCode)) {
-                result.add(eventParams.coordinates);
-            }
-        }
-        return result.toArray(new MotionEvent.PointerCoords[0]);
+        return motionEventsParams.stream()
+                .filter(eventParams -> shouldIncludeEvent(eventParams, shouldHovering))
+                .map(eventParams -> eventParams.coordinates)
+                .toArray(MotionEvent.PointerCoords[]::new);
     }
 
     private static int metaKeysToState(final Set<Integer> metaKeys) {
-        int result = 0;
-        for (final int metaKey : metaKeys) {
-            result |= metaKey;
-        }
-        return result;
+        return metaKeys.stream()
+                .reduce(0, (result, metaKey) -> result | metaKey);
     }
 
     private static void logEvent(Object event, long eventTime, boolean result) {
@@ -175,11 +168,10 @@ public class ActionsExecutor {
     }
 
     private static int extractInputSource(List<MotionInputEventParams> events) {
-        Set<Integer> result = new HashSet<>();
-        for (MotionInputEventParams event : events) {
-            result.add(toolTypeToInputSource(event.properties.toolType));
-        }
-        return result.iterator().next();
+        return events.stream()
+                .map(event -> toolTypeToInputSource(event.properties.toolType))
+                .findFirst()
+                .orElse(0);
     }
 
     private static int getInitialPointersCount(List<MotionInputEventParams> events) {
