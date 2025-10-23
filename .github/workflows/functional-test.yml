@@ -24,12 +24,8 @@ jobs:
           apiLevel: 28
           emuTag: default
           arch: x86
-        - platformVersion: "7.1"
-          apiLevel: 25
-          emuTag: default
-          arch: x86
-        - platformVersion: "5.1"
-          apiLevel: 22
+        - platformVersion: "8.0"
+          apiLevel: 26
           emuTag: default
           arch: x86
 
