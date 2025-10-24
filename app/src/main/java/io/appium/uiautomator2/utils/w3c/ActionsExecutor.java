@@ -171,7 +171,7 @@ public class ActionsExecutor {
         return events.stream()
                 .map(event -> toolTypeToInputSource(event.properties.toolType))
                 .findFirst()
-                .orElse(0);
+                .orElse(InputDevice.SOURCE_TOUCHSCREEN);
     }
 
     private static int getInitialPointersCount(List<MotionInputEventParams> events) {
