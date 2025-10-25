@@ -361,7 +361,7 @@ public class AccessibilityNodeInfoDumper {
                     SystemClock.uptimeMillis() - timeStarted, matchedNodes.size(), xpath2Selector));
             return matchedNodes;
         } catch (Exception e) {
-            Logger.error("Got an unexpected error while fetching matches using XPath1", e);
+            Logger.error("Got an unexpected error while fetching matches using XPath2", e);
             throw new UiAutomator2Exception(
                     String.format("%s. Try changing the '%s' driver setting to 'true' in order " +
                                     "to workaround the problem.", e.getMessage(),
