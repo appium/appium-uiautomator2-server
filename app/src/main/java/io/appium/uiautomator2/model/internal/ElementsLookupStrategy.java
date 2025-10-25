@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.model.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
@@ -41,16 +40,17 @@ public enum ElementsLookupStrategy {
     }
 
     public static ElementsLookupStrategy ofName(String strategyName) {
-        List<String> supportedStrategies = new ArrayList<>();
-        for (ElementsLookupStrategy by: values()) {
-            if (by.toString().equals(strategyName)) {
-                return by;
-            }
-            supportedStrategies.add(by.toString());
-        }
-        throw new InvalidSelectorException(String.format(
-                "Selector strategy '%s' is not supported. Only the following selector strategies are supported: %s",
-                strategyName, supportedStrategies));
+        return java.util.Arrays.stream(values())
+                .filter(by -> by.toString().equals(strategyName))
+                .findFirst()
+                .orElseThrow(() -> {
+                    List<String> supportedStrategies = java.util.Arrays.stream(values())
+                            .map(ElementsLookupStrategy::toString)
+                            .collect(java.util.stream.Collectors.toList());
+                    return new InvalidSelectorException(String.format(
+                            "Selector strategy '%s' is not supported. Only the following selector strategies are supported: %s",
+                            strategyName, supportedStrategies));
+                });
     }
 
     public By toNativeSelector(String expression) {

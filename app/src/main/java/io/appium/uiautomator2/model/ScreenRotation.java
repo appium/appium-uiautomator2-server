@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.model;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import io.appium.uiautomator2.model.settings.Settings;
@@ -27,12 +28,10 @@ public enum ScreenRotation {
 
     public static ScreenRotation current() {
         int rotation = Device.getUiDevice().getDisplayRotation();
-        for (ScreenRotation val : values()) {
-            if (rotation == val.ordinal()) {
-                return val;
-            }
-        }
-        throw new IllegalStateException(String.format("Rotation value %s is not known", rotation));
+        return Arrays.stream(values())
+                .filter(val -> rotation == val.ordinal())
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(String.format("Rotation value %s is not known", rotation)));
     }
 
     public static ScreenRotation ofDegrees(int degrees) {

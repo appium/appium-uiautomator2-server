@@ -19,6 +19,7 @@ package io.appium.uiautomator2.utils.w3c;
 import android.view.KeyEvent;
 
 import androidx.annotation.Nullable;
+import java.util.Arrays;
 
 /**
  * Representations of pressable keys that aren't text.  These are stored in the Unicode PUA (Private
@@ -136,11 +137,9 @@ public enum W3CKeyCode {
 
     @Nullable
     public static W3CKeyCode fromCodePoint(int codePoint) {
-        for (W3CKeyCode value : values()) {
-            if (value.getW3CCodePoint() == codePoint) {
-                return value;
-            }
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(value -> value.getW3CCodePoint() == codePoint)
+                .findFirst()
+                .orElse(null);
     }
 }

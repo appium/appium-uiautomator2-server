@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.core;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
@@ -38,6 +37,8 @@ import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
 import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
 import io.appium.uiautomator2.utils.Logger;
+
+import java.util.stream.IntStream;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
@@ -280,12 +281,10 @@ public class AxNodeInfoHelper {
         if (parent == null) {
             return 0;
         }
-        for (int index = 0; index < parent.getChildCount(); ++index) {
-            if (node.equals(parent.getChild(index))) {
-                return index;
-            }
-        }
-        return 0;
+        return IntStream.range(0, parent.getChildCount())
+                .filter(index -> node.equals(parent.getChild(index)))
+                .findFirst()
+                .orElse(0);
     }
 
     /**
@@ -294,7 +293,6 @@ public class AxNodeInfoHelper {
      * @param value desired progress value
      * @throws InvalidElementStateException if there was a failure while setting the progress value
      */
-    @TargetApi(Build.VERSION_CODES.N)
     public static void setProgressValue(final AccessibilityNodeInfo node, final float value) {
         if (!node.getActionList().contains(AccessibilityAction.ACTION_SET_PROGRESS)) {
             throw new InvalidElementStateException(

@@ -20,8 +20,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Base64;
 
-import androidx.test.uiautomator.UiDevice;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,8 +60,6 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.ElementComm
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getAttribute;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.getText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.sendKeys;
-import static io.appium.uiautomator2.utils.Device.getUiDevice;
-import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -818,8 +814,8 @@ public class DeviceCommandsTest extends BaseTest {
     @Test
     public void shouldExtractDeviceInformation() throws JSONException {
         JSONObject info = getInfo().getValue();
-        assertEquals(info.getString("manufacturer"), Build.MANUFACTURER);
-        assertEquals(info.getString("platformVersion"), Build.VERSION.RELEASE);
+        assertEquals(Build.MANUFACTURER, info.getString("manufacturer"));
+        assertEquals(Build.VERSION.RELEASE, info.getString("platformVersion"));
         assertTrue(info.getJSONArray("networks").length() > 0);
     }
 

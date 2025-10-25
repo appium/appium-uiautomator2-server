@@ -23,8 +23,9 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toNullableAxNodeInfo;
 
@@ -62,21 +63,19 @@ public class AccessibleUiObject {
     }
 
     public static List<AccessibleUiObject> toAccessibleUiObjects(List<?> uiObjects) {
-        List<AccessibleUiObject> result = new ArrayList<>();
-        for (Object obj: uiObjects) {
-            if (obj instanceof UiObject) {
-                AccessibilityNodeInfo info = toNullableAxNodeInfo((UiObject) obj);
-                if (info != null) {
-                    result.add(new AccessibleUiObject((UiObject) obj, info));
-                }
-            } else if (obj instanceof UiObject2) {
-                AccessibilityNodeInfo info = toNullableAxNodeInfo((UiObject2) obj, false);
-                if (info != null) {
-                    result.add(new AccessibleUiObject((UiObject2) obj, info));
-                }
-            }
-        }
-        return result;
+        return uiObjects.stream()
+                .map(obj -> {
+                    if (obj instanceof UiObject) {
+                        AccessibilityNodeInfo info = toNullableAxNodeInfo((UiObject) obj);
+                        return info != null ? new AccessibleUiObject((UiObject) obj, info) : null;
+                    } else if (obj instanceof UiObject2) {
+                        AccessibilityNodeInfo info = toNullableAxNodeInfo((UiObject2) obj, false);
+                        return info != null ? new AccessibleUiObject((UiObject2) obj, info) : null;
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Nullable

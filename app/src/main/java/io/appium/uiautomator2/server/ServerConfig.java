@@ -18,6 +18,7 @@ package io.appium.uiautomator2.server;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import io.appium.uiautomator2.model.settings.MjpegBilinearFiltering;
 import io.appium.uiautomator2.model.settings.MjpegScalingFactor;
@@ -53,16 +54,17 @@ public class ServerConfig {
         Boolean.parseBoolean(System.getenv("MJPEG_BILINEAR_FILTERING"));
 
     // In-memory overrides
-    private static Map<String, Object> overrides = new HashMap<>();
+    private static final Map<String, Object> overrides = new HashMap<>();
 
     private static int getValueFromEnvOrDefault(String key, int defaultValue) {
-        return System.getenv(key) != null ?
-            Integer.parseInt(System.getenv(key)) :
-            defaultValue;
+        return Optional.ofNullable(System.getenv(key))
+                .map(Integer::parseInt)
+                .orElse(defaultValue);
     }
 
     private static <T> T getValueFromOverridesOrDefault(String key, T defaultValue) {
         synchronized (overrides) {
+            //noinspection unchecked
             return overrides.containsKey(key) ?
                 ((T) overrides.get(key)) :
                 defaultValue;

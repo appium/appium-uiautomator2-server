@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.NotImplementedException;
@@ -106,13 +107,9 @@ public class ElementLocationHelpers {
             return new HashSet<>(Arrays.asList(UiElementSnapshot.SUPPORTED_ATTRIBUTES));
         }
 
-        Set<Attribute> result = new HashSet<>();
-        for (Attribute attr : Attribute.values()) {
-            if (xpathExpression.contains("@" + attr.toString())) {
-                result.add(attr);
-            }
-        }
-        return result;
+        return Arrays.stream(Attribute.values())
+                .filter(attr -> xpathExpression.contains("@" + attr.toString()))
+                .collect(Collectors.toSet());
     }
 
     public static NodeInfoList getXPathNodeMatch(

@@ -247,7 +247,7 @@ public class ContentSizeHelpers {
                 jsonObject.put("scrollableOffset", scrollableOffset);
                 jsonObject.put("touchPadding", touchPadding);
             } catch (JSONException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
             return jsonObject.toString();
         }

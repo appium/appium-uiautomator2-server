@@ -149,11 +149,8 @@ public class ActionsExecutor {
 
     private boolean executeKeyEvents(List<KeyInputEventParams> events, long startTimestamp,
                                      Set<Integer> depressedMetaKeys) {
-        boolean result = true;
-        for (KeyInputEventParams event : events) {
-            result &= injectKeyEvent(event, startTimestamp, depressedMetaKeys);
-        }
-        return result;
+        return events.stream()
+                .allMatch(event -> injectKeyEvent(event, startTimestamp, depressedMetaKeys));
     }
 
     private static int toolTypeToInputSource(final int toolType) {

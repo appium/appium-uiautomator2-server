@@ -25,7 +25,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 
@@ -68,7 +67,6 @@ import static android.net.NetworkCapabilities.TRANSPORT_CELLULAR;
 import static android.net.NetworkCapabilities.TRANSPORT_ETHERNET;
 import static android.net.NetworkCapabilities.TRANSPORT_VPN;
 import static android.net.NetworkCapabilities.TRANSPORT_WIFI;
-
 
 public class DeviceInfoHelper {
     private final Context context;
@@ -143,7 +141,7 @@ public class DeviceInfoHelper {
     }
 
     /**
-     * Retrievs the name of the current celluar network carrier
+     * Retrieves the name of the current celluar network carrier
      *
      * @return carrier name or null if it cannot be retrieved
      */
@@ -154,7 +152,6 @@ public class DeviceInfoHelper {
         try {
             return telephonyManager == null ? null : telephonyManager.getNetworkOperatorName();
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -184,13 +181,10 @@ public class DeviceInfoHelper {
     }
 
     public static String extractTransportTypes(NetworkCapabilities caps) {
-        List<String> result = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : TRANSPORTS.entrySet()) {
-            if (caps.hasTransport(entry.getKey())) {
-                result.add(entry.getValue());
-            }
-        }
-        return TextUtils.join(",", result);
+        return TRANSPORTS.entrySet().stream()
+                .filter(entry -> caps.hasTransport(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(java.util.stream.Collectors.joining(","));
     }
 
     @SuppressLint("UseSparseArrays")
@@ -222,13 +216,10 @@ public class DeviceInfoHelper {
     }
 
     public static String extractCapNames(NetworkCapabilities caps) {
-        List<String> result = new ArrayList<>();
-        for (Map.Entry<Integer, String> entry : CAPS.entrySet()) {
-            if (caps.hasCapability(entry.getKey())) {
-                result.add(entry.getValue());
-            }
-        }
-        return TextUtils.join(",", result);
+        return CAPS.entrySet().stream()
+                .filter(entry -> caps.hasCapability(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(java.util.stream.Collectors.joining(","));
     }
 
     /**
@@ -310,10 +301,6 @@ public class DeviceInfoHelper {
      */
     @NonNull
     public String getTimeZone() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //noinspection Since15
-            return TimeZone.getDefault().toZoneId().getId();
-        }
-        return TimeZone.getDefault().getID();
+        return TimeZone.getDefault().toZoneId().getId();
     }
 }

@@ -52,6 +52,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.stream.IntStream;
 
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -107,12 +108,11 @@ public class AccessibilityNodeInfoDumper {
                     "Root node search query cannot be built if the root is unset"
             );
         }
-        for (int i = 0; i < uiElementsMapping.size(); ++i) {
-            if (Objects.equals(uiElementsMapping.valueAt(i).getNode(), root)) {
-                return uiElementsMapping.keyAt(i);
-            }
-        }
-        throw new RuntimeException("Cannot match the index of the root node");
+        return IntStream.range(0, uiElementsMapping.size())
+                .filter(i -> Objects.equals(uiElementsMapping.valueAt(i).getNode(), root))
+                .mapToObj(uiElementsMapping::keyAt)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Cannot match the index of the root node"));
     }
 
     @Nullable
@@ -127,13 +127,12 @@ public class AccessibilityNodeInfoDumper {
             return null;
         }
         NodeList childNodes = root.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); ++i) {
-            Node result = matchRootElement(childNodes.item(i), elementIndex);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
+        return IntStream.range(0, childNodes.getLength())
+                .mapToObj(childNodes::item)
+                .map(child -> matchRootElement(child, elementIndex))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
     }
 
     @NonNull
@@ -283,26 +282,17 @@ public class AccessibilityNodeInfoDumper {
             );
             final NodeInfoList matchedNodes = new NodeInfoList();
             final long timeStarted = SystemClock.uptimeMillis();
-            for (int i = 0; i < elements.getLength(); ++i) {
-                if (!(elements.item(i) instanceof Element)) {
-                    continue;
-                }
-                Element item = (Element) elements.item(i);
-                if (!item.hasAttribute(UI_ELEMENT_INDEX)) {
-                    continue;
-                }
-                UiElement<?, ?> uiElement = uiElementsMapping.get(
-                        Integer.parseInt(item.getAttribute(UI_ELEMENT_INDEX))
-                );
-                if (uiElement == null || uiElement.getNode() == null) {
-                    continue;
-                }
-
-                matchedNodes.add(uiElement.getNode());
-                if (!multiple) {
-                    break;
-                }
-            }
+            IntStream.range(0, elements.getLength())
+                    .mapToObj(elements::item)
+                    .filter(Element.class::isInstance)
+                    .map(Element.class::cast)
+                    .filter(item -> item.hasAttribute(UI_ELEMENT_INDEX))
+                    .map(item -> uiElementsMapping.get(Integer.parseInt(item.getAttribute(UI_ELEMENT_INDEX))))
+                    .filter(Objects::nonNull)
+                    .map(UiElement::getNode)
+                    .filter(Objects::nonNull)
+                    .limit(multiple ? elements.getLength() : 1)
+                    .forEach(matchedNodes::add);
             Logger.info(String.format("Took %sms to retrieve %s matches for '%s' XPath1 query",
                     SystemClock.uptimeMillis() - timeStarted, matchedNodes.size(), xpath1Selector));
             return matchedNodes;
@@ -312,7 +302,7 @@ public class AccessibilityNodeInfoDumper {
                                     "to workaround the problem.", e.getMessage(),
                             Settings.NORMALIZE_TAG_NAMES.getSetting().getName()), e);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("Got an unexpected error while fetching matches using XPath1", e);
             throw new UiAutomator2Exception(e);
         } finally {
             uiElementsMapping.clear();
@@ -371,7 +361,7 @@ public class AccessibilityNodeInfoDumper {
                     SystemClock.uptimeMillis() - timeStarted, matchedNodes.size(), xpath2Selector));
             return matchedNodes;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("Got an unexpected error while fetching matches using XPath1", e);
             throw new UiAutomator2Exception(
                     String.format("%s. Try changing the '%s' driver setting to 'true' in order " +
                                     "to workaround the problem.", e.getMessage(),

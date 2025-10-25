@@ -19,7 +19,6 @@ package io.appium.uiautomator2.model.internal;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
 import android.graphics.Point;
-import android.os.Build;
 import android.os.SystemClock;
 import android.util.SparseArray;
 import android.view.Display;
@@ -37,8 +36,9 @@ import androidx.test.uiautomator.Configurator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
@@ -102,11 +102,8 @@ public class CustomUiDevice {
     }
 
     public UiAutomation getUiAutomation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            int flags = Configurator.getInstance().getUiAutomationFlags();
-            return getInstrumentation().getUiAutomation(flags);
-        }
-        return getInstrumentation().getUiAutomation();
+        int flags = Configurator.getInstance().getUiAutomationFlags();
+        return getInstrumentation().getUiAutomation(flags);
     }
 
     private UiObject2 toUiObject2(@NonNull BySelector selector, @Nullable AccessibilityNodeInfo node) {
@@ -184,8 +181,6 @@ public class CustomUiDevice {
      * Returns List<object> to match the {@code selector} criteria.
      */
     public List<AccessibleUiObject> findObjects(Object selector) throws UiAutomator2Exception {
-        List<AccessibleUiObject> ret = new ArrayList<>();
-
         final List<AccessibilityNodeInfo> axNodesList;
         if (selector instanceof BySelector) {
             //noinspection unchecked
@@ -199,12 +194,9 @@ public class CustomUiDevice {
                     selector == null ? null : selector.getClass().getName()
             ));
         }
-        for (AccessibilityNodeInfo node : axNodesList) {
-            UiObject2 uiObject2 = toUiObject2(toBySelector(node), node);
-            ret.add(new AccessibleUiObject(uiObject2, node));
-        }
-
-        return ret;
+        return axNodesList.stream()
+                .map(node -> new AccessibleUiObject(toUiObject2(toBySelector(node), node), node))
+                .collect(Collectors.toList());
     }
 
     public ScreenRotation setRotationSync(ScreenRotation desired) {
@@ -250,12 +242,11 @@ public class CustomUiDevice {
     public int getTopmostWindowDisplayId() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
             SparseArray<List<AccessibilityWindowInfo>> windowsMap = getUiAutomation().getWindowsOnAllDisplays();
-            for (int i = 0; i < windowsMap.size(); i++) {
-                int displayId = windowsMap.keyAt(i);
-                if (displayId >= 0) {
-                    return displayId;
-                }
-            }
+            return IntStream.range(0, windowsMap.size())
+                    .mapToObj(windowsMap::keyAt)
+                    .filter(displayId -> displayId >= 0)
+                    .findFirst()
+                    .orElse(Display.DEFAULT_DISPLAY);
         }
         return Display.DEFAULT_DISPLAY;
     }

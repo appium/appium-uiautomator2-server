@@ -16,8 +16,8 @@
 
 package io.appium.uiautomator2.utils;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,18 +31,17 @@ public class BuildUtils {
             return cachedBuildConfig;
         }
 
-        cachedBuildConfig = new HashMap<>();
-        for (Field field : BuildConfig.class.getDeclaredFields()) {
-            if (Modifier.isStatic(field.getModifiers())) {
-                try {
-                    field.setAccessible(true);
-                    Object value = field.get(null);
-                    cachedBuildConfig.put(field.getName(), value);
-                } catch (IllegalAccessException e) {
-                    Logger.error("Field access denied for: " + field.getName(), e);
-                }
-            }
-        }
+        cachedBuildConfig = Arrays.stream(BuildConfig.class.getDeclaredFields())
+                .filter(field -> Modifier.isStatic(field.getModifiers()))
+                .collect(HashMap::new, (map, field) -> {
+                    try {
+                        field.setAccessible(true);
+                        Object value = field.get(null);
+                        map.put(field.getName(), value);
+                    } catch (IllegalAccessException e) {
+                        Logger.error("Field access denied for: " + field.getName(), e);
+                    }
+                }, HashMap::putAll);
         return cachedBuildConfig;
     }
 }

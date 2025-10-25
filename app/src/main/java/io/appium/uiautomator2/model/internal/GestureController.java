@@ -54,14 +54,12 @@ public class GestureController {
     }
 
     private static Method extractPerformGestureMethod(Object wrappedInstance) {
-        for (Method method : wrappedInstance.getClass().getDeclaredMethods()) {
-            if (method.getName().equals("performGesture")) {
-                method.setAccessible(true);
-                return method;
-            }
-        }
-        throw new IllegalStateException(String.format("Cannot retrieve performGesture method from %s",
-                wrappedInstance.getClass().getCanonicalName()));
+        return Arrays.stream(wrappedInstance.getClass().getDeclaredMethods())
+                .filter(method -> method.getName().equals("performGesture"))
+                .peek(method -> method.setAccessible(true))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(String.format("Cannot retrieve performGesture method from %s",
+                        wrappedInstance.getClass().getCanonicalName())));
     }
 
     private void performGesture(PointerGesture... gestures) {

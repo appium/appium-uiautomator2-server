@@ -22,6 +22,7 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -69,12 +70,11 @@ public class FirstVisibleView extends SafeRequestHandler {
             if (childObjects.isEmpty()) {
                 throw new UiObjectNotFoundException("Could not get children for container object");
             }
-            for (UiObject2 childObject : childObjects) {
-                firstObject = toAccessibleUiObject(childObject);
-                if (firstObject != null) {
-                    break;
-                }
-            }
+            firstObject = childObjects.stream()
+                    .map(AccessibleUiObject::toAccessibleUiObject)
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(null);
         }
 
         if (firstObject == null) {

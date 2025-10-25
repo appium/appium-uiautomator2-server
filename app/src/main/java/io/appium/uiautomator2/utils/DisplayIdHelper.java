@@ -7,8 +7,6 @@ import android.view.Display;
 
 import androidx.annotation.Nullable;
 
-import java.lang.reflect.Method;
-
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 
 public class DisplayIdHelper {
@@ -29,9 +27,7 @@ public class DisplayIdHelper {
         try {
             // Method is marked as public with @hide in AOSP https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/core/java/android/view/Display.java;l=836?q=Display
             Object address = invoke(getMethod(display.getClass(), "getAddress"), display);
-            long physicalDisplayId = (long) invoke(getMethod(address.getClass(), "getPhysicalDisplayId"), address);
-
-            return physicalDisplayId;
+            return (long) invoke(getMethod(address.getClass(), "getPhysicalDisplayId"), address);
 
         } catch (UiAutomator2Exception e) {
             Logger.error("Unable to retrieve physicalDisplayId", e);

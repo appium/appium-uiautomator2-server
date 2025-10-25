@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
@@ -114,13 +116,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         putAttribute(attribs, Attribute.INDEX, this.index);
         putAttribute(attribs, Attribute.CLASS, ROOT_NODE_NAME);
         this.attributes = Collections.unmodifiableMap(attribs);
-        List<UiElementSnapshot> children = new ArrayList<>(childNodes.length);
-        for (int childNodeIdx = 0; childNodeIdx < childNodes.length; ++childNodeIdx) {
-            UiElementSnapshot child = new UiElementSnapshot(childNodes[childNodeIdx], childNodeIdx,
-                    this.depth + 1, includedAttributes);
-            children.add(child);
-        }
-        this.children = children;
+        this.children = IntStream.range(0, childNodes.length)
+                .mapToObj(childNodeIdx -> new UiElementSnapshot(childNodes[childNodeIdx], childNodeIdx,
+                        this.depth + 1, includedAttributes))
+                .collect(Collectors.toList());
     }
 
     private static void putAttribute(Map<Attribute, Object> attribs, Attribute key, Object value) {
@@ -171,11 +170,9 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case TEXT:
                 return AxNodeInfoHelper.getText(node, true);
             case HINT:
-                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? node.getHintText() : null;
+                return node.getHintText();
             case IMPORTANT_FOR_ACCESSIBILITY:
-                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-                        ? node.isImportantForAccessibility()
-                        : null;
+                return node.isImportantForAccessibility();
             case SCREEN_READER_FOCUSABLE:
                 return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
                         ? node.isScreenReaderFocusable()
@@ -183,9 +180,9 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case INPUT_TYPE:
                 return node.getInputType() != 0 ? node.getInputType() : null;
             case DRAWING_ORDER:
-                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? node.getDrawingOrder() : null;
+                return node.getDrawingOrder();
             case SHOWING_HINT_TEXT:
-                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? node.isShowingHintText() : null;
+                return node.isShowingHintText();
             case ACTIONS:
                 return BaseElement.getA11yActionsAsString(node);
             case TEXT_ENTRY_KEY:
@@ -201,9 +198,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case LIVE_REGION:
                 return node.getLiveRegion();
             case CONTEXT_CLICKABLE:
-                return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                        ? node.isContextClickable()
-                        : null;
+                return node.isContextClickable();
             case MAX_TEXT_LENGTH:
                 return node.getMaxTextLength() != -1 ? node.getMaxTextLength() : null;
             case CONTENT_INVALID:
@@ -303,13 +298,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             return false;
         }
 
-        for (String pattern : Settings.get(AlwaysTraversableViewClasses.class).asArray()) {
-            if (Pattern.matches(pattern, className)) {
-                return true;
-            }
-        }
-
-        return false;
+        return Arrays.stream(Settings.get(AlwaysTraversableViewClasses.class).asArray())
+                .anyMatch(pattern -> Pattern.matches(pattern, className));
     }
 
     private List<UiElementSnapshot> buildChildren(AccessibilityNodeInfo node) {

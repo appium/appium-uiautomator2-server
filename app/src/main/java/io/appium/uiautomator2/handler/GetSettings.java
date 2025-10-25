@@ -2,6 +2,7 @@ package io.appium.uiautomator2.handler;
 
 import androidx.annotation.VisibleForTesting;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,16 +30,15 @@ public class GetSettings extends SafeRequestHandler {
 
     @VisibleForTesting
     public Map<String, Object> getPayload() {
-        Map<String, Object> result = new HashMap<>();
-        for (Settings value : Settings.values()) {
-            try {
-                @SuppressWarnings("rawtypes")
-                ISetting setting = value.getSetting();
-                result.put(setting.getName(), setting.getValue());
-            } catch (IllegalArgumentException e) {
-                Logger.error("No Setting: " + value.toString() + " : " + e);
-            }
-        }
-        return result;
+        return Arrays.stream(Settings.values())
+                .collect(HashMap::new, (map, value) -> {
+                    try {
+                        @SuppressWarnings("rawtypes")
+                        ISetting setting = value.getSetting();
+                        map.put(setting.getName(), setting.getValue());
+                    } catch (IllegalArgumentException e) {
+                        Logger.error("No Setting: " + value, e);
+                    }
+                }, HashMap::putAll);
     }
 }

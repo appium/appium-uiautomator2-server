@@ -20,7 +20,6 @@ import android.app.UiAutomation;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.DisplayMetrics;
@@ -32,7 +31,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Locale;
 
 import io.appium.uiautomator2.common.exceptions.CompressScreenshotException;
 import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
@@ -92,14 +90,13 @@ public class ScreenshotHelper {
         Logger.debug(String.format("Display metrics: %s", metrics));
         // Workaround for https://github.com/appium/appium/issues/12199
         // executeShellCommand seems to be faulty on Android 5
-        if (metrics.densityDpi != DENSITY_DEFAULT && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+        if (metrics.densityDpi != DENSITY_DEFAULT) {
             try {
                 String shellScreenCapCommand = "screencap -p";
 
                 Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
                 if (physicalDisplayId != null) {
-                    shellScreenCapCommand =
-                            String.format("screencap -d %d -p", physicalDisplayId);
+                    shellScreenCapCommand = String.format("screencap -d %d -p", physicalDisplayId);
                 }
 
                 ParcelFileDescriptor pfd = automation.executeShellCommand(shellScreenCapCommand);
@@ -120,7 +117,7 @@ public class ScreenshotHelper {
                     try {
                         pfd.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Logger.debug("Got an unexpected IO error while closing the file descriptor", e);
                     }
                 }
             } catch (Exception e) {
