@@ -43,7 +43,7 @@ public abstract class EventRegister {
             }
 
             // if we have caught any events in our net, snatch the last one
-            if (events.size() > 0) {
+            if (!events.isEmpty()) {
                 event = events.get(events.size() - 1);
             }
 

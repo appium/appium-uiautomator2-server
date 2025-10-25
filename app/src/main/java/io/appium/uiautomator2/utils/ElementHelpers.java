@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.utils;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
@@ -46,10 +45,6 @@ import static io.appium.uiautomator2.utils.StringHelpers.toNonNullString;
 
 public abstract class ElementHelpers {
     public static boolean canSetProgress(Object element) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            return false;
-        }
-
         AccessibilityNodeInfo nodeInfo = AxNodeInfoExtractor.toAxNodeInfo(element);
         return nodeInfo.getActionList().contains(ACTION_SET_PROGRESS);
     }
@@ -66,14 +61,8 @@ public abstract class ElementHelpers {
         String textToSend = toNonNullString(text);
         AccessibilityNodeInfo nodeInfo = AxNodeInfoExtractor.toAxNodeInfo(element);
 
-        /*
-         * Below Android 7.0 (API level 24) calling setText() throws
-         * `IndexOutOfBoundsException: setSpan (x ... x) ends beyond length y`
-         * if text length is greater than getMaxTextLength()
-         */
-        if (Build.VERSION.SDK_INT < 24) {
-            textToSend = AxNodeInfoHelper.truncateTextToMaxLength(nodeInfo, textToSend);
-        }
+
+        textToSend = AxNodeInfoHelper.truncateTextToMaxLength(nodeInfo, textToSend);
 
         Logger.debug("Sending text to element: " + textToSend);
         Bundle args = new Bundle();
@@ -83,9 +72,6 @@ public abstract class ElementHelpers {
 
     public static void setProgress(final Object element, float value) {
         AccessibilityNodeInfo nodeInfo = AxNodeInfoExtractor.toAxNodeInfo(element);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            throw new IllegalStateException("Setting progress is not supported on Android API below 24");
-        }
         AxNodeInfoHelper.setProgressValue(nodeInfo, value);
     }
 

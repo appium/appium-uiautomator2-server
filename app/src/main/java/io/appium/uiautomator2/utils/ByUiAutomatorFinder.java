@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import io.appium.uiautomator2.model.AccessibleUiObject;
 import io.appium.uiautomator2.model.AndroidElement;
@@ -169,13 +170,8 @@ public class ByUiAutomatorFinder {
         } catch (NoSuchFieldException e) {
             return false;
         }
-        int criterionCount = selectorAttributes.size();
-        for (int i = 0; i < criterionCount; i++) {
-            int criterion = selectorAttributes.keyAt(i);
-            if (criterion == expectedCriterion) {
-                return true;
-            }
-        }
-        return false;
+        return IntStream.range(0, selectorAttributes.size())
+                .mapToObj(selectorAttributes::keyAt)
+                .anyMatch(criterion -> criterion == expectedCriterion);
     }
 }

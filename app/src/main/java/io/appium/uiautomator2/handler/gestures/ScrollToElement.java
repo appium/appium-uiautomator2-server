@@ -71,7 +71,7 @@ public class ScrollToElement extends SafeRequestHandler {
         UiScrollable uiScrollable = new UiScrollable(requireNonNull(elementUiObject).getSelector());
         if (!uiScrollable.scrollIntoView(requireNonNull(scrollElementUiObject))) {
             throw new UiObjectNotFoundException(String.format("Cannot scroll to %s element",
-                    requireNonNull(scrollElementUiObject).getSelector().toString()));
+                    requireNonNull(scrollElementUiObject).getSelector()));
         }
         return new AppiumResponse(getSessionId(request));
     }

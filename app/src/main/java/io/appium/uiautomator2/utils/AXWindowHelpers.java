@@ -22,7 +22,6 @@ import android.util.SparseArray;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -108,17 +107,16 @@ public class AXWindowHelpers {
     }
 
     private static AccessibilityNodeInfo[] getWindowRoots() {
-        List<AccessibilityNodeInfo> result = new ArrayList<>();
-        List<AccessibilityWindowInfo> windows = getWindows();
-        for (AccessibilityWindowInfo window : windows) {
-            AccessibilityNodeInfo root = window.getRoot();
-            if (root == null) {
-                Logger.info(String.format("Skipping null root node for window: %s", window.toString()));
-                continue;
-            }
-            result.add(root);
-        }
-        return result.toArray(new AccessibilityNodeInfo[0]);
+        return getWindows().stream()
+                .map(window -> {
+                    AccessibilityNodeInfo root = window.getRoot();
+                    if (root == null) {
+                        Logger.info(String.format("Skipping null root node for window: %s", window));
+                    }
+                    return root;
+                })
+                .filter(Objects::nonNull)
+                .toArray(AccessibilityNodeInfo[]::new);
     }
 
     private static AccessibilityNodeInfo getTopmostWindowRootFromActivePackage() {
@@ -131,16 +129,14 @@ public class AXWindowHelpers {
                 return Integer.compare(w2.getLayer(), w1.getLayer()); // descending order
             }
         });
-        for (AccessibilityWindowInfo window : windows) {
-            AccessibilityNodeInfo root = window.getRoot();
-            if (root != null &&
-                    Objects.equals(root.getPackageName(), activeRootPackageName)) {
-                return root;
-            }
-        }
-        throw new UiAutomator2Exception(
-                String.format("Unable to find the active topmost window associated with %s package",
-                        activeRootPackageName));
+        return windows.stream()
+                .map(AccessibilityWindowInfo::getRoot)
+                .filter(Objects::nonNull)
+                .filter(root -> Objects.equals(root.getPackageName(), activeRootPackageName))
+                .findFirst()
+                .orElseThrow(() -> new UiAutomator2Exception(
+                        String.format("Unable to find the active topmost window associated with %s package",
+                                activeRootPackageName)));
     }
 
     public static AccessibilityNodeInfo[] getCachedWindowRoots() {

@@ -40,7 +40,7 @@ public class StringHelpers {
     }
 
     public static boolean isBlank(@Nullable String str) {
-        return str == null || str.trim().length() == 0;
+        return str == null || str.trim().isEmpty();
     }
 
     @Nullable

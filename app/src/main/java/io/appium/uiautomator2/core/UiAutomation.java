@@ -26,9 +26,10 @@ import androidx.annotation.Nullable;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UiAutomation {
     private static final String FIELD_ON_ACCESSIBILITY_EVENT_LISTENER =
@@ -70,10 +71,8 @@ public class UiAutomation {
             return Collections.emptyList();
         }
 
-        List<Integer> displayIds = new ArrayList<>();
-        for (Display display : displayManager.getDisplays()) {
-            displayIds.add(display.getDisplayId());
-        }
-        return displayIds;
+        return Arrays.stream(displayManager.getDisplays())
+                .map(Display::getDisplayId)
+                .collect(Collectors.toList());
     }
 }

@@ -26,8 +26,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import io.appium.uiautomator2.common.exceptions.ElementNotFoundException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
@@ -185,12 +188,9 @@ abstract class UiExpressionParser<T, U> {
 
     protected Pair<Method, List<Object>> findMethod(String methodName, List<String> arguments)
             throws UiSelectorSyntaxException {
-        final List<Method> candidates = new ArrayList<>();
-        for (final Method method : clazz.getDeclaredMethods()) {
-            if (method.getName().equals(methodName)) {
-                candidates.add(method);
-            }
-        }
+        final List<Method> candidates = Arrays.stream(clazz.getDeclaredMethods())
+                .filter(method -> method.getName().equals(methodName))
+                .collect(java.util.stream.Collectors.toList());
 
         if (candidates.isEmpty()) {
             throw new UiSelectorSyntaxException(expression.toString(),
@@ -240,7 +240,6 @@ abstract class UiExpressionParser<T, U> {
         try {
             return (V) method.invoke(receiver, arguments.toArray());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
             throw new UiSelectorSyntaxException(expression.toString(),
                     String.format("Problem using reflection to call `%s` method",
                             method.getName()), e);
@@ -260,11 +259,9 @@ abstract class UiExpressionParser<T, U> {
                     String.format("Invalid arguments count. Actual: %s. Expected: %s.",
                             arguments.size(), types.length));
         }
-        List<Object> result = new ArrayList<>();
-        for (int i = 0; i < types.length; i++) {
-            result.add(coerceArgToType(types[i], arguments.get(i)));
-        }
-        return result;
+        return IntStream.range(0, types.length)
+                .mapToObj(i -> coerceArgToType(types[i], arguments.get(i)))
+                .collect(Collectors.toList());
     }
 
     private Object coerceArgToType(Type type, String argument) throws UiSelectorSyntaxException {
@@ -339,7 +336,7 @@ abstract class UiExpressionParser<T, U> {
         return currentIndex < expression.getStringBuilder().length();
     }
 
-    class StringBuilderWrapper {
+    static class StringBuilderWrapper {
 
         private final StringBuilder sb;
 

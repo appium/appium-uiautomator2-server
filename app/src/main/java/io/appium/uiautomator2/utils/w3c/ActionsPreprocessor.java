@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import io.appium.uiautomator2.model.api.actions.W3CGestureModel;
 import io.appium.uiautomator2.model.api.actions.W3CItemModel;
@@ -86,11 +88,9 @@ public class ActionsPreprocessor {
             processedItems.add(gesture);
         }
 
-        final List<W3CGestureModel> result = new ArrayList<>();
-        for (int i = processedItems.size() - 1; i >= 0; i--) {
-            result.add(processedItems.get(i));
-        }
-        return result;
+        return IntStream.range(0, processedItems.size())
+                .mapToObj(i -> processedItems.get(processedItems.size() - 1 - i))
+                .collect(Collectors.toList());
     }
 
     public List<W3CItemModel> preprocess(List<W3CItemModel> items) {

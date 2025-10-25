@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -57,11 +58,10 @@ public class UpdateSettings extends SafeRequestHandler {
 
     @Nullable
     public ISetting<?> getSetting(String settingName) {
-        for (final Settings value : Settings.values()) {
-            if (value.toString().equals(settingName)) {
-                return value.getSetting();
-            }
-        }
-        return null;
+        return Arrays.stream(Settings.values())
+                .filter(value -> value.toString().equals(settingName))
+                .findFirst()
+                .map(Settings::getSetting)
+                .orElse(null);
     }
 }

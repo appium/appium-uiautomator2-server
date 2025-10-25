@@ -25,8 +25,6 @@ import androidx.test.uiautomator.UiObject2;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getMethod;
@@ -91,11 +89,9 @@ public class Gestures {
     }
 
     private PointerGesture[] toGesturesArray(Object result) {
-        List<PointerGesture> list = new ArrayList<>();
-        for (int i = 0; i < Array.getLength(result); ++i) {
-            list.add(new PointerGesture(Array.get(result, i), displayId));
-        }
-        return list.toArray(new PointerGesture[0]);
+        return java.util.stream.IntStream.range(0, Array.getLength(result))
+                .mapToObj(i -> new PointerGesture(Array.get(result, i), displayId))
+                .toArray(PointerGesture[]::new);
     }
 
     public static float getDisplayDensity() {

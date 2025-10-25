@@ -77,12 +77,10 @@ public class AlertHelpers {
 
     @Nullable
     private static UiObject2 filterButtonByLabel(Collection<UiObject2> buttons, String label) {
-        for (UiObject2 button : buttons) {
-            if (Objects.equals(button.getText(), label)) {
-                return button;
-            }
-        }
-        return null;
+        return buttons.stream()
+                .filter(button -> Objects.equals(button.getText(), label))
+                .findFirst()
+                .orElse(null);
     }
 
     @Nullable
@@ -123,26 +121,27 @@ public class AlertHelpers {
 
         if (action == AlertAction.ACCEPT) {
             if (buttons.size() > 1) {
-                for (UiObject2 button : buttons) {
-                    if (allowButtonResIdPattern.matcher(button.getResourceName()).matches()) {
-                        Log.d(TAG, String.format("Matched the button with resource id '%s' for ACCEPT action",
-                                button.getResourceName()));
-                        return button;
-                    }
-                }
-                return buttons.get(1);
+                return buttons.stream()
+                        .filter(button -> allowButtonResIdPattern.matcher(button.getResourceName()).matches())
+                        .peek(button -> Log.d(
+                                TAG, String.format("Matched the button with resource id '%s' for ACCEPT action",
+                                button.getResourceName()))
+                        )
+                        .findFirst()
+                        .orElseGet(() -> buttons.get(1));
             }
             return buttons.get(0);
         }
         if (action == AlertAction.DISMISS) {
             if (buttons.size() > 1) {
-                for (UiObject2 button : buttons) {
-                    if (denyButtonResIdPattern.matcher(button.getResourceName()).matches()) {
-                        Log.d(TAG, String.format("Matched the button with resource id '%s' for DISMISS action",
-                                button.getResourceName()));
-                        return button;
-                    }
-                }
+                return buttons.stream()
+                        .filter(button -> denyButtonResIdPattern.matcher(button.getResourceName()).matches())
+                        .peek(button -> Log.d(
+                                TAG, String.format("Matched the button with resource id '%s' for DISMISS action",
+                                button.getResourceName()))
+                        )
+                        .findFirst()
+                        .orElseGet(() -> buttons.get(0));
             }
             return buttons.get(0);
         }

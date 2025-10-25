@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.model;
 
-import android.os.Build;
 import android.util.Pair;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -35,7 +34,6 @@ import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.utils.Attribute;
 import io.appium.uiautomator2.utils.ByUiAutomatorFinder;
 import io.appium.uiautomator2.utils.ContentSizeHelpers;
-import io.appium.uiautomator2.utils.ElementHelpers;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.PositionHelper;
 
@@ -129,11 +127,7 @@ public class UiObjectElement extends BaseElement {
                 break;
             }
             case HINT:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    result = toAxNodeInfo(element).getHintText();
-                } else {
-                    result = null;
-                }
+                result = toAxNodeInfo(element).getHintText();
                 break;
             case SELECTION_END:
             case SELECTION_START:

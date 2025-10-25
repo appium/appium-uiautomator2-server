@@ -43,7 +43,7 @@ public class UiAutomatorParser {
         text = textToParse.trim();
         removeTailingSemicolon();
 
-        while (text.length() > 0) {
+        while (!text.isEmpty()) {
             consumeStatement();
             consumeSemicolon();
         }

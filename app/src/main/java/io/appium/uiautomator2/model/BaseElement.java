@@ -18,7 +18,6 @@ package io.appium.uiautomator2.model;
 
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
@@ -26,12 +25,12 @@ import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import io.appium.uiautomator2.common.exceptions.NoSuchAttributeException;
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
@@ -261,14 +260,11 @@ public abstract class BaseElement implements AndroidElement {
      */
     @Nullable
     public static String getExtrasAsString(AccessibilityNodeInfo nodeInfo) {
-        List<String> extras = new ArrayList<>();
         Bundle extraBundle = nodeInfo.getExtras();
-        for (String key : extraBundle.keySet()) {
-            if (extraBundle.get(key) != null) {
-                extras.add(String.format("%s=%s", key, extraBundle.get(key)));
-            }
-        }
-        return TextUtils.join(EXTRAS_SEPARATOR, extras);
+        return extraBundle.keySet().stream()
+                .filter(key -> extraBundle.get(key) != null)
+                .map(key -> String.format("%s=%s", key, extraBundle.get(key)))
+                .collect(Collectors.joining(EXTRAS_SEPARATOR));
     }
 
     @Nullable

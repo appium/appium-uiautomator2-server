@@ -24,8 +24,8 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableS
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.appium.uiautomator2.handler.request.NoSessionCommandHandler;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -42,17 +42,14 @@ public class GetPackages extends SafeRequestHandler implements NoSessionCommandH
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        List<PackageModel> appDetails = new ArrayList<>();
         PackageManager manager = getApplicationContext().getPackageManager();
         List<ApplicationInfo> apps = manager.getInstalledApplications(manager.GET_META_DATA);
-        for (ApplicationInfo appInfo : apps) {
-            // Filtering out unnecessary sub packages without Intent
-            if (manager.getLaunchIntentForPackage(appInfo.packageName) != null) {
-                appDetails.add(new PackageModel(appInfo.packageName,
+        List<PackageModel> appDetails = apps.stream()
+                .filter(appInfo -> manager.getLaunchIntentForPackage(appInfo.packageName) != null)
+                .map(appInfo -> new PackageModel(appInfo.packageName,
                         manager.getLaunchIntentForPackage(appInfo.packageName).getComponent().getClassName(),
-                        charSequenceToNullableString(manager.getApplicationLabel(appInfo))));
-            }
-        }
+                        charSequenceToNullableString(manager.getApplicationLabel(appInfo))))
+                .collect(Collectors.toList());
         return new AppiumResponse(getSessionId(request) == null ? NO_ID : getSessionId(request), appDetails);
     }
 }

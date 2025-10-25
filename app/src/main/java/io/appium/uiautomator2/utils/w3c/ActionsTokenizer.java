@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.utils.w3c;
 
 import android.graphics.Rect;
-import android.os.Build;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -25,7 +24,6 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.JsonSyntaxException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -91,14 +89,14 @@ public class ActionsTokenizer {
         // W3C button codes are different from Android constants. Converting...
         switch (button) {
             case MOUSE_BUTTON_LEFT:
-                if (toolType == MotionEvent.TOOL_TYPE_STYLUS && Build.VERSION.SDK_INT >= 23) {
+                if (toolType == MotionEvent.TOOL_TYPE_STYLUS) {
                     return MotionEvent.BUTTON_STYLUS_PRIMARY;
                 }
                 return MotionEvent.BUTTON_PRIMARY;
             case MOUSE_BUTTON_MIDDLE:
                 return MotionEvent.BUTTON_TERTIARY;
             case MOUSE_BUTTON_RIGHT:
-                if (toolType == MotionEvent.TOOL_TYPE_STYLUS && Build.VERSION.SDK_INT >= 23) {
+                if (toolType == MotionEvent.TOOL_TYPE_STYLUS) {
                     return MotionEvent.BUTTON_STYLUS_SECONDARY;
                 }
                 return MotionEvent.BUTTON_SECONDARY;

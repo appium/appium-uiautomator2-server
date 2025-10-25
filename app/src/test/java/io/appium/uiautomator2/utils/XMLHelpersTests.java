@@ -43,6 +43,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -224,15 +226,11 @@ public class XMLHelpersTests {
             NodeList elements = (NodeList) expression.evaluate(
                     loadDocument(xml), XPathConstants.NODESET
             );
-            List<Element> result = new ArrayList<>();
-            for (int i = 0; i < elements.getLength(); ++i) {
-                Element item = (Element) elements.item(i);
-                result.add(item);
-                if (!multiple) {
-                    break;
-                }
-            }
-             return result;
+            return IntStream.range(0, elements.getLength())
+                    .mapToObj(elements::item)
+                    .map(item -> (Element) item)
+                    .limit(multiple ? elements.getLength() : 1)
+                    .collect(Collectors.toList());
         } catch (XPathExpressionException e) {
             throw new RuntimeException(e);
         }

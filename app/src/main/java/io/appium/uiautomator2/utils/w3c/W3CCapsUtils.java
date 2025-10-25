@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 
 import io.appium.uiautomator2.common.exceptions.InvalidArgumentException;
 import io.appium.uiautomator2.utils.Logger;
@@ -43,12 +44,8 @@ public class W3CCapsUtils {
 	private static final String APPIUM_PREFIX = "appium";
 
     private static boolean isStandardCap(String capName) {
-        for (String standardCap : STANDARD_CAPS) {
-            if (standardCap.equalsIgnoreCase(capName)) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(STANDARD_CAPS)
+                .anyMatch(standardCap -> standardCap.equalsIgnoreCase(capName));
     }
 
     private static Map<String, Object> mergeCaps(Map<String, Object> primary, Map<String, Object> secondary) {
@@ -116,6 +113,6 @@ public class W3CCapsUtils {
             }
         }
         throw new InvalidArgumentException(String.format(
-                "Could not find matching capabilities from %s", caps.toString()));
+                "Could not find matching capabilities from %s", caps));
     }
 }

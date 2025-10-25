@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.IntStream;
 
 import io.appium.uiautomator2.handler.AcceptAlert;
 import io.appium.uiautomator2.handler.CaptureScreenshot;
@@ -185,17 +186,20 @@ public class AppiumServlet implements IHttpServlet {
         registerOn.put(handler.getMappedUri(), handler);
     }
 
+    @Nullable
     private BaseRequestHandler findMatcher(IHttpRequest request, Map<String, BaseRequestHandler> handler) {
         String[] urlToMatchSections = getRequestUrlSections(request.uri());
-        for (Map.Entry<String, ? extends BaseRequestHandler> entry : handler.entrySet()) {
-            String[] mapperUrlSections = getMapperUrlSectionsCached(entry.getKey());
-            if (isFor(mapperUrlSections, urlToMatchSections)) {
-                return entry.getValue();
-            }
-        }
-        return null;
+        return handler.entrySet().stream()
+                .filter(entry -> {
+                    String[] mapperUrlSections = getMapperUrlSectionsCached(entry.getKey());
+                    return isFor(mapperUrlSections, urlToMatchSections);
+                })
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
     }
 
+    @Nullable
     private String[] getRequestUrlSections(String urlToMatch) {
         if (urlToMatch == null) {
             return null;
@@ -213,7 +217,7 @@ public class AppiumServlet implements IHttpServlet {
             sections = mapperUrl.split("/");
             for (int i = 0; i < sections.length; i++) {
                 String section = sections[i];
-                // To work around a but in Selenium Grid 2.31.0.
+                // To work around a bug in Selenium Grid 2.31.0.
                 int qPos = section.indexOf('?');
                 if (qPos != -1) {
                     sections[i] = section.substring(0, qPos);
@@ -231,12 +235,10 @@ public class AppiumServlet implements IHttpServlet {
         if (mapperUrlSections.length != urlToMatchSections.length) {
             return false;
         }
-        for (int i = 0; i < mapperUrlSections.length; i++) {
-            if (!(mapperUrlSections[i].startsWith(":") || mapperUrlSections[i].equals(urlToMatchSections[i]))) {
-                return false;
-            }
-        }
-        return true;
+        return IntStream.range(0, mapperUrlSections.length)
+                .allMatch(
+                    i -> mapperUrlSections[i].startsWith(":") || mapperUrlSections[i].equals(urlToMatchSections[i])
+                );
     }
 
     @Override
@@ -302,16 +304,16 @@ public class AppiumServlet implements IHttpServlet {
         if (configuredSections.length != currentSections.length) {
             return null;
         }
-        for (int i = 0; i < currentSections.length; i++) {
-            if (!configuredSections[i].contains(param)) {
-                continue;
-            }
-            try {
-                return URLDecoder.decode(currentSections[i], StandardCharsets.UTF_8.name());
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
-        return null;
+        return IntStream.range(0, currentSections.length)
+                .filter(i -> configuredSections[i].contains(param))
+                .mapToObj(i -> {
+                    try {
+                        return URLDecoder.decode(currentSections[i], StandardCharsets.UTF_8.name());
+                    } catch (UnsupportedEncodingException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                })
+                .findFirst()
+                .orElse(null);
     }
 }

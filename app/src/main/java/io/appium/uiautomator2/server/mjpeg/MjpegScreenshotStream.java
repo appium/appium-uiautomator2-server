@@ -16,7 +16,6 @@
 
 package io.appium.uiautomator2.server.mjpeg;
 
-import android.app.UiAutomation;
 import android.graphics.Bitmap;
 import android.os.SystemClock;
 

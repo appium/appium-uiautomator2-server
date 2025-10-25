@@ -20,11 +20,9 @@ import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public enum Attribute {
     CHECKABLE(new String[]{"checkable"}),
@@ -107,29 +105,18 @@ public enum Attribute {
     }
 
     public static String[] exposableAliases() {
-        final List<String> result = new ArrayList<>();
-        for (Attribute attribute : Attribute.values()) {
-            if (!attribute.isExposable) {
-                continue;
-            }
-
-            if (attribute.aliases.length > 1) {
-                result.add(String.format("{%s}", TextUtils.join(",", attribute.aliases)));
-            } else {
-                result.add(attribute.aliases[0]);
-            }
-        }
-        return result.toArray(new String[0]);
+        return Arrays.stream(Attribute.values())
+                .filter(attribute -> attribute.isExposable)
+                .map(attribute -> attribute.aliases.length > 1
+                        ? String.format("{%s}", TextUtils.join(",", attribute.aliases))
+                        : attribute.aliases[0])
+                .toArray(String[]::new);
     }
 
     public static Set<Attribute> xmlExposableAttributes() {
-        Set<Attribute> result = new HashSet<>();
-        for (Attribute attribute : Attribute.values()) {
-            if (attribute.isExposableToXml) {
-                result.add(attribute);
-            }
-        }
-        return result;
+        return Arrays.stream(Attribute.values())
+                .filter(attribute -> attribute.isExposableToXml)
+                .collect(Collectors.toSet());
     }
 
     @Nullable
