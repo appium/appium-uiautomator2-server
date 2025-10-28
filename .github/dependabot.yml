@@ -34,8 +34,6 @@ updates:
       update-types: ["version-update:semver-major"]
     - dependency-name: "netty-handler"
       update-types: ["version-update:semver-major"]
-    - dependency-name: "netty-handler-timeout"
-      update-types: ["version-update:semver-major"]
     - dependency-name: "icu4j"
       update-types: ["version-update:semver-major", "version-update:semver-minor", "version-update:semver-patch"]
   # Group updates for better PR management

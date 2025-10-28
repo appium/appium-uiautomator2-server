@@ -14,7 +14,6 @@ nettyCommon = "4.2.7.Final"
 nettyTransport = "4.2.7.Final"
 nettyCodecHttp = "4.2.7.Final"
 nettyHandler = "4.2.7.Final"
-nettyHandlerTimeout = "4.2.7.Final"
 okhttp = "2.7.5"
 powermockApiMockito2 = "2.0.9"
 robolectric = "4.16"
@@ -38,7 +37,6 @@ netty-common = { module = "io.netty:netty-common", version.ref = "nettyCommon" }
 netty-transport = { module = "io.netty:netty-transport", version.ref = "nettyTransport" }
 netty-codec-http = { module = "io.netty:netty-codec-http", version.ref = "nettyCodecHttp" }
 netty-handler = { module = "io.netty:netty-handler", version.ref = "nettyHandler" }
-netty-handler-timeout = { module = "io.netty:netty-handler-timeout", version.ref = "nettyHandlerTimeout" }
 okhttp = { module = "com.squareup.okhttp:okhttp", version.ref = "okhttp" }
 powermock-api-mockito2 = { module = "org.powermock:powermock-api-mockito2", version.ref = "powermockApiMockito2" }
 powermock-classloading-xstream = { module = "org.powermock:powermock-classloading-xstream", version.ref = "powermockApiMockito2" }
@@ -56,7 +54,7 @@ xercesimpl = { module = "xerces:xercesImpl", version.ref = "xercesimpl" }
 androix-test = ["androidx-test-core","androidx-test-junit","androidx-test-runner"]
 powermock = ["powermock-api-mockito2","powermock-classloading-xstream","powermock-module-junit4","powermock-module-junit4-rule"]
 netty-core = ["netty-buffer","netty-common","netty-transport"]
-netty-http = ["netty-codec-http","netty-handler","netty-handler-timeout"]
+netty-http = ["netty-codec-http","netty-handler"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
