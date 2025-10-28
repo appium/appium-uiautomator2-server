@@ -122,7 +122,12 @@ android {
         resources {
             excludes += setOf(
                 "META-INF/maven/com.google.guava/guava/pom.properties",
-                "META-INF/maven/com.google.guava/guava/pom.xml"
+                "META-INF/maven/com.google.guava/guava/pom.xml",
+                // Exclude Netty native image files to prevent conflicts between platform-specific JARs
+                "META-INF/native-image/io.netty/netty-codec-native-quic/reflect-config.json",
+                "META-INF/native-image/io.netty/netty-codec-native-quic/jni-config.json",
+                "META-INF/native-image/io.netty/netty-codec-native-quic/resource-config.json",
+                "META-INF/native-image/io.netty/netty-codec-native-quic/proxy-config.json"
             )
         }
     }
