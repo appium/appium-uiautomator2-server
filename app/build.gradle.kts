@@ -125,6 +125,8 @@ android {
                 "META-INF/maven/com.google.guava/guava/pom.xml",
                 // Exclude duplicate INDEX.LIST files from Netty modules
                 "META-INF/INDEX.LIST",
+                // Exclude Netty version properties files
+                "META-INF/io.netty.versions.properties",
                 // Exclude native image files to prevent conflicts
                 "META-INF/native-image/**",
                 // Exclude native transport files
