@@ -9,3 +9,50 @@ updates:
   commit-message:
     prefix: "chore"
     include: "scope"
+
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "11:00"
+    day: "monday"
+  open-pull-requests-limit: 10
+  commit-message:
+    prefix: "chore"
+    include: "scope"
+  # Monitor version catalog files
+  # Block major updates for Netty (breaking changes risk)
+  # Block all updates for ICU4J (stability requirement)
+  ignore:
+    - dependency-name: "netty-all"
+      update-types: ["version-update:semver-major"]
+    - dependency-name: "icu4j"
+      update-types: ["version-update:semver-major", "version-update:semver-minor", "version-update:semver-patch"]
+  # Group updates for better PR management
+  groups:
+    gradle-dependencies:
+      patterns:
+        - "*"
+      update-types:
+        - "version-update:semver-minor"
+        - "version-update:semver-patch"
+
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "11:00"
+    day: "tuesday"
+  open-pull-requests-limit: 5
+  commit-message:
+    prefix: "chore"
+    include: "scope"
+  # Group GitHub Actions updates
+  groups:
+    github-actions:
+      patterns:
+        - "*"
+      update-types:
+        - "version-update:semver-major"
+        - "version-update:semver-minor"
+        - "version-update:semver-patch"
