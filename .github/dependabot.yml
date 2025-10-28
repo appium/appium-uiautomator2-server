@@ -24,15 +24,7 @@ updates:
   # Block major updates for Netty modules (breaking changes risk)
   # Block all updates for ICU4J (stability requirement)
   ignore:
-    - dependency-name: "netty-buffer"
-      update-types: ["version-update:semver-major"]
-    - dependency-name: "netty-common"
-      update-types: ["version-update:semver-major"]
-    - dependency-name: "netty-transport"
-      update-types: ["version-update:semver-major"]
-    - dependency-name: "netty-codec-http"
-      update-types: ["version-update:semver-major"]
-    - dependency-name: "netty-handler"
+    - dependency-name: "netty-*"
       update-types: ["version-update:semver-major"]
     - dependency-name: "icu4j"
       update-types: ["version-update:semver-major", "version-update:semver-minor", "version-update:semver-patch"]
