@@ -21,10 +21,20 @@ updates:
     prefix: "chore"
     include: "scope"
   # Monitor version catalog files
-  # Block major updates for Netty (breaking changes risk)
+  # Block major updates for Netty modules (breaking changes risk)
   # Block all updates for ICU4J (stability requirement)
   ignore:
-    - dependency-name: "netty-all"
+    - dependency-name: "netty-buffer"
+      update-types: ["version-update:semver-major"]
+    - dependency-name: "netty-common"
+      update-types: ["version-update:semver-major"]
+    - dependency-name: "netty-transport"
+      update-types: ["version-update:semver-major"]
+    - dependency-name: "netty-codec-http"
+      update-types: ["version-update:semver-major"]
+    - dependency-name: "netty-handler"
+      update-types: ["version-update:semver-major"]
+    - dependency-name: "netty-handler-timeout"
       update-types: ["version-update:semver-major"]
     - dependency-name: "icu4j"
       update-types: ["version-update:semver-major", "version-update:semver-minor", "version-update:semver-patch"]

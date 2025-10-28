@@ -122,12 +122,7 @@ android {
         resources {
             excludes += setOf(
                 "META-INF/maven/com.google.guava/guava/pom.properties",
-                "META-INF/maven/com.google.guava/guava/pom.xml",
-                // Exclude Netty native image files to prevent conflicts between platform-specific JARs
-                "META-INF/native-image/io.netty/netty-codec-native-quic/reflect-config.json",
-                "META-INF/native-image/io.netty/netty-codec-native-quic/jni-config.json",
-                "META-INF/native-image/io.netty/netty-codec-native-quic/resource-config.json",
-                "META-INF/native-image/io.netty/netty-codec-native-quic/proxy-config.json"
+                "META-INF/maven/com.google.guava/guava/pom.xml"
             )
         }
     }
@@ -154,7 +149,8 @@ dependencies {
     implementation(libs.bundles.androix.test)
     implementation(libs.uiautomator)
     implementation(libs.gson)
-    implementation(libs.netty.all)
+    implementation(libs.bundles.netty.core)
+    implementation(libs.bundles.netty.http)
     implementation(libs.junidecode)
     // Dependencies required for XPath search
     implementation(libs.xercesimpl)
