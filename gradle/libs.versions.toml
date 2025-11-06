@@ -1,9 +1,8 @@
 [versions]
 androidGradlePlugin = "8.9.1"
 gson = "2.13.2"
-# icu4j cannot be upgraded. Needed for compat with org.eclipse.wst.xml.xpath2.processor
-#noinspection NewerVersionAvailable
-icu4j = "60.2"
+# Updated for compat with org.eclipse.wst.xml.xpath2.processor 2.2.0
+icu4j = "73.1"
 javaCupRuntime = "11b-20160615-3"
 javassist = "3.30.2-GA"
 json = "20250517"

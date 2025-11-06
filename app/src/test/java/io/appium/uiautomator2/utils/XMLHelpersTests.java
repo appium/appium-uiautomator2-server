@@ -244,8 +244,8 @@ public class XMLHelpersTests {
     }
 
     @Test
-    @Ignore("Unignore this test as soon as https://bugs.eclipse.org/bugs/show_bug.cgi?id=578021" +
-            "gets resolved")
+    @Ignore("XPath2 following:: axis still has issues with the new library version " +
+            "(https://github.com/eclipse-platform/eclipse.platform.ui/issues/3507)")
     public void parsesComplexXpath2() {
         String query = "(//android.widget.TextView[@text='some, text']/following::android.widget.ImageButton)[1]";
 
@@ -254,10 +254,9 @@ public class XMLHelpersTests {
     }
 
     @Test
-    @Ignore("robolectric depends on com.ibm.icu:icu4j:72.1 while psychopath requires 60.2")
     public void parsesXpath2UsingIcu() {
         String query = "//android.widget.TextView[substring(@text, 1) = 'some, text']";
         List<Node> nodes = findNodesUsingXpath2(XML, query, false);
-        assertEquals(nodes.size(), 1);
+        assertEquals("Should find TextView using substring function", 1, nodes.size());
     }
 }
