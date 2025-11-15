@@ -50,7 +50,7 @@
     "appium-adb": "^14.0.0",
     "bluebird": "^3.7.2",
     "conventional-changelog-conventionalcommits": "^9.0.0",
-    "semantic-release": "^25.0.0",
+    "semantic-release": "^25.0.2",
     "semver": "^7.3.7"
   }
 }
