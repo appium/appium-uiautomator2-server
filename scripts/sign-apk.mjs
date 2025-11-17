@@ -1,7 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-const { ADB } = require('appium-adb');
-const B = require('bluebird');
+import fs from 'fs';
+import path from 'path';
+import {fileURLToPath} from 'node:url';
+import {ADB} from 'appium-adb';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 async function signApks () {
@@ -13,7 +16,8 @@ async function signApks () {
   if (!apks.length) {
     throw new Error(`There are no .apk files available for signing in '${apksRoot}'`);
   }
-  await B.all(apks.map((name) => adb.sign(path.join(apksRoot, name))));
+  await Promise.all(apks.map((name) => adb.sign(path.join(apksRoot, name))));
 }
 
 (async () => await signApks())();
+

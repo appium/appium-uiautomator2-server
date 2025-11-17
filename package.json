@@ -28,9 +28,9 @@
   ],
   "homepage": "https://github.com/appium/appium-uiautomator2-server",
   "scripts": {
-    "bump-gradle-version": "node ./scripts/gradle-version-update.js --package-version=${npm_package_version} && git add gradle.properties",
+    "bump-gradle-version": "node ./scripts/gradle-version-update.mjs --package-version=${npm_package_version} && git add gradle.properties",
     "build": "./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks && npm run sign-apk",
-    "sign-apk": "node ./scripts/sign-apk.js",
+    "sign-apk": "node ./scripts/sign-apk.mjs",
     "lint:java": "./gradlew lint",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
@@ -48,7 +48,6 @@
     "@semantic-release/git": "^10.0.1",
     "android-apidemos": "^5.0.0",
     "appium-adb": "^14.0.0",
-    "bluebird": "^3.7.2",
     "conventional-changelog-conventionalcommits": "^9.0.0",
     "semantic-release": "^25.0.2",
     "semver": "^7.3.7"

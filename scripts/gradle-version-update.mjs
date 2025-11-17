@@ -1,7 +1,11 @@
-const fs = require('node:fs');
-const path = require('node:path');
-const semver = require('semver');
-const {logger} = require('@appium/support');
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {valid} from 'semver';
+import {logger} from '@appium/support';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const log = logger.getLogger('Versioner');
 const VERSION_NAME_PATTERN = /^\s*versionName\s*=\s*(.+)$/gm;
@@ -31,7 +35,7 @@ async function gradleVersionUpdate() {
   if (!version) {
     throw new Error('No package version argument (use `--package-version=xxx`)');
   }
-  if (!semver.valid(version)) {
+  if (!valid(version)) {
     throw new Error(
       `Invalid version specified '${version}'. Version should be in the form '1.2.3'`
     );
@@ -59,3 +63,4 @@ async function gradleVersionUpdate() {
 }
 
 (async () => await gradleVersionUpdate())();
+
