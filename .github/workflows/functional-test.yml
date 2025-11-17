@@ -53,8 +53,6 @@ jobs:
         distribution: 'temurin'
         java-version: '22'
         cache: 'gradle'
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
     - run: npm install --no-package-lock
       name: Install dev dependencies
     - name: AVD cache
