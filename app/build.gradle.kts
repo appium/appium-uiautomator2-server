@@ -3,6 +3,7 @@ import com.android.build.api.variant.BuildConfigField
 import com.android.build.api.variant.TestVariant
 import com.android.build.api.variant.impl.VariantOutputImpl
 import java.io.ByteArrayOutputStream
+import java.net.URL
 
 buildscript {
     dependencies {
@@ -175,23 +176,47 @@ dependencies {
     androidTestImplementation(libs.okhttp)
 }
 
+val apiDemosApkFile = project.file("${project.buildDir}/downloads/ApiDemos-debug.apk")
+
+val downloadApiDemosApk by tasks.register("downloadApiDemosApk") {
+    group = "install"
+    description = "Download ApiDemos APK from GitHub releases."
+    val apkUrl = "https://github.com/appium/android-apidemos/releases/download/v6.0.2/ApiDemos-debug.apk"
+    outputs.file(apiDemosApkFile)
+
+    doFirst {
+        apiDemosApkFile.parentFile.mkdirs()
+        if (!apiDemosApkFile.exists()) {
+            logger.quiet("Downloading ApiDemos APK from: $apkUrl")
+            URL(apkUrl).openStream().use { input ->
+                apiDemosApkFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+            logger.quiet("Downloaded ApiDemos APK to: ${apiDemosApkFile.absolutePath}")
+        } else {
+            logger.quiet("ApiDemos APK already exists at: ${apiDemosApkFile.absolutePath}")
+        }
+    }
+}
+
 val installAUT by tasks.register("installAUT", Exec::class) {
     group = "install"
     description = "Install app under test (ApiDemos) using AGP's ADB."
+    dependsOn(downloadApiDemosApk)
     val extension = project.extensions.getByType(ApplicationAndroidComponentsExtension::class.java)
     // To avoid issues caused by incorrect configuration of the ANDROID_HOME environment variable
     // or version inconsistencies from multiple adb installations.
     val adbFileProvider: Provider<RegularFile> = extension.sdkComponents.adb
-    val apkFile = project.file("../node_modules/android-apidemos/apks/ApiDemos-debug.apk")
     val targetSerial = System.getenv("ANDROID_SERIAL")
-    inputs.file(apkFile)
+    inputs.file(apiDemosApkFile)
         .withPathSensitivity(PathSensitivity.ABSOLUTE)
         .withPropertyName("autApkInput")
         .skipWhenEmpty(false)
 
     doFirst {
-        if (!apkFile.exists()) {
-            throw GradleException("Required AUT APK not found at: ${apkFile.absolutePath}")
+        if (!apiDemosApkFile.exists()) {
+            throw GradleException("Required AUT APK not found at: ${apiDemosApkFile.absolutePath}")
         }
         executable = adbFileProvider.get().asFile.absolutePath
         val commandArgs = mutableListOf<String>()
@@ -201,22 +226,11 @@ val installAUT by tasks.register("installAUT", Exec::class) {
             commandArgs.add(targetSerial)
             logger.quiet("Installing to device: $targetSerial")
         }
-        val apiLevel : Int = runCatching {
-            val getPropCommand = mutableListOf<String>()
-            getPropCommand.add(0, adbFileProvider.get().asFile.absolutePath)
-            getPropCommand.addAll(commandArgs)
-            getPropCommand.addAll(listOf("shell","getprop","ro.build.version.sdk"))
-            ProcessBuilder( getPropCommand)
-                .start()
-                .inputStream.bufferedReader().use { it.readText() }.trim().toIntOrNull()
-        }.getOrNull()?:23
 
         commandArgs.add("install")
-        if (apiLevel >= 23){
-            commandArgs.add("-g")
-        }
+        commandArgs.add("-g")
         commandArgs.add("-r")
-        commandArgs.add(apkFile.absolutePath)
+        commandArgs.add(apiDemosApkFile.absolutePath)
         setArgs(commandArgs)
         isIgnoreExitValue = false
         errorOutput = ByteArrayOutputStream()
