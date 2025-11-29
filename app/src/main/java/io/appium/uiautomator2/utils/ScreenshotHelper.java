@@ -90,12 +90,10 @@ public class ScreenshotHelper {
         int settingDisplayId = Settings.get(CurrentDisplayId.class).getValue();
         boolean isSettingsDisplayCustomized =
                 settingDisplayId == Settings.get(CurrentDisplayId.class).getDefaultValue();
-        Display display = isSettingsDisplayCustomized
-            ? UiAutomatorBridge.getInstance().getCurrentDisplay()
-            : getDisplayById(settingDisplayId);
+        Display display = UiAutomatorBridge.getInstance().getCurrentDisplay();
         if (display == null) {
             throw new TakeScreenshotException(
-                    String.format("Cannot to take a screenshot of display %s. Does the display exist?",
+                    String.format("Cannot take a screenshot of display %s. Does the display exist?",
                             settingDisplayId)
             );
         }
@@ -107,7 +105,7 @@ public class ScreenshotHelper {
                 Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
                 if (physicalDisplayId == null && isSettingsDisplayCustomized) {
                     throw new TakeScreenshotException(
-                            String.format("Cannot to take a screenshot of display %s " +
+                            String.format("Cannot take a screenshot of display %s " +
                                             "because its physical id cannot be determined", settingDisplayId)
                     );
                 }
@@ -118,7 +116,7 @@ public class ScreenshotHelper {
             } catch (Exception e) {
                 if (isSettingsDisplayCustomized) {
                     throw new TakeScreenshotException(
-                            String.format("Cannot to take a screenshot of display %s: %s",
+                            String.format("Cannot take a screenshot of display %s: %s",
                                     settingDisplayId, e.getMessage()), e
                     );
                 } else {
