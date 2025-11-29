@@ -89,7 +89,7 @@ public class ScreenshotHelper {
     private static <T> T takeDeviceScreenshot(Class<T> outputType) throws TakeScreenshotException {
         int settingDisplayId = Settings.get(CurrentDisplayId.class).getValue();
         boolean isSettingsDisplayCustomized =
-                settingDisplayId == Settings.get(CurrentDisplayId.class).getDefaultValue();
+                settingDisplayId != Settings.get(CurrentDisplayId.class).getDefaultValue();
         Display display = UiAutomatorBridge.getInstance().getCurrentDisplay();
         if (display == null) {
             throw new TakeScreenshotException(
