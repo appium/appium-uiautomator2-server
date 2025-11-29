@@ -87,26 +87,25 @@ public class ScreenshotHelper {
      * @throws TakeScreenshotException if there was an error while taking the screenshot
      */
     private static <T> T takeDeviceScreenshot(Class<T> outputType) throws TakeScreenshotException {
-        int settingDisplayId = Settings.get(CurrentDisplayId.class).getValue();
-        boolean isSettingsDisplayCustomized =
-                settingDisplayId != Settings.get(CurrentDisplayId.class).getDefaultValue();
+        int currentDisplayId = UiAutomatorBridge.getInstance().getCurrentDisplayId();
+        boolean isCustomDisplayId = currentDisplayId != Settings.get(CurrentDisplayId.class).getDefaultValue();
         Display display = UiAutomatorBridge.getInstance().getCurrentDisplay();
         if (display == null) {
             throw new TakeScreenshotException(
                     String.format("Cannot take a screenshot of display %s. Does the display exist?",
-                            settingDisplayId)
+                            currentDisplayId)
             );
         }
-        boolean shouldTryScreencap = isSettingsDisplayCustomized || doesDisplayHaveCustomDensity(display);
+        boolean shouldTryScreencap = isCustomDisplayId || doesDisplayHaveCustomDensity(display);
 
         UiAutomation automation = CustomUiDevice.getInstance().getUiAutomation();
         if (shouldTryScreencap) {
             try {
                 Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
-                if (physicalDisplayId == null && isSettingsDisplayCustomized) {
+                if (physicalDisplayId == null && isCustomDisplayId) {
                     throw new TakeScreenshotException(
                             String.format("Cannot take a screenshot of display %s " +
-                                            "because its physical id cannot be determined", settingDisplayId)
+                                            "because its physical id cannot be determined", display.getDisplayId())
                     );
                 }
                 String command = physicalDisplayId == null
@@ -114,10 +113,10 @@ public class ScreenshotHelper {
                         : String.format("screencap -d %d -p", physicalDisplayId);
                 return retrieveScreenshotViaScreencap(command, automation, outputType);
             } catch (Exception e) {
-                if (isSettingsDisplayCustomized) {
+                if (isCustomDisplayId) {
                     throw new TakeScreenshotException(
                             String.format("Cannot take a screenshot of display %s: %s",
-                                    settingDisplayId, e.getMessage()), e
+                                    display.getDisplayId(), e.getMessage()), e
                     );
                 } else {
                     Logger.info("Cannot take a screenshot via screencap, defaulting to UiAutomator API", e);
