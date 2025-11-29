@@ -56,7 +56,7 @@ public class AXWindowHelpers {
         }
     }
 
-    public static void refreshAccessibilityCache() {
+    public static void resetAccessibilityCache() {
         Device.waitForIdle();
         clearAccessibilityCache();
         cachedWindowRoots = null;

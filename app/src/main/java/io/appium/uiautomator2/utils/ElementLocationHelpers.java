@@ -45,7 +45,7 @@ import io.appium.uiautomator2.model.settings.DisableIdLocatorAutocompletion;
 import io.appium.uiautomator2.model.settings.Settings;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
-import static io.appium.uiautomator2.utils.AXWindowHelpers.refreshAccessibilityCache;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.resetAccessibilityCache;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 public class ElementLocationHelpers {
@@ -138,7 +138,7 @@ public class ElementLocationHelpers {
 
     @Nullable
     public static AccessibleUiObject findElement(By by) throws UiObjectNotFoundException {
-        refreshAccessibilityCache();
+        resetAccessibilityCache();
 
         if (by instanceof By.ById) {
             String locator = rewriteIdLocator((By.ById) by);
@@ -187,7 +187,7 @@ public class ElementLocationHelpers {
     }
 
     public static List<AccessibleUiObject> findElements(By by) {
-        refreshAccessibilityCache();
+        resetAccessibilityCache();
 
         if (by instanceof By.ById) {
             String locator = rewriteIdLocator((By.ById) by);

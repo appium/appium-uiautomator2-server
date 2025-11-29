@@ -16,26 +16,21 @@
 
 package io.appium.uiautomator2.handler;
 
-import io.appium.uiautomator2.core.AccessibilityNodeInfoDumper;
+import static io.appium.uiautomator2.utils.AXWindowHelpers.resetAccessibilityCache;
+
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 
-import static io.appium.uiautomator2.utils.AXWindowHelpers.resetAccessibilityCache;
-import static io.appium.uiautomator2.utils.Attribute.xmlExposableAttributes;
+public class ResetAxCache extends SafeRequestHandler {
 
-/**
- * Get page source. Return as string of XML doc
- */
-public class Source extends SafeRequestHandler {
-    public Source(String mappedUri) {
+    public ResetAxCache(String mappedUri) {
         super(mappedUri);
     }
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         resetAccessibilityCache();
-        String xmlSource = new AccessibilityNodeInfoDumper(null, xmlExposableAttributes()).dumpToXml();
-        return new AppiumResponse(getSessionId(request), xmlSource);
+        return new AppiumResponse(getSessionId(request));
     }
 }
