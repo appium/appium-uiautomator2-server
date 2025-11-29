@@ -52,7 +52,7 @@ public class ScreenshotHelper {
 
     /**
      * Grab device screenshot and crop it to specified area if cropArea is not null.
-     * Compress it to PGN format and convert to Base64 byte-string.
+     * Compress it to PNG format and convert to Base64 byte-string.
      *
      * @param cropArea Area to crop.
      * @return Base64-encoded screenshot string.
