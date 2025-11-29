@@ -43,7 +43,9 @@ public class AXWindowHelpers {
     public static void resetAccessibilityCache() {
         Device.waitForIdle();
         clearAccessibilityCache();
-        CACHED_WINDOW_ROOTS.clear();
+        synchronized (CACHED_WINDOW_ROOTS) {
+            CACHED_WINDOW_ROOTS.clear();
+        }
     }
 
     public static AccessibilityNodeInfo[] getCachedWindowRoots() {
@@ -56,18 +58,20 @@ public class AXWindowHelpers {
                 shouldRetrieveAllWindowRoots,
                 shouldRetrieveTopmostWindowRootFromActivePackage
         );
-        if (CACHED_WINDOW_ROOTS.containsKey(cacheKey)) {
-            return CACHED_WINDOW_ROOTS.get(cacheKey);
-        }
+        synchronized (CACHED_WINDOW_ROOTS) {
+            if (CACHED_WINDOW_ROOTS.containsKey(cacheKey)) {
+                return CACHED_WINDOW_ROOTS.get(cacheKey);
+            }
 
-        // Either one of above settings has changed or we did not have cached windows yet
-        CACHED_WINDOW_ROOTS.clear();
-        AccessibilityNodeInfo[] newRoots = retrieveWindowRoots(
-                shouldRetrieveAllWindowRoots,
-                shouldRetrieveTopmostWindowRootFromActivePackage
-        );
-        CACHED_WINDOW_ROOTS.put(cacheKey, newRoots);
-        return newRoots;
+            // Either one of above settings has changed or we did not have cached windows yet
+            CACHED_WINDOW_ROOTS.clear();
+            AccessibilityNodeInfo[] newRoots = retrieveWindowRoots(
+                    shouldRetrieveAllWindowRoots,
+                    shouldRetrieveTopmostWindowRootFromActivePackage
+            );
+            CACHED_WINDOW_ROOTS.put(cacheKey, newRoots);
+            return newRoots;
+        }
     }
 
     private static AccessibilityNodeInfo[] retrieveWindowRoots(
