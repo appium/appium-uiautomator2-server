@@ -27,7 +27,10 @@ jobs:
         distribution: 'temurin'
         java-version: '22'
         cache: 'gradle'
-    - run: npm install --no-package-lock
+    - uses: SocketDev/action@v1
+      with:
+        mode: firewall-free
+    - run: sfw npm install --no-package-lock
       name: Install dev dependencies
     - run: npx semantic-release
       env:

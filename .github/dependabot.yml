@@ -47,12 +47,3 @@ updates:
   commit-message:
     prefix: "chore"
     include: "scope"
-  # Group GitHub Actions updates
-  groups:
-    github-actions:
-      patterns:
-        - "*"
-      update-types:
-        - "version-update:semver-major"
-        - "version-update:semver-minor"
-        - "version-update:semver-patch"
