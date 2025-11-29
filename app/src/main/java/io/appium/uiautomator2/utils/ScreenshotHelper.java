@@ -104,7 +104,17 @@ public class ScreenshotHelper {
         UiAutomation automation = CustomUiDevice.getInstance().getUiAutomation();
         if (shouldTryScreencap) {
             try {
-                return retrieveScreenshotViaScreencap(display, automation, outputType);
+                Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
+                if (physicalDisplayId == null && isSettingsDisplayCustomized) {
+                    throw new TakeScreenshotException(
+                            String.format("Cannot to take a screenshot of display %s " +
+                                            "because its physical id cannot be determined", settingDisplayId)
+                    );
+                }
+                String command = physicalDisplayId == null
+                        ? "screencap -p"
+                        : String.format("screencap -d %d -p", physicalDisplayId);
+                return retrieveScreenshotViaScreencap(command, automation, outputType);
             } catch (Exception e) {
                 if (isSettingsDisplayCustomized) {
                     throw new TakeScreenshotException(
@@ -128,9 +138,8 @@ public class ScreenshotHelper {
      * @return Result of the requested type if successful
      */
     private static <T> T retrieveScreenshotViaScreencap(
-            Display display, UiAutomation automation, Class<T> outputType
+            String command, UiAutomation automation, Class<T> outputType
     ) throws IOException {
-        String command = buildScreencapCommand(display);
         byte[] pngBytes = executeScreencapCommand(automation, command);
 
         if (outputType == String.class) {
@@ -155,17 +164,6 @@ public class ScreenshotHelper {
         display.getMetrics(metrics);
         Logger.debug(String.format("Display metrics: %s", metrics));
         return metrics.densityDpi != DENSITY_DEFAULT;
-    }
-
-    /**
-     * Builds the screencap shell command with display ID if available.
-     */
-    private static String buildScreencapCommand(Display display) {
-        Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
-        if (physicalDisplayId != null) {
-            return String.format("screencap -d %d -p", physicalDisplayId);
-        }
-        return "screencap -p";
     }
 
     /**
