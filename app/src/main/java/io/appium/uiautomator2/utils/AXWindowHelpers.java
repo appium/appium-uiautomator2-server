@@ -49,7 +49,7 @@ public class AXWindowHelpers {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 boolean cleared = UiAutomatorBridge.getInstance().getUiAutomation().clearCache();
                 if (!cleared) {
-                    Logger.warn("Failed to clear Accessibility Node cache");
+                    Logger.info("Accessibility Node cache was not cleared");
                 }
             } else {
                 // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
