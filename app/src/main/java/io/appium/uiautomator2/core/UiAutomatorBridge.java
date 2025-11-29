@@ -19,7 +19,6 @@ import android.app.Service;
 import android.app.UiAutomation;
 import android.hardware.display.DisplayManager;
 import android.view.Display;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.test.uiautomator.UiDevice;
 
@@ -51,11 +50,6 @@ public class UiAutomatorBridge {
     public InteractionController getInteractionController() {
         return new InteractionController(invoke(getMethod(UiDevice.class, "getInteractionController"),
                 Device.getUiDevice()));
-    }
-
-    public AccessibilityNodeInfo getAccessibilityRootNode() {
-        Object queryController = invoke(getMethod(UiDevice.class, "getQueryController"), Device.getUiDevice());
-        return (AccessibilityNodeInfo) invoke(getMethod(queryController.getClass(), "getRootNode"), queryController);
     }
 
     public UiAutomation getUiAutomation() {

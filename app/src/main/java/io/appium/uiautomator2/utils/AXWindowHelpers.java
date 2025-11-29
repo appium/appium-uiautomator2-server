@@ -37,6 +37,7 @@ import io.appium.uiautomator2.model.settings.Settings;
 
 public class AXWindowHelpers {
     private static final long AX_ROOT_RETRIEVAL_TIMEOUT_MS = 10000;
+    private static final long AX_ROOT_RETRIEVAL_INTERVAL_MS = 250;
     private static final Map<String, AccessibilityNodeInfo[]> CACHED_WINDOW_ROOTS = new HashMap<>();
 
     public static void resetAccessibilityCache() {
@@ -87,19 +88,17 @@ public class AXWindowHelpers {
         long start = SystemClock.uptimeMillis();
         while (SystemClock.uptimeMillis() - start < AX_ROOT_RETRIEVAL_TIMEOUT_MS) {
             try {
-                AccessibilityNodeInfo root = UiAutomatorBridge.getInstance().getAccessibilityRootNode();
-                if (root != null) {
-                    return root;
+                AccessibilityNodeInfo rootNode = UiAutomatorBridge.getInstance()
+                        .getUiAutomation()
+                        .getRootInActiveWindow();
+                if (rootNode != null) {
+                    return rootNode;
                 }
             } catch (Exception e) {
-                /*
-                 * Sometimes getAccessibilityRootNode() throws
-                 * "java.lang.IllegalStateException: Cannot perform this action on a sealed instance."
-                 * Ignore it and try to re-get root node.
-                 */
                 Logger.info("An exception was caught while looking for " +
                         "the root of the active window. Ignoring it", e);
             }
+            SystemClock.sleep(AX_ROOT_RETRIEVAL_INTERVAL_MS);
         }
         throw new UiAutomator2Exception(String.format(
                 "Timed out after %dms waiting for the root AccessibilityNodeInfo in the active window. " +
