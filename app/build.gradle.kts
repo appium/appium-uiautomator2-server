@@ -3,6 +3,7 @@ import com.android.build.api.variant.BuildConfigField
 import com.android.build.api.variant.TestVariant
 import com.android.build.api.variant.impl.VariantOutputImpl
 import java.io.ByteArrayOutputStream
+import java.net.URI
 import java.net.URL
 
 buildscript {
@@ -73,7 +74,7 @@ android {
                 println("TestVariant: ${variant.name}")
             }
             // Add build-time information to BuildConfig so it can be accessed at runtime.
-            variant.buildConfigFields.put("BUILD_TIME", buildTime)
+            variant.buildConfigFields?.put("BUILD_TIME", buildTime)
             variant.androidTest?.buildConfigFields?.put("BUILD_TIME", buildTime)
 
             variant.outputs.forEach {
@@ -176,7 +177,7 @@ dependencies {
     androidTestImplementation(libs.okhttp)
 }
 
-val apiDemosApkFile = project.file("${project.buildDir}/downloads/ApiDemos-debug.apk")
+val apiDemosApkFile = project.file("${project.layout.buildDirectory.get()}/downloads/ApiDemos-debug.apk")
 
 val downloadApiDemosApk by tasks.register("downloadApiDemosApk") {
     group = "install"
@@ -188,7 +189,7 @@ val downloadApiDemosApk by tasks.register("downloadApiDemosApk") {
         apiDemosApkFile.parentFile.mkdirs()
         if (!apiDemosApkFile.exists()) {
             logger.quiet("Downloading ApiDemos APK from: $apkUrl")
-            URL(apkUrl).openStream().use { input ->
+            URI(apkUrl).toURL().openStream().use { input ->
                 apiDemosApkFile.outputStream().use { output ->
                     input.copyTo(output)
                 }
