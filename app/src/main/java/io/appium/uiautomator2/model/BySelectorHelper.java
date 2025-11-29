@@ -28,6 +28,8 @@ import androidx.test.uiautomator.BySelector;
 import java.util.UUID;
 
 import io.appium.uiautomator2.core.UiAutomatorBridge;
+import io.appium.uiautomator2.model.settings.CurrentDisplayId;
+import io.appium.uiautomator2.model.settings.Settings;
 
 public class BySelectorHelper {
     @NonNull
@@ -71,7 +73,7 @@ public class BySelectorHelper {
 
     public static BySelector applyCurrentDisplay(BySelector selector) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-                && !UiAutomatorBridge.getInstance().isCurrentDisplayDefault()) {
+                && Settings.get(CurrentDisplayId.class).isCustomized()) {
             Display display = UiAutomatorBridge.getInstance().getCurrentDisplay();
             if (display != null) {
                 return selector.displayId(display.getDisplayId());

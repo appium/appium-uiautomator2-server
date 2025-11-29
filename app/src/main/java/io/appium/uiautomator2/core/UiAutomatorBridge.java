@@ -32,8 +32,6 @@ import static io.appium.uiautomator2.utils.ReflectionUtils.invoke;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
-import java.util.Objects;
-
 public class UiAutomatorBridge {
     private static UiAutomatorBridge INSTANCE = null;
 
@@ -48,13 +46,6 @@ public class UiAutomatorBridge {
 
     public int getCurrentDisplayId() {
         return Settings.get(CurrentDisplayId.class).getValue();
-    }
-
-    public boolean isCurrentDisplayDefault() {
-        return Objects.equals(
-                Settings.get(CurrentDisplayId.class).getValue(),
-                Display.DEFAULT_DISPLAY
-        );
     }
 
     public InteractionController getInteractionController() {
