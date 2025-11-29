@@ -52,6 +52,7 @@ import io.appium.uiautomator2.utils.NodeInfoList;
 import io.appium.uiautomator2.utils.ReflectionUtils;
 
 import static io.appium.uiautomator2.model.AccessibleUiObject.toAccessibleUiObject;
+import static io.appium.uiautomator2.model.BySelectorHelper.applyCurrentDisplay;
 import static io.appium.uiautomator2.model.BySelectorHelper.toBySelector;
 import static io.appium.uiautomator2.utils.AXWindowHelpers.getCachedWindowRoots;
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -135,9 +136,14 @@ public class CustomUiDevice {
         final AccessibilityNodeInfo node;
         final BySelector realSelector;
         if (selector instanceof BySelector) {
-            node = (AccessibilityNodeInfo) invoke(METHOD_FIND_MATCH, ByMatcherClass,
-                    Device.getUiDevice(), selector, getCachedWindowRoots());
-            realSelector = (BySelector) selector;
+            realSelector = applyCurrentDisplay((BySelector) selector);
+            node = (AccessibilityNodeInfo) invoke(
+                    METHOD_FIND_MATCH,
+                    ByMatcherClass,
+                    Device.getUiDevice(),
+                    realSelector,
+                    getCachedWindowRoots()
+            );
         } else if (selector instanceof NodeInfoList) {
             node = ((NodeInfoList) selector).getFirst();
             realSelector = toBySelector(node);
@@ -185,7 +191,12 @@ public class CustomUiDevice {
         if (selector instanceof BySelector) {
             //noinspection unchecked
             axNodesList = (List<AccessibilityNodeInfo>) invoke(
-                    METHOD_FIND_MATCHES, ByMatcherClass, getUiDevice(), selector, getCachedWindowRoots());
+                    METHOD_FIND_MATCHES,
+                    ByMatcherClass,
+                    getUiDevice(),
+                    applyCurrentDisplay((BySelector) selector),
+                    getCachedWindowRoots()
+            );
         } else if (selector instanceof NodeInfoList) {
             axNodesList = ((NodeInfoList) selector).getAll();
         } else {
