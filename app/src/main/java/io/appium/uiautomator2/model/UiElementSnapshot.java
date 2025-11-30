@@ -73,7 +73,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.DISMISSABLE, Attribute.ACCESSIBILITY_FOCUSED, Attribute.HEADING,
             Attribute.LIVE_REGION, Attribute.CONTEXT_CLICKABLE, Attribute.MAX_TEXT_LENGTH,
             Attribute.CONTENT_INVALID, Attribute.ERROR_TEXT, Attribute.PANE_TITLE,
-            Attribute.TOOLTIP_TEXT, Attribute.TEXT_HAS_CLICKABLE_SPAN, Attribute.ACTIONS
+            Attribute.TOOLTIP_TEXT, Attribute.TEXT_HAS_CLICKABLE_SPAN, Attribute.ACTIONS,
+            Attribute.WINDOW_ID
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
     };
     private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[]{
@@ -225,6 +226,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 return index;
             case DISPLAYED:
                 return node.isVisibleToUser();
+            case WINDOW_ID: {
+                int windowId = node.getWindowId();
+                return windowId != AxNodeInfoHelper.UNDEFINED_WINDOW_ID ? windowId : null;
+            }
             default:
                 return null;
         }

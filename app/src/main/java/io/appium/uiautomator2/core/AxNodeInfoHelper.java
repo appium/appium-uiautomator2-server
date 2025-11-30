@@ -50,7 +50,7 @@ import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
 public class AxNodeInfoHelper {
     private static final long UNDEFINED_NODE_ID =
             (((long) Integer.MAX_VALUE) << 32) | Integer.MAX_VALUE;
-    private static final int UNDEFINED_WINDOW_ID = -1;
+    public static final int UNDEFINED_WINDOW_ID = -1;
     private static final float DEFAULT_GESTURE_MARGIN_PERCENT = 0.1f;
     private static final Margins mMargins = new PercentMargins(
             DEFAULT_GESTURE_MARGIN_PERCENT,

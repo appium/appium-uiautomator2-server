@@ -71,7 +71,8 @@ public enum Attribute {
     PANE_TITLE(new String[]{"pane-title", "paneTitle"}),
     TOOLTIP_TEXT(new String[]{"tooltip-text", "tooltipText"}),
     TEXT_HAS_CLICKABLE_SPAN(new String[]{"text-has-clickable-span", "textHasClickableSpan"}),
-    ACTIONS(new String[]{"actions"});
+    ACTIONS(new String[]{"actions"}),
+    WINDOW_ID(new String[]{"window-id", "windowId"});
 
     private final String[] aliases;
     // Defines if the attribute is visible to the user from getAttribute call
