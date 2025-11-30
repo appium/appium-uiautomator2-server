@@ -61,7 +61,7 @@ public class ScreenshotHelper {
         Bitmap elementScreenshot = null;
         try {
             elementScreenshot = crop(fullScreenshot, cropArea);
-            return Base64.encodeToString(compress(elementScreenshot), Base64.NO_WRAP);
+            return bitmapToBase64Png(elementScreenshot);
         } finally {
             fullScreenshot.recycle();
             if (elementScreenshot != null && elementScreenshot != fullScreenshot) {
@@ -72,6 +72,17 @@ public class ScreenshotHelper {
 
     public static String takeScreenshot() throws TakeScreenshotException {
         return takeScreenshot(null);
+    }
+
+    /**
+     * Converts a Bitmap to a base64-encoded PNG string.
+     *
+     * @param bitmap The bitmap to convert.
+     * @return Base64-encoded PNG string.
+     * @throws TakeScreenshotException if the bitmap cannot be compressed to PNG.
+     */
+    public static String bitmapToBase64Png(Bitmap bitmap) throws TakeScreenshotException {
+        return Base64.encodeToString(compress(bitmap), Base64.NO_WRAP);
     }
 
     /**
@@ -142,7 +153,7 @@ public class ScreenshotHelper {
 
         if (outputType == String.class) {
             try {
-                return outputType.cast(Base64.encodeToString(compress(screenshot), Base64.NO_WRAP));
+                return outputType.cast(bitmapToBase64Png(screenshot));
             } finally {
                 screenshot.recycle();
             }
