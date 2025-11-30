@@ -67,10 +67,11 @@ public class ListWindows extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         ListWindowsModel model = toModel(request, ListWindowsModel.class);
+        boolean skipScreenshots = Boolean.TRUE.equals(model.skipScreenshots);
         DisplayManager displayManager = getDisplayManager();
         List<WindowModel> windows = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-                ? listWindowsOnApiLevel30(displayManager)
-                : listWindowsOnApiLevelBelow30(displayManager);
+                ? listWindowsOnApiLevel30(displayManager, skipScreenshots)
+                : listWindowsOnApiLevelBelow30(displayManager, skipScreenshots);
 
         if (model.filters != null && !model.filters.isEmpty()) {
             windows = filterWindows(windows, model.filters);
@@ -80,7 +81,7 @@ public class ListWindows extends SafeRequestHandler {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
-    private List<WindowModel> listWindowsOnApiLevel30(@Nullable DisplayManager displayManager) {
+    private List<WindowModel> listWindowsOnApiLevel30(@Nullable DisplayManager displayManager, boolean skipScreenshots) {
         SparseArray<List<AccessibilityWindowInfo>> windowsOnAllDisplays = CustomUiDevice
                 .getInstance()
                 .getUiAutomation()
@@ -92,12 +93,12 @@ public class ListWindows extends SafeRequestHandler {
                 .flatMap(displayId -> {
                     Long physicalDisplayId = getPhysicalDisplayId(displayManager, displayId);
                     return windowsOnAllDisplays.get(displayId).stream()
-                            .map(window -> createWindowModel(window, displayId, physicalDisplayId));
+                            .map(window -> createWindowModel(window, displayId, physicalDisplayId, skipScreenshots));
                 })
                 .collect(Collectors.toList());
     }
 
-    private List<WindowModel> listWindowsOnApiLevelBelow30(@Nullable DisplayManager displayManager) {
+    private List<WindowModel> listWindowsOnApiLevelBelow30(@Nullable DisplayManager displayManager, boolean skipScreenshots) {
         List<AccessibilityWindowInfo> windowList = CustomUiDevice
                 .getInstance()
                 .getUiAutomation()
@@ -108,7 +109,7 @@ public class ListWindows extends SafeRequestHandler {
         Long physicalDisplayId = getPhysicalDisplayId(displayManager, displayId);
 
         return windowList.stream()
-                .map(window -> createWindowModel(window, displayId, physicalDisplayId))
+                .map(window -> createWindowModel(window, displayId, physicalDisplayId, skipScreenshots))
                 .collect(Collectors.toList());
     }
 
@@ -130,7 +131,8 @@ public class ListWindows extends SafeRequestHandler {
     private WindowModel createWindowModel(
         AccessibilityWindowInfo window,
         int displayId,
-        @Nullable Long physicalDisplayId
+        @Nullable Long physicalDisplayId,
+        boolean skipScreenshots
     ) {
         Integer windowId = window.getId();
         Rect bounds = new Rect();
@@ -142,7 +144,7 @@ public class ListWindows extends SafeRequestHandler {
             packageName = StringHelpers.charSequenceToNullableString(root.getPackageName());
         }
 
-        String screenshot = takeWindowScreenshot(window);
+        String screenshot = skipScreenshots ? null : takeWindowScreenshot(window);
 
         return new WindowModel(windowId, displayId, physicalDisplayId, bounds, packageName, screenshot);
     }

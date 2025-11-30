@@ -23,6 +23,7 @@ import java.util.Map;
 public class ListWindowsModel extends BaseModel {
     @Nullable
     public Map<String, Object> filters;
+    public Boolean skipScreenshots;
 
     public ListWindowsModel() {}
 }
