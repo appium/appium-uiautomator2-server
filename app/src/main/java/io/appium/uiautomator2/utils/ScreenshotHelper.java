@@ -96,6 +96,8 @@ public class ScreenshotHelper {
                             currentDisplayId)
             );
         }
+        // If the phone display has a custom density, we need to use screencap to take a screenshot of it.
+        // See https://github.com/appium/appium/issues/12199 for more details.
         boolean shouldTryScreencap = isCustomDisplayId || doesDisplayHaveCustomDensity(display);
 
         UiAutomation automation = CustomUiDevice.getInstance().getUiAutomation();
