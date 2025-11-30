@@ -133,7 +133,7 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new AcceptAlert("/session/:sessionId/alert/accept"));
         register(postHandler, new DismissAlert("/session/:sessionId/alert/dismiss"));
         register(postHandler, new W3CActions("/session/:sessionId/actions"));
-        register(postHandler, new ResetAxCache("/session/:sessionId/reset_ax_cache"));
+        register(postHandler, new ResetAxCache("/session/:sessionId/appium/reset_ax_cache"));
 
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Drag("/session/:sessionId/appium/gestures/drag"));
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Fling("/session/:sessionId/appium/gestures/fling"));

@@ -16,10 +16,12 @@
 
 package io.appium.uiautomator2.utils;
 
+import android.app.Service;
 import android.app.UiAutomation;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.hardware.display.DisplayManager;
 import android.os.ParcelFileDescriptor;
 import android.util.Base64;
 import android.util.DisplayMetrics;
@@ -37,17 +39,20 @@ import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
 import io.appium.uiautomator2.common.exceptions.TakeScreenshotException;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.model.settings.CurrentDisplayId;
+import io.appium.uiautomator2.model.settings.Settings;
 
 import static android.graphics.Bitmap.CompressFormat.JPEG;
 import static android.graphics.Bitmap.CompressFormat.PNG;
 import static android.util.DisplayMetrics.DENSITY_DEFAULT;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 public class ScreenshotHelper {
     private static final int PNG_MAGIC_LENGTH = 8;
 
     /**
      * Grab device screenshot and crop it to specified area if cropArea is not null.
-     * Compress it to PGN format and convert to Base64 byte-string.
+     * Compress it to PNG format and convert to Base64 byte-string.
      *
      * @param cropArea Area to crop.
      * @return Base64-encoded screenshot string.
@@ -82,64 +87,120 @@ public class ScreenshotHelper {
      * @throws TakeScreenshotException if there was an error while taking the screenshot
      */
     private static <T> T takeDeviceScreenshot(Class<T> outputType) throws TakeScreenshotException {
+        int currentDisplayId = UiAutomatorBridge.getInstance().getCurrentDisplayId();
+        boolean isCustomDisplayId = currentDisplayId != Settings.get(CurrentDisplayId.class).getDefaultValue();
         Display display = UiAutomatorBridge.getInstance().getCurrentDisplay();
+        if (display == null) {
+            throw new TakeScreenshotException(
+                    String.format("Cannot take a screenshot of display %s. Does the display exist?",
+                            currentDisplayId)
+            );
+        }
+        // If the phone display has a custom density, we need to use screencap to take a screenshot of it.
+        // See https://github.com/appium/appium/issues/12199 for more details.
+        boolean shouldTryScreencap = isCustomDisplayId || doesDisplayHaveCustomDensity(display);
+
         UiAutomation automation = CustomUiDevice.getInstance().getUiAutomation();
-        DisplayMetrics metrics = new DisplayMetrics();
-        display.getMetrics(metrics);
-        Bitmap screenshot = null;
-        Logger.debug(String.format("Display metrics: %s", metrics));
-        // Workaround for https://github.com/appium/appium/issues/12199
-        // executeShellCommand seems to be faulty on Android 5
-        if (metrics.densityDpi != DENSITY_DEFAULT) {
+        if (shouldTryScreencap) {
             try {
-                String shellScreenCapCommand = "screencap -p";
-
                 Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
-                if (physicalDisplayId != null) {
-                    shellScreenCapCommand = String.format("screencap -d %d -p", physicalDisplayId);
-                }
-
-                ParcelFileDescriptor pfd = automation.executeShellCommand(shellScreenCapCommand);
-                try (InputStream is = new FileInputStream(pfd.getFileDescriptor())) {
-                    byte[] pngBytes = StringHelpers.inputStreamToByteArray(is);
-                    if (pngBytes.length <= PNG_MAGIC_LENGTH) {
-                        throw new IllegalStateException("screencap returned an invalid response");
-                    }
-                    if (outputType == String.class) {
-                        return outputType.cast(Base64.encodeToString(pngBytes, Base64.NO_WRAP));
-                    }
-                    screenshot = BitmapFactory.decodeByteArray(
-                        pngBytes,
-                        0,
-                        pngBytes.length
+                if (physicalDisplayId == null && isCustomDisplayId) {
+                    throw new TakeScreenshotException(
+                            String.format("Cannot take a screenshot of display %s " +
+                                            "because its physical id cannot be determined", display.getDisplayId())
                     );
-                } finally {
-                    try {
-                        pfd.close();
-                    } catch (IOException e) {
-                        Logger.debug("Got an unexpected IO error while closing the file descriptor", e);
-                    }
                 }
+                String command = physicalDisplayId == null
+                        ? "screencap -p"
+                        : String.format("screencap -d %d -p", physicalDisplayId);
+                return retrieveScreenshotViaScreencap(command, automation, outputType);
             } catch (Exception e) {
-                Logger.error(e);
-                Logger.info("Falling back to UiAutomator-based screenshoting");
+                if (isCustomDisplayId) {
+                    throw new TakeScreenshotException(
+                            String.format("Cannot take a screenshot of display %s: %s",
+                                    display.getDisplayId(), e.getMessage()), e
+                    );
+                } else {
+                    Logger.info("Cannot take a screenshot via screencap, defaulting to UiAutomator API", e);
+                }
             }
         }
 
-        if (screenshot == null) {
-            screenshot = automation.takeScreenshot();
+        Bitmap screenshot = automation.takeScreenshot();
+        validateScreenshot(screenshot);
+        return formatScreenshotOutput(screenshot, outputType);
+    }
+
+    /**
+     * Attempts to take screenshot using screencap shell command with display ID support.
+     *
+     * @return Result of the requested type if successful
+     */
+    private static <T> T retrieveScreenshotViaScreencap(
+            String command, UiAutomation automation, Class<T> outputType
+    ) throws IOException {
+        byte[] pngBytes = executeScreencapCommand(automation, command);
+
+        if (outputType == String.class) {
+            // For String output, return Base64-encoded PNG bytes directly
+            return outputType.cast(Base64.encodeToString(pngBytes, Base64.NO_WRAP));
         }
 
+        // For Bitmap output, decode the PNG bytes
+        Bitmap bitmap = BitmapFactory.decodeByteArray(pngBytes, 0, pngBytes.length);
+        return outputType.cast(bitmap);
+    }
+
+    @Nullable
+    private static Display getDisplayById(int displayId) {
+        DisplayManager displayManager = (DisplayManager) getInstrumentation().getTargetContext()
+                .getSystemService(Service.DISPLAY_SERVICE);
+        return displayManager.getDisplay(displayId);
+    }
+
+    private static boolean doesDisplayHaveCustomDensity(Display display) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        Logger.debug(String.format("Display metrics: %s", metrics));
+        return metrics.densityDpi != DENSITY_DEFAULT;
+    }
+
+    /**
+     * Executes the screencap command and returns PNG bytes.
+     */
+    private static byte[] executeScreencapCommand(UiAutomation automation, String command) throws IOException {
+        try (
+                ParcelFileDescriptor pfd = automation.executeShellCommand(command);
+                InputStream is = new FileInputStream(pfd.getFileDescriptor())
+        ) {
+            byte[] pngBytes = StringHelpers.inputStreamToByteArray(is);
+            if (pngBytes.length <= PNG_MAGIC_LENGTH) {
+                throw new IllegalStateException("screencap returned an invalid response");
+            }
+            return pngBytes;
+        }
+    }
+
+    /**
+     * Validates that the screenshot is not null and has valid dimensions.
+     */
+    private static void validateScreenshot(Bitmap screenshot) throws TakeScreenshotException {
         if (screenshot == null || screenshot.getWidth() == 0 || screenshot.getHeight() == 0) {
             throw new TakeScreenshotException();
         }
-
         Logger.info(String.format(
             "Got screenshot with resolution: %sx%s",
             screenshot.getWidth(),
             screenshot.getHeight()
         ));
+    }
 
+    /**
+     * Formats the screenshot output according to the requested type.
+     */
+    private static <T> T formatScreenshotOutput(
+            Bitmap screenshot, Class<T> outputType
+    ) throws TakeScreenshotException {
         if (outputType == String.class) {
             try {
                 return outputType.cast(Base64.encodeToString(compress(screenshot), Base64.NO_WRAP));

@@ -12,6 +12,7 @@ public class CurrentDisplayId extends AbstractSetting<Integer> {
     private static final String SETTING_NAME = "currentDisplayId";
     private static final int DEFAULT_VALUE = Display.DEFAULT_DISPLAY;
     private int value = DEFAULT_VALUE;
+    private boolean customized = false;
 
     public CurrentDisplayId() {
         super(Integer.class, SETTING_NAME);
@@ -25,6 +26,16 @@ public class CurrentDisplayId extends AbstractSetting<Integer> {
     @Override
     public Integer getDefaultValue() {
         return DEFAULT_VALUE;
+    }
+
+    public boolean isCustomized() {
+        return customized;
+    }
+
+    @Override
+    public boolean reset() {
+        customized = false;
+        return super.reset();
     }
 
     @Override
@@ -41,7 +52,8 @@ public class CurrentDisplayId extends AbstractSetting<Integer> {
                     currentDisplayId
             ));
         }
-    
+
+        customized = true;
         value = currentDisplayId;
     }
 }

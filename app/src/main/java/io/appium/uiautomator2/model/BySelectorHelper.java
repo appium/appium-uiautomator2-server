@@ -16,6 +16,8 @@
 
 package io.appium.uiautomator2.model;
 
+import android.os.Build;
+import android.view.Display;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
@@ -24,6 +26,10 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 
 import java.util.UUID;
+
+import io.appium.uiautomator2.core.UiAutomatorBridge;
+import io.appium.uiautomator2.model.settings.CurrentDisplayId;
+import io.appium.uiautomator2.model.settings.Settings;
 
 public class BySelectorHelper {
     @NonNull
@@ -58,10 +64,22 @@ public class BySelectorHelper {
         result = result == null
                 ? By.checkable(node.isCheckable())
                 : result.checkable(node.isCheckable());
-        return result.clickable(node.isClickable())
+        result = result.clickable(node.isClickable())
                 .longClickable(node.isLongClickable())
                 .focusable(node.isFocusable())
                 .scrollable(node.isScrollable());
+        return applyCurrentDisplay(result);
+    }
+
+    public static BySelector applyCurrentDisplay(BySelector selector) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                && Settings.get(CurrentDisplayId.class).isCustomized()) {
+            Display display = UiAutomatorBridge.getInstance().getCurrentDisplay();
+            if (display != null) {
+                return selector.displayId(display.getDisplayId());
+            }
+        }
+        return selector;
     }
 
     private static boolean hasValue(@Nullable CharSequence cs) {

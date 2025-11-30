@@ -1,3 +1,33 @@
+## [9.5.0](https://github.com/appium/appium-uiautomator2-server/compare/v9.4.1...v9.5.0) (2025-11-30)
+
+### Features
+
+* Add window-id attribute to XML elements ([#740](https://github.com/appium/appium-uiautomator2-server/issues/740)) ([8a47003](https://github.com/appium/appium-uiautomator2-server/commit/8a470038d8e138b72578f9b0add9fa7a343f5d99))
+
+## [9.4.1](https://github.com/appium/appium-uiautomator2-server/compare/v9.4.0...v9.4.1) (2025-11-30)
+
+### Miscellaneous Chores
+
+* Respect CurrentDisplayId setting while taking screenshots ([#735](https://github.com/appium/appium-uiautomator2-server/issues/735)) ([1ee22d2](https://github.com/appium/appium-uiautomator2-server/commit/1ee22d2bd1075bbafdfc7fc8b7fb4d13377ffb45))
+
+## [9.4.0](https://github.com/appium/appium-uiautomator2-server/compare/v9.3.1...v9.4.0) (2025-11-30)
+
+### Features
+
+* Respect current display id for UiObject2 lookups ([#736](https://github.com/appium/appium-uiautomator2-server/issues/736)) ([67ec512](https://github.com/appium/appium-uiautomator2-server/commit/67ec5121309a78a4c7459a61608cd16d984f1966))
+
+## [9.3.1](https://github.com/appium/appium-uiautomator2-server/compare/v9.3.0...v9.3.1) (2025-11-30)
+
+### Bug Fixes
+
+* Update custom endpoint ([#738](https://github.com/appium/appium-uiautomator2-server/issues/738)) ([aca4749](https://github.com/appium/appium-uiautomator2-server/commit/aca4749fe9c2b1dafdd9beb3bd92e6b0e67316d5))
+
+## [9.3.0](https://github.com/appium/appium-uiautomator2-server/compare/v9.2.0...v9.3.0) (2025-11-29)
+
+### Features
+
+* calls clearCache from UiAutomation API for API level 34+ ([#734](https://github.com/appium/appium-uiautomator2-server/issues/734)) ([40f8703](https://github.com/appium/appium-uiautomator2-server/commit/40f8703d0c0fc92d93d0c75f3fe72b7b5bca2db6))
+
 ## [9.2.0](https://github.com/appium/appium-uiautomator2-server/compare/v9.1.4...v9.2.0) (2025-11-29)
 
 ### Features

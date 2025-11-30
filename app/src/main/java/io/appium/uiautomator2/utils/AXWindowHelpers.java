@@ -168,6 +168,13 @@ public class AXWindowHelpers {
      */
     private static void clearAccessibilityCache() {
         try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                boolean cleared = UiAutomatorBridge.getInstance().getUiAutomation().clearCache();
+                if (cleared) {
+                    return;
+                }
+                Logger.info("Accessibility Node cache was not cleared. Falling back to the legacy API");
+            }
             // This call invokes `AccessibilityInteractionClient.getInstance().clearCache();` method
             UiAutomatorBridge.getInstance().getUiAutomation().setServiceInfo(null);
         } catch (NullPointerException npe) {
