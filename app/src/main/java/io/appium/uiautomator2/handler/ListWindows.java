@@ -156,6 +156,7 @@ public class ListWindows extends SafeRequestHandler {
                 screenshot,
                 window.getType(),
                 StringHelpers.charSequenceToNullableString(window.getTitle()),
+                window.getLayer(),
                 window.isAccessibilityFocused(),
                 window.isActive(),
                 window.isFocused(),
@@ -236,6 +237,8 @@ public class ListWindows extends SafeRequestHandler {
                 return matchesInteger(window.type, value);
             case "title":
                 return matchesGlobString(window.title, value);
+            case "layer":
+                return matchesInteger(window.layer, value);
             case "isAccessibilityFocused":
                 return matchesBoolean(window.isAccessibilityFocused, value);
             case "isActive":

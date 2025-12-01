@@ -32,6 +32,7 @@ public class WindowModel {
     public int type;
     @Nullable
     public String title;
+    public int layer;
     public boolean isAccessibilityFocused;
     public boolean isActive;
     public boolean isFocused;
@@ -64,6 +65,7 @@ public class WindowModel {
         @Nullable String screenshot,
         int type,
         @Nullable String title,
+        int layer,
         boolean isAccessibilityFocused,
         boolean isActive,
         boolean isFocused,
@@ -77,6 +79,7 @@ public class WindowModel {
         this.screenshot = screenshot;
         this.type = type;
         this.title = title;
+        this.layer = layer;
         this.isAccessibilityFocused = isAccessibilityFocused;
         this.isActive = isActive;
         this.isFocused = isFocused;
