@@ -57,6 +57,7 @@ import io.appium.uiautomator2.handler.GetSettings;
 import io.appium.uiautomator2.handler.GetSize;
 import io.appium.uiautomator2.handler.GetSystemBars;
 import io.appium.uiautomator2.handler.GetText;
+import io.appium.uiautomator2.handler.ListDisplays;
 import io.appium.uiautomator2.handler.ListWindows;
 import io.appium.uiautomator2.handler.Location;
 import io.appium.uiautomator2.handler.LongPressKeyCode;
@@ -136,6 +137,7 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new W3CActions("/session/:sessionId/actions"));
         register(postHandler, new ResetAxCache("/session/:sessionId/appium/reset_ax_cache"));
         register(postHandler, new ListWindows("/session/:sessionId/appium/list_windows"));
+        register(postHandler, new ListDisplays("/session/:sessionId/appium/list_displays"));
 
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Drag("/session/:sessionId/appium/gestures/drag"));
         register(postHandler, new io.appium.uiautomator2.handler.gestures.Fling("/session/:sessionId/appium/gestures/fling"));

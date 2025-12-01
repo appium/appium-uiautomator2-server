@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.handler;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static io.appium.uiautomator2.core.AxNodeInfoHelper.UNDEFINED_WINDOW_ID;
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 
 import android.app.Service;
@@ -134,7 +135,7 @@ public class ListWindows extends SafeRequestHandler {
         @Nullable Long physicalDisplayId,
         boolean skipScreenshots
     ) {
-        Integer windowId = window.getId();
+        Integer windowId = window.getId() == UNDEFINED_WINDOW_ID ? null : window.getId();
         Rect bounds = new Rect();
         window.getBoundsInScreen(bounds);
 
@@ -147,7 +148,21 @@ public class ListWindows extends SafeRequestHandler {
         String screenshot = skipScreenshots ? null : takeWindowScreenshot(window);
         String physicalDisplayIdString = physicalDisplayId != null ? String.valueOf(physicalDisplayId) : null;
 
-        return new WindowModel(windowId, displayId, physicalDisplayIdString, bounds, packageName, screenshot);
+        return new WindowModel(
+                windowId,
+                displayId,
+                physicalDisplayIdString,
+                bounds,
+                packageName,
+                screenshot,
+                window.getType(),
+                StringHelpers.charSequenceToNullableString(window.getTitle()),
+                window.getLayer(),
+                window.isAccessibilityFocused(),
+                window.isActive(),
+                window.isFocused(),
+                window.isInPictureInPictureMode()
+        );
     }
 
     @Nullable
@@ -212,27 +227,41 @@ public class ListWindows extends SafeRequestHandler {
     private boolean matchesFilter(WindowModel window, String key, Object value) {
         switch (key) {
             case "packageName":
-                return matchesPackageName(window.packageName, value);
+                return matchesGlobString(window.packageName, value);
             case "windowId":
                 return matchesInteger(window.windowId, value);
             case "displayId":
                 return matchesInteger(window.displayId, value);
             case "physicalDisplayId":
                 return matchesString(window.physicalDisplayId, value);
+            case "type":
+                return matchesInteger(window.type, value);
+            case "title":
+                return matchesGlobString(window.title, value);
+            case "layer":
+                return matchesInteger(window.layer, value);
+            case "isAccessibilityFocused":
+                return matchesBoolean(window.isAccessibilityFocused, value);
+            case "isActive":
+                return matchesBoolean(window.isActive, value);
+            case "isFocused":
+                return matchesBoolean(window.isFocused, value);
+            case "isInPictureInPictureMode":
+                return matchesBoolean(window.isInPictureInPictureMode, value);
             default:
                 Logger.debug(String.format("Unknown filter key: %s", key));
                 return true; // Unknown filters don't exclude the window
         }
     }
 
-    private boolean matchesPackageName(String packageName, Object filterValue) {
-        if (packageName == null) {
+    private boolean matchesGlobString(String str, Object filterValue) {
+        if (str == null) {
             return false;
         }
 
         String filterStr = filterValue.toString();
         // Support wildcard matching using GlobMatcher
-        return GlobMatcher.matches(filterStr, packageName);
+        return GlobMatcher.matches(filterStr, str);
     }
 
     private boolean matchesInteger(Integer value, Object filterValue) {
@@ -257,9 +286,25 @@ public class ListWindows extends SafeRequestHandler {
             return false;
         }
 
-        String filterStr = filterValue.toString();
-        // Support wildcard matching using GlobMatcher
-        return GlobMatcher.matches(filterStr, value);
+        return filterValue.toString().equals(value);
+    }
+
+    private boolean matchesBoolean(boolean value, Object filterValue) {
+        if (filterValue instanceof Boolean) {
+            return value == (Boolean) filterValue;
+        }
+
+        if (filterValue instanceof String) {
+            String filterStr = ((String) filterValue).toLowerCase().trim();
+            if ("true".equals(filterStr) || "1".equals(filterStr)) {
+                return value;
+            }
+            if ("false".equals(filterStr) || "0".equals(filterStr)) {
+                return !value;
+            }
+        }
+
+        return false;
     }
 }
 

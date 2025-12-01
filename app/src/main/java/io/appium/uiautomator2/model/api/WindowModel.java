@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 
 public class WindowModel {
     public Integer windowId;
-    public Integer displayId;
+    public int displayId;
     /**
      * Physical display ID as a string to avoid JavaScript number precision issues.
      * JavaScript's Number.MAX_SAFE_INTEGER is 2^53 - 1, while Java Long can hold values up to 2^63 - 1.
@@ -34,12 +34,20 @@ public class WindowModel {
     public String packageName;
     @Nullable
     public String screenshot;
+    public int type;
+    @Nullable
+    public String title;
+    public int layer;
+    public boolean isAccessibilityFocused;
+    public boolean isActive;
+    public boolean isFocused;
+    public boolean isInPictureInPictureMode;
 
     public WindowModel() {}
 
     public WindowModel(
         Integer windowId,
-        Integer displayId,
+        int displayId,
         @Nullable String physicalDisplayId,
         Rect rect,
         @Nullable String packageName,
@@ -51,6 +59,36 @@ public class WindowModel {
         this.rect = new ElementRectModel(rect);
         this.packageName = packageName;
         this.screenshot = screenshot;
+    }
+
+    public WindowModel(
+        Integer windowId,
+        int displayId,
+        @Nullable String physicalDisplayId,
+        Rect rect,
+        @Nullable String packageName,
+        @Nullable String screenshot,
+        int type,
+        @Nullable String title,
+        int layer,
+        boolean isAccessibilityFocused,
+        boolean isActive,
+        boolean isFocused,
+        boolean isInPictureInPictureMode
+    ) {
+        this.windowId = windowId;
+        this.displayId = displayId;
+        this.physicalDisplayId = physicalDisplayId;
+        this.rect = new ElementRectModel(rect);
+        this.packageName = packageName;
+        this.screenshot = screenshot;
+        this.type = type;
+        this.title = title;
+        this.layer = layer;
+        this.isAccessibilityFocused = isAccessibilityFocused;
+        this.isActive = isActive;
+        this.isFocused = isFocused;
+        this.isInPictureInPictureMode = isInPictureInPictureMode;
     }
 }
 
