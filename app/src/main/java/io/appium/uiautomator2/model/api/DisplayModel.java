@@ -23,17 +23,20 @@ public class DisplayModel {
     @Nullable
     public Long hardwareId;
     public DisplayMetricsModel metrics;
+    public boolean isDefault;
 
     public DisplayModel() {}
 
     public DisplayModel(
         int id,
         @Nullable Long hardwareId,
-        DisplayMetricsModel metrics
+        DisplayMetricsModel metrics,
+        boolean isDefault
     ) {
         this.id = id;
         this.hardwareId = hardwareId;
         this.metrics = metrics;
+        this.isDefault = isDefault;
     }
 }
 

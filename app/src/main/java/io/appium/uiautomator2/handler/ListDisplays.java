@@ -69,11 +69,17 @@ public class ListDisplays extends SafeRequestHandler {
     private DisplayModel createDisplayModel(Display display) {
         int displayId = display.getDisplayId();
         Long hardwareId = DisplayIdHelper.getPhysicalDisplayId(display);
+        boolean isDefault = displayId == Display.DEFAULT_DISPLAY;
 
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
 
-        return new DisplayModel(displayId, hardwareId, new DisplayMetricsModel(metrics));
+        return new DisplayModel(
+          displayId,
+          hardwareId,
+          new DisplayMetricsModel(metrics),
+          isDefault
+        );
     }
 }
 
