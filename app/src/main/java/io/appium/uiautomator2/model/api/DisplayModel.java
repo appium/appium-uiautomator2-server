@@ -21,12 +21,12 @@ import androidx.annotation.Nullable;
 public class DisplayModel {
     public int id;
     /**
-     * Hardware display ID as a string to avoid JavaScript number precision issues.
+     * Physical display ID as a string to avoid JavaScript number precision issues.
      * JavaScript's Number.MAX_SAFE_INTEGER is 2^53 - 1, while Java Long can hold values up to 2^63 - 1.
      * Serializing large Long values as numbers in JSON can cause precision loss when parsed in Node.js.
      */
     @Nullable
-    public String hardwareId;
+    public String physicalId;
     public DisplayMetricsModel metrics;
     public boolean isDefault;
 
@@ -34,12 +34,12 @@ public class DisplayModel {
 
     public DisplayModel(
         int id,
-        @Nullable String hardwareId,
+        @Nullable String physicalId,
         DisplayMetricsModel metrics,
         boolean isDefault
     ) {
         this.id = id;
-        this.hardwareId = hardwareId;
+        this.physicalId = physicalId;
         this.metrics = metrics;
         this.isDefault = isDefault;
     }
