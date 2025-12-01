@@ -27,6 +27,12 @@ public class DisplayIdHelper {
         try {
             // Method is marked as public with @hide in AOSP https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/core/java/android/view/Display.java;l=836?q=Display
             Object address = invoke(getMethod(display.getClass(), "getAddress"), display);
+            if (address == null) {
+                // Emulators may return null.
+                // Display address, or null if none.
+                // https://cs.android.com/android/platform/superproject/main/+/main:frameworks/base/core/java/android/view/DisplayInfo.java;l=83-86;drc=61197364367c9e404c7da6900658f1b16c42d0da
+                return null;
+            }
             return (long) invoke(getMethod(address.getClass(), "getPhysicalDisplayId"), address);
 
         } catch (UiAutomator2Exception e) {
