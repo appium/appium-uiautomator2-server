@@ -145,8 +145,9 @@ public class ListWindows extends SafeRequestHandler {
         }
 
         String screenshot = skipScreenshots ? null : takeWindowScreenshot(window);
+        String physicalDisplayIdString = physicalDisplayId != null ? String.valueOf(physicalDisplayId) : null;
 
-        return new WindowModel(windowId, displayId, physicalDisplayId, bounds, packageName, screenshot);
+        return new WindowModel(windowId, displayId, physicalDisplayIdString, bounds, packageName, screenshot);
     }
 
     @Nullable
@@ -217,7 +218,7 @@ public class ListWindows extends SafeRequestHandler {
             case "displayId":
                 return matchesInteger(window.displayId, value);
             case "physicalDisplayId":
-                return matchesLong(window.physicalDisplayId, value);
+                return matchesString(window.physicalDisplayId, value);
             default:
                 Logger.debug(String.format("Unknown filter key: %s", key));
                 return true; // Unknown filters don't exclude the window
@@ -251,21 +252,14 @@ public class ListWindows extends SafeRequestHandler {
         }
     }
 
-    private boolean matchesLong(Long value, Object filterValue) {
+    private boolean matchesString(String value, Object filterValue) {
         if (value == null) {
             return false;
         }
 
-        if (filterValue instanceof Number) {
-            return value.equals(((Number) filterValue).longValue());
-        }
-
-        try {
-            long filterLong = Long.parseLong(filterValue.toString());
-            return value.equals(filterLong);
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        String filterStr = filterValue.toString();
+        // Support wildcard matching using GlobMatcher
+        return GlobMatcher.matches(filterStr, value);
     }
 }
 

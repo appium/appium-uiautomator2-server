@@ -22,8 +22,13 @@ import androidx.annotation.Nullable;
 public class WindowModel {
     public Integer windowId;
     public Integer displayId;
+    /**
+     * Physical display ID as a string to avoid JavaScript number precision issues.
+     * JavaScript's Number.MAX_SAFE_INTEGER is 2^53 - 1, while Java Long can hold values up to 2^63 - 1.
+     * Serializing large Long values as numbers in JSON can cause precision loss when parsed in Node.js.
+     */
     @Nullable
-    public Long physicalDisplayId;
+    public String physicalDisplayId;
     public ElementRectModel rect;
     @Nullable
     public String packageName;
@@ -35,7 +40,7 @@ public class WindowModel {
     public WindowModel(
         Integer windowId,
         Integer displayId,
-        @Nullable Long physicalDisplayId,
+        @Nullable String physicalDisplayId,
         Rect rect,
         @Nullable String packageName,
         @Nullable String screenshot
