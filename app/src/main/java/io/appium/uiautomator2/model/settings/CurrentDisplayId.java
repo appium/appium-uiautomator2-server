@@ -40,6 +40,11 @@ public class CurrentDisplayId extends AbstractSetting<Integer> {
 
     @Override
     protected void apply(Integer currentDisplayId) {
+        if (currentDisplayId == Display.INVALID_DISPLAY) {
+            reset();
+            return;
+        }
+
         List<Integer> displayIds = UiAutomation.getInstance().getDisplayIds();
 
         if (!displayIds.contains(currentDisplayId)) {
