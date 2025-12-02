@@ -27,6 +27,12 @@ public class DisplayModel {
      */
     @Nullable
     public String physicalId;
+    /**
+     * Virtual display ID as a string. Only set for virtual displays, null otherwise.
+     * Parsed from 'dumpsys SurfaceFlinger --displays' output by matching display name.
+     */
+    @Nullable
+    public String virtualId;
     public DisplayMetricsModel metrics;
     public boolean isDefault;
 
@@ -35,11 +41,13 @@ public class DisplayModel {
     public DisplayModel(
         int id,
         @Nullable String physicalId,
+        @Nullable String virtualId,
         DisplayMetricsModel metrics,
         boolean isDefault
     ) {
         this.id = id;
         this.physicalId = physicalId;
+        this.virtualId = virtualId;
         this.metrics = metrics;
         this.isDefault = isDefault;
     }
