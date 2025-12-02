@@ -120,37 +120,11 @@ public class ScreenshotHelper {
             try {
                 Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
                 if (physicalDisplayId == null && isCustomDisplayId) {
-                    // possibly this is emulator as well.
-                    String displayName = display.getName();
-
-                    ParcelFileDescriptor pfd = automation.executeShellCommand("dumpsys SurfaceFlinger --displays");
-                    InputStream fis = new FileInputStream(pfd.getFileDescriptor());
-                    InputStreamReader isr = new InputStreamReader(fis);
-                    BufferedReader br = new BufferedReader(isr);
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    String virtualDeviceId = null;
-                    Pattern idPattern = Pattern.compile("Virtual Display (\\d+)");
-                    Pattern namePattern = Pattern.compile("name=\"([^\"]+)\"");
-                    while ((line = br.readLine()) != null) {
-                        line = line.trim();
-
-                        // Capture Virtual Display ID
-                        Matcher idMatcher = idPattern.matcher(line);
-                        if (idMatcher.find()) {
-                            virtualDeviceId = idMatcher.group(1);
-                        }
-
-                        // If line has a name and matches target, print ID
-                        Matcher nameMatcher = namePattern.matcher(line);
-                        if (nameMatcher.find() && virtualDeviceId != null) {
-                            String name = nameMatcher.group(1);
-                            if (name.equals(displayName)) {
-                                Logger.info("[debug] command is " + String.format("screencap -d %s -p", virtualDeviceId));
-                                return retrieveScreenshotViaScreencap(
-                                        String.format("screencap -d %s -p", virtualDeviceId), automation, outputType);
-                            }
-                        }
+                    String virtualDeviceId = findVirtualDisplayId(automation, display.getName());
+                    if (virtualDeviceId != null) {
+                        return retrieveScreenshotViaScreencap(
+                                String.format("screencap -d %s -p", virtualDeviceId), automation, outputType
+                        );
                     }
 
                     throw new TakeScreenshotException(
@@ -197,6 +171,45 @@ public class ScreenshotHelper {
         // For Bitmap output, decode the PNG bytes
         Bitmap bitmap = BitmapFactory.decodeByteArray(pngBytes, 0, pngBytes.length);
         return outputType.cast(bitmap);
+    }
+
+    /**
+     * Finds the virtual display ID by parsing SurfaceFlinger output for a given display name.
+     *
+     * @param automation UiAutomation instance to execute shell commands
+     * @param displayName The name of the display to search for
+     * @return The virtual display ID if found, null otherwise
+     */
+    @Nullable
+    private static String findVirtualDisplayId(UiAutomation automation, String displayName) {
+        try (
+                ParcelFileDescriptor pfd = automation.executeShellCommand("dumpsys SurfaceFlinger --displays");
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(pfd.getFileDescriptor())))
+        ) {
+            Pattern idPattern = Pattern.compile("Virtual Display (\\d+)");
+            Pattern namePattern = Pattern.compile("name=\"([^\"]+)\"");
+            String currentDisplayId = null;
+
+            for (String line; (line = br.readLine()) != null; ) {
+                Matcher idMatcher = idPattern.matcher(line);
+                if (idMatcher.find()) {
+                    currentDisplayId = idMatcher.group(1);
+                    continue;
+                }
+
+                if (currentDisplayId != null) {
+                    Matcher nameMatcher = namePattern.matcher(line);
+                    if (nameMatcher.find() && displayName.equals(nameMatcher.group(1))) {
+                        return currentDisplayId;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            Logger.error("Failed to find virtual display ID", e);
+        }
+
+        return null;
     }
 
     @Nullable
