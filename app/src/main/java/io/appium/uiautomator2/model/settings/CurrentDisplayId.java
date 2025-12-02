@@ -51,10 +51,11 @@ public class CurrentDisplayId extends AbstractSetting<Integer> {
             String possibleValuesMessage = TextUtils.join(",", displayIds);
 
             throw new InvalidArgumentException(String.format(
-                    "Invalid %s value specified, must be one of %s. %s was given",
+                    "Invalid %s value specified, must be one of %s. %s was given. It remains %s.",
                     SETTING_NAME,
                     possibleValuesMessage,
-                    currentDisplayId
+                    currentDisplayId,
+                    value
             ));
         }
 

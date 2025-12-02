@@ -120,11 +120,13 @@ public class ScreenshotHelper {
             try {
                 Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
                 if (physicalDisplayId == null && isCustomDisplayId) {
-                    String virtualDeviceId = findVirtualDisplayId(automation, display.getName());
-                    if (virtualDeviceId != null) {
-                        return retrieveScreenshotViaScreencap(
-                                String.format("screencap -d %s -p", virtualDeviceId), automation, outputType
-                        );
+                    if (currentDisplayId == display.getDisplayId()) {
+                        String virtualDeviceId = findVirtualDisplayId(automation, display.getName());
+                        if (virtualDeviceId != null) {
+                            return retrieveScreenshotViaScreencap(
+                                    String.format("screencap -d %s -p", virtualDeviceId), automation, outputType
+                            );
+                        }
                     }
 
                     throw new TakeScreenshotException(
