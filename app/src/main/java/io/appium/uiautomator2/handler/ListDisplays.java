@@ -71,10 +71,10 @@ public class ListDisplays extends SafeRequestHandler {
 
     private DisplayModel createDisplayModel(Display display, Map<String, String> virtualDisplayMap) {
         int displayId = display.getDisplayId();
+        String displayName = display.getName();
         Long physicalIdLong = DisplayIdHelper.getPhysicalDisplayId(display);
         String physicalId = physicalIdLong != null ? String.valueOf(physicalIdLong) : null;
         String virtualId = null;
-        String displayName = display.getName();
         if (displayName != null && physicalIdLong == null) {
             virtualId = virtualDisplayMap.get(displayName);
         }
@@ -85,6 +85,7 @@ public class ListDisplays extends SafeRequestHandler {
 
         return new DisplayModel(
             displayId,
+            displayName,
             physicalId,
             virtualId,
             new DisplayMetricsModel(metrics),
