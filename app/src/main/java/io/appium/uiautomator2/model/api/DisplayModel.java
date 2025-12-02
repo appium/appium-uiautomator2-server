@@ -29,7 +29,7 @@ public class DisplayModel {
     public String physicalId;
     public DisplayMetricsModel metrics;
     public boolean isDefault;
-    public String displayName;
+    public String name;
 
     public DisplayModel() {}
 
@@ -38,13 +38,13 @@ public class DisplayModel {
         @Nullable String physicalId,
         DisplayMetricsModel metrics,
         boolean isDefault,
-        String displayName
+        String name
     ) {
         this.id = id;
         this.physicalId = physicalId;
         this.metrics = metrics;
         this.isDefault = isDefault;
-        this.displayName = displayName;
+        this.name = name;
     }
 }
 
