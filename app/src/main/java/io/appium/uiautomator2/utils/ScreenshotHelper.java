@@ -29,10 +29,14 @@ import android.view.Display;
 
 import androidx.annotation.Nullable;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.common.exceptions.CompressScreenshotException;
 import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
@@ -116,6 +120,39 @@ public class ScreenshotHelper {
             try {
                 Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
                 if (physicalDisplayId == null && isCustomDisplayId) {
+                    // possibly this is emulator as well.
+                    String displayName = display.getName();
+
+                    ParcelFileDescriptor pfd = automation.executeShellCommand("dumpsys SurfaceFlinger --displays");
+                    InputStream fis = new FileInputStream(pfd.getFileDescriptor());
+                    InputStreamReader isr = new InputStreamReader(fis);
+                    BufferedReader br = new BufferedReader(isr);
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    String virtualDeviceId = null;
+                    Pattern idPattern = Pattern.compile("Virtual Display (\\d+)");
+                    Pattern namePattern = Pattern.compile("name=\"([^\"]+)\"");
+                    while ((line = br.readLine()) != null) {
+                        line = line.trim();
+
+                        // Capture Virtual Display ID
+                        Matcher idMatcher = idPattern.matcher(line);
+                        if (idMatcher.find()) {
+                            virtualDeviceId = idMatcher.group(1);
+                        }
+
+                        // If line has a name and matches target, print ID
+                        Matcher nameMatcher = namePattern.matcher(line);
+                        if (nameMatcher.find() && virtualDeviceId != null) {
+                            String name = nameMatcher.group(1);
+                            if (name.equals(displayName)) {
+                                Logger.info("[debug] command is " + String.format("screencap -d %s -p", virtualDeviceId));
+                                return retrieveScreenshotViaScreencap(
+                                        String.format("screencap -d %s -p", virtualDeviceId), automation, outputType);
+                            }
+                        }
+                    }
+
                     throw new TakeScreenshotException(
                             String.format("Cannot take a screenshot of display %s " +
                                             "because its physical id cannot be determined", display.getDisplayId())

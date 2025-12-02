@@ -71,6 +71,7 @@ public class ListDisplays extends SafeRequestHandler {
         Long physicalIdLong = DisplayIdHelper.getPhysicalDisplayId(display);
         String physicalId = physicalIdLong != null ? String.valueOf(physicalIdLong) : null;
         boolean isDefault = displayId == Display.DEFAULT_DISPLAY;
+        String displayName = display.getName();
 
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
@@ -79,7 +80,8 @@ public class ListDisplays extends SafeRequestHandler {
           displayId,
           physicalId,
           new DisplayMetricsModel(metrics),
-          isDefault
+          isDefault,
+          displayName
         );
     }
 }
