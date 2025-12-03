@@ -36,7 +36,6 @@ import java.util.Map;
 import io.appium.uiautomator2.common.exceptions.CompressScreenshotException;
 import io.appium.uiautomator2.common.exceptions.CropScreenshotException;
 import io.appium.uiautomator2.common.exceptions.TakeScreenshotException;
-import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.settings.CurrentDisplayId;
@@ -112,20 +111,18 @@ public class ScreenshotHelper {
 
         UiAutomation automation = CustomUiDevice.getInstance().getUiAutomation();
         if (shouldTryScreencap) {
+            String screencapDisplayId = extractScreencapDisplayId(display);
+            if (screencapDisplayId == null && isCustomDisplayId) {
+                throw new TakeScreenshotException(
+                        String.format("Cannot take a screenshot of display %s " +
+                                "because its device id cannot be determined", display.getDisplayId())
+                );
+            }
             try {
-                String screencapDisplayId = extractScreencapDisplayId(display);
-                if (screencapDisplayId == null && isCustomDisplayId) {
-                    throw new TakeScreenshotException(
-                            String.format("Cannot take a screenshot of display %s " +
-                                    "because its device id cannot be determined", display.getDisplayId())
-                    );
-                }
                 String command = screencapDisplayId == null
                         ? "screencap -p"
                         : String.format("screencap -d %s -p", screencapDisplayId);
                 return retrieveScreenshotViaScreencap(command, automation, outputType);
-            } catch (UiAutomator2Exception e) {
-                throw e;
             } catch (Exception e) {
                 if (isCustomDisplayId) {
                     throw new TakeScreenshotException(
