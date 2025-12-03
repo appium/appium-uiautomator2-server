@@ -115,26 +115,16 @@ public class ScreenshotHelper {
         UiAutomation automation = CustomUiDevice.getInstance().getUiAutomation();
         if (shouldTryScreencap) {
             try {
-                Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
-                if (physicalDisplayId == null && isCustomDisplayId) {
-                    if (currentDisplayId == display.getDisplayId()) {
-                        Map<String, String> virtualDisplayMap = DisplayIdHelper.parseVirtualDisplays();
-                        String virtualDeviceId = virtualDisplayMap.get(display.getName());
-                        if (virtualDeviceId != null) {
-                            return retrieveScreenshotViaScreencap(
-                                    String.format("screencap -d %s -p", virtualDeviceId), automation, outputType
-                            );
-                        }
-                    }
-
+                String screencapDisplayId = extractScreencapDisplayId(display);
+                if (screencapDisplayId == null && isCustomDisplayId) {
                     throw new TakeScreenshotException(
                             String.format("Cannot take a screenshot of display %s " +
-                                            "because its physical id cannot be determined", display.getDisplayId())
+                                            "because its device id cannot be determined", display.getDisplayId())
                     );
                 }
-                String command = physicalDisplayId == null
+                String command = screencapDisplayId == null
                         ? "screencap -p"
-                        : String.format("screencap -d %d -p", physicalDisplayId);
+                        : String.format("screencap -d %s -p", screencapDisplayId);
                 return retrieveScreenshotViaScreencap(command, automation, outputType);
             } catch (Exception e) {
                 if (isCustomDisplayId) {
@@ -151,6 +141,16 @@ public class ScreenshotHelper {
         Bitmap screenshot = automation.takeScreenshot();
         validateScreenshot(screenshot);
         return formatScreenshotOutput(screenshot, outputType);
+    }
+
+    @Nullable
+    private static String extractScreencapDisplayId(Display display) {
+        Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
+        if (physicalDisplayId != null) {
+            return physicalDisplayId.toString();
+        }
+        Map<String, String> virtualDisplayMap = DisplayIdHelper.parseVirtualDisplays();
+        return virtualDisplayMap.get(display.getName());
     }
 
     /**
