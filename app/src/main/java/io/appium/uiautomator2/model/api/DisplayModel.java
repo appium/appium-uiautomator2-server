@@ -20,6 +20,8 @@ import androidx.annotation.Nullable;
 
 public class DisplayModel {
     public int id;
+    @Nullable
+    public String name;
     /**
      * Physical display ID as a string to avoid JavaScript number precision issues.
      * JavaScript's Number.MAX_SAFE_INTEGER is 2^53 - 1, while Java Long can hold values up to 2^63 - 1.
@@ -27,21 +29,29 @@ public class DisplayModel {
      */
     @Nullable
     public String physicalId;
+    /**
+     * Virtual display ID as a string. Only set for virtual displays, null otherwise.
+     * Parsed from 'dumpsys SurfaceFlinger --displays' output by matching display name.
+     */
+    @Nullable
+    public String virtualId;
     public DisplayMetricsModel metrics;
     public boolean isDefault;
-    public String name;
 
     public DisplayModel() {}
 
     public DisplayModel(
         int id,
+        @Nullable String name,
         @Nullable String physicalId,
+        @Nullable String virtualId,
         DisplayMetricsModel metrics,
-        boolean isDefault,
-        String name
+        boolean isDefault
     ) {
         this.id = id;
+        this.name = name;
         this.physicalId = physicalId;
+        this.virtualId = virtualId;
         this.metrics = metrics;
         this.isDefault = isDefault;
         this.name = name;

@@ -1,3 +1,9 @@
+## [9.8.0](https://github.com/appium/appium-uiautomator2-server/compare/v9.7.1...v9.8.0) (2025-12-02)
+
+### Features
+
+* Add virtual display id into list.. endpoints output ([#747](https://github.com/appium/appium-uiautomator2-server/issues/747)) ([0b7b817](https://github.com/appium/appium-uiautomator2-server/commit/0b7b8175a52a86c15962ee1b15d81f776d77a0f2))
+
 ## [9.7.1](https://github.com/appium/appium-uiautomator2-server/compare/v9.7.0...v9.7.1) (2025-12-01)
 
 ### Miscellaneous Chores

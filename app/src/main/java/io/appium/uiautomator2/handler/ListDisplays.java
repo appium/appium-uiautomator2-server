@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
@@ -55,8 +56,10 @@ public class ListDisplays extends SafeRequestHandler {
             return Collections.emptyList();
         }
 
+        Map<String, String> virtualDisplayMap = DisplayIdHelper.parseVirtualDisplays();
+
         return Arrays.stream(displayManager.getDisplays())
-                .map(this::createDisplayModel)
+                .map(display -> createDisplayModel(display, virtualDisplayMap))
                 .collect(Collectors.toList());
     }
 
@@ -66,22 +69,27 @@ public class ListDisplays extends SafeRequestHandler {
                 .getSystemService(Service.DISPLAY_SERVICE);
     }
 
-    private DisplayModel createDisplayModel(Display display) {
+    private DisplayModel createDisplayModel(Display display, Map<String, String> virtualDisplayMap) {
         int displayId = display.getDisplayId();
+        String displayName = display.getName();
         Long physicalIdLong = DisplayIdHelper.getPhysicalDisplayId(display);
         String physicalId = physicalIdLong != null ? String.valueOf(physicalIdLong) : null;
+        String virtualId = null;
+        if (displayName != null && physicalIdLong == null) {
+            virtualId = virtualDisplayMap.get(displayName);
+        }
         boolean isDefault = displayId == Display.DEFAULT_DISPLAY;
-        String displayName = display.getName();
 
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
 
         return new DisplayModel(
-          displayId,
-          physicalId,
-          new DisplayMetricsModel(metrics),
-          isDefault,
-          displayName
+            displayId,
+            displayName,
+            physicalId,
+            virtualId,
+            new DisplayMetricsModel(metrics),
+            isDefault
         );
     }
 }

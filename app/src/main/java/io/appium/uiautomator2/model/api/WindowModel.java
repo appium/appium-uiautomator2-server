@@ -29,6 +29,12 @@ public class WindowModel {
      */
     @Nullable
     public String physicalDisplayId;
+    /**
+     * Virtual display ID as a string. Only set for virtual displays, null otherwise.
+     * Parsed from 'dumpsys SurfaceFlinger --displays' output by matching display name.
+     */
+    @Nullable
+    public String virtualDisplayId;
     public ElementRectModel rect;
     @Nullable
     public String packageName;
@@ -49,6 +55,7 @@ public class WindowModel {
         Integer windowId,
         int displayId,
         @Nullable String physicalDisplayId,
+        @Nullable String virtualDisplayId,
         Rect rect,
         @Nullable String packageName,
         @Nullable String screenshot
@@ -56,6 +63,7 @@ public class WindowModel {
         this.windowId = windowId;
         this.displayId = displayId;
         this.physicalDisplayId = physicalDisplayId;
+        this.virtualDisplayId = virtualDisplayId;
         this.rect = new ElementRectModel(rect);
         this.packageName = packageName;
         this.screenshot = screenshot;
@@ -65,6 +73,7 @@ public class WindowModel {
         Integer windowId,
         int displayId,
         @Nullable String physicalDisplayId,
+        @Nullable String virtualDisplayId,
         Rect rect,
         @Nullable String packageName,
         @Nullable String screenshot,
@@ -79,6 +88,7 @@ public class WindowModel {
         this.windowId = windowId;
         this.displayId = displayId;
         this.physicalDisplayId = physicalDisplayId;
+        this.virtualDisplayId = virtualDisplayId;
         this.rect = new ElementRectModel(rect);
         this.packageName = packageName;
         this.screenshot = screenshot;
