@@ -54,6 +54,8 @@ public class DisplayIdHelper {
     /**
      * Parses 'dumpsys SurfaceFlinger --displays' output to extract virtual display IDs mapped by display name.
      * This should be called once per listDisplays/listWindows operation to avoid multiple shell invocations.
+     * Note: '--displays' option works over API Level 33 to print virtual displays. '--display-id' option prints
+     * virtual displays only for API Level 36+, thus this logic currently uses '--displays'.
      *
      * @return Map of display name to virtual display ID (as string), empty map if parsing fails
      */
