@@ -35,6 +35,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -121,7 +122,8 @@ public class ScreenshotHelper {
                 Long physicalDisplayId = DisplayIdHelper.getPhysicalDisplayId(display);
                 if (physicalDisplayId == null && isCustomDisplayId) {
                     if (currentDisplayId == display.getDisplayId()) {
-                        String virtualDeviceId = findVirtualDisplayId(automation, display.getName());
+                        Map<String, String> virtualDisplayMap = DisplayIdHelper.parseVirtualDisplays();
+                        String virtualDeviceId = virtualDisplayMap.get(display.getName());
                         if (virtualDeviceId != null) {
                             return retrieveScreenshotViaScreencap(
                                     String.format("screencap -d %s -p", virtualDeviceId), automation, outputType
@@ -173,45 +175,6 @@ public class ScreenshotHelper {
         // For Bitmap output, decode the PNG bytes
         Bitmap bitmap = BitmapFactory.decodeByteArray(pngBytes, 0, pngBytes.length);
         return outputType.cast(bitmap);
-    }
-
-    /**
-     * Finds the virtual display ID by parsing SurfaceFlinger output for a given display name.
-     *
-     * @param automation UiAutomation instance to execute shell commands
-     * @param displayName The name of the display to search for
-     * @return The virtual display ID if found, null otherwise
-     */
-    @Nullable
-    private static String findVirtualDisplayId(UiAutomation automation, String displayName) {
-        try (
-                ParcelFileDescriptor pfd = automation.executeShellCommand("dumpsys SurfaceFlinger --displays");
-                BufferedReader br = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(pfd.getFileDescriptor())))
-        ) {
-            Pattern idPattern = Pattern.compile("Virtual Display (\\d+)");
-            Pattern namePattern = Pattern.compile("name=\"([^\"]+)\"");
-            String currentDisplayId = null;
-
-            for (String line; (line = br.readLine()) != null; ) {
-                Matcher idMatcher = idPattern.matcher(line);
-                if (idMatcher.find()) {
-                    currentDisplayId = idMatcher.group(1);
-                    continue;
-                }
-
-                if (currentDisplayId != null) {
-                    Matcher nameMatcher = namePattern.matcher(line);
-                    if (nameMatcher.find() && displayName.equals(nameMatcher.group(1))) {
-                        return currentDisplayId;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            Logger.error("Failed to find virtual display ID", e);
-        }
-
-        return null;
     }
 
     @Nullable

@@ -54,7 +54,6 @@ public class DisplayModel {
         this.virtualId = virtualId;
         this.metrics = metrics;
         this.isDefault = isDefault;
-        this.name = name;
     }
 }
 
