@@ -43,6 +43,7 @@ import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeExc
 
 public class UiObject2Element extends BaseElement {
     private final UiObject2 element;
+    private Integer customDisplayId;
 
     public UiObject2Element(UiObject2 element, boolean isSingleMatch, By by, @Nullable String contextId) {
         super(isSingleMatch, by, contextId);
@@ -158,7 +159,14 @@ public class UiObject2Element extends BaseElement {
 
     @Override
     public int getDisplayId() {
+        if (customDisplayId != null) {
+            return customDisplayId;
+        }
         return element.getDisplayId();
+    }
+
+    public void setDisplayId(int displayId) {
+        this.customDisplayId = displayId;
     }
 
     @Override
