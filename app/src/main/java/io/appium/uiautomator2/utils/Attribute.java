@@ -72,7 +72,9 @@ public enum Attribute {
     TOOLTIP_TEXT(new String[]{"tooltip-text", "tooltipText"}),
     TEXT_HAS_CLICKABLE_SPAN(new String[]{"text-has-clickable-span", "textHasClickableSpan"}),
     ACTIONS(new String[]{"actions"}),
-    WINDOW_ID(new String[]{"window-id", "windowId"});
+    WINDOW_ID(new String[]{"window-id", "windowId"}),
+    TEXT_SIZE(new String[]{"text-size", "textSize"}),
+    TEXT_SIZE_UNIT(new String[]{"text-unit", "textSizeUnit"});
 
     private final String[] aliases;
     // Defines if the attribute is visible to the user from getAttribute call

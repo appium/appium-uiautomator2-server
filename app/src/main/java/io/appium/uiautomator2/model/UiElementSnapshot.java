@@ -16,15 +16,28 @@
 
 package io.appium.uiautomator2.model;
 
+import static android.util.TypedValue.COMPLEX_UNIT_DIP;
+import static android.util.TypedValue.COMPLEX_UNIT_IN;
+import static android.util.TypedValue.COMPLEX_UNIT_MM;
+import static android.util.TypedValue.COMPLEX_UNIT_PT;
+import static android.util.TypedValue.COMPLEX_UNIT_PX;
+import static android.util.TypedValue.COMPLEX_UNIT_SP;
+import static android.view.accessibility.AccessibilityNodeInfo.EXTRA_DATA_RENDERING_INFO_KEY;
+import static io.appium.uiautomator2.utils.Attribute.TEXT_SIZE_UNIT;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
+import android.content.res.Resources;
 import android.os.Build;
+import android.os.Bundle;
 import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
+import android.util.DisplayMetrics;
 import android.util.Pair;
+import android.util.TypedValue;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityNodeInfo.ExtraRenderingInfo;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -43,6 +56,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Collectors;
 
 import io.appium.uiautomator2.core.AxNodeInfoHelper;
+import io.appium.uiautomator2.model.internal.TextData;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.AlwaysTraversableViewClasses;
 import io.appium.uiautomator2.model.settings.IncludeA11yActionsInPageSource;
@@ -74,7 +88,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.LIVE_REGION, Attribute.CONTEXT_CLICKABLE, Attribute.MAX_TEXT_LENGTH,
             Attribute.CONTENT_INVALID, Attribute.ERROR_TEXT, Attribute.PANE_TITLE,
             Attribute.TOOLTIP_TEXT, Attribute.TEXT_HAS_CLICKABLE_SPAN, Attribute.ACTIONS,
-            Attribute.WINDOW_ID
+            Attribute.WINDOW_ID, Attribute.TEXT_SIZE, TEXT_SIZE_UNIT
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
     };
     private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[]{
@@ -88,6 +102,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     private final int depth;
     private final int maxDepth;
     private final int index;
+    private TextData textData;
 
     private UiElementSnapshot(AccessibilityNodeInfo node, int index, int depth, int maxDepth,
                               Set<Attribute> includedAttributes) {
@@ -169,7 +184,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case SELECTED:
                 return node.isSelected();
             case TEXT:
-                return AxNodeInfoHelper.getText(node, true);
+                String text = AxNodeInfoHelper.getText(node, true);
+                return text == null || text.isEmpty() ? null : text;
             case HINT:
                 return node.getHintText();
             case IMPORTANT_FOR_ACCESSIBILITY:
@@ -230,9 +246,93 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 int windowId = node.getWindowId();
                 return windowId != AxNodeInfoHelper.UNDEFINED_WINDOW_ID ? windowId : null;
             }
+            case TEXT_SIZE: {
+                if (textData == null) {
+                    textData = extractTextData(node);
+                }
+
+                return textData != null ? textData.textSize : null;
+            }
+            case TEXT_SIZE_UNIT: {
+                if (textData == null) {
+                    textData = extractTextData(node);
+                }
+
+                return textData != null ? textData.textUnit : null;
+            }
             default:
                 return null;
         }
+    }
+
+    private TextData extractTextData(AccessibilityNodeInfo node) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            node.refreshWithExtraData(EXTRA_DATA_RENDERING_INFO_KEY, new Bundle());
+            ExtraRenderingInfo extraRenderingInfo = node.getExtraRenderingInfo();
+            if (extraRenderingInfo == null) {
+                return null;
+            }
+
+            float textSizeInPx = extraRenderingInfo.getTextSizeInPx();
+            int textSizeUnit = extraRenderingInfo.getTextSizeUnit();
+
+            if (textSizeInPx < 0) {
+                return null;
+            }
+
+            switch (textSizeUnit) {
+                case COMPLEX_UNIT_DIP: {
+                    return new TextData(pxToDp(textSizeInPx), "dp");
+                }
+                case COMPLEX_UNIT_SP: {
+                    return new TextData(pxToSp(textSizeInPx), "sp");
+                }
+                case COMPLEX_UNIT_PT: {
+                    return new TextData(pxToPt(textSizeInPx), "pt");
+                }
+                case COMPLEX_UNIT_IN: {
+                    return new TextData(pxToIn(textSizeInPx), "in");
+                }
+                case COMPLEX_UNIT_MM: {
+                    return new TextData(pxToMm(textSizeInPx), "mm");
+                }
+                case COMPLEX_UNIT_PX:
+                default: {
+                    return new TextData(textSizeInPx, "px");
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static float pxToDp(float px) {
+        return px / Resources.getSystem().getDisplayMetrics().density;
+    }
+
+    private static float pxToSp(float px) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            return TypedValue.deriveDimension(COMPLEX_UNIT_SP, px, Resources.getSystem().getDisplayMetrics());
+        } else {
+            return px / Resources.getSystem().getDisplayMetrics().scaledDensity;
+        }
+    }
+
+    private static float pxToPt(float px) {
+        float pointsPerInch = 72f;
+        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
+        return px * pointsPerInch / dm.xdpi;
+    }
+
+    private static float pxToIn(float px) {
+        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
+        return px / dm.xdpi;
+    }
+
+    private static float pxToMm(float px) {
+        float mmPerInch = 25.4f;
+        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
+        return px * mmPerInch / dm.xdpi;
     }
 
     private Map<Attribute, Object> collectAttributes() {
