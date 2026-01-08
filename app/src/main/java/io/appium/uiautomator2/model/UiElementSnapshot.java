@@ -16,14 +16,10 @@
 
 package io.appium.uiautomator2.model;
 
-import static android.util.TypedValue.COMPLEX_UNIT_DIP;
-import static android.util.TypedValue.COMPLEX_UNIT_IN;
-import static android.util.TypedValue.COMPLEX_UNIT_MM;
-import static android.util.TypedValue.COMPLEX_UNIT_PT;
-import static android.util.TypedValue.COMPLEX_UNIT_PX;
-import static android.util.TypedValue.COMPLEX_UNIT_SP;
+import static android.util.TypedValue.*;
 import static android.view.accessibility.AccessibilityNodeInfo.EXTRA_DATA_RENDERING_INFO_KEY;
 import static io.appium.uiautomator2.utils.Attribute.TEXT_SIZE_UNIT;
+import static io.appium.uiautomator2.utils.DimensionsHelper.*;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
@@ -41,6 +37,7 @@ import android.view.accessibility.AccessibilityNodeInfo.ExtraRenderingInfo;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -247,14 +244,14 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 return windowId != AxNodeInfoHelper.UNDEFINED_WINDOW_ID ? windowId : null;
             }
             case TEXT_SIZE: {
-                if (textData == null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && textData == null) {
                     textData = extractTextData(node);
                 }
 
                 return textData != null ? textData.textSize : null;
             }
             case TEXT_SIZE_UNIT: {
-                if (textData == null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && textData == null) {
                     textData = extractTextData(node);
                 }
 
@@ -265,74 +262,42 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     private TextData extractTextData(AccessibilityNodeInfo node) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            node.refreshWithExtraData(EXTRA_DATA_RENDERING_INFO_KEY, new Bundle());
-            ExtraRenderingInfo extraRenderingInfo = node.getExtraRenderingInfo();
-            if (extraRenderingInfo == null) {
-                return null;
-            }
-
-            float textSizeInPx = extraRenderingInfo.getTextSizeInPx();
-            int textSizeUnit = extraRenderingInfo.getTextSizeUnit();
-
-            if (textSizeInPx < 0) {
-                return null;
-            }
-
-            switch (textSizeUnit) {
-                case COMPLEX_UNIT_DIP: {
-                    return new TextData(pxToDp(textSizeInPx), "dp");
-                }
-                case COMPLEX_UNIT_SP: {
-                    return new TextData(pxToSp(textSizeInPx), "sp");
-                }
-                case COMPLEX_UNIT_PT: {
-                    return new TextData(pxToPt(textSizeInPx), "pt");
-                }
-                case COMPLEX_UNIT_IN: {
-                    return new TextData(pxToIn(textSizeInPx), "in");
-                }
-                case COMPLEX_UNIT_MM: {
-                    return new TextData(pxToMm(textSizeInPx), "mm");
-                }
-                case COMPLEX_UNIT_PX:
-                default: {
-                    return new TextData(textSizeInPx, "px");
-                }
-            }
+        node.refreshWithExtraData(EXTRA_DATA_RENDERING_INFO_KEY, new Bundle());
+        ExtraRenderingInfo extraRenderingInfo = node.getExtraRenderingInfo();
+        if (extraRenderingInfo == null) {
+            return null;
         }
 
-        return null;
-    }
+        float textSizeInPx = extraRenderingInfo.getTextSizeInPx();
+        int textSizeUnit = extraRenderingInfo.getTextSizeUnit();
 
-    private static float pxToDp(float px) {
-        return px / Resources.getSystem().getDisplayMetrics().density;
-    }
-
-    private static float pxToSp(float px) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            return TypedValue.deriveDimension(COMPLEX_UNIT_SP, px, Resources.getSystem().getDisplayMetrics());
-        } else {
-            return px / Resources.getSystem().getDisplayMetrics().scaledDensity;
+        if (textSizeInPx < 0) {
+            return null;
         }
-    }
 
-    private static float pxToPt(float px) {
-        float pointsPerInch = 72f;
-        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
-        return px * pointsPerInch / dm.xdpi;
-    }
-
-    private static float pxToIn(float px) {
-        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
-        return px / dm.xdpi;
-    }
-
-    private static float pxToMm(float px) {
-        float mmPerInch = 25.4f;
-        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
-        return px * mmPerInch / dm.xdpi;
+        switch (textSizeUnit) {
+            case COMPLEX_UNIT_DIP: {
+                return new TextData(pxToDp(textSizeInPx), "dp");
+            }
+            case COMPLEX_UNIT_SP: {
+                return new TextData(pxToSp(textSizeInPx), "sp");
+            }
+            case COMPLEX_UNIT_PT: {
+                return new TextData(pxToPt(textSizeInPx), "pt");
+            }
+            case COMPLEX_UNIT_IN: {
+                return new TextData(pxToIn(textSizeInPx), "in");
+            }
+            case COMPLEX_UNIT_MM: {
+                return new TextData(pxToMm(textSizeInPx), "mm");
+            }
+            case COMPLEX_UNIT_PX:
+            default: {
+                return new TextData(textSizeInPx, "px");
+            }
+        }
     }
 
     private Map<Attribute, Object> collectAttributes() {
