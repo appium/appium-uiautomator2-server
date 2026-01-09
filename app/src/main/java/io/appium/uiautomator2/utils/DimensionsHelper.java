@@ -19,9 +19,8 @@ public class DimensionsHelper {
     public static float pxToSp(float px) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             return TypedValue.deriveDimension(COMPLEX_UNIT_SP, px, Resources.getSystem().getDisplayMetrics());
-        } else {
-            return px / Resources.getSystem().getDisplayMetrics().scaledDensity;
         }
+        return px / Resources.getSystem().getDisplayMetrics().scaledDensity;
     }
 
     public static float pxToPt(float px) {

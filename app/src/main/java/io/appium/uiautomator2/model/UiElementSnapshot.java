@@ -16,22 +16,28 @@
 
 package io.appium.uiautomator2.model;
 
-import static android.util.TypedValue.*;
+import static android.util.TypedValue.COMPLEX_UNIT_DIP;
+import static android.util.TypedValue.COMPLEX_UNIT_IN;
+import static android.util.TypedValue.COMPLEX_UNIT_MM;
+import static android.util.TypedValue.COMPLEX_UNIT_PT;
+import static android.util.TypedValue.COMPLEX_UNIT_PX;
+import static android.util.TypedValue.COMPLEX_UNIT_SP;
 import static android.view.accessibility.AccessibilityNodeInfo.EXTRA_DATA_RENDERING_INFO_KEY;
 import static io.appium.uiautomator2.utils.Attribute.TEXT_SIZE_UNIT;
-import static io.appium.uiautomator2.utils.DimensionsHelper.*;
+import static io.appium.uiautomator2.utils.DimensionsHelper.pxToDp;
+import static io.appium.uiautomator2.utils.DimensionsHelper.pxToIn;
+import static io.appium.uiautomator2.utils.DimensionsHelper.pxToMm;
+import static io.appium.uiautomator2.utils.DimensionsHelper.pxToPt;
+import static io.appium.uiautomator2.utils.DimensionsHelper.pxToSp;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
-import android.util.DisplayMetrics;
 import android.util.Pair;
-import android.util.TypedValue;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.ExtraRenderingInfo;
 import android.widget.Toast;
@@ -99,7 +105,6 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     private final int depth;
     private final int maxDepth;
     private final int index;
-    private TextData textData;
 
     private UiElementSnapshot(AccessibilityNodeInfo node, int index, int depth, int maxDepth,
                               Set<Attribute> includedAttributes) {
@@ -181,8 +186,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case SELECTED:
                 return node.isSelected();
             case TEXT:
-                String text = AxNodeInfoHelper.getText(node, true);
-                return text == null || text.isEmpty() ? null : text;
+                return AxNodeInfoHelper.getText(node, true);
             case HINT:
                 return node.getHintText();
             case IMPORTANT_FOR_ACCESSIBILITY:
@@ -244,14 +248,20 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 return windowId != AxNodeInfoHelper.UNDEFINED_WINDOW_ID ? windowId : null;
             }
             case TEXT_SIZE: {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && textData == null) {
+                TextData textData = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                        && node.getText() != null
+                        && node.getText().length() > 0) {
                     textData = extractTextData(node);
                 }
 
                 return textData != null ? textData.textSize : null;
             }
             case TEXT_SIZE_UNIT: {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && textData == null) {
+                TextData textData = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                        && node.getText() != null
+                        && node.getText().length() > 0) {
                     textData = extractTextData(node);
                 }
 
@@ -262,10 +272,16 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
         }
     }
 
+    @Nullable
     @RequiresApi(api = Build.VERSION_CODES.R)
     private TextData extractTextData(AccessibilityNodeInfo node) {
-        node.refreshWithExtraData(EXTRA_DATA_RENDERING_INFO_KEY, new Bundle());
         ExtraRenderingInfo extraRenderingInfo = node.getExtraRenderingInfo();
+
+        if (extraRenderingInfo == null) {
+            node.refreshWithExtraData(EXTRA_DATA_RENDERING_INFO_KEY, new Bundle());
+            extraRenderingInfo = node.getExtraRenderingInfo();
+        }
+
         if (extraRenderingInfo == null) {
             return null;
         }
