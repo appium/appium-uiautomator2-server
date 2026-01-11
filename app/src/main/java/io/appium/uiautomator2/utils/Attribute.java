@@ -74,7 +74,7 @@ public enum Attribute {
     ACTIONS(new String[]{"actions"}),
     WINDOW_ID(new String[]{"window-id", "windowId"}),
     TEXT_SIZE(new String[]{"text-size", "textSize"}),
-    TEXT_SIZE_UNIT(new String[]{"text-unit", "textSizeUnit"});
+    TEXT_UNIT(new String[]{"text-unit", "textUnit"});
 
     private final String[] aliases;
     // Defines if the attribute is visible to the user from getAttribute call

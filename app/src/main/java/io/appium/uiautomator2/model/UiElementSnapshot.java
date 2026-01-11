@@ -16,19 +16,7 @@
 
 package io.appium.uiautomator2.model;
 
-import static android.util.TypedValue.COMPLEX_UNIT_DIP;
-import static android.util.TypedValue.COMPLEX_UNIT_IN;
-import static android.util.TypedValue.COMPLEX_UNIT_MM;
-import static android.util.TypedValue.COMPLEX_UNIT_PT;
-import static android.util.TypedValue.COMPLEX_UNIT_PX;
-import static android.util.TypedValue.COMPLEX_UNIT_SP;
 import static android.view.accessibility.AccessibilityNodeInfo.EXTRA_DATA_RENDERING_INFO_KEY;
-import static io.appium.uiautomator2.utils.Attribute.TEXT_SIZE_UNIT;
-import static io.appium.uiautomator2.utils.DimensionsHelper.pxToDp;
-import static io.appium.uiautomator2.utils.DimensionsHelper.pxToIn;
-import static io.appium.uiautomator2.utils.DimensionsHelper.pxToMm;
-import static io.appium.uiautomator2.utils.DimensionsHelper.pxToPt;
-import static io.appium.uiautomator2.utils.DimensionsHelper.pxToSp;
 import static io.appium.uiautomator2.utils.ReflectionUtils.setField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 
@@ -43,7 +31,6 @@ import android.view.accessibility.AccessibilityNodeInfo.ExtraRenderingInfo;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,7 +78,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.LIVE_REGION, Attribute.CONTEXT_CLICKABLE, Attribute.MAX_TEXT_LENGTH,
             Attribute.CONTENT_INVALID, Attribute.ERROR_TEXT, Attribute.PANE_TITLE,
             Attribute.TOOLTIP_TEXT, Attribute.TEXT_HAS_CLICKABLE_SPAN, Attribute.ACTIONS,
-            Attribute.WINDOW_ID, Attribute.TEXT_SIZE, TEXT_SIZE_UNIT
+            Attribute.WINDOW_ID, Attribute.TEXT_SIZE, Attribute.TEXT_UNIT
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
     };
     private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[]{
@@ -248,23 +235,11 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 return windowId != AxNodeInfoHelper.UNDEFINED_WINDOW_ID ? windowId : null;
             }
             case TEXT_SIZE: {
-                TextData textData = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-                        && node.getText() != null
-                        && node.getText().length() > 0) {
-                    textData = extractTextData(node);
-                }
-
+                TextData textData = extractTextData(node);
                 return textData != null ? textData.textSize : null;
             }
-            case TEXT_SIZE_UNIT: {
-                TextData textData = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-                        && node.getText() != null
-                        && node.getText().length() > 0) {
-                    textData = extractTextData(node);
-                }
-
+            case TEXT_UNIT: {
+                TextData textData = extractTextData(node);
                 return textData != null ? textData.textUnit : null;
             }
             default:
@@ -273,47 +248,33 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
     }
 
     @Nullable
-    @RequiresApi(api = Build.VERSION_CODES.R)
     private TextData extractTextData(AccessibilityNodeInfo node) {
-        ExtraRenderingInfo extraRenderingInfo = node.getExtraRenderingInfo();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                && node.getText() != null
+                && node.getText().length() > 0) {
 
-        if (extraRenderingInfo == null) {
-            node.refreshWithExtraData(EXTRA_DATA_RENDERING_INFO_KEY, new Bundle());
-            extraRenderingInfo = node.getExtraRenderingInfo();
+            ExtraRenderingInfo extraRenderingInfo = node.getExtraRenderingInfo();
+
+            if (extraRenderingInfo == null) {
+                node.refreshWithExtraData(EXTRA_DATA_RENDERING_INFO_KEY, new Bundle());
+                extraRenderingInfo = node.getExtraRenderingInfo();
+            }
+
+            if (extraRenderingInfo == null) {
+                return null;
+            }
+
+            float textSizeInPx = extraRenderingInfo.getTextSizeInPx();
+            int textSizeUnit = extraRenderingInfo.getTextSizeUnit();
+
+            if (textSizeInPx < 0) {
+                return null;
+            }
+
+            return TextData.parseTextData(textSizeInPx, textSizeUnit);
         }
 
-        if (extraRenderingInfo == null) {
-            return null;
-        }
-
-        float textSizeInPx = extraRenderingInfo.getTextSizeInPx();
-        int textSizeUnit = extraRenderingInfo.getTextSizeUnit();
-
-        if (textSizeInPx < 0) {
-            return null;
-        }
-
-        switch (textSizeUnit) {
-            case COMPLEX_UNIT_DIP: {
-                return new TextData(pxToDp(textSizeInPx), "dp");
-            }
-            case COMPLEX_UNIT_SP: {
-                return new TextData(pxToSp(textSizeInPx), "sp");
-            }
-            case COMPLEX_UNIT_PT: {
-                return new TextData(pxToPt(textSizeInPx), "pt");
-            }
-            case COMPLEX_UNIT_IN: {
-                return new TextData(pxToIn(textSizeInPx), "in");
-            }
-            case COMPLEX_UNIT_MM: {
-                return new TextData(pxToMm(textSizeInPx), "mm");
-            }
-            case COMPLEX_UNIT_PX:
-            default: {
-                return new TextData(textSizeInPx, "px");
-            }
-        }
+        return null;
     }
 
     private Map<Attribute, Object> collectAttributes() {
