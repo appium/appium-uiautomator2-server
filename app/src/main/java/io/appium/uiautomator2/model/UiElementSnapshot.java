@@ -250,32 +250,31 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
 
     @Nullable
     private TextData extractTextData(AccessibilityNodeInfo node) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-                && node.getText() != null
-                && node.getText().length() > 0) {
-
-            ExtraRenderingInfo extraRenderingInfo = node.getExtraRenderingInfo();
-
-            if (extraRenderingInfo == null) {
-                node.refreshWithExtraData(EXTRA_DATA_RENDERING_INFO_KEY, new Bundle());
-                extraRenderingInfo = node.getExtraRenderingInfo();
-            }
-
-            if (extraRenderingInfo == null) {
-                return null;
-            }
-
-            float textSizeInPx = extraRenderingInfo.getTextSizeInPx();
-            int textSizeUnit = extraRenderingInfo.getTextSizeUnit();
-
-            if (textSizeInPx < 0) {
-                return null;
-            }
-
-            return TextData.parseTextData(textSizeInPx, textSizeUnit);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R
+                || node.getText() == null
+                || node.getText().length() == 0) {
+            return null;
         }
 
-        return null;
+        ExtraRenderingInfo extraRenderingInfo = node.getExtraRenderingInfo();
+
+        if (extraRenderingInfo == null) {
+            node.refreshWithExtraData(EXTRA_DATA_RENDERING_INFO_KEY, new Bundle());
+            extraRenderingInfo = node.getExtraRenderingInfo();
+        }
+
+        if (extraRenderingInfo == null) {
+            return null;
+        }
+
+        float textSizeInPx = extraRenderingInfo.getTextSizeInPx();
+        int textSizeUnit = extraRenderingInfo.getTextSizeUnit();
+
+        if (textSizeInPx < 0) {
+            return null;
+        }
+
+        return TextData.parseTextData(textSizeInPx, textSizeUnit);
     }
 
     private Map<Attribute, Object> collectAttributes() {
