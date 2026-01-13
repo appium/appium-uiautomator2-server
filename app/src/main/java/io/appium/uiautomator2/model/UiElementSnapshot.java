@@ -50,7 +50,7 @@ import io.appium.uiautomator2.model.internal.TextData;
 import io.appium.uiautomator2.model.settings.AllowInvisibleElements;
 import io.appium.uiautomator2.model.settings.AlwaysTraversableViewClasses;
 import io.appium.uiautomator2.model.settings.IncludeA11yActionsInPageSource;
-import io.appium.uiautomator2.model.settings.IncludeExtraRenderingInfoTextData;
+import io.appium.uiautomator2.model.settings.IncludeExtraRenderingInfo;
 import io.appium.uiautomator2.model.settings.IncludeExtrasInPageSource;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
@@ -290,7 +290,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 continue;
             }
             if ((attr.equals(Attribute.TEXT_SIZE) || attr.equals(Attribute.TEXT_UNIT)) &&
-                    !Settings.get(IncludeExtraRenderingInfoTextData.class).getValue()) {
+                    !Settings.get(IncludeExtraRenderingInfo.class).getValue()) {
                 continue;
             }
             if (includedAttributes.isEmpty() || includedAttributes.contains(attr)) {

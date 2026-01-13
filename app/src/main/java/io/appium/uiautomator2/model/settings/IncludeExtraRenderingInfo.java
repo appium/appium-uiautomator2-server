@@ -16,18 +16,18 @@
 
 package io.appium.uiautomator2.model.settings;
 
-public class IncludeExtraRenderingInfoTextData extends AbstractSetting<Boolean> {
-    private static final String SETTING_NAME = "includeExtraRenderingInfoTextData";
+public class IncludeExtraRenderingInfo extends AbstractSetting<Boolean> {
+    private static final String SETTING_NAME = "includeExtraRenderingInfo";
     private static final boolean DEFAULT_VALUE = false;
-    private boolean includeExtraRenderingInfoTextData = DEFAULT_VALUE;
+    private boolean includeExtraRenderingInfo = DEFAULT_VALUE;
 
-    public IncludeExtraRenderingInfoTextData() {
+    public IncludeExtraRenderingInfo() {
         super(Boolean.class, SETTING_NAME);
     }
 
     @Override
     public Boolean getValue() {
-        return includeExtraRenderingInfoTextData;
+        return includeExtraRenderingInfo;
     }
 
     @Override
@@ -37,6 +37,6 @@ public class IncludeExtraRenderingInfoTextData extends AbstractSetting<Boolean> 
 
     @Override
     protected void apply(Boolean value) {
-        this.includeExtraRenderingInfoTextData = value;
+        this.includeExtraRenderingInfo = value;
     }
 }

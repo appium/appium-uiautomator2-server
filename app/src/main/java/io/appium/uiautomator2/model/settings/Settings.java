@@ -35,7 +35,7 @@ public enum Settings {
     LIMIT_XPATH_CONTEXT_SCOPE(new LimitXpathContextScope()),
     INCLUDE_EXTRAS_IN_PAGE_SOURCE(new IncludeExtrasInPageSource()),
     INCLUDE_A11Y_ACTIONS_IN_PAGE_SOURCE(new IncludeA11yActionsInPageSource()),
-    INCLUDE_EXTRA_RENDERING_INFO_TEXT_DATA(new IncludeExtraRenderingInfoTextData()),
+    INCLUDE_EXTRA_RENDERING_INFO(new IncludeExtraRenderingInfo()),
     SHUTDOWN_ON_POWER_DISCONNECT(new ShutdownOnPowerDisconnect()),
     SIMPLE_BOUNDS_CALCULATION(new SimpleBoundsCalculation()),
     TRACK_SCROLL_EVENTS(new TrackScrollEvents()),
