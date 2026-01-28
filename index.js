@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('node:path');
 const version = require('./package.json').version;
 
 const SERVER_APK_PATH = path.resolve(__dirname, 'apks', `appium-uiautomator2-server-v${version}.apk`);
