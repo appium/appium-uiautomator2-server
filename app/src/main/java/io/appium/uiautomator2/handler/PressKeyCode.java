@@ -47,19 +47,19 @@ public class PressKeyCode extends SafeRequestHandler {
 
         boolean isSuccessful;
         if (flags == null) {
-            if (metaState == null) {
-                isSuccessful = getUiDevice().pressKeyCode(keyCode);
-            } else {
-                isSuccessful = getUiDevice().pressKeyCode(keyCode, metaState);
-            }
+            isSuccessful = metaState == null
+                ? getUiDevice().pressKeyCode(keyCode)
+                : getUiDevice().pressKeyCode(keyCode, metaState);
         } else {
             final InteractionController interactionController = UiAutomatorBridge.getInstance().getInteractionController();
             metaState = metaState == null ? 0 : metaState;
-            long downTime = SystemClock.uptimeMillis();
-            isSuccessful = interactionController.injectEventSync(new KeyEvent(downTime, downTime,
+            // Match Android Input.java sendKeyEvent: same downTime/eventTime for both events.
+            // https://android.googlesource.com/platform/frameworks/base.git/+/9d83b4783c33f1fafc43f367503e129e5a5047fa/cmds/input/src/com/android/commands/input/Input.java
+            final long now = SystemClock.uptimeMillis();
+            isSuccessful = interactionController.injectEventSync(new KeyEvent(now, now,
                             KeyEvent.ACTION_DOWN, keyCode, 0, metaState,
                             KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
-            isSuccessful &= interactionController.injectEventSync(new KeyEvent(downTime, SystemClock.uptimeMillis(),
+            isSuccessful &= interactionController.injectEventSync(new KeyEvent(now, now,
                             KeyEvent.ACTION_UP, keyCode, 0, metaState,
                             KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
         }

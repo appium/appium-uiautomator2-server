@@ -43,16 +43,17 @@ public class LongPressKeyCode extends SafeRequestHandler {
         int metaState = model.metastate == null ? 0 : model.metastate;
         int flags = model.flags == null ? 0 : model.flags;
 
-        final long downTime = SystemClock.uptimeMillis();
+        // Match Android Input.java sendKeyEvent(longpress) sequence: same downTime/eventTime for all three events.
+        // https://android.googlesource.com/platform/frameworks/base.git/+/9d83b4783c33f1fafc43f367503e129e5a5047fa/cmds/input/src/com/android/commands/input/Input.java
+        final long now = SystemClock.uptimeMillis();
         final InteractionController interactionController = UiAutomatorBridge.getInstance().getInteractionController();
-        boolean isSuccessful = interactionController.injectEventSync(new KeyEvent(downTime, downTime,
+        boolean isSuccessful = interactionController.injectEventSync(new KeyEvent(now, now,
                         KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
                         0, flags));
-        // https://android.googlesource.com/platform/frameworks/base.git/+/9d83b4783c33f1fafc43f367503e129e5a5047fa%5E%21/#F0
-        isSuccessful &= interactionController.injectEventSync(new KeyEvent(downTime, SystemClock.uptimeMillis(),
+        isSuccessful &= interactionController.injectEventSync(new KeyEvent(now, now,
                         KeyEvent.ACTION_DOWN, keyCode, 1, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
                         0, flags | KeyEvent.FLAG_LONG_PRESS));
-        isSuccessful &= interactionController.injectEventSync(new KeyEvent(downTime, SystemClock.uptimeMillis(),
+        isSuccessful &= interactionController.injectEventSync(new KeyEvent(now, now,
                         KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
                         0, flags));
         if (!isSuccessful) {
