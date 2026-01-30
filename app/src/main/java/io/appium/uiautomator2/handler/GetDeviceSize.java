@@ -20,6 +20,8 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.api.SizeModel;
+import io.appium.uiautomator2.model.settings.CurrentDisplayId;
+import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
@@ -36,9 +38,10 @@ public class GetDeviceSize extends SafeRequestHandler {
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         Logger.info("Get window size of the device");
+        int displayId = Settings.get(CurrentDisplayId.class).getValue();
         return new AppiumResponse(getSessionId(request), new SizeModel(
-                getUiDevice().getDisplayWidth(),
-                getUiDevice().getDisplayHeight()
+                getUiDevice().getDisplayWidth(displayId),
+                getUiDevice().getDisplayHeight(displayId)
         ));
     }
 }
