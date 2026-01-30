@@ -55,7 +55,7 @@ public class PressKeyCode extends SafeRequestHandler {
             final InteractionController interactionController = UiAutomatorBridge.getInstance().getInteractionController();
             metaState = metaState == null ? 0 : metaState;
 
-            final long now =  SystemClock.uptimeMillis();
+            final long now = SystemClock.uptimeMillis();
             KeyEvent downEvent = new KeyEvent(
                     now, now, KeyEvent.ACTION_DOWN, keyCode, 0, metaState,
                     KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, InputDevice.SOURCE_KEYBOARD
