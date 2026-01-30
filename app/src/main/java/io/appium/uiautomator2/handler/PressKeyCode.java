@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.handler;
 
 import android.os.SystemClock;
+import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
@@ -53,15 +54,18 @@ public class PressKeyCode extends SafeRequestHandler {
         } else {
             final InteractionController interactionController = UiAutomatorBridge.getInstance().getInteractionController();
             metaState = metaState == null ? 0 : metaState;
-            // Match Android Input.java sendKeyEvent: same downTime/eventTime for both events.
-            // https://android.googlesource.com/platform/frameworks/base.git/+/9d83b4783c33f1fafc43f367503e129e5a5047fa/cmds/input/src/com/android/commands/input/Input.java
-            final long now = SystemClock.uptimeMillis();
-            isSuccessful = interactionController.injectEventSync(new KeyEvent(now, now,
-                            KeyEvent.ACTION_DOWN, keyCode, 0, metaState,
-                            KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
-            isSuccessful &= interactionController.injectEventSync(new KeyEvent(now, now,
-                            KeyEvent.ACTION_UP, keyCode, 0, metaState,
-                            KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags));
+
+            final long now =  SystemClock.uptimeMillis();
+            KeyEvent downEvent = new KeyEvent(
+                    now, now, KeyEvent.ACTION_DOWN, keyCode, 0, metaState,
+                    KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, InputDevice.SOURCE_KEYBOARD
+            );
+            isSuccessful = interactionController.injectEventSync(downEvent);
+            KeyEvent upEvent = new KeyEvent(
+                    now, now, KeyEvent.ACTION_UP, keyCode, 0, metaState,
+                    KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, InputDevice.SOURCE_KEYBOARD
+            );
+            isSuccessful &= interactionController.injectEventSync(upEvent);
         }
         if (!isSuccessful) {
             throw new InvalidElementStateException(String.format(

@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.handler;
 
 import android.os.SystemClock;
+import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
@@ -43,19 +44,23 @@ public class LongPressKeyCode extends SafeRequestHandler {
         int metaState = model.metastate == null ? 0 : model.metastate;
         int flags = model.flags == null ? 0 : model.flags;
 
-        // Match Android Input.java sendKeyEvent(longpress) sequence: same downTime/eventTime for all three events.
-        // https://android.googlesource.com/platform/frameworks/base.git/+/9d83b4783c33f1fafc43f367503e129e5a5047fa/cmds/input/src/com/android/commands/input/Input.java
-        final long now = SystemClock.uptimeMillis();
         final InteractionController interactionController = UiAutomatorBridge.getInstance().getInteractionController();
-        boolean isSuccessful = interactionController.injectEventSync(new KeyEvent(now, now,
-                        KeyEvent.ACTION_DOWN, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
-                        0, flags));
-        isSuccessful &= interactionController.injectEventSync(new KeyEvent(now, now,
-                        KeyEvent.ACTION_DOWN, keyCode, 1, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
-                        0, flags | KeyEvent.FLAG_LONG_PRESS));
-        isSuccessful &= interactionController.injectEventSync(new KeyEvent(now, now,
-                        KeyEvent.ACTION_UP, keyCode, 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD,
-                        0, flags));
+        final long now = SystemClock.uptimeMillis();
+        // Send an initial down event
+        final KeyEvent downEvent = new KeyEvent(
+                now, now, KeyEvent.ACTION_DOWN, keyCode,
+                0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, InputDevice.SOURCE_KEYBOARD
+        );
+        boolean isSuccessful = interactionController.injectEventSync(downEvent);
+        // Send a repeat event. This will cause the FLAG_LONG_PRESS to be set.
+        final KeyEvent repeatEvent = KeyEvent.changeTimeRepeat(downEvent, now, 1);
+        isSuccessful &= interactionController.injectEventSync(repeatEvent);
+        // Finally, send the up event
+        final KeyEvent upEvent = new KeyEvent(
+                now, now, KeyEvent.ACTION_UP, keyCode,
+                0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, InputDevice.SOURCE_KEYBOARD
+        );
+        isSuccessful &= interactionController.injectEventSync(upEvent);
         if (!isSuccessful) {
             throw new InvalidElementStateException("Cannot inject long press event for key code " + keyCode);
         }
