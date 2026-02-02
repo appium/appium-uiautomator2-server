@@ -23,6 +23,11 @@ public class KeyCodeModel extends BaseModel {
     public Integer keycode;
     public Integer metastate;
     public Integer flags;
+    /**
+     * Input device source for the key event (e.g. InputDevice.SOURCE_KEYBOARD, SOURCE_DPAD).
+     * Optional. When omitted, defaults to SOURCE_KEYBOARD.
+     */
+    public Integer source;
 
     public KeyCodeModel() {}
 }
