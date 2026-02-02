@@ -28,7 +28,6 @@ import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
 import io.appium.uiautomator2.model.api.KeyCodeModel;
-import io.appium.uiautomator2.utils.Logger;
 
 import static io.appium.uiautomator2.utils.Device.getUiDevice;
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
@@ -45,14 +44,15 @@ public class PressKeyCode extends SafeRequestHandler {
 
         boolean isSuccessful;
         if (model.flags == null && model.source == null) {
-            isSuccessful = model.metaState == null
+            isSuccessful = model.metastate == null
                 ? getUiDevice().pressKeyCode(keyCode)
-                : getUiDevice().pressKeyCode(keyCode, model.metaState);
+                : getUiDevice().pressKeyCode(keyCode, model.metastate);
         } else {
             final InteractionController interactionController = UiAutomatorBridge.getInstance()
                 .getInteractionController();
-            final int metaState = model.metaState == null ? 0 : model.metaState;
+            final int metaState = model.metastate == null ? 0 : model.metastate;
             final int source = model.source == null ? InputDevice.SOURCE_KEYBOARD : model.source;
+            final int flags = model.flags == null ? 0 : model.flags;
 
             final long now = SystemClock.uptimeMillis();
             KeyEvent downEvent = new KeyEvent(

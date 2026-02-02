@@ -41,7 +41,7 @@ public class LongPressKeyCode extends SafeRequestHandler {
     protected AppiumResponse safeHandle(IHttpRequest request) {
         final KeyCodeModel model = toModel(request, KeyCodeModel.class);
         final int keyCode = model.keycode;
-        final int metaState = model.metastate == null ? 0 : model.metastate;
+        final int metastate = model.metastate == null ? 0 : model.metastate;
         final int flags = model.flags == null ? 0 : model.flags;
         final int source = model.source == null ? InputDevice.SOURCE_KEYBOARD : model.source;
 
@@ -50,13 +50,13 @@ public class LongPressKeyCode extends SafeRequestHandler {
         // https://android.googlesource.com/platform/frameworks/base.git/+/9d83b4783c33f1fafc43f367503e129e5a5047fa/cmds/input/src/com/android/commands/input/Input.java
         boolean isSuccessful = interactionController.injectEventSync(new KeyEvent(
                 now, now, KeyEvent.ACTION_DOWN, keyCode,
-                0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, source));
+                0, metastate, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, source));
         isSuccessful &= interactionController.injectEventSync(new KeyEvent(
                 now, now, KeyEvent.ACTION_DOWN, keyCode,
-                1, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags | KeyEvent.FLAG_LONG_PRESS, source));
+                1, metastate, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags | KeyEvent.FLAG_LONG_PRESS, source));
         isSuccessful &= interactionController.injectEventSync(new KeyEvent(
                 now, now, KeyEvent.ACTION_UP, keyCode,
-                0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, source));
+                0, metastate, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, source));
         if (!isSuccessful) {
             throw new InvalidElementStateException("Cannot inject long press event for key code " + keyCode);
         }
