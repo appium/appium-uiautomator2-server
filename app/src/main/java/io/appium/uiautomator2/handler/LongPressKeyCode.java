@@ -16,6 +16,7 @@
 
 package io.appium.uiautomator2.handler;
 
+import android.annotation.SuppressLint;
 import android.os.SystemClock;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
@@ -31,12 +32,27 @@ import io.appium.uiautomator2.model.api.KeyCodeModel;
 
 import static io.appium.uiautomator2.utils.ModelUtils.toModel;
 
+import java.lang.reflect.Field;
+
 public class LongPressKeyCode extends SafeRequestHandler {
 
     public LongPressKeyCode(String mappedUri) {
         super(mappedUri);
     }
 
+    private void setDeviceIf(KeyEvent keyEvent) {
+        try {
+            // https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/view/KeyEvent.java#1865
+            @SuppressLint("SoonBlockedPrivateApi") Field field = KeyEvent.class.getDeclaredField("mDeviceId");
+            field.setAccessible(true);
+            field.setInt(keyEvent, -1);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @SuppressLint("SoonBlockedPrivateApi")
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
         final KeyCodeModel model = toModel(request, KeyCodeModel.class);
@@ -51,6 +67,8 @@ public class LongPressKeyCode extends SafeRequestHandler {
                 now, now, KeyEvent.ACTION_DOWN, keyCode,
                 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, InputDevice.SOURCE_KEYBOARD
         );
+        setDeviceIf(downEvent);
+
         boolean isSuccessful = interactionController.injectEventSync(downEvent);
         // Send a repeat event. This will cause the FLAG_LONG_PRESS to be set.
         final KeyEvent repeatEvent = KeyEvent.changeTimeRepeat(downEvent, now, 1);
@@ -60,6 +78,7 @@ public class LongPressKeyCode extends SafeRequestHandler {
                 now, now, KeyEvent.ACTION_UP, keyCode,
                 0, metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0, flags, InputDevice.SOURCE_KEYBOARD
         );
+        setDeviceIf(upEvent);
         isSuccessful &= interactionController.injectEventSync(upEvent);
         if (!isSuccessful) {
             throw new InvalidElementStateException("Cannot inject long press event for key code " + keyCode);
