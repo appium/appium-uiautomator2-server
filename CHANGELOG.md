@@ -1,3 +1,9 @@
+## [9.11.1](https://github.com/appium/appium-uiautomator2-server/compare/v9.11.0...v9.11.1) (2026-02-13)
+
+### Bug Fixes
+
+* Infinite recursion while restoring a cached element ([#759](https://github.com/appium/appium-uiautomator2-server/issues/759)) ([39364e3](https://github.com/appium/appium-uiautomator2-server/commit/39364e3d6962166c68bd074ff445acac9a4904c7))
+
 ## [9.11.0](https://github.com/appium/appium-uiautomator2-server/compare/v9.10.5...v9.11.0) (2026-02-02)
 
 ### Features
