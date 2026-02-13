@@ -80,9 +80,11 @@ public class ElementsCache {
         }
 
         Logger.debug(String.format("Trying to restore the cached element '%s'", by));
-        final AndroidElement searchRoot = element.getContextId() == null
+        // Avoid infinite recursion: if context is the same as this element, do not resolve it
+        final String contextId = element.getContextId();
+        final AndroidElement searchRoot = contextId == null || contextId.equals(element.getId())
                 ? null
-                : get(element.getContextId());
+                : get(contextId);
         AccessibleUiObject accessibleUiObject = null;
         try {
             if (by instanceof By.ById) {
