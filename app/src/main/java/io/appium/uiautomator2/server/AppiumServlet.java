@@ -34,7 +34,9 @@ import io.appium.uiautomator2.handler.DeleteSession;
 import io.appium.uiautomator2.handler.DismissAlert;
 import io.appium.uiautomator2.handler.ActiveElement;
 import io.appium.uiautomator2.handler.FindElement;
+import io.appium.uiautomator2.handler.FindElementOnDisplay;
 import io.appium.uiautomator2.handler.FindElements;
+import io.appium.uiautomator2.handler.FindElementsOnDisplay;
 import io.appium.uiautomator2.handler.FirstVisibleView;
 import io.appium.uiautomator2.handler.GetActionHistory;
 import io.appium.uiautomator2.handler.GetAlertText;
@@ -44,6 +46,7 @@ import io.appium.uiautomator2.handler.GetDeviceInfo;
 import io.appium.uiautomator2.handler.GetDevicePixelRatio;
 import io.appium.uiautomator2.handler.GetDeviceSize;
 import io.appium.uiautomator2.handler.GetDisplayDensity;
+import io.appium.uiautomator2.handler.GetDisplayInfo;
 import io.appium.uiautomator2.handler.GetElementAttribute;
 import io.appium.uiautomator2.handler.GetElementScreenshot;
 import io.appium.uiautomator2.handler.GetName;
@@ -68,6 +71,7 @@ import io.appium.uiautomator2.handler.PressBack;
 import io.appium.uiautomator2.handler.PressKeyCode;
 import io.appium.uiautomator2.handler.ResetAxCache;
 import io.appium.uiautomator2.handler.ScheduleAction;
+import io.appium.uiautomator2.handler.SourceOnDisplay;
 import io.appium.uiautomator2.handler.W3CActions;
 import io.appium.uiautomator2.handler.gestures.ScrollTo;
 import io.appium.uiautomator2.handler.gestures.ScrollToElement;
@@ -154,6 +158,9 @@ public class AppiumServlet implements IHttpServlet {
         register(postHandler, new ScheduleAction("/session/:sessionId/appium/schedule_action"));
         register(postHandler, new GetActionHistory("/session/:sessionId/appium/action_history"));
         register(postHandler, new UnscheduleAction("/session/:sessionId/appium/unschedule_action"));
+
+        register(postHandler, new FindElementOnDisplay("/session/:sessionId/appium/element/on_display"));
+        register(postHandler, new FindElementsOnDisplay("/session/:sessionId/appium/elements/on_display"));
     }
 
     private void registerGetHandler() {
@@ -186,6 +193,9 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new GetAlertText("/session/:sessionId/alert/text"));
         register(getHandler, new GetDeviceInfo("/session/:sessionId/appium/device/info"));
         register(getHandler, new GetDisplayDensity("/session/:sessionId/appium/device/display_density"));
+
+        register(getHandler, new GetDisplayInfo("/session/:sessionId/appium/device/display_info"));
+        register(getHandler, new SourceOnDisplay("/session/:sessionId/appium/source/on_display"));
     }
 
     private void register(Map<String, BaseRequestHandler> registerOn, BaseRequestHandler handler) {

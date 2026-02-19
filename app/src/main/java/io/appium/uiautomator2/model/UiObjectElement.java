@@ -45,6 +45,7 @@ import static io.appium.uiautomator2.utils.ElementHelpers.generateNoAttributeExc
 
 public class UiObjectElement extends BaseElement {
     private final UiObject element;
+    private Integer customDisplayId;
 
     public UiObjectElement(UiObject element, boolean isSingleMatch, By by, @Nullable String contextId) {
         super(isSingleMatch, by, contextId);
@@ -148,10 +149,17 @@ public class UiObjectElement extends BaseElement {
         return (result instanceof String) ? (String) result : String.valueOf(result);
     }
 
-    @Override
     public int getDisplayId() {
+        if (customDisplayId != null) {
+            return customDisplayId;
+        }
         return getAxNodeDisplayId(toAxNodeInfo(element));
     }
+
+    public void setDisplayId(int displayId) {
+        this.customDisplayId = displayId;
+    }
+
 
     @Override
     public void clear() throws UiObjectNotFoundException {
