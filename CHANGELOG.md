@@ -1,3 +1,9 @@
+## [9.11.2](https://github.com/appium/appium-uiautomator2-server/compare/v9.11.1...v9.11.2) (2026-04-18)
+
+### Miscellaneous Chores
+
+* **deps:** bump io.netty:netty-codec-http ([#761](https://github.com/appium/appium-uiautomator2-server/issues/761)) ([f565492](https://github.com/appium/appium-uiautomator2-server/commit/f565492333bcd3eb5778da4dd631ecaa2d7b6a9f))
+
 ## [9.11.1](https://github.com/appium/appium-uiautomator2-server/compare/v9.11.0...v9.11.1) (2026-02-13)
 
 ### Bug Fixes
