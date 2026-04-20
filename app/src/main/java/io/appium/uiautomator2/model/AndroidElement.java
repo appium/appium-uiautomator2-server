@@ -32,6 +32,8 @@ public interface AndroidElement {
 
     int getDisplayId();
 
+    void setDisplayId(int displayId);
+
     boolean isSingleMatch();
 
     void clear() throws UiObjectNotFoundException;
