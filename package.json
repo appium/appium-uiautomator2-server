@@ -2,7 +2,8 @@
   "name": "appium-uiautomator2-server",
   "version": "9.11.2",
   "description": "A netty server with uiautomator2 handlers",
-  "main": "index.js",
+  "type": "module",
+  "main": "index.mjs",
   "repository": {
     "type": "git",
     "url": "https://github.com/appium/appium-uiautomator2-server"
@@ -22,7 +23,7 @@
     "url": "https://github.com/appium/appium-uiautomator2-server/issues"
   },
   "files": [
-    "./index.js",
+    "./index.mjs",
     "./apks",
     "CHANGELOG.md"
   ],
