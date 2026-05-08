@@ -1,3 +1,14 @@
+## [10.0.0](https://github.com/appium/appium-uiautomator2-server/compare/v9.11.2...v10.0.0) (2026-05-08)
+
+### ⚠ BREAKING CHANGES
+
+* package is now ESM-only
+* default exports were removed, consumers must use named ESM imports
+
+### Features
+
+* Migrate module to ESM ([#763](https://github.com/appium/appium-uiautomator2-server/issues/763)) ([568d6bf](https://github.com/appium/appium-uiautomator2-server/commit/568d6bf4ecd67eee019149c7feb9238b764f1111))
+
 ## [9.11.2](https://github.com/appium/appium-uiautomator2-server/compare/v9.11.1...v9.11.2) (2026-04-18)
 
 ### Miscellaneous Chores
