@@ -1,6 +1,6 @@
 {
   "name": "appium-uiautomator2-server",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "description": "A netty server with uiautomator2 handlers",
   "type": "module",
   "main": "index.mjs",
