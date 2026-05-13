@@ -1,3 +1,9 @@
+## [10.1.0](https://github.com/appium/appium-uiautomator2-server/compare/v10.0.1...v10.1.0) (2026-05-13)
+
+### Features
+
+* Add type exports ([#765](https://github.com/appium/appium-uiautomator2-server/issues/765)) ([9094b2e](https://github.com/appium/appium-uiautomator2-server/commit/9094b2e9ca8cb35727301e2709d485020e6674d3))
+
 ## [10.0.1](https://github.com/appium/appium-uiautomator2-server/compare/v10.0.0...v10.0.1) (2026-05-09)
 
 ### Miscellaneous Chores
