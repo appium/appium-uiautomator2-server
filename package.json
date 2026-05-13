@@ -3,7 +3,15 @@
   "version": "10.0.1",
   "description": "A netty server with uiautomator2 handlers",
   "type": "module",
-  "main": "index.mjs",
+  "main": "./index.mjs",
+  "types": "./index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./index.d.mts",
+      "default": "./index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/appium/appium-uiautomator2-server"
@@ -24,6 +32,7 @@
   },
   "files": [
     "./index.mjs",
+    "./index.d.mts",
     "./apks",
     "CHANGELOG.md"
   ],
