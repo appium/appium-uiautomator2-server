@@ -1,3 +1,13 @@
+## [10.1.1](https://github.com/appium/appium-uiautomator2-server/compare/v10.1.0...v10.1.1) (2026-05-22)
+
+### Bug Fixes
+
+* release ([#768](https://github.com/appium/appium-uiautomator2-server/issues/768)) ([af31192](https://github.com/appium/appium-uiautomator2-server/commit/af31192f704cfb2820025c4f6a7160be163e6bd0))
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump appium-adb from 14.6.1 to 15.0.0 ([#766](https://github.com/appium/appium-uiautomator2-server/issues/766)) ([74af2b6](https://github.com/appium/appium-uiautomator2-server/commit/74af2b6eba6e63fe6829b005b599145a8a82900a))
+
 ## [10.1.0](https://github.com/appium/appium-uiautomator2-server/compare/v10.0.1...v10.1.0) (2026-05-13)
 
 ### Features
