@@ -1,8 +1,7 @@
-import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {valid} from 'semver';
-import {logger} from '@appium/support';
+import {logger, fs} from '@appium/support';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,11 +21,10 @@ function parseArgValue (argName) {
   return null;
 }
 
-
 async function gradleVersionUpdate() {
   const gradleFile = path.resolve(__dirname, '..', 'gradle.properties');
   try {
-    await fs.promises.access(gradleFile, fs.constants.W_OK);
+    await fs.access(gradleFile, fs.constants.W_OK);
   } catch {
     throw new Error(`No '${gradleFile}' file found or it is not writeable`);
   }
@@ -41,7 +39,7 @@ async function gradleVersionUpdate() {
     );
   }
 
-  const gradleFilePayload = await fs.promises.readFile(gradleFile, 'utf8');
+  const gradleFilePayload = await fs.readFile(gradleFile, 'utf8');
   const versionNameMatch = VERSION_NAME_PATTERN.exec(gradleFilePayload);
   if (!versionNameMatch) {
     throw new Error(`Cannot find the versionName field in '${gradleFile}'`);
@@ -59,8 +57,7 @@ async function gradleVersionUpdate() {
   const newPayload = gradleFilePayload
     .replace(versionNameMatch[0], newVersionName)
     .replace(versionCodeMatch[0], newVersionCode);
-  await fs.promises.writeFile(gradleFile, newPayload, 'utf8');
+  await fs.writeFile(gradleFile, newPayload, 'utf8');
 }
 
-(async () => await gradleVersionUpdate())();
-
+await gradleVersionUpdate();
