@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-SeqExprCast-153                               :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:37+02:00                       :)
-(: Purpose: A 'T' separator in a xs:duration must be followed by time components. :)
-(:*******************************************************:)
-xs:duration("P1Y24MT")

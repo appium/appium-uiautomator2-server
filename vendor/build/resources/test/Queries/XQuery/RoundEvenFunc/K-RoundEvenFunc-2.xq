@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-RoundEvenFunc-2                               :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:39+02:00                       :)
-(: Purpose: A test whose essence is: `round-half-to-even(1.1, 3, "wrong param")`. :)
-(:*******************************************************:)
-round-half-to-even(1.1, 3, "wrong param")

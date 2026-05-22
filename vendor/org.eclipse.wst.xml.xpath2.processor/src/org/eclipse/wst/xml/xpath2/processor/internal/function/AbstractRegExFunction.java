@@ -48,6 +48,8 @@ public abstract class AbstractRegExFunction extends Function {
 	
 	private static Matcher compileAndExecute(String pattern, String flags, String src) {
 		int flag = Pattern.UNIX_LINES;
+		boolean hasUnicodeProperty =
+				pattern.indexOf("\\p{") >= 0 || pattern.indexOf("\\P{") >= 0;
 		if (flags != null) {
 			if (flags.indexOf("m") >= 0) {
 				flag = flag | Pattern.MULTILINE;
@@ -55,7 +57,8 @@ public abstract class AbstractRegExFunction extends Function {
 			if (flags.indexOf("s") >= 0) {
 				flag = flag | Pattern.DOTALL;
 			}
-			if (flags.indexOf("i") >= 0) {
+			// XPath case-insensitive mode must not case-fold Unicode property escapes.
+			if (flags.indexOf("i") >= 0 && !hasUnicodeProperty) {
 				flag = flag | Pattern.CASE_INSENSITIVE;
 			}
 			

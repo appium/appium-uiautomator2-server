@@ -25,9 +25,7 @@ package org.eclipse.wst.xml.xpath2.processor;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
@@ -46,6 +44,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.QName;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSDayTimeDuration;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.XSDuration;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.xerces.XercesTypeModel;
+import org.eclipse.wst.xml.xpath2.processor.internal.utils.UriResourceUtil;
 import org.eclipse.wst.xml.xpath2.processor.util.ResultSequenceUtil;
 import org.eclipse.wst.xml.xpath2.api.typesystem.TypeModel;
 import org.w3c.dom.Document;
@@ -230,17 +229,13 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 	 * @since 1.1
 	 */
 	public URI resolve_uri(String uri) {
+		URI baseURI = null;
 		try {
-			URI realURI = URI.create(uri);
-			if (realURI.isAbsolute()) {
-				return realURI;
-			} else {
-				URI baseURI = URI.create(base_uri().getStringValue());
-				return baseURI.resolve(uri);
-			}
+			baseURI = URI.create(base_uri().getStringValue());
 		} catch (IllegalArgumentException iae) {
-			return null;
+			baseURI = null;
 		}
+		return UriResourceUtil.resolve(uri, baseURI);
 	}
 
 	// XXX make it nice, and move it out as a utility function
@@ -249,14 +244,12 @@ public class DefaultDynamicContext extends DefaultStaticContext implements
 			DOMLoader loader = new XercesLoader();
 			loader.set_validating(false);
 
-			Document doc = loader.load(new URL(uri.toString()).openStream());
+			Document doc = loader.load(UriResourceUtil.openStream(uri));
 			doc.setDocumentURI(uri.toString());
 			return doc;
 		} catch (DOMLoaderException e) {
 			return null;
 		} catch (FileNotFoundException e) {
-			return null;
-		} catch (MalformedURLException e) {
 			return null;
 		} catch (IOException e) {
 			return null;

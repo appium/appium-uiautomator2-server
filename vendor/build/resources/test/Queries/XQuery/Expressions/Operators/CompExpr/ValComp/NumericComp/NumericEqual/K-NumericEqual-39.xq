@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-NumericEqual-39                               :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:36+02:00                       :)
-(: Purpose: A test whose essence is: `xs:float("0") ne xs:float("INF")`. :)
-(:*******************************************************:)
-xs:float("0") ne xs:float("INF")

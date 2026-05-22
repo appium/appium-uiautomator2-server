@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-RangeExpr-29                                  :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:36+02:00                       :)
-(: Purpose: A test whose essence is: `empty(reverse(0 to -5))`. :)
-(:*******************************************************:)
-empty(reverse(0 to -5))

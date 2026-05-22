@@ -17,9 +17,7 @@ package org.eclipse.wst.xml.xpath2.processor.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +36,7 @@ import org.eclipse.wst.xml.xpath2.api.StaticContext;
 import org.eclipse.wst.xml.xpath2.processor.DOMLoader;
 import org.eclipse.wst.xml.xpath2.processor.XercesLoader;
 import org.eclipse.wst.xml.xpath2.processor.internal.function.FnCollection;
+import org.eclipse.wst.xml.xpath2.processor.internal.utils.UriResourceUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -122,12 +121,10 @@ public class DynamicContextBuilder implements DynamicContext {
 			DOMLoader loader = new XercesLoader();
 			loader.set_validating(false);
 
-			Document doc = loader.load(new URL(uri.toString()).openStream());
+			Document doc = loader.load(UriResourceUtil.openStream(uri));
 			doc.setDocumentURI(uri.toString());
 			return doc;
 		} catch (FileNotFoundException e) {
-			return null;
-		} catch (MalformedURLException e) {
 			return null;
 		} catch (IOException e) {
 			return null;
@@ -135,15 +132,7 @@ public class DynamicContextBuilder implements DynamicContext {
 	}
 
 	public URI resolveUri(String uri) {
-		try {
-			URI realURI = URI.create(uri);
-			if (realURI.isAbsolute()) {
-				return realURI;
-			}
-			return _staticContext.getBaseUri().resolve(uri);
-		} catch (IllegalArgumentException iae) {
-			return null;
-		}
+		return UriResourceUtil.resolve(uri, _staticContext.getBaseUri());
 	}
 
 	public Map<String, List<Document>> getCollections() {

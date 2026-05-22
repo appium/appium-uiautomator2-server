@@ -1,3 +1,0 @@
-Start with the following test:
-
-fn:base-uri

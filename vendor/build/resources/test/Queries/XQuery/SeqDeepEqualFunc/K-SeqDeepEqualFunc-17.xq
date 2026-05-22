@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-SeqDeepEqualFunc-17                           :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:40+02:00                       :)
-(: Purpose: A test whose essence is: `not(deep-equal(QName("example.com", "ncname"), 3e2))`. :)
-(:*******************************************************:)
-not(deep-equal(QName("example.com", "ncname"), 3e2))

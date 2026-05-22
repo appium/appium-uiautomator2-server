@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-AnyURIEqual-8                                 :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:36+02:00                       :)
-(: Purpose: A test whose essence is: `xs:untypedAtomic("example.com/") eq xs:anyURI("example.com/")`. :)
-(:*******************************************************:)
-xs:untypedAtomic("example.com/") eq xs:anyURI("example.com/")

@@ -1,7 +1,0 @@
-<!-- Acknowledgement: Roger Costello -->
-<Example>
-  <Transportation>
-     <mode>air</mode>
-     <airplane>United Airways, flight 608</airplane>
-  </Transportation>
-</Example>

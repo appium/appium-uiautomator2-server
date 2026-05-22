@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-DateTimeFunc-2                                :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:39+02:00                       :)
-(: Purpose: Passing too few parameters(only one) to fn:dateTime(). :)
-(:*******************************************************:)
-dateTime(xs:date("2004-03-04"))

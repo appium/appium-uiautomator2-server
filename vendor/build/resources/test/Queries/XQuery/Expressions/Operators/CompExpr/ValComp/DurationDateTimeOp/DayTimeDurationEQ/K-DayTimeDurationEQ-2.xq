@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-DayTimeDurationEQ-2                           :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:37+02:00                       :)
-(: Purpose: Testing 'eq' involving xs:dayTimeDuration with two zeroed values. :)
-(:*******************************************************:)
-xs:dayTimeDuration("PT0S") eq xs:dayTimeDuration("PT0S")

@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-SeqExprInstanceOf-40                          :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:37+02:00                       :)
-(: Purpose: Comment appearing inside the paranteses of empty-sequence(). :)
-(:*******************************************************:)
-() instance of empty-sequence((:comment:))

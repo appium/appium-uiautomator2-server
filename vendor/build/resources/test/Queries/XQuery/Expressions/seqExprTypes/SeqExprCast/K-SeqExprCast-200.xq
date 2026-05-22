@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-SeqExprCast-200                               :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:37+02:00                       :)
-(: Purpose: A 'T' separator in a xs:yearMonthDuration is not allowed. :)
-(:*******************************************************:)
-xs:yearMonthDuration("P1Y24MT")

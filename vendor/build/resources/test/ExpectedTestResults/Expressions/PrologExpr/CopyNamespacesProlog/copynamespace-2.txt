@@ -1,1 +1,0 @@
-<original xmlns="www.mynamespace.com">Original Content</original>

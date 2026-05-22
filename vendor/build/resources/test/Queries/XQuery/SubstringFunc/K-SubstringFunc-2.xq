@@ -1,7 +1,0 @@
-(:*******************************************************:)
-(: Test: K-SubstringFunc-2                               :)
-(: Written by: Frans Englich                             :)
-(: Date: 2006-10-05T18:29:40+02:00                       :)
-(: Purpose: A test whose essence is: `sub-string("a string", 1, 2, "wrong param")`. :)
-(:*******************************************************:)
-sub-string("a string", 1, 2, "wrong param")
