@@ -23,3 +23,26 @@ This component is **PsychoPath XPath 2.0 Processor** from the Eclipse Web Tools 
 ```
 
 The output is written to `app/libs/org.eclipse.wst.xml.xpath2.processor.jar` and is produced automatically before `npm run build`.
+
+## Upstream unit tests
+
+Test **sources** (with local harness patches) live under [`org.eclipse.wst.xml.xpath2.processor.tests/src`](./org.eclipse.wst.xml.xpath2.processor.tests/src/).
+
+Large test **fixtures** are not stored in git. They are sparse-cloned from the same upstream repository at `SOURCE_COMMIT` into `vendor/.upstream/webtools.sourceediting/` when you run tests:
+
+- `xpath/tests/org.w3c.xqts.testsuite` — W3C XPath 2.0 vectors (`TestSources/`, `Queries/`, `ExpectedTestResults/`)
+- `xpath/tests/org.eclipse.wst.xml.xpath2.processor.tests` — bug regression XML/XSD fixtures (`bugTestFiles/`, etc.)
+
+Eclipse/OSGi resource loading is replaced with classpath lookup via `TestResourceBundles`.
+
+### Run tests
+
+```bash
+./gradlew :vendor-xpath2:test
+# or
+npm run test:vendor-xpath2
+```
+
+The `fetchXpath2TestData` task runs automatically before `test` (requires network on first run). CI runs this via `npm run test:vendor-xpath2`.
+
+This executes the upstream `AllPsychoPathTests` aggregate suite (8000+ cases) through `PsychoPathTestSuiteAdapter`.

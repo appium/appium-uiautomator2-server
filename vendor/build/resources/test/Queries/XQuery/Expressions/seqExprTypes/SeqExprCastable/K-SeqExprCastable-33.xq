@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCastable-33                            :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:39+02:00                       :)
+(: Purpose: A test whose essence is: `not("three" castable as xs:double)`. :)
+(:*******************************************************:)
+not("three" castable as xs:double)

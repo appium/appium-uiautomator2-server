@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-195                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: A preceding plus sign('+') is disallowed for xs:yearMonthDuration. :)
+(:*******************************************************:)
+xs:yearMonthDuration("+P20Y15M")

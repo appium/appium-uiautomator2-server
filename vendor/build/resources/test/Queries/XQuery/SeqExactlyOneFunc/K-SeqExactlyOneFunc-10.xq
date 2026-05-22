@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExactlyOneFunc-10                          :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:40+02:00                       :)
+(: Purpose: No function by name zero-or-more exists.     :)
+(:*******************************************************:)
+zero-or-more(1)

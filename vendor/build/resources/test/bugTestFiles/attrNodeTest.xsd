@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="Example">
+        <xs:complexType>
+            <xs:sequence>
+               <xs:element name="x" type="x_Type" maxOccurs="unbounded" />
+               <xs:element name="y" type="y_Type" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:complexType name="x_Type">
+      <xs:attribute name="mesg" type="mesg_Type" />
+    </xs:complexType>
+
+    <xs:complexType name="y_Type">
+      <xs:attribute name="intAttr" type="xs:integer" />
+    </xs:complexType>
+    
+    <xs:simpleType name="mesg_Type">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="hello" />
+        <xs:enumeration value="world" />
+        <xs:enumeration value="test" />
+      </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-170                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: A preceding plus sign('+') is disallowed for xs:dayTimeDuration. :)
+(:*******************************************************:)
+xs:dayTimeDuration("+P3DT10H")

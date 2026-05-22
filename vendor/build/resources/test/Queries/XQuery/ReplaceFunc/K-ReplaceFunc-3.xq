@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-ReplaceFunc-3                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:40+02:00                       :)
+(: Purpose: The replacement can't be the empty sequence. :)
+(:*******************************************************:)
+replace("input", "pattern", ())

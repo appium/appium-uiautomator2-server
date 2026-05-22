@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-FilterExpr-85                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: Type related predicate tests.                :)
+(:*******************************************************:)
+empty((1, 2, 3)[remove((false(), "a string"), 2)])

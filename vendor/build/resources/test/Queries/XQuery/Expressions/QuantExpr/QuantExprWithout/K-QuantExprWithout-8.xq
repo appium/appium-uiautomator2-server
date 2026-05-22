@@ -1,0 +1,8 @@
+(:*******************************************************:)
+(: Test: K-QuantExprWithout-8                            :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: every-quantification combined with fn:boolean(). :)
+(:*******************************************************:)
+every $i in subsequence((1, 2, 3, current-time()), 1, 3)
+satisfies boolean($i treat as xs:integer)

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprInstanceOf-15                          :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: A test whose essence is: `not(xs:anyURI("http://www.example.com/") instance of xs:string)`. :)
+(:*******************************************************:)
+not(xs:anyURI("http://www.example.com/") instance of xs:string)

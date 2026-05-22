@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-MatchesFunc-2                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:40+02:00                       :)
+(: Purpose: fn:matches() takes at least two arguments, not one. :)
+(:*******************************************************:)
+matches("input")

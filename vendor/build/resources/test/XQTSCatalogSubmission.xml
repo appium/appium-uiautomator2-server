@@ -1,0 +1,2714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="XQTSCatalog.xsl" ?>
+
+<test-suite xmlns="http://www.w3.org/2005/02/query-test-XQTSCatalog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" CatalogDesignDate="2003-04-03" version="1.0.2" SourceOffsetPath="./" ResultOffsetPath="ExpectedTestResults/" XQueryQueryOffsetPath="Queries/XQuery/" XQueryXQueryOffsetPath="Queries/XQueryX/" XQueryFileExtension=".xq" XQueryXFileExtension=".xqx" xsi:schemaLocation="http://www.w3.org/2005/02/query-test-XQTSCatalog XQTSCatalog.xsd">
+<test-suite-info>
+<title>XQuery Test Suite 1.0.2</title>
+<description> 
+         Test Suite for XQuery 1.0. 
+         See http://www.w3.org/XML/Query/test-suite/. 
+      </description>
+</test-suite-info>
+<citations>
+<citation-spec name="XQuery">
+<description last-mod="2006-07-29">XQuery 1.0: An XML Query Language</description>
+<spec-URI>http://www.w3.org/TR/xquery/</spec-URI>
+</citation-spec>
+<citation-spec name="FuncOps">
+<description last-mod="2006-07-29">XQuery 1.0 and XPath 2.0 Functions and Operators</description>
+<spec-URI>http://www.w3.org/TR/xpath-functions/</spec-URI>
+</citation-spec>
+<citation-spec name="DataModel">
+<description last-mod="2006-07-29">XQuery 1.0 and XPath 2.0 Data Model</description>
+<spec-URI>http://www.w3.org/TR/xpath-datamodel/</spec-URI>
+</citation-spec>
+<citation-spec name="FormalSemantics">
+<description last-mod="2006-07-20">XQuery 1.0 and XPath 2.0 Formal Semantics</description>
+<spec-URI>http://www.w3.org/TR/xquery-semantics/</spec-URI>
+</citation-spec>
+<citation-spec name="SchemaPart2">
+<description last-mod="2003-03-25">XML Schema Part 2: Datatypes</description>
+<spec-URI>http://www.w3.org/TR/xmlschema-2/</spec-URI>
+</citation-spec>
+<citation-spec name="Schema-Errata">
+<description last-mod="2003-03-25">XML Schema Errata</description>
+<note>Current practice is to have one Errata document for all parts of Schema.</note>
+<spec-URI>http://www.w3.org/2001/05/xmlschema-errata</spec-URI>
+</citation-spec>
+<citation-spec name="UseCases">
+<description last-mod="2006-07-12">XML Query Use Cases</description>
+<spec-URI>http://www.w3c.org/TR/xquery-use-cases/</spec-URI>
+</citation-spec>
+<citation-spec name="XQueryX">
+<description last-mod="2006-07-29">XML Syntax for XQuery 1.0 (XQueryX)</description>
+<spec-URI>http://www.w3.org/TR/xqueryx/</spec-URI>
+</citation-spec>
+<citation-spec name="Serialization">
+<description last-mod="2006-07-12">XSLT 2.0 and XQuery 1.0 Serialization</description>
+<spec-URI>http://www.w3.org/TR/xslt-xquery-serialization/</spec-URI>
+</citation-spec>
+</citations>
+<comparisons>
+<comparison name="XML">
+<description last-mod="2003-03-25">The XML InfoSets should be canonicalized and compared.</description>
+</comparison>
+<comparison name="Fragment">
+<description last-mod="2004-10-20">
+            A 'fragment' refers to an XML based instance which has multiple top-level elements and NO XML declaration.
+            The comparator for this should simply wrap the entire fragment in a container element and perform XML comparison.
+         </description>
+</comparison>
+<comparison name="Text">
+<description last-mod="2003-03-25">
+            Each line of non-whitespace text should match. New-line sequences
+            may vary and should be neutralized. Due to issues with the XML serialization of certain characters (e.g. '&lt;'),
+            it is not possible to simply compare the actual and expected results. Rather (as is the case with the 'Fragment' comparator)
+            the test harness should convert the results into valid XML (by adding a container element) and perform comparison
+            on the XML canonicalized versions of the results.
+         </description>
+</comparison>
+<comparison name="Ignore">
+<description last-mod="2003-03-25">
+            Only the presence/absence of this file is significant,
+            not its content.
+         </description>
+</comparison>
+<comparison name="Inspect">
+<description last-mod="2003-03-25">
+            Automated comparison is not possible. the output should be
+            inspected by a human.
+         </description>
+</comparison>
+</comparisons>
+<roles>
+<role name="principal-data">
+<description last-mod="2003-03-25">
+            This is the source that is handed in to the processor as the
+            initial input sequence, setting the "evaluation context" as described in XQuery chapter 2.
+         </description>
+</role>
+<role name="supplemental-data">
+<description last-mod="2003-03-25">
+            These are sources that may be read by functions such as
+            fn:document() as the query is evaluated.
+         </description>
+</role>
+<role name="schema">
+<description last-mod="2003-03-25">
+            These are schema definitions that may be referenced by sources
+            or in the query.
+         </description>
+</role>
+<role name="dtd">
+<description last-mod="2003-03-25">
+            These are dtd definitions that may be referenced by sources
+            or in the query.
+         </description>
+</role>
+<role name="principal">
+<description last-mod="2003-03-25">
+            This is an output (either text or XML) that will contain the
+            query results. If the processor invocation sequence accepts a filename for results, this name may be
+            passed, possibly prefixed by a partial directory path to allow storage of the results in a separate
+            directory tree.
+         </description>
+</role>
+<role name="console-log">
+<description last-mod="2003-03-25">
+            This is an output (text file tagged .log) that will contain the
+            captured "console" output for a command-line invocation, or equivalent messages from a harness. The
+            main goal is to capture error messages that came from the processor.
+         </description>
+<note>
+            A test lab may choose to capture console output for every test case, in which case the presence
+            of this element is a signal that the console log of this test contains messages that are significant to
+            the pass/fail determination.
+         </note>
+</role>
+</roles>
+<scenarios>
+<scenario name="standard">
+<description last-mod="2005-06-10">
+            A query this is expected to produce valid results. Principal input should always be specified, even if the query doesn't have any PathExpr.
+         </description>
+</scenario>
+<scenario name="parse-error">
+<description last-mod="2005-06-10">
+            A query this is expected to raise a parsing/syntax error at query parse time. Principal input should always be specified, even if the query doesn't have any PathExpr.
+         </description>
+</scenario>
+<scenario name="runtime-error">
+<description last-mod="2005-06-10">
+            A query this is expected to raise a runtime error at query parse time. Runtime errors in this case include those raised by static typing rules. Principal input should always be specified, even if the query doesn't have any PathExpr.
+         </description>
+</scenario>
+<scenario name="trivial">
+<description last-mod="2006-03-29">
+            A query this is expected to produce valid results. Principal input should always be specified, even if the query doesn't have any PathExpr.
+            The initial query returns an &lt;xqx:xquery&gt; element (Trivial Embedding of XQuery).
+            This embedded query is then executed to produce the final result.
+         </description>
+</scenario>
+</scenarios>
+<sources>
+<source ID="XQTSCatalog" FileName="XQTSCatalog.xml" Creator="XQuery Test Task Force" schema="XQTSCatalogxsd">
+<description last-mod="2005-04-14">XQuery Test Suite Catalog</description>
+</source>
+<source ID="bib2" FileName="TestSources/bib2.xml" Creator="spec-authors">
+<description last-mod="2003-03-25">Bibliography example with extra comments and PIs.</description>
+</source>
+<source ID="emptydoc" FileName="TestSources/emptydoc.xml" Creator="David Marston">
+<description last-mod="2003-03-25">Contains just a "doc" element, no comments/text/PIs.</description>
+</source>
+<source ID="fsx" FileName="TestSources/fsx.xml" Creator="Mike Rorke">
+<description last-mod="2003-03-25">Data about a filesystem represented in XML.</description>
+</source>
+<source ID="fsx_NS" FileName="TestSources/fsx_NS.xml" Creator="Mike Rorke">
+<description last-mod="2003-03-25">Data about a filesystem represented in XML with namespace-qualified names.</description>
+</source>
+<source ID="MixNS" FileName="TestSources/MixNS.xml" Creator="David Marston">
+<description last-mod="2003-03-25">Small tree with element names in mixed namespaces.</description>
+<note>Use @index to identify elements precisely.</note>
+</source>
+<source ID="nw_Customers" FileName="TestSources/nw_Customers.xml" Creator="Kuen Siew">
+<description last-mod="2003-03-25">Customer name/address file with some non-ASCII characters.</description>
+</source>
+<source ID="TopMany" FileName="TestSources/TopMany.xml" Creator="David Marston">
+<description last-mod="2003-03-25">Like TreeCompass, but with comments and PIs off the root. PI targets vary.</description>
+<note>All text nodes must have non-whitespace characters.</note>
+</source>
+<source ID="Tree1Child" FileName="TestSources/Tree1Child.xml" Creator="David Marston">
+<description last-mod="2003-03-25">A "compass" tree that has just one child, of an abnormal name, off the center node.</description>
+<note>One attribute each on west and center.</note>
+</source>
+<source ID="Tree1Text" FileName="TestSources/Tree1Text.xml" Creator="David Marston">
+<description last-mod="2003-03-25">A "compass" tree that has just a text node and no child element off the center node.</description>
+</source>
+<source ID="TreeCompass" FileName="TestSources/TreeCompass.xml" Creator="David Marston">
+<description last-mod="2003-03-25">A tree intended to allow many kinds of path expressions.</description>
+<note>Need multiple attributes on center, west, and south, plus @mark scattered around.</note>
+<note>Mix of text and element children in many places, but east should have only a text node.</note>
+<note>All text nodes must have non-whitespace characters.</note>
+<note>Top element is far-north.</note>
+</source>
+<source ID="TreeEmpty" FileName="TestSources/TreeEmpty.xml" Creator="David Marston">
+<description last-mod="2003-03-25">A "compass" tree that has just one "south" element at the top, bearing one "mark" attribute.</description>
+</source>
+<source ID="TreeRepeat" FileName="TestSources/TreeRepeat.xml" Creator="David Marston">
+<description last-mod="2003-03-25">A "compass" tree that has center elements off the real center node.</description>
+<note>Use @mark to distinguish center elements.</note>
+<note>"Real" center must have multiple element children, some with duplicate names (south-east).</note>
+<note>Repeating attribute names used, including same name on elements of the same name.</note>
+<note>Comments and text nodes are strewn about. All text nodes must have non-whitespace characters.</note>
+</source>
+<source ID="TreeStack" FileName="TestSources/TreeStack.xml" Creator="David Marston">
+<description last-mod="2003-03-25">A "compass" tree that has several "south" elements, some stacked within each other.</description>
+<note>Use "mark" attributes at several levels and on all south elements.</note>
+</source>
+<source ID="TreeTrunc" FileName="TestSources/TreeTrunc.xml" Creator="David Marston">
+<description last-mod="2003-03-25">A "compass" tree that has no content at all in center or west, no attributes anywhere.</description>
+</source>
+<source ID="xq311A" FileName="TestSources/xq311A.xml" Creator="David Marston">
+<description last-mod="2003-03-25">Data that fits first example in XQuery 3.11.</description>
+</source>
+<source ID="xq311B" FileName="TestSources/xq311B.xml" Creator="David Marston">
+<description last-mod="2003-03-25">Data that fits later examples in XQuery 3.11.</description>
+</source>
+<source ID="DupNode" FileName="TestSources/DupNode.xml" Creator="Andreas Behm">
+<description last-mod="2005-04-26">Simple document with all node kinds</description>
+</source>
+<source ID="inscope" FileName="TestSources/inscope.xml" Creator="Andreas Behm">
+<description last-mod="2005-08-26">Simple document with namespaces</description>
+</source>
+<source ID="nsmode" FileName="TestSources/nsmode.xml" Creator="Andreas Behm">
+<description last-mod="2005-04-26">Source document for namespace copy modes</description>
+</source>
+<source ID="works" FileName="TestSources/works.xml" Creator="Carmelo Montanez">
+<description last-mod="2005-03-04">Data for various NIST tests</description>
+</source>
+<source ID="examples" FileName="TestSources/examples.xml" Creator="Carmelo Montanez" schema="examplesxsd">
+<description last-mod="2006-05-19">Data for fn-data-1 test.</description>
+</source>
+<source ID="works-mod" FileName="TestSources/works-mod.xml" Creator="Carmelo Montanez">
+<description last-mod="2005-03-04">Data for various NIST tests (abbreviated, unabbreviated syntax)</description>
+</source>
+<source ID="lang" FileName="TestSources/lang.xml" Creator="Carmelo Montanez">
+<description last-mod="2005-10-19">Data for fn:lang tests.</description>
+</source>
+<source ID="staff" FileName="TestSources/staff.xml" Creator="Carmelo Montanez">
+<description last-mod="2005-03-04">Data for various NIST tests</description>
+</source>
+<source ID="acme_corp" FileName="TestSources/acme_corp.xml" Creator="Ravindranath Chennoju">
+<description last-mod="2005-08-30">Source document for Function Declaration tests</description>
+</source>
+<source ID="bib" FileName="TestSources/bib.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query XMP use cases</description>
+</source>
+<source ID="reviews" FileName="TestSources/reviews.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query XMP use cases</description>
+</source>
+<source ID="books" FileName="TestSources/books.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query XMP use cases</description>
+</source>
+<source ID="prices" FileName="TestSources/prices.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query XMP use cases</description>
+</source>
+<source ID="book" FileName="TestSources/book.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query TREE use cases</description>
+</source>
+<source ID="report1" FileName="TestSources/report1.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query SEQ use cases</description>
+</source>
+<source ID="items" FileName="TestSources/items.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query RDB use cases</description>
+</source>
+<source ID="bids" FileName="TestSources/bids.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query RDB use cases</description>
+</source>
+<source ID="users" FileName="TestSources/users.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query RDB use cases</description>
+</source>
+<source ID="string" FileName="TestSources/string.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query STRING use cases</description>
+</source>
+<source ID="company-data" FileName="TestSources/company-data.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query STRING use cases</description>
+</source>
+<source ID="auction" FileName="TestSources/auction.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query NS use cases</description>
+</source>
+<source ID="partlist" FileName="TestSources/partlist.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query PARTS use cases</description>
+</source>
+<source ID="sgml" FileName="TestSources/sgml.xml" Creator="XML Query WG">
+<description last-mod="2005-02-11">Data for the the XML Query SGML use cases</description>
+</source>
+<source ID="atomic" FileName="TestSources/atomic.xml" Creator="Carmelo Montanez" schema="atomicxsd">
+<description last-mod="2005-03-08">A Schema validated xml file, that contains values for data types. Can be used by any test.</description>
+</source>
+<source ID="id-idref-dtd" FileName="TestSources/iddtd.xml" Creator="Carmelo Montanez">
+<description last-mod="2006-06-28">A DTD validated xml file, that contains data for the ID/IDREF function tests.</description>
+</source>
+<source ID="atomicns" FileName="TestSources/atomicns.xml" Creator="Carmelo Montanez">
+<description last-mod="2006-03-15">A non schema validated xml file, that contains values for data types. Can be used by any test.</description>
+</source>
+<source ID="orderData" FileName="TestSources/orderData.xml" Creator="Carmelo Montanez" schema="orderDataxsd">
+<description last-mod="2005-06-01">A Schema validated xml file, that contains values for some of the order by tests generated by NIST.</description>
+</source>
+<source ID="id-idref" FileName="TestSources/id.xml" Creator="Carmelo Montanez" schema="idxsd">
+<description last-mod="2006-05-12">Data for id and idref related functions.</description>
+</source>
+<source ID="SpecialTypes" FileName="TestSources/SpecialTypes.xml" Creator="Mike Rorke" schema="SpecialTypesXSD">
+<description last-mod="2005-06-01">A Schema validated XML file containing certain special types e.g. interleave types, union types, anySimpleType</description>
+</source>
+<source ID="QNameSource" FileName="TestSources/QName-source.xml" Creator="Mike Rorke" schema="QNameSourceXSD">
+<description last-mod="2005-09-28">A schema validated XML file containing QName and QName derived types.</description>
+</source>
+<source ID="notation" FileName="TestSources/notation.xml" Creator="Andreas Behm" schema="notationschema">
+<description last-mod="2005-10-10">A Scehma validated xml file with NOTATION elements</description>
+</source>
+<source ID="textWithSpaces" FileName="TestSources/textWithSpaces.xml" Creator="Joanne Tong">
+<description last-mod="2005-09-29">Data for normalize-space functions</description>
+</source>
+<schema ID="XQTSCatalogxsd" uri="http://www.w3.org/2005/02/query-test-XQTSCatalog" FileName="XQTSCatalog.xsd">
+<description last-mod="2005-04-14">Schema for XQTSCatalog</description>
+</schema>
+<schema ID="atomicxsd" uri="http://www.w3.org/XQueryTest" FileName="TestSources/atomic.xsd">
+<description last-mod="2005-03-08">A Schema for atomic.xml</description>
+</schema>
+<schema ID="orderDataxsd" uri="http://www.w3.org/XQueryTestOrderBy" FileName="TestSources/orderData.xsd">
+<description last-mod="2005-06-01">A Schema for orderData.xml</description>
+</schema>
+<schema ID="SpecialTypesXSD" uri="http://typedecl" FileName="TestSources/SpecialTypes.xsd">
+<description last-mod="2005-06-01">A Schema containing certain special types e.g. interleave types, union types, anySimpleType</description>
+</schema>
+<schema ID="QNameSourceXSD" uri="http://www.example.com/QNameXSD" FileName="TestSources/QName-schema.xsd">
+<description last-mod="2005-09-28">A schema containing QName and QName derived types</description>
+</schema>
+<schema ID="notationschema" uri="http://www.example.com/notation" FileName="TestSources/notationschema.xsd">
+<description last-mod="2005-10-10">A Schema for NOTATION data</description>
+</schema>
+<schema ID="idxsd" uri="http://www.w3.org/XQueryTest/ididrefs" FileName="TestSources/id.xsd">
+<description last-mod="2006-05-12">A schema for the id/idref functions tests</description>
+</schema>
+<schema ID="simplexsd" uri="http://www.w3.org/XQueryTest/simple" FileName="TestSources/simple.xsd">
+<description last-mod="2005-12-07">A schema for simple context tests</description>
+</schema>
+<schema ID="examplesxsd" uri="http://www.w3.org/XQueryTest/someExamples" FileName="TestSources/examples.xsd">
+<description last-mod="2006-05-19">A schema for examples.xml.</description>
+</schema>
+<schema ID="userdefined" uri="http://www.w3.org/XQueryTest/userDefinedTypes" FileName="TestSources/userdefined.xsd">
+<description last-mod="2006-04-03">A schema user defined types and constructor tests</description>
+</schema>
+<schema ID="listunion" uri="http://www.w3.org/XQueryTest/ListUnionTypes" FileName="TestSources/listunion.xsd">
+<description last-mod="2006-06-07">A schema defining a list of unions.</description>
+</schema>
+<collection ID="collection1" Creator="Andrew Eisenberg">
+<description last-mod="2006-06-07">A simple collection of documents.</description>
+<input-document>bib</input-document>
+<input-document>reviews</input-document>
+</collection>
+<collection ID="collection2" Creator="Andrew Eisenberg">
+<description last-mod="2006-06-07">A simple collection of documents.</description>
+<input-document>bib</input-document>
+<input-document>reviews</input-document>
+<input-document>books</input-document>
+</collection>
+<module ID="module1-lib" FileName="TestSources/module1-lib" Creator="Carmelo Montanez">
+<description last-mod="2006-07-13">Library module for "modules-18" query</description>
+</module>
+<module ID="module2-lib" FileName="TestSources/module2-lib" Creator="Carmelo Montanez">
+<description last-mod="2006-07-13">Library module for "modules-18" query</description>
+</module>
+<module ID="empty-lib" FileName="TestSources/empty-lib" Creator="Mary Holstege">
+<description last-mod="2005-12-05">Library module for "modules-none" query</description>
+</module>
+<module ID="emptyns-lib" FileName="TestSources/emptyns-lib" Creator="Mary Holstege">
+<description last-mod="2005-12-05">Library module with empty namespace</description>
+</module>
+<module ID="test1-lib" FileName="TestSources/test1-lib" Creator="Mary Holstege">
+<description last-mod="2005-12-05">Simple library module</description>
+</module>
+<module ID="test2-lib" FileName="TestSources/test2-lib" Creator="Carmelo Montanez">
+<description last-mod="2006-01-19">Library module with namespace URI set to empty string.</description>
+</module>
+<module ID="test1a-lib" FileName="TestSources/test1a-lib" Creator="Mary Holstege">
+<description last-mod="2005-12-05">Simple library module</description>
+</module>
+<module ID="test1collide1-lib" FileName="TestSources/test1collide1-lib" Creator="Mary Holstege">
+<description last-mod="2005-12-05">Library module with colliding definitions</description>
+</module>
+<module ID="test1collide2-lib" FileName="TestSources/test1collide2-lib" Creator="Mary Holstege">
+<description last-mod="2005-12-05">Library module with colliding definitions</description>
+</module>
+<module ID="test1c1-lib" FileName="TestSources/test1c1-lib" Creator="Mary Holstege">
+<description last-mod="2005-12-05">Library module with circular includes</description>
+</module>
+<module ID="test2c1-lib" FileName="TestSources/test2c1-lib" Creator="Mary Holstege">
+<description last-mod="2005-12-05">Library module with circular includes</description>
+</module>
+<module ID="context-lib" FileName="TestSources/context-lib" Creator="Mary Holstege">
+<description last-mod="2005-12-05">Library module with interesting context</description>
+</module>
+<module ID="module-defs" FileName="TestSources/moduleDefs-lib" Creator="Carmelo Montanez">
+<description last-mod="2006-01-06">Library module with definitions for various NIST tests.</description>
+</module>
+<module ID="modulewrongprefix-lib" FileName="TestSources/moduleDefs-lib" Creator="Carmelo Montanez">
+<description last-mod="2006-03-21">Library module with invalid namespace prefix ("xml")</description>
+</module>
+<module ID="modulesdiffns" FileName="TestSources/modulesdiffns-lib" Creator="Carmelo Montanez">
+<description last-mod="2006-04-11">Library module with variable on different namespace than target.</description>
+</module>
+</sources>
+<implementation-defined-items>
+<implementation-defined-item name="expressionUnicode" spec="XQuery">
+<description last-mod="2005-04-04">The version of Unicode that is used to construct expressions.</description>
+</implementation-defined-item>
+<implementation-defined-item name="collations" spec="XQuery">
+<description last-mod="2005-04-04">The statically-known collations.</description>
+</implementation-defined-item>
+<implementation-defined-item name="implicitTimezone" spec="XQuery">
+<description last-mod="2005-04-04">The implicit timezone.</description>
+</implementation-defined-item>
+<implementation-defined-item name="warningsMethod" spec="XQuery">
+<description last-mod="2005-04-04">The circumstances in which warnings are raised, and the ways in which warnings are handled.</description>
+</implementation-defined-item>
+<implementation-defined-item name="errorsMethod" spec="XQuery">
+<description last-mod="2005-04-04">The method by which errors are reported to the external processing environment.</description>
+</implementation-defined-item>
+<implementation-defined-item name="XMLVersion" spec="XQuery">
+<description last-mod="2005-10-10">Whether the implementation is based on the rules of [XML 1.0] and [XML Names] or the rules of [XML 1.1] and [XML Names 1.1]. One of these sets of rules must be applied consistently by all aspects of the implementation.</description>
+</implementation-defined-item>
+<implementation-defined-item name="overwrittenContextComponents" spec="XQuery">
+<description last-mod="2005-04-04">Any components of the static context or dynamic context that are overwritten or augmented by the implementation.</description>
+</implementation-defined-item>
+<implementation-defined-item name="axes" spec="XQuery">
+<description last-mod="2005-04-04">Which of the optional axes are supported by the implementation, if the Full-Axis Feature is not supported.</description>
+</implementation-defined-item>
+<implementation-defined-item name="defaultOrderEmpty" spec="XQuery">
+<description last-mod="2005-04-04">The default handling of empty sequences returned by an ordering key (sortspec) in an order by clause (empty least or empty greatest).</description>
+</implementation-defined-item>
+<implementation-defined-item name="pragmas" spec="XQuery">
+<description last-mod="2005-04-04">The names and semantics of any extension expressions (pragmas) recognized by the implementation.</description>
+</implementation-defined-item>
+<implementation-defined-item name="optionDeclarations" spec="XQuery">
+<description last-mod="2005-04-04">The names and semantics of any option declarations recognized by the implementation.</description>
+</implementation-defined-item>
+<implementation-defined-item name="externalFunctionProtocols" spec="XQuery">
+<description last-mod="2005-04-04">Protocols (if any) by which parameters can be passed to an external function, and the result of the function can returned to the invoking query.</description>
+</implementation-defined-item>
+<implementation-defined-item name="moduleLocationHints" spec="XQuery">
+<description last-mod="2005-11-01">The process by which the specific modules to be imported by a module import are identified, if the Module Feature is supported (includes processing of location hints, if any.)</description>
+</implementation-defined-item>
+<implementation-defined-item name="staticTypingExtensions" spec="XQuery">
+<description last-mod="2005-04-04">Any static typing extensions supported by the implementation, if the Static Typing Feature is supported.</description>
+</implementation-defined-item>
+<implementation-defined-item name="serializationInvocation" spec="XQuery">
+<description last-mod="2005-04-04">The means by which serialization is invoked, if the Serialization Feature is supported.</description>
+</implementation-defined-item>
+<implementation-defined-item name="serializationDefaults" spec="XQuery">
+<description last-mod="2005-10-10">The default values for the byte-order-mark, encoding, media-type, normalization-form, omit-xml-declaration, standalone, and version parameters, if the Serialization Feature is supported.</description>
+</implementation-defined-item>
+<implementation-defined-item name="externalFunctionCall" spec="XQuery">
+<description last-mod="2006-08-09">The result of an unsuccessful call to an external function (for example, if the function implementation cannot be found or does not return a value of the declared type).</description>
+</implementation-defined-item>
+<implementation-defined-item name="limits" spec="XQuery">
+<description last-mod="2005-11-01">Limits on ranges of values for various data types, as enumerated in 5.3 Data Model Conformance.</description>
+</implementation-defined-item>
+<implementation-defined-item name="traceDestination" spec="FuncOps">
+<description last-mod="2005-10-10">The destination of the trace output is implementation-defined. See 4 The Trace Function.</description>
+</implementation-defined-item>
+<implementation-defined-item name="integerOperations" spec="FuncOps">
+<description last-mod="2005-10-10">For xs:integer operations, implementations that support limited-precision integer operations must either raise an error [err:FOAR0002] or provide an implementation-defined mechanism that allows users to choose between raising an error and returning a result that is modulo the largest representable integer value. See 6.2 Operators on Numeric Values.</description>
+</implementation-defined-item>
+<implementation-defined-item name="decimalDigits" spec="FuncOps">
+<description last-mod="2005-11-01">For xs:decimal values the number of digits of precision returned by the numeric operators is implementation-defined. See 6.2 Operators on Numeric Values. See also 17.1.3.3 Casting to xs:decimal and 17.1.3.4 Casting to xs:integer.</description>
+</implementation-defined-item>
+<implementation-defined-item name="roundOrTruncate" spec="FuncOps">
+<description last-mod="2005-10-10">If the number of digits in the result exceeds the number of digits that the implementation supports, the result is truncated or rounded in an implementation-defined manner. See 6.2 Operators on Numeric Values. See also 17.1.3.3 Casting to xs:decimal and 17.1.3.4 Casting to xs:integer.</description>
+</implementation-defined-item>
+<implementation-defined-item name="Unicode" spec="FuncOps">
+<description last-mod="2005-11-01">It is implementation-defined which version of Unicode is supported by the features defined in this specification, but it is recommended that the most recent version of Unicode be used. See 7.1 String Types.</description>
+</implementation-defined-item>
+<implementation-defined-item name="normalizationForms" spec="FuncOps">
+<description last-mod="2005-10-10">For 7.4.6 fn:normalize-unicode, conforming implementations must support normalization form "NFC" and may support normalization forms "NFD", "NFKC", "NFKD", "FULLY-NORMALIZED". They may also support other normalization forms with implementation-defined semantics.</description>
+</implementation-defined-item>
+<implementation-defined-item name="collationUnits" spec="FuncOps">
+<description last-mod="2005-10-10">The ability to decompose strings into collation units suitable for substring matching is an implementation-defined property of a collation. See 7.5 Functions Based on Substring Matching.</description>
+</implementation-defined-item>
+<implementation-defined-item name="secondsDigits" spec="FuncOps">
+<description last-mod="2005-10-10">All minimally conforming processors must support year values with a minimum of 4 digits (i.e., YYYY) and a minimum fractional second precision of 1 millisecond or three digits (i.e., s.sss). However, conforming processors may set larger implementation-defined limits on the maximum number of digits they support in these two situations. See 10.1.1 Limits and Precision.</description>
+</implementation-defined-item>
+<implementation-defined-item name="stringToDecimal" spec="FuncOps">
+<description last-mod="2006-08-09">The result of casting a string to xs:decimal, when the resulting value is not too large or too small but nevertheless has too many decimal digits to be accurately represented, is implementation-defined. See 17.1.1 Casting from xs:string and xs:untypedAtomic.</description>
+</implementation-defined-item>
+<implementation-defined-item name="docProcessing" spec="FuncOps">
+<description last-mod="2005-10-10">Various aspects of the processing provided by 15.5.4 fn:doc are implementation-defined. Implementations may provide external configuration options that allow any aspect of the processing to be controlled by the user.</description>
+</implementation-defined-item>
+<implementation-defined-item name="weakenStable" spec="FuncOps">
+<description last-mod="2006-08-09">The manner in which implementations provide options to weaken the stable characteristic of 15.5.6 fn:collection and 15.5.4 fn:doc are implementation-defined.</description>
+</implementation-defined-item>
+<implementation-defined-item name="additionalTypes" spec="DataModel">
+<description last-mod="2005-04-04">Support for additional user-defined or implementation-defined types is implementation-defined. (See 2.6.1 Representation of Types)</description>
+</implementation-defined-item>
+<implementation-defined-item name="undefinedProperties" spec="DataModel">
+<description last-mod="2005-04-04">Some typed values in the data model are undefined. Attempting to access an undefined property is always an error. Behavior in these cases is implementation-defined and the host language is responsible for determining the result. (See 5 Accessors)</description>
+</implementation-defined-item>
+<implementation-defined-item name="sequenceNormalization" spec="Serialization">
+<description last-mod="2005-04-04">For any implementation-defined output method, it is implementation-defined whether sequence normalization process takes place. (See 2 Sequence Normalization)</description>
+</implementation-defined-item>
+<implementation-defined-item name="outputMethods" spec="Serialization">
+<description last-mod="2005-04-04">If the namespace URI is non-null for the method serialization parameter, then the parameter specifies an implementation-defined output method. (See 3 Serialization Parameters)</description>
+</implementation-defined-item>
+<implementation-defined-item name="normalizationFormBehavior" spec="Serialization">
+<description last-mod="2005-04-04">If the value of the normalization-form form parameter is not NFC, NFD, NFKC, NFKD, fully-normalized, or none then the meaning of the value and it's effect is implementation-defined. (See 4 Phases of Serialization)</description>
+</implementation-defined-item>
+<implementation-defined-item name="additionalParams" spec="Serialization">
+<description last-mod="2005-11-01">The effect of additional serialization parameters on the output of the serializer, where the name of such a parameter must be namespace-qualified, is implementation-defined or implementation-dependent. The extent of this effect on the output must not override the provisions of this specification. (See 3 Serialization Parameters)</description>
+</implementation-defined-item>
+<implementation-defined-item name="encodingPhase" spec="Serialization">
+<description last-mod="2005-04-04">The effect of providing an option that allows the encoding phase to be skipped, so that the result of serialization is a stream of Unicode characters, is implementation-defined. The serializer is not required to support such an option. (See 4 Phases of Serialization)</description>
+</implementation-defined-item>
+<implementation-defined-item name="CDATASerialization" spec="Serialization">
+<description last-mod="2005-04-04">An serializer may provide an implementation-defined mechanism to place CDATA sections in the result tree. (See 5.1.4 XML Output Method: the cdata-section-elements Parameter)</description>
+</implementation-defined-item>
+</implementation-defined-items>
+<features>
+<feature name="Minimal Conformance"/>
+<feature name="Schema Import"/>
+<feature name="Schema Validation"/>
+<feature name="Static Typing"/>
+<feature name="Static Typing Extensions"/>
+<feature name="Full Axis"/>
+<feature name="Module"/>
+<feature name="Serialization"/>
+<feature name="Trivial XML Embedding"/>
+</features>
+<context-properties>
+<context-property name="Statically known namespaces" context-type="static"/>
+<context-property name="Default element/type namespace" context-type="static"/>
+<context-property name="Default function namespace" context-type="static"/>
+<context-property name="In-scope schema types" context-type="static"/>
+<context-property name="In-scope element declarations" context-type="static"/>
+<context-property name="In-scope attribute declarations" context-type="static"/>
+<context-property name="In-scope variables" context-type="static"/>
+<context-property name="Context item static type" context-type="static"/>
+<context-property name="Function signatures" context-type="static"/>
+<context-property name="Statically known collations" context-type="static"/>
+<context-property name="Default collation" context-type="static"/>
+<context-property name="Construction mode" context-type="static"/>
+<context-property name="Ordering mode" context-type="static"/>
+<context-property name="Default order for empty sequences" context-type="static"/>
+<context-property name="Boundary-space policy" context-type="static"/>
+<context-property name="Copy-namespaces mode" context-type="static"/>
+<context-property name="Base URI" context-type="static"/>
+<context-property name="Statically known documents" context-type="static"/>
+<context-property name="Statically known collections" context-type="static"/>
+<context-property name="Statically known default collection type" context-type="static"/>
+<context-property name="Context item" context-type="dynamic"/>
+<context-property name="Context position" context-type="dynamic"/>
+<context-property name="Context size" context-type="dynamic"/>
+<context-property name="Variable values" context-type="dynamic"/>
+<context-property name="Function implementations" context-type="dynamic"/>
+<context-property name="Current dateTime" context-type="dynamic"/>
+<context-property name="Implicit timezone" context-type="dynamic"/>
+<context-property name="Available documents" context-type="dynamic"/>
+<context-property name="Available collections" context-type="dynamic"/>
+<context-property name="Default collection" context-type="dynamic"/>
+</context-properties>
+<test-group name="MinimalConformance">
+<GroupInfo>
+<title>Minimal Conformance</title>
+<description/>
+</GroupInfo>
+<test-group name="OptionalFeatureErrors">
+<GroupInfo>
+<title>Optional Feature Errors</title>
+<description/>
+</GroupInfo>
+<test-group name="CombinedErrorCodes" featureOwner="NIST">
+<GroupInfo>
+<title>Single error code for extra features</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="Basics">
+<GroupInfo>
+<title>XQuery Basics</title>
+<description/>
+</GroupInfo>
+<test-group name="StaticContext">
+<GroupInfo>
+<title>Static Context Evaluation</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="Types">
+<GroupInfo>
+<title>Query Types</title>
+<description/>
+</GroupInfo>
+<test-group name="SequenceTypeSyntax" featureOwner="NIST">
+<GroupInfo>
+<title>XQuery Sequence Type Syntax</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+<test-group name="Expressions">
+<GroupInfo>
+<title>XQuery Expressions</title>
+<description/>
+</GroupInfo>
+<test-group name="PrimaryExpr">
+<GroupInfo>
+<title>Primary Expressions</title>
+<description/>
+</GroupInfo>
+<test-group name="Literals" featureOwner="Microsoft">
+<GroupInfo>
+<title>Literals</title>
+<description>
+                     Test string and numeric literals in XQuery.
+                  </description>
+</GroupInfo>
+</test-group>
+<test-group name="ParenExpr" featureOwner="IBM">
+<GroupInfo>
+<title>Parenthesized Expressions</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ContextExpr">
+<GroupInfo>
+<title>Context Item Expressions</title>
+<description/>
+</GroupInfo>
+<test-group name="ExternalContextExpr">
+<GroupInfo>
+<title>External Context Item Expressions</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="InternalContextExpr">
+<GroupInfo>
+<title>Internal Context Item Expressions</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+<test-group name="PathExpr">
+<GroupInfo>
+<title>Path Expressions</title>
+<description/>
+</GroupInfo>
+<test-group name="PathExpressions">
+<GroupInfo>
+<title>General Path Expression Tests</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="Steps">
+<GroupInfo>
+<title>Steps</title>
+<description/>
+</GroupInfo>
+<test-group name="Axes">
+<GroupInfo>
+<title>Axes</title>
+<description>Tests in this group focus on the axes named in XQuery 3.2.1.1 and the / and // step operators of 3.2.1. Abbreviated versions (@ vs. attribute::) are included. NodeTests are typically *, node(), or a name.</description>
+</GroupInfo>
+</test-group>
+<test-group name="NodeTestSection">
+<GroupInfo>
+<title>Node Tests</title>
+<description>Tests in this group take the axes as a given and focus on the NodeTest syntax in XQuery 3.2.1.2. Includes explicit names, *, and the various kind tests that look like functions.</description>
+</GroupInfo>
+<test-group name="NodeTest">
+<GroupInfo>
+<title>NodeTest</title>
+<description>Tests in this group take the axes as a given and focus on the NodeTest syntax in XQuery 3.2.1.2. Includes explicit names, *, and the various kind tests that look like functions.</description>
+</GroupInfo>
+</test-group>
+<test-group name="NameTest">
+<GroupInfo>
+<title>NameTest</title>
+<description>Tests in this group take the axes as a given and focus on the NodeTest syntax in XQuery 3.2.1.2. Includes explicit names, *, and the various kind tests that look like functions.</description>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+<test-group name="Predicates" featureOwner="NIST">
+<GroupInfo>
+<title>Predicates</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="UnabbrAxes" featureOwner="NIST">
+<GroupInfo>
+<title>Unabbreviated Syntax</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="AbbrAxes" featureOwner="NIST">
+<GroupInfo>
+<title>Abbreviated Syntax</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="SeqExpr">
+<GroupInfo>
+<title>Sequence Expressions</title>
+<description/>
+</GroupInfo>
+<test-group name="ConstructSeq">
+<GroupInfo>
+<title>Constructing Sequences</title>
+<description>Tests that construct sequences</description>
+</GroupInfo>
+<test-group name="commaOp" featureOwner="NIST">
+<GroupInfo>
+<title>Comma Operator</title>
+<description>Tests that construct sequences using the comma operator</description>
+</GroupInfo>
+</test-group>
+<test-group name="RangeExpr" featureOwner="NIST">
+<GroupInfo>
+<title>Range Expression</title>
+<description>Tests that construct sequences using the RangeExpr</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="FilterExpr" featureOwner="NIST">
+<GroupInfo>
+<title>Filter Expressions</title>
+<description>Simple tests to evaluate filter sequence expressions.</description>
+</GroupInfo>
+</test-group>
+<test-group name="CombNodeSeq">
+<GroupInfo>
+<title>Combining Node Sequences</title>
+<description>Tests for combining Sequences</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="Operators">
+<GroupInfo>
+<title>Operators</title>
+<description/>
+</GroupInfo>
+<test-group name="ArithExpr">
+<GroupInfo>
+<title>Arithmetic Operators</title>
+<description/>
+</GroupInfo>
+<test-group name="NumericOpr" featureOwner="Oracle">
+<GroupInfo>
+<title>Arithmetic Operators on Numeric Values</title>
+<description/>
+</GroupInfo>
+<test-group name="NumericAdd">
+<GroupInfo>
+<title>op:numeric-add</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NumericSubtract">
+<GroupInfo>
+<title>op:numeric-subtract</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NumericMultiply">
+<GroupInfo>
+<title>op:numeric-multiply</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NumericDivide">
+<GroupInfo>
+<title>op:numeric-divide</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NumericIntegerDivide">
+<GroupInfo>
+<title>op:numeric-integer-divide</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NumericMod">
+<GroupInfo>
+<title>op:numeric-mod</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NumericUnaryPlus">
+<GroupInfo>
+<title>op:numeric-unary-plus</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NumericUnaryMinus">
+<GroupInfo>
+<title>op:numeric-unary-minus</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="DurationArith" featureOwner="NIST">
+<GroupInfo>
+<title>Arithmetic Operators on Duration Values</title>
+<description/>
+</GroupInfo>
+<test-group name="YearMonthDurationAdd">
+<GroupInfo>
+<title>op:add-yearMonthDurations</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="YearMonthDurationSubtract">
+<GroupInfo>
+<title>op:subtract-yearMonthDurations</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="YearMonthDurationMultiply">
+<GroupInfo>
+<title>op:multiply-yearMonthDuration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="YearMonthDurationDivide">
+<GroupInfo>
+<title>op:divide-yearMonthDuration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="YearMonthDurationDivideYMD">
+<GroupInfo>
+<title>op:divide-yearMonthDuration-by-yearMonthDuration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DayTimeDurationAdd">
+<GroupInfo>
+<title>op:add-dayTimeDurations</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DayTimeDurationSubtract">
+<GroupInfo>
+<title>op:subtract-dayTimeDurations</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DayTimeDurationMultiply">
+<GroupInfo>
+<title>op:multiply-dayTimeDuration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DayTimeDurationDivide">
+<GroupInfo>
+<title>op:divide-dayTimeDuration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DayTimeDurationDivideDTD">
+<GroupInfo>
+<title>op:divide-dayTimeDuration-by-dayTimeDuration</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="DurationDateTimeArith" featureOwner="NIST">
+<GroupInfo>
+<title>Arithmetic Operators on Duration and Date Time Values</title>
+<description/>
+</GroupInfo>
+<test-group name="dateTimesSubtract">
+<GroupInfo>
+<title>op:subtract-dateTimes-yielding-dayTimeDuration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DatesSubtract">
+<GroupInfo>
+<title>op:subtract-dates-yielding-dayTimeDuration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TimeSubtract">
+<GroupInfo>
+<title>op:subtract-times</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="YearMonthDurationAddDT">
+<GroupInfo>
+<title>op:add-yearMonthDuration-to-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateTimeAddDTD">
+<GroupInfo>
+<title>op:add-dayTimeDuration-to-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateTimeSubtractYMD">
+<GroupInfo>
+<title>op:subtract-yearMonthDuration-from-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateTimeSubtractDTD">
+<GroupInfo>
+<title>op:subtract-dayTimeDuration-from-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateAddYMD">
+<GroupInfo>
+<title>op:add-yearMonthDuration-to-date</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateAddDTD">
+<GroupInfo>
+<title>op:add-dayTimeDuration-to-date</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateSubtractYMD">
+<GroupInfo>
+<title>op:subtract-yearMonthDuration-from-date</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateSubtractDTD">
+<GroupInfo>
+<title>op:subtract-dayTimeDuration-from-date</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TimeAddDTD">
+<GroupInfo>
+<title>op:add-dayTimeDuration-to-time</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TimeSubtractDTD">
+<GroupInfo>
+<title>op:subtract-dayTimeDuration-from-time</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+<test-group name="CompExpr">
+<GroupInfo>
+<title>Comparison Operators</title>
+<description/>
+</GroupInfo>
+<test-group name="ValComp" featureOwner="IBM">
+<GroupInfo>
+<title>Value Comparison</title>
+<description/>
+</GroupInfo>
+<test-group name="NumericComp">
+<GroupInfo>
+<title>Comparison of Numeric Values</title>
+<description/>
+</GroupInfo>
+<test-group name="NumericEqual">
+<GroupInfo>
+<title>op:numeric-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NumericLT">
+<GroupInfo>
+<title>op:numeric-less-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NumericGT">
+<GroupInfo>
+<title>op:numeric-greater-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="BooleanOp" featureOwner="Oracle">
+<GroupInfo>
+<title>Comparison Operators on Boolean Values</title>
+<description/>
+</GroupInfo>
+<test-group name="BooleanEqual">
+<GroupInfo>
+<title>op:boolean-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="BooleanLT">
+<GroupInfo>
+<title>op:boolean-less-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="BooleanGT">
+<GroupInfo>
+<title>op:boolean-greater-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="DurationDateTimeOp" featureOwner="NIST">
+<GroupInfo>
+<title>Comparisons of Duration, Date Time Values</title>
+<description/>
+</GroupInfo>
+<test-group name="YearMonthDurationLT">
+<GroupInfo>
+<title>op:yearMonthDuration-less-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="YearMonthDurationGT">
+<GroupInfo>
+<title>op:yearMonthDuration-greater-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DayTimeDurationLT">
+<GroupInfo>
+<title>op:dayTimeDuration-less-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DayTimeDurationGT">
+<GroupInfo>
+<title>op:dayTimeDuration-greater-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DurationEQ">
+<GroupInfo>
+<title>op:duration equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateTimeEQ">
+<GroupInfo>
+<title>op:dateTime-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateTimeLT">
+<GroupInfo>
+<title>op:dateTime-less-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateTimeGT">
+<GroupInfo>
+<title>op:dateTime-greater-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateEQ">
+<GroupInfo>
+<title>op:date-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateLT">
+<GroupInfo>
+<title>op:date-less-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DateGT">
+<GroupInfo>
+<title>op:date-greater-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TimeEQ">
+<GroupInfo>
+<title>op:time-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TimeLT">
+<GroupInfo>
+<title>op:time-less-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TimeGT">
+<GroupInfo>
+<title>op:time-greater-than</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="gYearMonthEQ">
+<GroupInfo>
+<title>op:gYearMonth-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="gYearEQ">
+<GroupInfo>
+<title>op:gYear-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="gMonthDayEQ">
+<GroupInfo>
+<title>op:gMonthDay-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="gMonthEQ">
+<GroupInfo>
+<title>op:gMonth-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="gDayEQ">
+<GroupInfo>
+<title>op:gDay-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="QNameOp" featureOwner="NIST">
+<GroupInfo>
+<title>Comparison Operators on QName Values</title>
+<description/>
+</GroupInfo>
+<test-group name="QNameEQ">
+<GroupInfo>
+<title>op:QName-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="PrefixFromQName">
+<GroupInfo>
+<title>fn:prefix-from-QName</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="BinaryOp">
+<GroupInfo>
+<title>Comparison Operators on base64Binary and hexBinary Types</title>
+<description/>
+</GroupInfo>
+<test-group name="HexBinaryEQ">
+<GroupInfo>
+<title>op:hexBinary-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="Base64BinaryEQ">
+<GroupInfo>
+<title>op:base64Binary-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="NotationOp">
+<GroupInfo>
+<title>Comparison Operators on NOTATION Types</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="GenComprsn">
+<GroupInfo>
+<title>General Comparisons</title>
+<description/>
+</GroupInfo>
+<test-group name="GenCompEq" featureOwner="NIST">
+<GroupInfo>
+<title>The "=" operator for general comparisons</title>
+<description>The general comparison operator"="</description>
+</GroupInfo>
+</test-group>
+<test-group name="GenCompNE" featureOwner="NIST">
+<GroupInfo>
+<title>The "!=" operator for general comparisons</title>
+<description>The general comparison operator"!="</description>
+</GroupInfo>
+</test-group>
+<test-group name="GenCompLT" featureOwner="NIST">
+<GroupInfo>
+<title>The "&lt; (less than)" operator for general comparisons</title>
+<description>The general comparison operator "less than (&lt;)"</description>
+</GroupInfo>
+</test-group>
+<test-group name="GenCompLTEQ" featureOwner="NIST">
+<GroupInfo>
+<title>The "&lt;= (less than or equal)" operator for general comparisons</title>
+<description>The general comparison operator "less than or equal (&lt;=)"</description>
+</GroupInfo>
+</test-group>
+<test-group name="GenCompGT" featureOwner="NIST">
+<GroupInfo>
+<title>The "&gt; (greater than)" operator for general comparisons</title>
+<description>The general comparison operator "greater than (&gt;)"</description>
+</GroupInfo>
+</test-group>
+<test-group name="GenCompGTEQ" featureOwner="NIST">
+<GroupInfo>
+<title>The "&gt;= (greater than or equal)" operator for general comparisons</title>
+<description>The general comparison operator "greater than or equal (&gt;=)"</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="NodeComp" featureOwner="IBM">
+<GroupInfo>
+<title>Node Comparisons</title>
+<description/>
+</GroupInfo>
+<test-group name="NodeSame">
+<GroupInfo>
+<title>op:is-same-node</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NodeBefore">
+<GroupInfo>
+<title>op:node-before</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NodeAfter">
+<GroupInfo>
+<title>op:node-after</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+<test-group name="SeqOp" featureOwner="Oracle">
+<GroupInfo>
+<title>Operators on Sequences</title>
+<description/>
+</GroupInfo>
+<test-group name="SeqUnion">
+<GroupInfo>
+<title>op:union</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqIntersect">
+<GroupInfo>
+<title>op:intersect</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqExcept">
+<GroupInfo>
+<title>op:except</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+<test-group name="LogicExpr" featureOwner="Oracle">
+<GroupInfo>
+<title>Logical Expressions</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="Construct" featureOwner="IBM">
+<GroupInfo>
+<title>Constructors</title>
+<description/>
+</GroupInfo>
+<test-group is-XPath2="false" name="DirectConElem">
+<GroupInfo>
+<title>Direct Element Constructors</title>
+<description/>
+</GroupInfo>
+<test-group is-XPath2="false" name="DirectConElemAttr">
+<GroupInfo>
+<title>Attributes</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="DirectConElemNamespace">
+<GroupInfo>
+<title>Namespace Declaration Attributes</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="DirectConElemContent">
+<GroupInfo>
+<title>Content</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="DirectConElemWhitespace">
+<GroupInfo>
+<title>White Space Element Content</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="DirectConOther">
+<GroupInfo>
+<title>Other Direct Constructors</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ComputeCon" featureOwner="IBM">
+<GroupInfo>
+<title>Computed Constructors</title>
+<description/>
+</GroupInfo>
+<test-group is-XPath2="false" name="ComputeConElem">
+<GroupInfo>
+<title>Computed Element Constructors</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ComputeConAttr">
+<GroupInfo>
+<title>Computed Attribute Constructors</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ConDocNode">
+<GroupInfo>
+<title>Document Node Constructors</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ConText">
+<GroupInfo>
+<title>Text Node Constructors</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ComputeConPI">
+<GroupInfo>
+<title>Computed Processing-instruction Constructors</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ComputeConComment">
+<GroupInfo>
+<title>Computed Comment Constructors</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="ConInScopeNamespace">
+<GroupInfo>
+<title>In-scope Namespaces of a Constructed Element</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="FLWOR">
+<GroupInfo>
+<title>Tests of For-Let-Where-OrderBy-Return Expressions</title>
+<description>Tests in this group focus on the FLWOR expressions in XQuery 3.8.</description>
+</GroupInfo>
+<test-group name="ForExpr" featureOwner="Microsoft">
+<GroupInfo>
+<title>FOR Clause</title>
+<description>Tests for the FOR part of the FLWOR expression syntax</description>
+</GroupInfo>
+<test-group name="ForExprWithout">
+<GroupInfo>
+<title>FOR Clause without TypeDeclaration</title>
+<description>Tests for the FOR part of the FLWOR expression syntax</description>
+</GroupInfo>
+</test-group>
+<test-group name="ForExprWith">
+<GroupInfo>
+<title>FOR Clause with TypeDeclaration</title>
+<description>Tests for the FOR part of the FLWOR expression syntax</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="LetExpr" featureOwner="Oracle">
+<GroupInfo>
+<title>LET Clause</title>
+<description>Tests for the LET part of the FLWOR expression syntax</description>
+</GroupInfo>
+<test-group is-XPath2="false" name="LetExprWithout">
+<GroupInfo>
+<title>LET Clause without TypeDeclaration</title>
+<description>Tests for the LET part of the FLWOR expression syntax</description>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="LetExprWith">
+<GroupInfo>
+<title>LET Clause with TypeDeclaration</title>
+<description>Tests for the LET part of the FLWOR expression syntax</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="WhereExpr" featureOwner="Microsoft">
+<GroupInfo>
+<title>WHERE Clause</title>
+<description>Tests for the WHERE part of the FLWOR expression syntax</description>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="OrderbyExpr" featureOwner="Microsoft">
+<GroupInfo>
+<title>ORDER BY Clause</title>
+<description>Tests for the ORDER BY part of the FLWOR expression syntax</description>
+</GroupInfo>
+<test-group is-XPath2="false" name="OrderbyExprWith">
+<GroupInfo>
+<title>ORDER BY Clause with OrderModifier</title>
+<description>Tests for the ORDER BY part of the FLWOR expression syntax</description>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="OrderbyExprWithout">
+<GroupInfo>
+<title>ORDER BY Clause without OrderModifier</title>
+<description>Tests for the ORDER BY part of the FLWOR expression syntax</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="ReturnExpr" featureOwner="Microsoft">
+<GroupInfo>
+<title>RETURN Clause</title>
+<description>Tests for the RETURN part of the FLWOR expression syntax</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="OrderExpr" featureOwner="IBM">
+<GroupInfo>
+<title>Ordered and Unordered Expressions</title>
+<description>Tests involving "Ordered" and/or "unordered"</description>
+</GroupInfo>
+</test-group>
+<test-group name="CondExpr" featureOwner="Microsoft">
+<GroupInfo>
+<title>Conditional Expressions</title>
+<description>Tests in this group focus on the conditional expressions in XQuery 3.10.</description>
+</GroupInfo>
+</test-group>
+<test-group name="QuantExpr">
+<GroupInfo>
+<title>Quantified Expressions</title>
+<description/>
+</GroupInfo>
+<test-group name="QuantExprWithout">
+<GroupInfo>
+<title>Quantified Expressions Without TypeDeclaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="QuantExprWith">
+<GroupInfo>
+<title>Quantified Expressions With TypeDeclaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="seqExprTypes">
+<GroupInfo>
+<title>Expressions on Sequence Types</title>
+<description/>
+</GroupInfo>
+<test-group name="SeqExprInstanceOf">
+<GroupInfo>
+<title>Instance Of</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="sequenceExprTypeswitch">
+<GroupInfo>
+<title>Typeswitch</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqExprCastToDerived" featureOwner="NIST">
+<GroupInfo>
+<title>Cast from Derived types</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqExprCastToDerivedParents" featureOwner="NIST">
+<GroupInfo>
+<title>Cast from Derived types To Parents</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqExprCastWithinBranch" featureOwner="NIST">
+<GroupInfo>
+<title>Casting within a branch of the type hierarchy</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqExprCast" featureOwner="IBM/XSLT">
+<GroupInfo>
+<title>Cast</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqExprCastable" featureOwner="IBM/XSLT">
+<GroupInfo>
+<title>Castable</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqExprTreat">
+<GroupInfo>
+<title>Treat</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="PrologExpr">
+<GroupInfo>
+<title>Modules and Prologs</title>
+<description/>
+</GroupInfo>
+<test-group is-XPath2="false" name="VersionProlog" featureOwner="Oracle">
+<GroupInfo>
+<title>Version Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="BoundarySpaceProlog" featureOwner="Oracle">
+<GroupInfo>
+<title>Boundary-space Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="CollationProlog">
+<GroupInfo>
+<title>Default Collation Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="CopyNamespacesProlog">
+<GroupInfo>
+<title>Copy Namespaces Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="BaseURIProlog">
+<GroupInfo>
+<title>Base URI Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ConstructionProlog">
+<GroupInfo>
+<title>Construction Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="DefaultNamespaceProlog" featureOwner="Oracle">
+<GroupInfo>
+<title>Default Namespace Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="DefaultOrderingProlog">
+<GroupInfo>
+<title>Ordering Mode Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="EmptyOrderProlog">
+<GroupInfo>
+<title>Empty Order Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="NamespaceProlog" featureOwner="NIST">
+<GroupInfo>
+<title>Namespace Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="VariableProlog" featureOwner="Oracle">
+<GroupInfo>
+<title>Variable Declaration</title>
+<description/>
+</GroupInfo>
+<test-group is-XPath2="false" name="ExternalVariablesWithout" featureOwner="NIST">
+<GroupInfo>
+<title>External Variable References without TypeDeclaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ExternalVariablesWith" featureOwner="NIST">
+<GroupInfo>
+<title>External Variable References with TypeDeclatation</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="InternalVariablesWithout" featureOwner="NIST">
+<GroupInfo>
+<title>Internal Variable References without TypeDeclaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="InternalVariablesWith" featureOwner="NIST">
+<GroupInfo>
+<title>Internal Variable References with TypeDeclatation</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="FunctionProlog" featureOwner="Oracle">
+<GroupInfo>
+<title>Function Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="OptionDeclarationProlog" featureOwner="NIST">
+<GroupInfo>
+<title>Option Declaration Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="XQueryComment" featureOwner="Microsoft">
+<GroupInfo>
+<title>XQuery Comments</title>
+<description>Tests for the XQuery comment syntax</description>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ExtensionExpression" featureOwner="NIST">
+<GroupInfo>
+<title>Extension Expression</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ImplicitContext">
+<GroupInfo>
+<title>Implicit Context</title>
+<description>
+                  Implementations are allowed to define an implicit context for their queries. What this means
+                  is that an XQuery expression can use the '.' or '/' axes without specifying any explicit
+                  context to bind these to. The binding of the implicit context to some input document is an
+                  implementation specific detail and should be handled by the individual test harness.
+               </description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="Functions">
+<GroupInfo>
+<title>Functions</title>
+<description/>
+</GroupInfo>
+<test-group name="AccessorFunc">
+<GroupInfo>
+<title>Accessor Functions</title>
+<description/>
+</GroupInfo>
+<test-group name="NodeNameFunc" featureOwner="NIST">
+<GroupInfo>
+<title>fn:node-name</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NilledFunc" featureOwner="NIST">
+<GroupInfo>
+<title>fn:nilled</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="StringFunc">
+<GroupInfo>
+<title>fn:string</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DataFunc">
+<GroupInfo>
+<title>fn:data</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="BaseURIFunc">
+<GroupInfo>
+<title>fn:base-uri</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="StaticBaseURIFunc">
+<GroupInfo>
+<title>fn:static-base-uri</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DocumentURIFunc">
+<GroupInfo>
+<title>fn:document-uri</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="ErrorFunc">
+<GroupInfo>
+<title>The Error Function</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TraceFunc">
+<GroupInfo>
+<title>The Trace Function</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ConstructFunc" featureOwner="IBM/XSLT">
+<GroupInfo>
+<title>Constructor Functions</title>
+<description/>
+</GroupInfo>
+<test-group name="DateTimeFunc">
+<GroupInfo>
+<title>fn:dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="NumericFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>Functions on Numeric Values</title>
+<description/>
+</GroupInfo>
+<test-group name="ABSFunc">
+<GroupInfo>
+<title>fn:abs</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="CeilingFunc">
+<GroupInfo>
+<title>fn:ceiling</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="FloorFunc">
+<GroupInfo>
+<title>fn:floor</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="RoundFunc">
+<GroupInfo>
+<title>fn:round</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="RoundEvenFunc">
+<GroupInfo>
+<title>fn:round-half-to-even</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="AllStringFunc" featureOwner="IBM/XSLT">
+<GroupInfo>
+<title>Functions on Strings</title>
+<description/>
+</GroupInfo>
+<test-group name="AssDisassStringFunc">
+<GroupInfo>
+<title>Functions to Assemble and Disassemble Strings</title>
+<description/>
+</GroupInfo>
+<test-group name="CodepointToStringFunc">
+<GroupInfo>
+<title>fn:codepoints-to-string</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="StringToCodepointFunc">
+<GroupInfo>
+<title>fn:string-to-codepoints</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="CompStringFunc">
+<GroupInfo>
+<title>Equality and Comparison of Strings</title>
+<description/>
+</GroupInfo>
+<test-group name="compareFunc">
+<GroupInfo>
+<title>fn:compare</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="CodepointEqual">
+<GroupInfo>
+<title>fn:codepoint-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="GeneralStringFunc">
+<GroupInfo>
+<title>Functions on String Values</title>
+<description/>
+</GroupInfo>
+<test-group name="ConcatFunc">
+<GroupInfo>
+<title>fn:concat</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="StringJoinFunc">
+<GroupInfo>
+<title>fn:string-join</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SubstringFunc">
+<GroupInfo>
+<title>fn:substring</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="StringLengthFunc">
+<GroupInfo>
+<title>fn:string-length</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NormalizeSpaceFunc">
+<GroupInfo>
+<title>fn:normalize-space</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NormalizeUnicodeFunc">
+<GroupInfo>
+<title>fn:normalize-unicode</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="UpperCaseFunc">
+<GroupInfo>
+<title>fn:upper-case</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="LowerCaseFunc">
+<GroupInfo>
+<title>fn:lower-case</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TranslateFunc">
+<GroupInfo>
+<title>fn:translate</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="Surrogates">
+<GroupInfo>
+<title>surrogate values for various string functions.</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="EncodeURIfunc">
+<GroupInfo>
+<title>fn:encode-for-uri</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="IRIToURIfunc">
+<GroupInfo>
+<title>fn:iri-to-uri</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="EscapeHTMLURIFunc">
+<GroupInfo>
+<title>fn:escape-html-uri</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="SubstringStringFunc">
+<GroupInfo>
+<title>Functions Based on Substring Matching</title>
+<description/>
+</GroupInfo>
+<test-group name="ContainsFunc">
+<GroupInfo>
+<title>fn:contains</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="StartsWithFunc">
+<GroupInfo>
+<title>fn:starts-with</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="EndsWithFunc">
+<GroupInfo>
+<title>fn:ends-with</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SubstringBeforeFunc">
+<GroupInfo>
+<title>fn:substring-before</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SubstringAfterFunc">
+<GroupInfo>
+<title>fn:substring-after</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="MatchStringFunc">
+<GroupInfo>
+<title>String Functions that Use Pattern Matching</title>
+<description/>
+</GroupInfo>
+<test-group name="MatchesFunc" featureOwner="NIST">
+<GroupInfo>
+<title>fn:matches</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ReplaceFunc" featureOwner="NIST">
+<GroupInfo>
+<title>fn:replace</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TokenizeFunc" featureOwner="NIST">
+<GroupInfo>
+<title>fn:tokenize</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+<test-group name="URIFunc" featureOwner="IBM/XSLT">
+<GroupInfo>
+<title>Functions for anyURI</title>
+<description/>
+</GroupInfo>
+<test-group name="ResolveURIFunc">
+<GroupInfo>
+<title>fn:resolve-uri</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="BooleanFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>Functions on Boolean Values</title>
+<description/>
+</GroupInfo>
+<test-group name="TrueFunc">
+<GroupInfo>
+<title>fn:true</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="FalseFunc">
+<GroupInfo>
+<title>fn:false</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NotFunc">
+<GroupInfo>
+<title>fn:not</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="DurationDateTimeFunc" featureOwner="NIST">
+<GroupInfo>
+<title>Functions on Durations, Dates and Times</title>
+<description/>
+</GroupInfo>
+<test-group name="ComponentExtractionDDT">
+<GroupInfo>
+<title>Component Extraction Functions on Durations, Dates and Times</title>
+<description/>
+</GroupInfo>
+<test-group name="YearsFromDurationFunc">
+<GroupInfo>
+<title>fn:years-from-duration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="MonthsFromDurationFunc">
+<GroupInfo>
+<title>fn:months-from-duration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DaysFromDurationFunc">
+<GroupInfo>
+<title>fn:days-from-duration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="HoursFromDurationFunc">
+<GroupInfo>
+<title>fn:hours-from-duration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="MinutesFromDurationFunc">
+<GroupInfo>
+<title>fn:minutes-from-duration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SecondsFromDurationFunc">
+<GroupInfo>
+<title>fn:seconds-from-duration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="YearFromDateTimeFunc">
+<GroupInfo>
+<title>fn:year-from-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="MonthFromDateTimeFunc">
+<GroupInfo>
+<title>fn:month-from-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DayFromDateTimeFunc">
+<GroupInfo>
+<title>fn:day-from-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="HoursFromDateTimeFunc">
+<GroupInfo>
+<title>fn:hours-from-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="MinutesFromDateTimeFunc">
+<GroupInfo>
+<title>fn:minutes-from-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SecondsFromDateTimeFunc">
+<GroupInfo>
+<title>fn:seconds-from-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TimezoneFromDateTimeFunc">
+<GroupInfo>
+<title>fn:timezone-from-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="YearFromDateFunc">
+<GroupInfo>
+<title>fn:year-from-date</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="MonthFromDateFunc">
+<GroupInfo>
+<title>fn:month-from-date</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="DayFromDateFunc">
+<GroupInfo>
+<title>fn:day-from-date</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TimezoneFromDateFunc">
+<GroupInfo>
+<title>fn:timezone-from-date</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="HoursFromTimeFunc">
+<GroupInfo>
+<title>fn:hours-from-time</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="MinutesFromTimeFunc">
+<GroupInfo>
+<title>fn:minutes-from-time</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SecondsFromTimeFunc">
+<GroupInfo>
+<title>fn:seconds-from-time</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="TimezoneFromTimeFunc">
+<GroupInfo>
+<title>fn:timezone-from-time</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="TimezoneFunction">
+<GroupInfo>
+<title>Timezone Adjustment on Dates and Time Values</title>
+<description/>
+</GroupInfo>
+<test-group name="AdjDateTimeToTimezoneFunc">
+<GroupInfo>
+<title>fn:adjust-dateTime-to-timezone</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="AdjDateToTimezoneFunc">
+<GroupInfo>
+<title>fn:adjust-date-to-timezone</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="AdjTimeToTimezoneFunc">
+<GroupInfo>
+<title>fn:adjust-time-to-timezone</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+<test-group name="QNameFunc">
+<GroupInfo>
+<title>Functions Related to QNames</title>
+<description/>
+</GroupInfo>
+<test-group name="QNameConstructFunc">
+<GroupInfo>
+<title>Additional Constructor Functions for QNames</title>
+<description/>
+</GroupInfo>
+<test-group name="ResolveQNameConstructFunc">
+<GroupInfo>
+<title>fn:resolve-QName</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ExpandedQNameConstructFunc" featureOwner="Microsoft">
+<GroupInfo>
+<title>fn:QName</title>
+<description>Returns an xs:QName with the namespace URI given in the first argument and the local name and prefix in the second argument.</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="LocalNameFromQNameFunc" featureOwner="Microsoft">
+<GroupInfo>
+<title>fn:local-name-from-QName</title>
+<description>Function Returns an xs:NCName representing the local-name part of the single xs:QName argument</description>
+</GroupInfo>
+</test-group>
+<test-group name="NamespaceURIFromQNameFunc" featureOwner="Microsoft">
+<GroupInfo>
+<title>fn:namespace-uri-from-QName</title>
+<description>Function Returns an xs:NCName representing the namespace-URI part of of the single xs:QName argument</description>
+</GroupInfo>
+</test-group>
+<test-group name="NamespaceURIForPrefixFunc">
+<GroupInfo>
+<title>fn:namespace-uri-for-prefix</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="InScopePrefixesFunc">
+<GroupInfo>
+<title>fn:in-scope-prefixes</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="NodeFunc">
+<GroupInfo>
+<title>Functions on Nodes</title>
+<description/>
+</GroupInfo>
+<test-group name="NameFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>fn:name</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NodeLocalNameFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>fn:local-name</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NodeNamespaceURIFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>fn:namespace-uri</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NodeNumberFunc" featureOwner="NIST">
+<GroupInfo>
+<title>fn:number</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NodeLangFunc" featureOwner="NIST">
+<GroupInfo>
+<title>fn:lang</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NodeRootFunc" featureOwner="NIST">
+<GroupInfo>
+<title>fn:root</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="SeqFunc">
+<GroupInfo>
+<title>Functions on Sequences</title>
+<description/>
+</GroupInfo>
+<test-group name="GeneralSeqFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>General Functions and Operators on Sequences</title>
+<description/>
+</GroupInfo>
+<test-group name="SeqBooleanFunc">
+<GroupInfo>
+<title>fn:boolean</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqIndexOfFunc">
+<GroupInfo>
+<title>fn:index-of</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqEmptyFunc">
+<GroupInfo>
+<title>fn:empty</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqExistsFunc">
+<GroupInfo>
+<title>fn:exists</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqDistinctValuesFunc">
+<GroupInfo>
+<title>fn:distinct-values</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqInsertBeforeFunc">
+<GroupInfo>
+<title>fn:insert-before</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqRemoveFunc">
+<GroupInfo>
+<title>fn:remove</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqReverseFunc">
+<GroupInfo>
+<title>fn:reverse</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqSubsequenceFunc">
+<GroupInfo>
+<title>fn:subsequence</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqUnorderedFunc">
+<GroupInfo>
+<title>fn:unordered</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="CardinalitySeqFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>Functions That Test the Cardinality of Sequences</title>
+<description/>
+</GroupInfo>
+<test-group name="SeqZeroOrOneFunc">
+<GroupInfo>
+<title>fn:zero-or-one</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqOneOrMoreFunc">
+<GroupInfo>
+<title>fn:one-or-more</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqExactlyOneFunc">
+<GroupInfo>
+<title>fn:exactly-one</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="SeqDeepEqualFunc">
+<GroupInfo>
+<title>fn:deep-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="AggregateSeqFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>Aggregate Functions</title>
+<description/>
+</GroupInfo>
+<test-group name="SeqCountFunc">
+<GroupInfo>
+<title>fn:count</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqAVGFunc">
+<GroupInfo>
+<title>fn:avg</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqMAXFunc">
+<GroupInfo>
+<title>fn:max</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqMINFunc">
+<GroupInfo>
+<title>fn:min</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqSUMFunc">
+<GroupInfo>
+<title>fn:sum</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="NodeSeqFunc">
+<GroupInfo>
+<title>Functions that Generate Sequences</title>
+<description/>
+</GroupInfo>
+<test-group name="SeqIDFunc">
+<GroupInfo>
+<title>fn:id</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqIDREFFunc">
+<GroupInfo>
+<title>fn:idref</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqDocAvailableFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>fn:doc-available</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqDocFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>fn:doc</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqCollectionFunc" featureOwner="Oracle">
+<GroupInfo>
+<title>fn:collection</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+<test-group name="ContextFunc">
+<GroupInfo>
+<title>Context Functions</title>
+<description/>
+</GroupInfo>
+<test-group name="ContextPositionFunc" featureOwner="NIST">
+<GroupInfo>
+<title>fn:position</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ContextLastFunc" featureOwner="NIST">
+<GroupInfo>
+<title>fn:last</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ContextCurrentDatetimeFunc">
+<GroupInfo>
+<title>fn:current-dateTime</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ContextCurrentDateFunc">
+<GroupInfo>
+<title>fn:current-date</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ContextCurrentTimeFunc">
+<GroupInfo>
+<title>fn:current-time</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ContextDefaultCollationFunc">
+<GroupInfo>
+<title>fn:default-collation</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ContextImplicitTimezoneFunc">
+<GroupInfo>
+<title>fn:implicit-timezone</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+</test-group>
+<test-group name="Optional">
+<GroupInfo>
+<title>Optional Features</title>
+<description/>
+</GroupInfo>
+<test-group is-XPath2="false" name="SchemaImport">
+<GroupInfo>
+<title>Schema Import Feature</title>
+<description/>
+</GroupInfo>
+<test-group is-XPath2="false" name="FLWORExprSI">
+<GroupInfo>
+<title>FLWOR Expressions that requires a schema import</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ConstructSI">
+<GroupInfo>
+<title>Computed Element Constructors</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="versionPrologSI" featureOwner="Oracle">
+<GroupInfo>
+<title>Version Declaration</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="MiscFunctions">
+<GroupInfo>
+<title>Misc Functions that depends entirely on schema validation.</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="SeqExprCastSI" featureOwner="IBM/XSLT">
+<GroupInfo>
+<title>Cast</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NumericEqualSI">
+<GroupInfo>
+<title>op:numeric-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="NotationEQSI">
+<GroupInfo>
+<title>op:NOTATION-equal</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="UserDefinedSI">
+<GroupInfo>
+<title>Constructor Functions for User Defined Functions</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="SchemaImportProlog">
+<GroupInfo>
+<title>Schema Import</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group is-XPath2="false" name="ForExprTypeSI" featureOwner="Microsoft">
+<GroupInfo>
+<title>FOR Clause with TypeDeclaration</title>
+<description>Tests for the FOR part of the FLWOR expression syntax</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="SchemaValidation" featureOwner="NIST">
+<GroupInfo>
+<title>Schema Validation Feature</title>
+<description/>
+</GroupInfo>
+<test-group is-XPath2="false" name="ValidateExpression">
+<GroupInfo>
+<title>Validate Expression</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="StaticTyping">
+<GroupInfo>
+<title>Static Typing Feature</title>
+<description/>
+</GroupInfo>
+<test-group name="STPathExpr" featureOwner="Microsoft">
+<GroupInfo>
+<title>Static Typing of Path Expressions</title>
+<description/>
+</GroupInfo>
+<test-group name="STSteps">
+<GroupInfo>
+<title>Static Typing of Steps Expressions</title>
+<description/>
+</GroupInfo>
+<test-group name="STAxes">
+<GroupInfo>
+<title>Static Typing of Axes Steps</title>
+<description>Tests dealing with the static typing of axes step expressions</description>
+</GroupInfo>
+</test-group>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="STFLWORExpr">
+<GroupInfo>
+<title>Static Typing of FLWOR expressions</title>
+<description>Tests for expressions involving static type failures in FLWOR expressions</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="FullAxis" featureOwner="NIST">
+<GroupInfo>
+<title>Full Axis Feature</title>
+<description/>
+</GroupInfo>
+<test-group name="ancestorAxis" featureOwner="NIST">
+<GroupInfo>
+<title>ancestor Axis</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="ancestor-or-selfAxis" featureOwner="NIST">
+<GroupInfo>
+<title>ancestor-or-self Axis</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="followingAxis" featureOwner="NIST">
+<GroupInfo>
+<title>following Axis</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="following-siblingAxis" featureOwner="NIST">
+<GroupInfo>
+<title>following-sibling Axis</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="precedingAxis">
+<GroupInfo>
+<title>preceding Axis</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="preceding-siblingAxis">
+<GroupInfo>
+<title>preceding-sibling Axis</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="Modules">
+<GroupInfo>
+<title>Module Feature</title>
+<description/>
+</GroupInfo>
+<test-group is-XPath2="false" name="ModuleImport">
+<GroupInfo>
+<title>Module Import</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="TrivialEmbedding">
+<GroupInfo>
+<title>Trivial XML Embedding Feature</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group is-XPath2="false" name="Appendices" featureOwner="NIST">
+<GroupInfo>
+<title>Tests for the appendices.</title>
+<description/>
+</GroupInfo>
+<test-group name="Appendix-A4" featureOwner="NIST">
+<GroupInfo>
+<title>Tests for Appendix A-4 of the Query Specs.</title>
+<description/>
+</GroupInfo>
+</test-group>
+<test-group name="Annex-E" featureOwner="NIST">
+<GroupInfo>
+<title>Various User defined functions from annex "E" of the F and O specs.</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="UseCase">
+<GroupInfo>
+<title>Use Cases</title>
+<description/>
+</GroupInfo>
+<test-group name="UseCaseXMP">
+<GroupInfo>
+<title>Use Case "XMP": Experiences and Exemplars</title>
+<description>example queries that illustrate requirements gathered from the database and document communities.</description>
+</GroupInfo>
+</test-group>
+<test-group name="UseCaseTREE">
+<GroupInfo>
+<title>Use Case "TREE": Queries that preserve hierarchy</title>
+<description>An XML query language should have the ability to extract elements from documents while preserving their original hierarchy. This Use Case illustrates this requirement by means of a flexible document type named Book.</description>
+</GroupInfo>
+</test-group>
+<test-group name="UseCaseSEQ">
+<GroupInfo>
+<title>Use Case "SEQ" - Queries based on Sequence</title>
+<description>Although sequence is not significant in most traditional database systems or object systems, it can be quite significant in structured documents. This use case presents a series of queries based on a medical report.</description>
+</GroupInfo>
+</test-group>
+<test-group name="UseCaseR">
+<GroupInfo>
+<title>Use Case "R" - Access to Relational Data</title>
+<description>One important use of an XML query language will be to access data stored in relational databases. This use case describes one possible way in which this access might be accomplished.</description>
+</GroupInfo>
+</test-group>
+<test-group name="UseCaseSGML">
+<GroupInfo>
+<title>Use Case "SGML": Standard Generalized Markup Language</title>
+<description>The example document and queries in this Use Case were first created for a 1992 conference on Standard Generalized Markup Language (SGML).</description>
+</GroupInfo>
+</test-group>
+<test-group name="UseCaseSTRING">
+<GroupInfo>
+<title>Use Case "STRING": String Search</title>
+<description>This use case is based on company profiles and a set of news documents which contain data for PR, mergers and acquisitions, etc. Given a company, the use case illustrates several different queries for searching text in news documents and different ways of providing query results by matching the information from the company profile and the content of the news items.</description>
+</GroupInfo>
+</test-group>
+<test-group name="UseCaseNS">
+<GroupInfo>
+<title>Use Case "NS" - Queries Using Namespaces</title>
+<description>This use case is based on a scenario in which a neutral mediator is acting with public auction servers on behalf of clients. The reason for a client to use this imaginary service may be anonymity, better insurance, or the possibility to cover more than one market at a time.</description>
+</GroupInfo>
+</test-group>
+<test-group name="UseCasePARTS">
+<GroupInfo>
+<title>Use Case "PARTS" - Recursive Parts Explosion</title>
+<description>This use case is based on a "parts explosion" database that contains information about how parts are used in other parts.</description>
+</GroupInfo>
+</test-group>
+</test-group>
+<test-group name="Catalog">
+<GroupInfo>
+<title>Consistency in XQTS Catalog</title>
+<description/>
+</GroupInfo>
+</test-group>
+</test-suite>

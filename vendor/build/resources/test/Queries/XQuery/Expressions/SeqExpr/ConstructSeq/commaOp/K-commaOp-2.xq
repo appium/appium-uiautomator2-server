@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-commaOp-2                                     :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: An expression sequence containing only empty sequences. On some implementations this triggers certain optimization paths. :)
+(:*******************************************************:)
+empty(((), (), ((), (), ((), (), (())), ()), (), (())))

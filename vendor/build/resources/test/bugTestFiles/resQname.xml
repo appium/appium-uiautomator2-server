@@ -1,0 +1,4 @@
+<messages xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <message kind="xsd:int" value="2007-12-30"/>
+   <message kind="xsd:date" value="2007-12-31"/>
+</messages> 

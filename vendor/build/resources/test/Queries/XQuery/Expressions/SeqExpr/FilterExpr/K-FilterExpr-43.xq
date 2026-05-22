@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-FilterExpr-43                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: A test whose essence is: `empty((1, 2, 3)[position() eq 2 or position() eq 3][3])`. :)
+(:*******************************************************:)
+empty((1, 2, 3)[position() eq 2 or position() eq 3][3])

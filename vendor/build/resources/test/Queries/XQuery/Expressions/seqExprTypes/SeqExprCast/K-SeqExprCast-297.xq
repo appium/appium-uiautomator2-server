@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-297                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: '--02-31' is an invalid lexical representation for xs:gMonthDay. :)
+(:*******************************************************:)
+xs:gMonthDay("--02-31")

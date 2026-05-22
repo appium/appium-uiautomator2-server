@@ -10,6 +10,7 @@ app/build
 *.log
 apks/
 app/libs/org.eclipse.wst.xml.xpath2.processor*.jar
+vendor/.upstream/
 package-lock.json*
 .settings
 .classpath

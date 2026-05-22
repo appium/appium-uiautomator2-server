@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-319                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: '2002-02-15T25:00:00' is an invalid lexical representation for xs:dateTime; hour part can never be larger than 24. :)
+(:*******************************************************:)
+xs:dateTime("2002-02-15T25:01:00")

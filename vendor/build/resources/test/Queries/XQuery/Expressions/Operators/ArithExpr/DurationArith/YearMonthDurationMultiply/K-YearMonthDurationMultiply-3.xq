@@ -1,0 +1,8 @@
+(:*******************************************************:)
+(: Test: K-YearMonthDurationMultiply-3                   :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: Simple test of multiplying 0 with xs:yearMonthDuration. :)
+(:*******************************************************:)
+0 * xs:yearMonthDuration("P3Y36M")
+			eq xs:yearMonthDuration("P0M")

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-NumericLT-20                                  :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: A test whose essence is: `not(1 le xs:float("NaN"))`. :)
+(:*******************************************************:)
+not(1 le xs:float("NaN"))

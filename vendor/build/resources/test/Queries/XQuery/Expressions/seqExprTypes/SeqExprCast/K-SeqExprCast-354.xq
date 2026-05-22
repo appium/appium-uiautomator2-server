@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-354                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: '24:01:00' is an invalid lexical representation for xs:time; if hour is 24, minutes part must be 00. :)
+(:*******************************************************:)
+xs:time("24:01:00")

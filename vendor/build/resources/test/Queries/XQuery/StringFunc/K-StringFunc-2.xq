@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-StringFunc-2                                  :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:39+02:00                       :)
+(: Purpose: Simple test which ensures that no arguments isn't flagged as invalid. :)
+(:*******************************************************:)
+if(true()) then true() else string()

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExistsFunc-11                              :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:40+02:00                       :)
+(: Purpose: The Dynamic Context property 'current dateTime' must have an explicit timezone when presented as a xs:date. :)
+(:*******************************************************:)
+exists(timezone-from-date(current-date()))

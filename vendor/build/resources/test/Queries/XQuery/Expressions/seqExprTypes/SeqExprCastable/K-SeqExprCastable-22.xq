@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCastable-22                            :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:39+02:00                       :)
+(: Purpose: Casting an xs:untypedAtomic to xs:QName does not work. :)
+(:*******************************************************:)
+not(xs:untypedAtomic("ncname") castable as xs:QName)

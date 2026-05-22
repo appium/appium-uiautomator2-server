@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="bugNilled.xsd">
+  <!-- Nillable, but not nilled -->
+  <element1>1</element1>
+  
+  <!-- Nillable and nilled -->
+  <element2 xsi:nil="true"/>
+  
+  <!-- Not nillable, and obviously not nilled (it would give a validation error)-->
+  <element3>42</element3>
+  
+  <!-- Not processed / validated, and so never nill -->
+  <element4 xsi:nil="true">42</element4>
+</root>

@@ -1,0 +1,8 @@
+(:*******************************************************:)
+(: Test: K-SeqSUMFunc-30                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:41+02:00                       :)
+(: Purpose: A test whose essence is: `sum((xs:yearMonthDuration("P20Y"), xs:yearMonthDuration("P10M"))) eq xs:yearMonthDuration("P250M")`. :)
+(:*******************************************************:)
+sum((xs:yearMonthDuration("P20Y"), xs:yearMonthDuration("P10M")))
+			eq xs:yearMonthDuration("P250M")

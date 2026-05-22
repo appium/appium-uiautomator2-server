@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-355                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: '25:00:00' is an invalid lexical representation for xs:time; hour part can never be larger than 24. :)
+(:*******************************************************:)
+xs:time("25:01:00")

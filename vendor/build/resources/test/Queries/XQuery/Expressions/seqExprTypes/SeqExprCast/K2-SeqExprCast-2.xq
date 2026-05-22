@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K2-SeqExprCast-2                                :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Casting the empty sequence to xs:QName? is ok. :)
+(:*******************************************************:)
+empty(() cast as xs:QName?)

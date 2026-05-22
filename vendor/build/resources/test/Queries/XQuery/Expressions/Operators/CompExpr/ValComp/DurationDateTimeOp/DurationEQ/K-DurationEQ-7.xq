@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-DurationEQ-7                                  :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: The xs:duration values P12M and P1Y are equal. :)
+(:*******************************************************:)
+xs:duration("P1Y") eq xs:duration("P12M")

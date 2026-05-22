@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-ForExprWithout-23                             :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: An for-return expression which only is the binding variable. :)
+(:*******************************************************:)
+deep-equal(remove(for $var in (current-time(), 2, 3, 4) return $var, 1), (2, 3, 4))

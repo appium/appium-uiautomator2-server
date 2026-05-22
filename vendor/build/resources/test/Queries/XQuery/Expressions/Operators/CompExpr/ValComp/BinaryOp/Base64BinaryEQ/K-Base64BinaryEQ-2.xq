@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-Base64BinaryEQ-2                              :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: A test whose essence is: `xs:base64Binary(xs:hexBinary("03")) ne xs:base64Binary(xs:hexBinary("13"))`. :)
+(:*******************************************************:)
+xs:base64Binary(xs:hexBinary("03")) ne xs:base64Binary(xs:hexBinary("13"))

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K2-DirectConElemContent-4                       :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Test that the typed of element nodes is correct. :)
+(:*******************************************************:)
+not(<name>some text</name> instance of xs:untypedAtomic)

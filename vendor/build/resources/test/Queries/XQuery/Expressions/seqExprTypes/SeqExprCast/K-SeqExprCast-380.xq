@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-380                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: '2004-32-01' is an invalid lexical representation for xs:date; the month part cannot be larger than 32. :)
+(:*******************************************************:)
+xs:date("2004-32-01")

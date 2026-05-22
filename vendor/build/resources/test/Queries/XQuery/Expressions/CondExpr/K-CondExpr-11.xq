@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-CondExpr-11                                   :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: An if-test applied on fn:count() combined with fn:not(). :)
+(:*******************************************************:)
+if(not(count(remove((1, 2, 3, current-time()), 1)))) then 3 else true()

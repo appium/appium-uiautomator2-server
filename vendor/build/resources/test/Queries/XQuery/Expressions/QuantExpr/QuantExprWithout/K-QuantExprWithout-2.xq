@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-QuantExprWithout-2                            :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: 'some': EBV can't be extracted from xs:QName. :)
+(:*******************************************************:)
+every $foo in 1 satisfies QName("example.com/", "ncname")

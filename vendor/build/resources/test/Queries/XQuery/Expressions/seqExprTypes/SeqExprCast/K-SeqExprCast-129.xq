@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-129                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: If the last tetragram ends in '==' then the previous character must be one of [AQgw]. :)
+(:*******************************************************:)
+xs:base64Binary("frfhforlksid745323==")

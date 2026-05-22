@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-XQueryComment-16                              :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:39+02:00                       :)
+(: Purpose: A comment inside a comment that does not start properly. :)
+(:*******************************************************:)
+1(: content this comment does not start properly :) :)

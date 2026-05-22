@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-DateEQ-7                                      :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Test that zone offset Z is equal to Z, in xs:date. :)
+(:*******************************************************:)
+xs:date("1999-12-04Z") eq xs:date("1999-12-04Z")

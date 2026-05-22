@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-NodeNameFunc-1                                :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:39+02:00                       :)
+(: Purpose: node-name() must be passed one argument, it doesn't use the context item by default. :)
+(:*******************************************************:)
+node-name()

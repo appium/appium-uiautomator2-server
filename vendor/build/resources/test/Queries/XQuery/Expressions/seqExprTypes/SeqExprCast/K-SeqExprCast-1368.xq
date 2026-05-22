@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-1368                              :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:39+02:00                       :)
+(: Purpose: 'castable as' involving xs:hexBinary as sourceType and xs:NOTATION should fail due to it involving xs:NOTATION. :)
+(:*******************************************************:)
+not(xs:hexBinary("0FB7") castable as xs:NOTATION)

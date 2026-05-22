@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-FunctionCallExpr-26                           :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: No function by name fn:system-property() exists(although one does in XSL-T). :)
+(:*******************************************************:)
+system-property("xsl:vendor")

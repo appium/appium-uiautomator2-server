@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-277                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: '1999-13' is an invalid lexical representation for xs:gYearMonth. :)
+(:*******************************************************:)
+xs:gYearMonth("1999-13")

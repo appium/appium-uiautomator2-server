@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-151                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: At least one number and its designator must be present in a xs:duration value. :)
+(:*******************************************************:)
+xs:duration("P")

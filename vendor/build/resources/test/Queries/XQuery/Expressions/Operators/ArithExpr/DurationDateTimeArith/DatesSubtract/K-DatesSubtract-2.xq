@@ -1,0 +1,8 @@
+(:*******************************************************:)
+(: Test: K-DatesSubtract-2                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: Simple testing involving operator '-' between xs:date and xs:date that evaluates to zero. :)
+(:*******************************************************:)
+xs:date("1999-07-19") - xs:date("1999-07-19")
+		eq xs:dayTimeDuration("PT0S")

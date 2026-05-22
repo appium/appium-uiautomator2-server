@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-ForExprPositionalVar-7                        :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Extract the EBV from a positional variable.  :)
+(:*******************************************************:)
+deep-equal((true(), true()), for $i at $p in (1, 2) return boolean($p))

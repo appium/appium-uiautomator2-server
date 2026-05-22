@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-356                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: '21:60:00' is an invalid lexical representation for xs:time; minute part can never be larger than 59. :)
+(:*******************************************************:)
+xs:time("21:60:00")

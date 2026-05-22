@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-640                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: 'castable as' involving xs:integer as sourceType and xs:NOTATION should fail due to it involving xs:NOTATION. :)
+(:*******************************************************:)
+not(xs:integer("6789") castable as xs:NOTATION)

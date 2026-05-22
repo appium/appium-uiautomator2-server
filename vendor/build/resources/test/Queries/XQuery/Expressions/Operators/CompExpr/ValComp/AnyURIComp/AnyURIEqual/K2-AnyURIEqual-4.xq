@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K2-AnyURIEqual-4                                :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Invoked 'gt' on xs:anyURI values.            :)
+(:*******************************************************:)
+xs:anyURI("http://example.com/B") gt xs:anyURI("http://example.com/A")

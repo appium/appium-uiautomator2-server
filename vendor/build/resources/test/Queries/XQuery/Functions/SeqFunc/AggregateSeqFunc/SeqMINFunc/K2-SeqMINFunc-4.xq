@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K2-SeqMINFunc-4                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Invoke fn:min() with an unsupported collation. :)
+(:*******************************************************:)
+min(("str1", "str2"), "http://example.com/UNSUPPORTED_COLLATION")

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-LetExprWithout-3                              :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: A value in a 'let' variable cannot be assigned to with 'in', it must be ':='. :)
+(:*******************************************************:)
+let $i in 5 return 3

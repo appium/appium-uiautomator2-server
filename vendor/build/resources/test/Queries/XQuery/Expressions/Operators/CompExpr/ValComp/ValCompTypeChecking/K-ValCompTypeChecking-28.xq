@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-ValCompTypeChecking-28                        :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: Value comparison involving xs:untypedAtomic, which leads to an inexistent operator mapping. :)
+(:*******************************************************:)
+xs:float(4) gt xs:untypedAtomic("3")

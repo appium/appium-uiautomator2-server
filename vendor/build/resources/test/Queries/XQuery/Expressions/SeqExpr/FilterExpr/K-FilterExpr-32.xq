@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-FilterExpr-32                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: A test whose essence is: `deep-equal((1, 2, 3), (1, 2, 3)[. instance of xs:integer])`. :)
+(:*******************************************************:)
+deep-equal((1, 2, 3), (1, 2, 3)[. instance of xs:integer])

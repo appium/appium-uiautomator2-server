@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-FunctionCallExpr-15                           :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: No function by name fn:format-number() exists(although one does in XSL-T). :)
+(:*******************************************************:)
+format-number(3, "picture string")

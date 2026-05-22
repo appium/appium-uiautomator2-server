@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-232                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Testing timezone field in xs:gYear: the minute field must always be present. :)
+(:*******************************************************:)
+xs:gYear("1956-10")

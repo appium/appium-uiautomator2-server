@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K2-AnyURIEqual-3                                :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Invoked 'gt' on xs:anyURI values.            :)
+(:*******************************************************:)
+not(xs:anyURI("http://example.com/A") gt xs:anyURI("http://example.com/B"))

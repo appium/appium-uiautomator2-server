@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-201                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: 'P731D' is an invalid lexical representation for xs:yearMonthDuration. :)
+(:*******************************************************:)
+xs:yearMonthDuration("P731D")

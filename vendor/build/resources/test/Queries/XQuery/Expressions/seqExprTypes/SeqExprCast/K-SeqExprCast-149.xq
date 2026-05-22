@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-149                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: No zone offset is allowed for xs:duration.   :)
+(:*******************************************************:)
+xs:duration("P1Y2M123DT10H30M99S+08:00")

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-171                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: No zone offset is allowed for xs:dayTimeDuration. :)
+(:*******************************************************:)
+xs:dayTimeDuration("P3DT10H+08:00")

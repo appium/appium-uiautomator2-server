@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-315                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: '2002-002-15T12:44:05' is an invalid lexical representation for xs:dateTime. :)
+(:*******************************************************:)
+xs:dateTime("2002-002-15T12:44:05")

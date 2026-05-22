@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-FilterExpr-89                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: A truth predicate that always match.         :)
+(:*******************************************************:)
+deep-equal(remove((1, 2, 3, current-time()), 4)[true()], (1, 2, 3))

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-DurationEQ-2                                  :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: Testing 'eq' involving xs:duration with two zeroed values. :)
+(:*******************************************************:)
+xs:duration("PT0S") eq xs:duration("PT0S")

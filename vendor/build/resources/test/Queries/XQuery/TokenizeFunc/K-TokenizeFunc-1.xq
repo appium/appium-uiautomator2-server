@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-TokenizeFunc-1                                :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:40+02:00                       :)
+(: Purpose: fn:tokenize takes at least two arguments.    :)
+(:*******************************************************:)
+tokenize("input")

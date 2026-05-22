@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-DurationEQ-31                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Test comparing xs:dayTimeDuration and xs:yearMonthDuration stressing value representations are normalized properly. :)
+(:*******************************************************:)
+xs:yearMonthDuration("P1M") ne xs:dayTimeDuration("P31D")

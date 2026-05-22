@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ 
+   <xs:element name="X">
+      <xs:complexType>
+          <xs:sequence>
+             <xs:element maxOccurs="unbounded" name="a" type="A_TYPE"/>
+          </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+  
+   <xs:complexType name="A_TYPE">
+      <xs:simpleContent>
+         <xs:extension base="xs:boolean">
+            <xs:attribute name="att" type="xs:boolean"/>
+         </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>

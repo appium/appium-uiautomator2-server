@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-ForExprWithout-17                             :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: A test whose essence is: `6 eq (for $foo in 1, $foo in 3 return $foo + $foo)`. :)
+(:*******************************************************:)
+6 eq (for $foo in 1, $foo in 3 return $foo + $foo)

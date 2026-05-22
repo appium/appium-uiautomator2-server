@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-DateAddYMD-4                                  :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: The '-' operator is not available between xs:yearMonthDuration and xs:dateTime. :)
+(:*******************************************************:)
+xs:yearMonthDuration("P1Y") - xs:dateTime("1999-08-12T08:01:23")

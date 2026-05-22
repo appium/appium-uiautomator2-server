@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-RangeExpr-13                                  :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: A test whose essence is: `empty(reverse(4 to 1))`. :)
+(:*******************************************************:)
+empty(reverse(4 to 1))

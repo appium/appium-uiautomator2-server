@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-MatchesFunc-4                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:40+02:00                       :)
+(: Purpose: Only three arguments are accepted.           :)
+(:*******************************************************:)
+matches("input", "pattern", "", ())

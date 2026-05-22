@@ -1,0 +1,6 @@
+(:*******************************************************:)
+(: Test: K-Literals-29                                   :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: An empty string is not a valid XPath/XQuery expression. :)
+(:*******************************************************:)

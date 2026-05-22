@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCastable-20                            :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:39+02:00                       :)
+(: Purpose: Casting an empty sequence to xs:QName does not work. :)
+(:*******************************************************:)
+not(() castable as xs:QName)

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-StringToCodepointFunc-9                       :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:39+02:00                       :)
+(: Purpose: A test whose essence is: `deep-equal(string-to-codepoints("ee"), (101, 101))`. :)
+(:*******************************************************:)
+deep-equal(string-to-codepoints("ee"), (101, 101))

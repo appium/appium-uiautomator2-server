@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-143                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Casting where the source type typically cannot be determined statically. :)
+(:*******************************************************:)
+xs:hexBinary(remove(("3B", 1.1), 2) treat as xs:string)

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-NumericLT-22                                  :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: lt combined with count().                    :)
+(:*******************************************************:)
+0 lt count((1, 2, 3, timezone-from-time(current-time()), 4))

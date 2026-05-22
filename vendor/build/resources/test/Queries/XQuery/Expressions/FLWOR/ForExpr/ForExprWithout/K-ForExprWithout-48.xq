@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-ForExprWithout-48                             :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Parser test: variable names in a for expression that only exist of one character are valid. :)
+(:*******************************************************:)
+1 eq (for $a in 1 return $a)

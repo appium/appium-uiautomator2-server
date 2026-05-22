@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-1057                              :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: The xs:gMonthDay constructor function must be passed exactly one argument, not zero. :)
+(:*******************************************************:)
+xs:gMonthDay()

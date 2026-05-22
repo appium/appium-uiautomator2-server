@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K2-NumericAdd-1                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Arithmethics involving operands of integer type but where both have wrong cardinality. :)
+(:*******************************************************:)
+(1, 2) + (1, 2)

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-ErrorFunc-6                                   :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:39+02:00                       :)
+(: Purpose: When fn:error() is passed a description, the first argument may be an empty sequence. :)
+(:*******************************************************:)
+error((), "description")

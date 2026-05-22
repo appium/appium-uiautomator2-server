@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-ContextCurrentDatetimeFunc-2                  :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:41+02:00                       :)
+(: Purpose: Test that the Dynamic Context property 'current dateTime' when presented as a xs:dateTime is stable during execution. :)
+(:*******************************************************:)
+current-dateTime() eq current-dateTime()

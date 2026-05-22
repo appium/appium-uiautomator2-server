@@ -1,0 +1,29 @@
+<xs:schema
+   xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+   xmlns:ids = "http://www.w3.org/XQueryTest/ididrefs" 
+   targetNamespace = "http://www.w3.org/XQueryTest/ididrefs" 
+   elementFormDefault = "qualified">
+ 
+  <xs:element name = "IDS" type = "ids:rootContent"/>
+  
+   <xs:complexType name = "rootContent">
+    <xs:sequence>
+     <xs:element name="elementwithid-1" type = "ids:elementWithIDAttribute"/>
+     <xs:element name="elementwithid-2" type = "ids:elementWithIDAttribute"/>      
+     <xs:element name="elementwithid-3" type = "ids:elementWithIDAttribute"/>
+     <xs:element name="elementwithid-4" type = "ids:elementWithIDAttribute"/>
+     <xs:element name="elementwithid-5" type = "ids:elementWithIDAttribute"/>
+     <xs:element name="elementwithid-6" type = "ids:elementWithIDAttribute"/>
+     <xs:element name="elementwithidref-1" type = "xs:IDREF"/>    
+     <xs:element name="elementwithidref-2" type = "xs:IDREF"/>        
+     <xs:element name="elementwithidref-3" type = "xs:IDREF"/>      
+     <xs:element name="elementwithidref-4" type = "xs:IDREF"/>      
+     <xs:element name="elementwithidref-5" type = "xs:IDREF"/>      
+     <xs:element name="elementwithidref-6" type = "xs:IDREF"/>      
+    </xs:sequence>
+   </xs:complexType>
+  
+  <xs:complexType name="elementWithIDAttribute">
+     <xs:attribute name="anId" type="xs:ID" use="required" />  
+  </xs:complexType>  
+</xs:schema>

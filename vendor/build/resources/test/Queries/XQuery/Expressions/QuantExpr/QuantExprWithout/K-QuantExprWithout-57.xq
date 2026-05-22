@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-QuantExprWithout-57                           :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: A test whose essence is: `true() eq (some $xs:name in (1, 2) satisfies $xs:name)`. :)
+(:*******************************************************:)
+true() eq (some $xs:name in (1, 2) satisfies $xs:name)

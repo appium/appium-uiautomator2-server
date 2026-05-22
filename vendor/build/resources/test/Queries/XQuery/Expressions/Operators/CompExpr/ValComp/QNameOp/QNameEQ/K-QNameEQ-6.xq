@@ -1,0 +1,8 @@
+(:*******************************************************:)
+(: Test: K-QNameEQ-6                                     :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Operator 'eq' is not available between xs:anyURI and xs:QName. :)
+(:*******************************************************:)
+QName("example.com/", "p:ncname")
+					eq xs:anyURI("org")

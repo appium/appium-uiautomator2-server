@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqDistinctValuesFunc-2                       :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:40+02:00                       :)
+(: Purpose: Invoke fn:distinct-values() with a collation argument, although the function does not perform string comparison. For that reason, output is valid as well. :)
+(:*******************************************************:)
+deep-equal(distinct-values((1, 2, 3), "http://www.example.com/COLLATION/NOT/SUPPORTED"), (1, 2, 3))

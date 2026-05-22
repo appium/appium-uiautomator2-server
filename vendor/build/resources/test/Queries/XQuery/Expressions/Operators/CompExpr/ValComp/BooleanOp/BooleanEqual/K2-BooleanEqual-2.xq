@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K2-BooleanEqual-2                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Cannot compare xs:boolean and xs:untypedAtomic. :)
+(:*******************************************************:)
+<name>true</name> eq true()

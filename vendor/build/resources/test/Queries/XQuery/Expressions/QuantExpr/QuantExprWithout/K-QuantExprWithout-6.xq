@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-QuantExprWithout-6                            :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: A some-quantification applied on fn:count(). :)
+(:*******************************************************:)
+every $i in (1, 2, 3) satisfies count($i)

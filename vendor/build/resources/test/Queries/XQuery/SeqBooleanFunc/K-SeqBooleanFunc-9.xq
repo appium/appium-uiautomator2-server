@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqBooleanFunc-9                              :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:40+02:00                       :)
+(: Purpose: fn:boolean() invoked on an non-empty xs:string should return true. :)
+(:*******************************************************:)
+boolean("string")

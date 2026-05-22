@@ -1,0 +1,8 @@
+(:*******************************************************:)
+(: Test: K2-SeqMINFunc-1                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Invoke fn:min() on two identical xs:anyURI values. :)
+(:*******************************************************:)
+min((xs:anyURI("http://example.com/A"), xs:anyURI("http://example.com/A")))
+            eq xs:anyURI("http://example.com/A")

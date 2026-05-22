@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-GenCompEq-32                                  :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: General comparison involving remove(), resulting in operands that require conversion to numeric from xs:untypedAtomic. :)
+(:*******************************************************:)
+remove((6, "a string"), 2) = xs:untypedAtomic("6")

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-ForExprPositionalVar-29                       :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Verify that the position is properly computed for a singleton value. :)
+(:*******************************************************:)
+1 eq (for $i at $p in 0 return $p)

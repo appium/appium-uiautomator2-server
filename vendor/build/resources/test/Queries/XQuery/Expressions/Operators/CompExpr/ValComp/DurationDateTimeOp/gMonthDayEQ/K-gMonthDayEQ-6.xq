@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-gMonthDayEQ-6                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Test that zone offset +00:00 is equal to Z, in xs:gMonthDay. :)
+(:*******************************************************:)
+xs:gMonthDay("--03-01+00:00") eq xs:gMonthDay("--03-01Z")

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-TimeSubtract-4                                :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: The '-' operator is not available between xs:yearMonthDuration and xs:date. :)
+(:*******************************************************:)
+xs:dayTimeDuration("P3D") - xs:date("1999-08-12")

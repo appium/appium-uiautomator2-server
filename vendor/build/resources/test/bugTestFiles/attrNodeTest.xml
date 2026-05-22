@@ -1,0 +1,6 @@
+<Example xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="attrNodeTest.xsd">
+  <x mesg="hello" />
+  <x mesg="world" />
+  <x mesg="test" />
+  <y intAttr="42"/>
+</Example>

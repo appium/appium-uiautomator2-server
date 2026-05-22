@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K2-DirectConElemContent-3                       :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Test that the typed value of element nodes is correct. :)
+(:*******************************************************:)
+<name>some, if(1) then else</name> instance of element()

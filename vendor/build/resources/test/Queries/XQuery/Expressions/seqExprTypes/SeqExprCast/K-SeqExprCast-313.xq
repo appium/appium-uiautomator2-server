@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-313                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: '2004-32-01T12:44:05' is an invalid lexical representation for xs:dateTime; the month part cannot be larger than 32. :)
+(:*******************************************************:)
+xs:dateTime("2004-32-01T12:44:05")

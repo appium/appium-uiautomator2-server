@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-250                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Testing timezone field in xs:gDay: the hour component cannot be -15. :)
+(:*******************************************************:)
+xs:gDay("---08-15:00")

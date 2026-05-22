@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqBooleanFunc-7                              :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:40+02:00                       :)
+(: Purpose: Extracting EBV from xs:anyURI is allowed.    :)
+(:*******************************************************:)
+boolean(xs:anyURI("example.com/"))

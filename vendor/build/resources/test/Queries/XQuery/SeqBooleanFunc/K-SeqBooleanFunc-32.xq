@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqBooleanFunc-32                             :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:40+02:00                       :)
+(: Purpose: Apply fn:boolean() on fn:count().            :)
+(:*******************************************************:)
+fn:boolean(count((1, 2, 3, timezone-from-time(current-time()), 4)))

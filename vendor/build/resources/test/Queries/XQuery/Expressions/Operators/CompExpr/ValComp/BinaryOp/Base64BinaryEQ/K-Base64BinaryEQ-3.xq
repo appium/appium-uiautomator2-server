@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-Base64BinaryEQ-3                              :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: A test whose essence is: `xs:hexBinary(xs:base64Binary("/w==")) eq xs:hexBinary("FF")`. :)
+(:*******************************************************:)
+xs:hexBinary(xs:base64Binary("/w==")) eq xs:hexBinary("FF")

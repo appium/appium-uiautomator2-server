@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-ForExprWithout-8                              :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: A test whose essence is: `2 eq (for $foo in 1 return $foo + 1)`. :)
+(:*******************************************************:)
+2 eq (for $foo in 1 return $foo + 1)

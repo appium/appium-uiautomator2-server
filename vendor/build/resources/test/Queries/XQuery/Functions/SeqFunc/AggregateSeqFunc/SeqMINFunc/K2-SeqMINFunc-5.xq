@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K2-SeqMINFunc-5                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Invoke fn:min() with an unsupported collation and one xs:anyURI value. :)
+(:*******************************************************:)
+min(xs:anyURI("str1"), "http://example.com/UNSUPPORTED_COLLATION")

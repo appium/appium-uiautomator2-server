@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-gMonthDayEQ-1                                 :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Simple test of 'eq' for xs:gMonthDay, returning positive. :)
+(:*******************************************************:)
+xs:gMonthDay("--04-01  ") eq xs:gMonthDay("--04-01")

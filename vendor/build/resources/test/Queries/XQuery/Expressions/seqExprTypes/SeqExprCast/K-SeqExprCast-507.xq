@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-507                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:38+02:00                       :)
+(: Purpose: 'castable as' involving xs:double as source type and xs:yearMonthDuration as target type should always evaluate to false. :)
+(:*******************************************************:)
+not(xs:double("3.3e3") castable as xs:yearMonthDuration)

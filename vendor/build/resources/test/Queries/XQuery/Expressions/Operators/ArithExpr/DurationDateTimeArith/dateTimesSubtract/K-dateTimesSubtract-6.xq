@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-dateTimesSubtract-6                           :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: The '-' operator is not available between xs:dayTimeDuration and xs:dateTime. :)
+(:*******************************************************:)
+xs:dayTimeDuration("P3D") - xs:dateTime("1999-08-12T08:01:23")

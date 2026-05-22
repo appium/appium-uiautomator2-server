@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-FunctionCallExpr-28                           :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: No function by name fn:sub-sequence() exists(although one by name fn:subsequence does). :)
+(:*******************************************************:)
+fn:sub-sequence("http:/example.com/", 1, 1)

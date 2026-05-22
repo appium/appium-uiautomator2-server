@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-NumericLT-21                                  :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: le combined with count().                    :)
+(:*******************************************************:)
+1 le count((1, 2, 3, timezone-from-time(current-time()), 4))

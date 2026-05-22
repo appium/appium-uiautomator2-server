@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-SeqExprCast-266                               :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:37+02:00                       :)
+(: Purpose: Testing timezone field in xs:gMonth: the hour component cannot be +15. :)
+(:*******************************************************:)
+xs:gMonth("--08+15:00")

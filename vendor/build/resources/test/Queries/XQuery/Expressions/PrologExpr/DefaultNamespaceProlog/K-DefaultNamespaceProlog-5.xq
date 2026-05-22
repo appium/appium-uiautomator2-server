@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K-DefaultNamespaceProlog-5                      :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:39+02:00                       :)
+(: Purpose: No function named boolean is available in the namespace 'example.com' set via 'declare default function namespace'. :)
+(:*******************************************************:)
+(::)declare(::)default(::)function(::)namespace(::)"http://example.com/"(::);(::)boolean(1)

@@ -1,0 +1,7 @@
+(:*******************************************************:)
+(: Test: K2-AnyURIEqual-1                                :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-08-04T17:13:26Z                            :)
+(: Purpose: Invoked 'lt' on xs:anyURI values.            :)
+(:*******************************************************:)
+xs:anyURI("http://example.com/A") lt xs:anyURI("http://example.com/B")

@@ -1,0 +1,8 @@
+(:*******************************************************:)
+(: Test: K-TimeSubtract-2                                :)
+(: Written by: Frans Englich                             :)
+(: Date: 2006-10-05T18:29:36+02:00                       :)
+(: Purpose: Simple testing involving operator '-' between xs:time and xs:time, that evaluates to zero. :)
+(:*******************************************************:)
+xs:time("08:12:32") - xs:time("08:12:32")
+					 eq xs:dayTimeDuration("PT0S")
