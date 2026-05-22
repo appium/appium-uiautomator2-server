@@ -1,0 +1,48 @@
+<!--
+ *******************************************************************************
+ * Copyright (c) 2009, 2013 Standards for Technology in Automotive Retail and others
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     David Carver - initial API and implementation
+ *     Jesper S Moller - bug 283214 - fix IF THEN ELSE parsing and update grammars 
+ *     Jesper S Moller - bug 311480 - more debug info, better cleanup
+ *******************************************************************************/
+
+-->
+<project name="proj1" default="generate_parser" basedir=".">
+    <property name="src" location="${basedir}"/>   
+    <property name="cupJar" location="${basedir}/lib/javacup10.jar"/>
+    <description>
+    Build File for Compiler Project
+</description>
+
+	<taskdef classname="JFlex.anttask.JFlexTask" name="jflex" classpath="${basedir}/lib/JFlex.jar" />
+
+	<target name="generate_parser">
+		<jflex file="grammars/xpath.lex" destdir="grammars/generated"/>
+		<copy tofile="${basedir}/src/org/eclipse/wst/xml/xpath2/processor/internal/XPathFlex.java" file="grammars/generated/org/eclipse/wst/xml/xpath2/processor/internal/XPathFlex.java"/>
+		<replaceregexp file="${basedir}/src/org/eclipse/wst/xml/xpath2/processor/internal/XPathFlex.java"
+		               match="sym.EOF"
+		               replace="XpathSym.EOF"
+		               byline="true"
+		/>
+		<java jar="${cupJar}" input="grammars/xpath.cup" output="${basedir}/JavaCUP-dump.txt" fork="true" failonerror="true">
+	    	<arg value="-parser"/>
+	    	<arg value="XPathCup"/>
+	    	<arg value="-symbols"/>
+	    	<arg value="XpathSym"/>
+	    	<arg value="-package"/>
+	    	<arg value="org.eclipse.wst.xml.xpath2.processor.internal"/>
+	    	<arg value="-dump"/>    	
+	    </java>
+		<move tofile="${basedir}/src/org/eclipse/wst/xml/xpath2/processor/internal/XPathCup.java" file="XPathCup.java"/>
+		<move tofile="${basedir}/src/org/eclipse/wst/xml/xpath2/processor/internal/XpathSym.java" file="XpathSym.java"/>
+	</target>
+
+</project>

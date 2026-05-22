@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2010, 2018 Eclipse Foundation and others.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Distribution License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/org/documents/edl-v10.php
+ 
+  Contributors:
+    David Carver - Initial implementation
+    Jesper Moller - Initial implementation
+    Thanh Ha (Eclipse Foundation) - CBI Webtools implementation
+-->
+
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.webtools.sourceediting</groupId>
+    <artifactId>sourceediting.xpath.bundles</artifactId>
+    <version>3.10.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.eclipse.webtools.sourceediting</groupId>
+  <artifactId>org.eclipse.wst.xml.xpath2.processor</artifactId>
+  <version>2.2.0-SNAPSHOT</version>
+  <packaging>eclipse-plugin</packaging>
+  <name>PsychoPath XPath 2.0 Processor</name>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>
