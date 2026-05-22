@@ -1,6 +1,8 @@
+import {execFile} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {promisify} from 'node:util';
 import {valid} from 'semver';
 import {logger} from '@appium/support';
 
@@ -8,6 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const log = logger.getLogger('Versioner');
+const execFileAsync = promisify(execFile);
 const VERSION_NAME_PATTERN = /^\s*versionName\s*=\s*(.+)$/gm;
 const VERSION_CODE_PATTERN = /^\s*versionCode\s*=\s*(\d+)$/gm;
 
@@ -23,7 +26,22 @@ function parseArgValue (argName) {
 }
 
 
+async function ensureGitMasterRef() {
+  // AGP's extract*VersionControlInfo task requires a loose refs/heads/master file.
+  // CI checkouts and tag fetches often keep master only in packed-refs.
+  try {
+    const {stdout} = await execFileAsync('git', ['rev-parse', 'HEAD'], {encoding: 'utf8'});
+    const sha = stdout.trim();
+    const masterRef = path.resolve(__dirname, '..', '.git', 'refs', 'heads', 'master');
+    await fs.promises.mkdir(path.dirname(masterRef), {recursive: true});
+    await fs.promises.writeFile(masterRef, `${sha}\n`, 'utf8');
+  } catch {
+    // Non-fatal when building outside a git repo.
+  }
+}
+
 async function gradleVersionUpdate() {
+  await ensureGitMasterRef();
   const gradleFile = path.resolve(__dirname, '..', 'gradle.properties');
   try {
     await fs.promises.access(gradleFile, fs.constants.W_OK);
