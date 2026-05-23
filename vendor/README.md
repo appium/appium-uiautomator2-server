@@ -43,4 +43,6 @@ Eclipse/OSGi resource loading is replaced with classpath lookup via `TestResourc
 npm run test:vendor-xpath2
 ```
 
+The `fetchXpath2TestData` task runs automatically before `test` (requires network on first run). CI runs this via `npm run test:vendor-xpath2`.
+
 This executes the upstream `AllPsychoPathTests` aggregate suite (8000+ cases) through `PsychoPathTestSuiteAdapter`.
