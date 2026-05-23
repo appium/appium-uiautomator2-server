@@ -1,3 +1,9 @@
+## [10.2.0](https://github.com/appium/appium-uiautomator2-server/compare/v10.1.1...v10.2.0) (2026-05-23)
+
+### Features
+
+* Vendor org.eclipse.wst.xml.xpath2.processor lib ([#767](https://github.com/appium/appium-uiautomator2-server/issues/767)) ([4b10e12](https://github.com/appium/appium-uiautomator2-server/commit/4b10e1267ebe4de5bdcdc70ee23860dc3f900e07))
+
 ## [10.1.1](https://github.com/appium/appium-uiautomator2-server/compare/v10.1.0...v10.1.1) (2026-05-22)
 
 ### Bug Fixes
