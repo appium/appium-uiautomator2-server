@@ -1,0 +1,771 @@
+// *******************************************************************************
+// * Copyright (c) 2005, 2010 Andrea Bittau, University College London, and others
+// * All rights reserved. This program and the accompanying materials
+// * are made available under the terms of the Eclipse Public License v2.0
+// * which accompanies this distribution, and is available at
+// * https://www.eclipse.org/legal/epl-2.0/
+// *
+// * Contributors:
+// *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
+// *     David Carver - bug 269833 - A work around for the keyword in node issue.
+// *     Jesper S Moller - bug 283214 - fix IF THEN ELSE parsing and update grammars
+// *     David Carver (STAR) - bug 262765 - Fixed Wildcard and NCName issue. 
+// *     Jesper S Moller - bug 297707 - Missing the empty-sequence() type
+// *     Jesper S Moller - bug 311480 - fix problem with name matching on keywords 
+// *******************************************************************************/
+
+
+package org.eclipse.wst.xml.xpath2.processor.internal;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
+import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
+import org.eclipse.wst.xml.xpath2.processor.internal.ast.*;
+import org.eclipse.wst.xml.xpath2.processor.internal.types.*;
+
+ 
+parser code 	{:
+
+public void report_error(String message, Object info) {
+	String err = "Parser error: ";
+
+	XPathFlex lexer = (XPathFlex) getScanner();
+
+	err += "line " + lexer.lineno();
+	err += " col " + lexer.colno();
+	err += ": " + lexer.yytext();
+
+	
+	throw new CupError(err);
+}
+:}
+
+
+
+terminal LBRACKET, RBRACKET, LPAR, RPAR;
+terminal PLUS, MINUS, STAR, PIPE;
+terminal EQUALS, NOTEQUALS, LESSTHAN, LESSEQUAL, GREATER, GREATEREQUAL;
+terminal LESS_LESS, GREATER_GREATER;
+terminal FORWARD_SLASH, FORWARD_SLASHSLASH;
+terminal COLONCOLON, AT_SYM, DOTDOT, COLON, COMMA, DOLLAR, DOT, QUESTIONMARK;
+
+terminal String CHILD, DESCENDANT, ATTRIBUTE, SELF, DESCENDANT_OR_SELF;
+terminal String FOLLOWING_SIBLING, FOLLOWING, NAMESPACE, PARENT;
+terminal String ANCESTOR, PRECEDING_SIBLING, PRECEDING, ANCESTOR_OR_SELF;
+terminal EQ, NE, LT, LE, GT, GE;
+terminal String DIV, IDIV, MOD;
+terminal String UNION, INTERSECT, EXCEPT;
+terminal String INSTANCE, OF, TREAT, AS, CASTABLE, CAST, IS;
+terminal String FOR, IN, RETURN, SATISFIES, TO;
+terminal String SOME, EVERY;
+terminal String IF, THEN, ELSE;
+terminal String AND, OR;
+terminal EMPTY_SEQUENCE, ITEM, NODE, DOCUMENT_NODE, TEXT, COMMENT;
+terminal PROCESSING_INSTRUCTION, SCHEMA_ATTRIBUTE, ELEMENT, SCHEMA_ELEMENT;
+// Unused in XPath 2, but reserved for compatibility with XQuery
+terminal TYPESWITCH;
+
+terminal BigInteger INTEGER;
+terminal Double DOUBLE;
+terminal BigDecimal DECIMAL;
+terminal String STRING, NCNAME;
+
+
+non terminal String NCName, UnreservedNCName, Prefix, LocalPart;
+non terminal StringLiteral StringLiteral;
+non terminal QName ElementDeclaration, ElementNameOrWildcard, TypeName, ElementName;
+non terminal QName AttributeDeclaration, AttribNameOrWildcard, AttributeName;
+non terminal QName AtomicType, QName, UnreservedQName, VarName, Wildcard;
+non terminal Integer OccurrenceIndicator, ReverseAxis, ForwardAxis, NodeComp;
+non terminal ItemType ItemType;
+non terminal Collection FunctionCallMiddle, ParenthesizedExpr, Expr;
+non terminal Collection PredicateList, QuantifiedExprMiddle, SimpleForClause;
+non terminal PrimaryExpr PrimaryExpr;
+non terminal NodeTest NodeTest;
+non terminal ReverseStep ReverseStep, AbbrevReverseStep;
+non terminal ForwardStep ForwardStep, AbbrevForwardStep;
+non terminal StepExpr StepExpr;
+non terminal XPathExpr RelativePathExpr;
+non terminal Expr UnaryExpr;
+non terminal SingleType SingleType;
+non terminal SequenceType SequenceType;
+non terminal Expr TreatExpr, CastableExpr, InstanceofExpr, CastExpr;
+non terminal Expr UnionExpr, MultiplicativeExpr, IntersectExceptExpr, ExprSingle;
+non terminal Expr AdditiveExpr;
+non terminal Integer GeneralComp, ValueComp;
+non terminal Expr AndExpr, OrExpr, RangeExpr, ComparisonExpr;
+non terminal NameTest NameTest;
+non terminal KindTest KindTest;
+non terminal Literal Literal;
+non terminal VarRef VarRef;
+non terminal CntxItemExpr ContextItemExpr;
+non terminal FunctionCall FunctionCall;
+non terminal NumericLiteral NumericLiteral;
+non terminal DecimalLiteral DecimalLiteral;
+non terminal IntegerLiteral IntegerLiteral;
+non terminal DoubleLiteral DoubleLiteral;
+non terminal DocumentTest DocumentTest;
+non terminal TextTest TextTest;
+non terminal CommentTest CommentTest;
+non terminal PITest PITest;
+non terminal AttributeTest AttributeTest;
+non terminal AnyKindTest AnyKindTest;
+non terminal ElementTest ElementTest;
+non terminal SchemaAttrTest SchemaAttributeTest;
+non terminal SchemaElemTest SchemaElementTest;
+non terminal XPath XPath;
+non terminal ForExpr ForExpr;
+non terminal QuantifiedExpr QuantifiedExpr;
+non terminal IfExpr IfExpr;
+non terminal XPathExpr PathExpr, ValueExpr;
+non terminal AxisStep AxisStep;
+non terminal FilterExpr FilterExpr;
+non terminal Collection Predicate;
+
+precedence left PLUS, MINUS;
+precedence left STAR;
+precedence left COLON;
+precedence left COLONCOLON;
+precedence left CHILD, DESCENDANT, ATTRIBUTE, SELF, DESCENDANT_OR_SELF;
+precedence left FOLLOWING_SIBLING, FOLLOWING, NAMESPACE, PARENT;
+precedence left ANCESTOR, PRECEDING_SIBLING, PRECEDING, ANCESTOR_OR_SELF;
+precedence left UNION, INTERSECT, EXCEPT;
+precedence left INSTANCE, OF, TREAT, AS, CASTABLE, CAST, IS;
+precedence left FOR, IN, RETURN, SATISFIES, TO;
+precedence left SOME, EVERY;
+precedence left IF, THEN, ELSE;
+precedence left AND, OR;
+precedence left DIV, IDIV, MOD;
+precedence left EQ, NE, LT, LE, GT, GE;
+
+
+
+XPath             ::= Expr:exps {: RESULT = new XPath(exps); :} ;
+
+Expr              ::= ExprSingle:ex 
+			{: 
+				Collection exps = new ArrayList();
+				exps.add(ex);
+				RESULT = exps;
+			:}
+                    | Expr:exprs COMMA ExprSingle:ex 
+		    	{: 
+				exprs.add(ex);
+				RESULT = exprs;
+			:} 
+		    ;
+
+ExprSingle        ::= ForExpr:n {: RESULT = n; :}
+                    | QuantifiedExpr:n {: RESULT = n; :}
+                    | IfExpr:n {: RESULT = n; :}
+                    | OrExpr:n {: RESULT = n; :}
+		    ;
+
+ForExpr           ::= SimpleForClause:pairs RETURN ExprSingle:e 
+			{:
+				ForExpr fexp = new ForExpr(pairs,e);
+				RESULT = fexp;
+			:}	
+		    ;
+
+SimpleForClause   ::= FOR DOLLAR VarName:v IN ExprSingle:e
+			{:
+				Collection pairs = new ArrayList();
+				VarExprPair p = new VarExprPair(v,e);
+				pairs.add(p);
+				RESULT = pairs;
+			:}
+			
+                    | SimpleForClause:ps COMMA DOLLAR VarName:v IN ExprSingle:e
+		    	{:
+				VarExprPair p = new VarExprPair(v,e);
+				ps.add(p);
+				RESULT = ps;
+			:}	
+		    ;
+
+QuantifiedExpr       ::= SOME DOLLAR QuantifiedExprMiddle:pairs SATISFIES ExprSingle:e
+			{:
+				QuantifiedExpr qe = new QuantifiedExpr(QuantifiedExpr.SOME,
+								       pairs, e);
+				RESULT = qe;
+			:}
+                       | EVERY DOLLAR QuantifiedExprMiddle:pairs SATISFIES ExprSingle:e
+			{:
+				QuantifiedExpr qe = new QuantifiedExpr(QuantifiedExpr.ALL,
+								       pairs, e);
+				RESULT = qe;
+			:}
+		       ;
+
+QuantifiedExprMiddle ::= VarName:v IN ExprSingle:e
+			{:
+				Collection pairs = new ArrayList();
+				VarExprPair p = new VarExprPair(v,e);
+				pairs.add(p);
+				RESULT = pairs;
+			:}
+                       | QuantifiedExprMiddle:ps COMMA DOLLAR VarName:v IN ExprSingle:e
+		       	{:
+				VarExprPair p = new VarExprPair(v,e);
+				ps.add(p);
+				RESULT = ps;
+			:}
+		       ;
+
+IfExpr            ::= IF LPAR Expr:exps RPAR THEN ExprSingle:t ELSE ExprSingle:e
+			{: RESULT = new IfExpr(exps, t, e); :}
+		    ;
+
+OrExpr            ::= AndExpr:n {: RESULT = n; :} 
+                    | OrExpr:l OR AndExpr:r {: RESULT = new OrExpr(l, r); :}
+		    ;
+
+AndExpr           ::= ComparisonExpr:n {: RESULT = n; :} 
+                    | AndExpr:l AND ComparisonExpr:r
+		    	{: RESULT = new AndExpr(l, r); :}
+		    ;
+
+ComparisonExpr    ::= RangeExpr:n {: RESULT = n; :}
+                    | RangeExpr:l ValueComp:t RangeExpr:r
+			{: RESULT = new CmpExpr(l, r, t.intValue()); :}
+                    | RangeExpr:l GeneralComp:t RangeExpr:r
+			{: RESULT = new CmpExpr(l, r, t.intValue()); :}
+                    | RangeExpr:l NodeComp:t RangeExpr:r
+			{: RESULT = new CmpExpr(l, r, t.intValue()); :}
+		    ;
+
+RangeExpr         ::= AdditiveExpr:n {: RESULT = n; :}
+		    | AdditiveExpr:l TO AdditiveExpr:r
+		    	{: RESULT = new RangeExpr(l, r); :}	
+		    ;
+
+AdditiveExpr        ::= MultiplicativeExpr:n {: RESULT = n; :}
+                      | AdditiveExpr:l PLUS MultiplicativeExpr:r
+		      	{: RESULT = new AddExpr(l, r); :}
+		      | AdditiveExpr:l MINUS MultiplicativeExpr:r
+		      	{: RESULT = new SubExpr(l, r); :}
+		      ;
+
+MultiplicativeExpr  ::= UnionExpr:n {: RESULT = n; :} 
+                      | MultiplicativeExpr:l STAR UnionExpr:r
+		      	{: RESULT = new MulExpr(l, r); :}
+                      | MultiplicativeExpr:l DIV UnionExpr:r
+		      	{: RESULT = new DivExpr(l, r); :}
+                      | MultiplicativeExpr:l IDIV UnionExpr:r
+		      	{: RESULT = new IDivExpr(l, r); :}
+                      | MultiplicativeExpr:l MOD UnionExpr:r
+		      	{: RESULT = new ModExpr(l, r); :}
+		      ;
+
+UnionExpr           ::= IntersectExceptExpr:n {: RESULT = n; :}
+                      | UnionExpr:l UNION IntersectExceptExpr:r
+		        {: RESULT = new UnionExpr(l, r); :}
+                      | UnionExpr:l PIPE IntersectExceptExpr:r
+		        {: RESULT = new PipeExpr(l, r); :}
+		      ;
+
+IntersectExceptExpr ::= InstanceofExpr:n {: RESULT = n; :}
+                      | IntersectExceptExpr:l INTERSECT InstanceofExpr:r
+		      	{: RESULT = new IntersectExpr(l, r); :}
+                      | IntersectExceptExpr:l EXCEPT InstanceofExpr:r
+		      	{: RESULT = new ExceptExpr(l, r); :}
+		      ;
+
+InstanceofExpr      ::= TreatExpr:n {: RESULT = n; :}
+                      | TreatExpr:l INSTANCE OF SequenceType:r
+		      	{: RESULT = new InstOfExpr(l, r); :}
+		      ;
+
+TreatExpr           ::= CastableExpr:n {: RESULT = n; :}
+                      | CastableExpr:l TREAT AS SequenceType:r
+		      	{: RESULT = new TreatAsExpr(l, r); :}
+		      ;
+
+CastableExpr        ::= CastExpr:n {: RESULT = n; :}
+                      | CastExpr:l CASTABLE AS SingleType:r
+		      	{: RESULT = new CastableExpr(l, r); :}
+		      ;
+
+CastExpr            ::= UnaryExpr:n {: RESULT = n; :}
+                      | UnaryExpr:l CAST AS SingleType:r 
+		        {: RESULT = new CastExpr(l, r); :}
+		      ;
+   
+UnaryExpr           ::= ValueExpr:n {: RESULT = n; :}
+                      | MINUS UnaryExpr:a {: RESULT = new MinusExpr(a); :}
+		      | PLUS UnaryExpr:a {: RESULT = new PlusExpr(a); :}
+		      ;
+
+ValueExpr           ::= PathExpr:n {: RESULT = n; :};
+
+GeneralComp         ::= EQUALS
+			{: RESULT = new Integer(CmpExpr.EQUALS); :}
+                      | NOTEQUALS
+		      	{: RESULT = new Integer(CmpExpr.NOTEQUALS); :}
+		      | LESSTHAN
+		      	{: RESULT = new Integer(CmpExpr.LESSTHAN); :}
+		      | LESSEQUAL
+		      	{: RESULT = new Integer(CmpExpr.LESSEQUAL); :} 
+		      | GREATER
+		      	{: RESULT = new Integer(CmpExpr.GREATER); :}
+		      | GREATEREQUAL
+		      	{: RESULT = new Integer(CmpExpr.GREATEREQUAL); :} 
+		      ;
+
+ValueComp           ::= EQ	{: RESULT = new Integer(CmpExpr.EQ); :} 
+                      | NE  	{: RESULT = new Integer(CmpExpr.NE); :}
+		      | LT  	{: RESULT = new Integer(CmpExpr.LT); :}
+		      | LE  	{: RESULT = new Integer(CmpExpr.LE); :}
+		      | GT  	{: RESULT = new Integer(CmpExpr.GT); :}
+		      | GE 	{: RESULT = new Integer(CmpExpr.GE); :}
+		      ;
+
+NodeComp            ::= IS 	 	{: RESULT = new Integer(CmpExpr.IS); :}
+                      | LESS_LESS 	
+		      	{: RESULT = new Integer(CmpExpr.LESS_LESS); :}
+		      | GREATER_GREATER	
+		      	{: RESULT = new Integer(CmpExpr.GREATER_GREATER); :}
+		      ;
+
+PathExpr            ::= FORWARD_SLASH {: RESULT = new XPathExpr(1,null); :}
+                      | FORWARD_SLASH RelativePathExpr:p
+		      	{:
+				p.set_slashes(1);
+				RESULT = p;
+			:}
+                      | FORWARD_SLASHSLASH RelativePathExpr:p
+		      	{:
+				p.set_slashes(2);
+				RESULT = p;
+			:}
+                      | RelativePathExpr:n {: RESULT = n; :}
+		      ;
+
+RelativePathExpr    ::= StepExpr:s {: RESULT = new XPathExpr(0,(StepExpr)s); :}
+                      | RelativePathExpr:p FORWARD_SLASH StepExpr:s
+		      	{:
+				p.add_tail(1,s);
+				RESULT = p;
+			:}
+		      | RelativePathExpr:p FORWARD_SLASHSLASH StepExpr:s
+		      	{:
+				p.add_tail(2,s);
+				RESULT = p;
+			:}
+		      ;
+
+StepExpr            ::= AxisStep:n {: RESULT = n; :}
+                      | FilterExpr:n {: RESULT = n; :}
+		      ;
+
+AxisStep            ::= ForwardStep:s PredicateList:p 
+			{: RESULT = new AxisStep(s, p); :}	
+                      | ReverseStep:s PredicateList:p
+			{: RESULT = new AxisStep(s, p); :}	
+		      ;
+
+ForwardStep         ::= ForwardAxis:a NodeTest:n
+			{: RESULT = new ForwardStep(a.intValue(),n); :}
+                      | AbbrevForwardStep:n {: RESULT = n; :}
+		      ;
+
+ForwardAxis         ::= CHILD COLONCOLON 
+			{: RESULT = new Integer(ForwardStep.CHILD); :}
+                      | DESCENDANT COLONCOLON
+			{: RESULT = new Integer(ForwardStep.DESCENDANT); :}
+                      | ATTRIBUTE COLONCOLON
+			{: RESULT = new Integer(ForwardStep.ATTRIBUTE); :}
+                      | SELF COLONCOLON
+			{: RESULT = new Integer(ForwardStep.SELF); :}
+                      | DESCENDANT_OR_SELF COLONCOLON
+			{: RESULT = new Integer(ForwardStep.DESCENDANT_OR_SELF); :}
+                      | FOLLOWING_SIBLING COLONCOLON
+			{: RESULT = new Integer(ForwardStep.FOLLOWING_SIBLING); :}
+                      | FOLLOWING COLONCOLON
+			{: RESULT = new Integer(ForwardStep.FOLLOWING); :}
+                      | NAMESPACE COLONCOLON
+			{: RESULT = new Integer(ForwardStep.NAMESPACE); :}
+		      ;
+
+AbbrevForwardStep   ::= AT_SYM NodeTest:n
+			{: RESULT = new ForwardStep(ForwardStep.AT_SYM, n); :}
+                      | NodeTest:n
+			{: RESULT = new ForwardStep(ForwardStep.NONE, n); :}
+		      ;
+
+ReverseStep         ::= ReverseAxis:a NodeTest:n
+			{:  RESULT = new ReverseStep(a.intValue(), n); :}
+                      | AbbrevReverseStep:n {: RESULT = n; :}
+		      ;
+
+ReverseAxis         ::= PARENT COLONCOLON
+			{: RESULT = new Integer(ReverseStep.PARENT); :}
+                      | ANCESTOR COLONCOLON
+			{: RESULT = new Integer(ReverseStep.ANCESTOR); :}
+                      | PRECEDING_SIBLING COLONCOLON
+			{: RESULT = new Integer(ReverseStep.PRECEDING_SIBLING); :}
+                      | PRECEDING COLONCOLON
+			{: RESULT = new Integer(ReverseStep.PRECEDING); :}
+                      | ANCESTOR_OR_SELF COLONCOLON
+			{: RESULT = new Integer(ReverseStep.ANCESTOR_OR_SELF); :}
+		      ;
+
+AbbrevReverseStep   ::= DOTDOT 
+			{: RESULT = new ReverseStep(ReverseStep.DOTDOT,null); :}
+		      ;
+
+NodeTest            ::= KindTest:n {: RESULT = n; :}
+                      | NameTest:n {: RESULT = n; :}
+		      ;
+   
+NameTest            ::= QName:n    {: RESULT = new NameTest(n); :}
+                      | Wildcard:n {: RESULT = new NameTest(n); :}
+		      ;
+
+// XXX: have sep class for wild card.... or whatever...
+// XXX: is * == *:* ???
+Wildcard            ::= STAR 		    {: RESULT = new QName("*","*"); :}
+// XXX: some1 disambiguate the grammar
+// i.e. give higher precedence to a QName rather than to a wildcard
+                      | NCName:n COLON STAR {: RESULT = new QName(n, "*"); :}
+                      | STAR COLON NCName:n {: RESULT = new QName("*", n); :}
+		      ;
+
+FilterExpr          ::= PrimaryExpr:pe PredicateList:e
+			{: RESULT = new FilterExpr(pe, e); :}   
+		      ;
+
+// XXX: Collection of collections!
+PredicateList       ::= PredicateList:c Predicate:p
+			{:
+			   c.add(p);
+			   RESULT = c;
+			:}
+                      | /* empty */ {: RESULT = new ArrayList(); :}
+		      ;
+
+Predicate           ::= LBRACKET Expr:e RBRACKET {: RESULT = e; :};
+
+PrimaryExpr         ::= Literal:n {: RESULT = n; :} 
+                      | VarRef:n {: RESULT = n; :} 
+		      | ParenthesizedExpr:e
+		      	{: RESULT = new ParExpr(e); :}  
+		      | ContextItemExpr:n {: RESULT = n; :} 
+		      | FunctionCall:n {: RESULT = n; :}
+		      ;
+
+Literal             ::= NumericLiteral:n {: RESULT = n; :} 
+                      | StringLiteral:n {: RESULT = n; :}
+		      ;
+
+NumericLiteral      ::= IntegerLiteral:n {: RESULT = n; :}
+                      | DecimalLiteral:n {: RESULT = n; :} 
+		      | DoubleLiteral:n {: RESULT = n; :}
+		      ;
+   
+VarRef              ::= DOLLAR VarName:v {: RESULT = new VarRef(v); :};
+
+ParenthesizedExpr   ::= LPAR RPAR	 {: RESULT = new ArrayList(); :}
+                      | LPAR Expr:e RPAR {: RESULT = e; :}
+		      ;
+
+ContextItemExpr     ::= DOT {: RESULT = new CntxItemExpr(); :};
+   
+FunctionCall        ::= UnreservedQName:n LPAR RPAR
+			{:
+			   RESULT = new FunctionCall(n,new ArrayList());
+			:}
+                      | UnreservedQName:n LPAR FunctionCallMiddle:a RPAR
+			{:
+			   RESULT = new FunctionCall(n,a);
+			:}
+		      ;
+
+FunctionCallMiddle  ::= ExprSingle:e
+			{:
+			   Collection c = new ArrayList();
+			   c.add(e);
+			   RESULT = c;
+			:}
+                      | FunctionCallMiddle:c COMMA ExprSingle:e
+		        {:
+			   c.add(e);
+			   RESULT = c;
+			:}
+		      ;
+
+
+SingleType          ::= AtomicType:t {: RESULT = new SingleType(t); :}
+                      | AtomicType:t QUESTIONMARK
+		      	{: RESULT = new SingleType(t,true); :}
+		      ;
+
+SequenceType        ::= ItemType:t
+			{: RESULT = new SequenceType(SequenceType.NONE, t); :}
+                      | ItemType:t OccurrenceIndicator:i
+			{: RESULT = new SequenceType(i.intValue(), t); :}
+                      | EMPTY_SEQUENCE LPAR RPAR
+			{: RESULT = new SequenceType(SequenceType.EMPTY, null); :}
+		      ;
+
+OccurrenceIndicator ::= QUESTIONMARK 
+			{: RESULT = new Integer(SequenceType.QUESTION); :}
+                      | STAR 
+			{: RESULT = new Integer(SequenceType.STAR); :}
+		      | PLUS
+			{: RESULT = new Integer(SequenceType.PLUS); :}
+		      ;
+
+ItemType            ::= AtomicType:q
+			{: RESULT = new ItemType(ItemType.QNAME,q); :}
+                      | KindTest:k
+		        {: RESULT = new ItemType(ItemType.KINDTEST,k); :}
+		      | ITEM LPAR RPAR
+		        {: RESULT = new ItemType(ItemType.ITEM,null); :}
+		      ;
+
+AtomicType          ::= QName:n {: RESULT = n; :};
+
+KindTest            ::= DocumentTest:n {: RESULT = n; :}
+                      | ElementTest:n {: RESULT = n; :}
+                      | AttributeTest:n {: RESULT = n; :}
+                      | SchemaElementTest:n {: RESULT = n; :}
+                      | SchemaAttributeTest:n {: RESULT = n; :}
+                      | PITest:n {: RESULT = n; :}
+                      | CommentTest:n {: RESULT = n; :}
+                      | TextTest:n {: RESULT = n; :}
+                      | AnyKindTest:n {: RESULT = n; :}
+		      ;
+
+AnyKindTest         ::= NODE LPAR RPAR {: RESULT = new AnyKindTest(); :};
+
+DocumentTest        ::= DOCUMENT_NODE LPAR RPAR 
+			 {: RESULT = new DocumentTest(); :}
+                      | DOCUMENT_NODE LPAR ElementTest:e RPAR
+		         {: RESULT = new DocumentTest(DocumentTest.ELEMENT,e); :}
+                      | DOCUMENT_NODE LPAR SchemaElementTest:e RPAR
+		         {: RESULT = new DocumentTest(DocumentTest.SCHEMA_ELEMENT,e); :}
+		      ;
+
+TextTest            ::= TEXT LPAR RPAR {: RESULT = new TextTest(); :};
+
+CommentTest         ::= COMMENT LPAR RPAR {: RESULT = new CommentTest(); :};
+
+PITest               ::= PROCESSING_INSTRUCTION LPAR RPAR
+			  {: RESULT = new PITest(); :}
+                       | PROCESSING_INSTRUCTION LPAR NCName:n  RPAR
+			  {: RESULT = new PITest(n); :}
+                       | PROCESSING_INSTRUCTION LPAR StringLiteral:s RPAR
+			  {: RESULT = new PITest(s.string()); :}
+		       ;
+
+AttributeTest        ::= ATTRIBUTE LPAR RPAR
+			  {: RESULT = new AttributeTest(); :}
+                       | ATTRIBUTE LPAR AttribNameOrWildcard:a RPAR
+		          {:
+			     // XXX: wildcard!!
+			     boolean wild = false;
+			     if(a == null)
+			     	wild = true;
+				
+			     RESULT = new AttributeTest(a,wild);
+			  :}   
+                       | ATTRIBUTE LPAR AttribNameOrWildcard:a COMMA TypeName:t RPAR
+		          {:
+			     // XXX: wildcard!!
+			     boolean wild = false;
+			     if(a == null)
+			     	wild = true;
+				
+			     RESULT = new AttributeTest(a,wild,t);
+			  :}   
+		       ;
+
+AttribNameOrWildcard ::= AttributeName:a {: RESULT = a; :}
+                       | STAR {: RESULT = null; /* XXX */ :}
+		       ;
+
+SchemaAttributeTest  ::= SCHEMA_ATTRIBUTE LPAR AttributeDeclaration:a RPAR
+		          {: RESULT = new SchemaAttrTest(a); :}
+		       ;
+
+AttributeDeclaration ::= AttributeName:n {: RESULT = n; :};
+
+ElementTest          ::= ELEMENT LPAR RPAR {: RESULT = new ElementTest(); :}
+                       | ELEMENT LPAR ElementNameOrWildcard:e RPAR
+		          {:
+			     // XXX: wildcard!!
+			     boolean wild = false;
+			     if(e == null)
+			     	wild = true;
+				
+			     RESULT = new ElementTest(e,wild);
+			  :}   
+                       | ELEMENT LPAR ElementNameOrWildcard:e COMMA TypeName:t RPAR
+		          {:
+			     // XXX: wildcard!!
+			     boolean wild = false;
+			     if(e == null)
+			     	wild = true;
+				
+			     RESULT = new ElementTest(e,wild,t);
+			  :}   
+                       | ELEMENT LPAR ElementNameOrWildcard:e COMMA TypeName:t QUESTIONMARK RPAR
+		          {:
+			     // XXX: wildcard!!
+			     boolean wild = false;
+			     if(e == null)
+			     	wild = true;
+				
+			     RESULT = new ElementTest(e,wild,t,true);
+			  :}   
+		       ;
+
+ElementNameOrWildcard ::= ElementName:e {: RESULT = e; :}
+                        | STAR {: RESULT = null; /* XXX */ :}
+			;
+
+SchemaElementTest     ::= SCHEMA_ELEMENT LPAR ElementDeclaration:e RPAR
+			    {: RESULT = new SchemaElemTest(e); :}
+			;
+
+ElementDeclaration    ::= ElementName:n {: RESULT = n; :};
+
+AttributeName         ::= QName:n {: RESULT = n; :};
+
+ElementName           ::= QName:n {: RESULT = n; :};
+
+TypeName              ::= QName:n {: RESULT = n; :};
+
+IntegerLiteral        ::= INTEGER:i {: RESULT = new IntegerLiteral(i); :};
+   
+DecimalLiteral        ::= DECIMAL:d 
+			    {: RESULT = new DecimalLiteral(d); :}
+			;    
+
+DoubleLiteral         ::= DOUBLE:d
+			    {: RESULT = new DoubleLiteral(d.doubleValue()); :}
+			;    
+
+StringLiteral         ::= STRING:s {: RESULT = new StringLiteral(s); :};
+
+VarName               ::= QName:n {: RESULT = n; :};
+
+QName                 ::= NCName:l {: RESULT = new QName(l); :}
+                        | NCName:p COLON NCName:l {: RESULT = new QName(p,l); :}
+						;
+
+Prefix                ::= NCName:n {: RESULT = n; :};
+
+LocalPart             ::= NCName:n {: RESULT = n; :};
+
+UnreservedQName       ::= UnreservedNCName:l {: RESULT = new QName(l); :}
+                        | NCName:p COLON NCName:l {: RESULT = new QName(p,l); :}
+						;
+
+NCName                ::= NCNAME:n {: RESULT = n; :} |
+						  TO:n	   {: RESULT = new String("to"); :} |
+						  CHILD:n  {: RESULT = new String("child"); :} |
+						  DESCENDANT:n {: RESULT = new String("descendant"); :} |
+						  ATTRIBUTE:n {: RESULT = new String("attribute"); :} |
+						  SELF:n {: RESULT = new String("self"); :} |
+						  DESCENDANT_OR_SELF:n {: RESULT = new String("descendant-of-self"); :} |
+						  FOLLOWING_SIBLING:n {: RESULT = new String("following-sibling"); :} |
+						  FOLLOWING:n {: RESULT = new String("following"); :} |
+						  NAMESPACE:n {: RESULT = new String("namespace"); :} |
+						  PARENT:n {: RESULT = new String("parent"); :} |
+						  ANCESTOR:n {: RESULT = new String("ancestor"); :} |
+						  PRECEDING_SIBLING:n {: RESULT  = new String("preceding-sibling"); :} |
+						  PRECEDING:n {: RESULT = new String("preceding"); :} |
+						  ANCESTOR_OR_SELF:n {: RESULT = new String("ancestor-or-self"); :} |
+						  UNION:n {: RESULT = new String("union"); :} |
+						  INTERSECT:n {: RESULT = new String("intersect"); :} |
+						  EXCEPT:n {: RESULT = new String("except"); :} |
+						  INSTANCE:n {: RESULT = new String("instance"); :} |
+						  OF:n {: RESULT = new String("of"); :} |
+						  AS:n {: RESULT = new String("as"); :} |
+						  TREAT:n {: RESULT = new String("as"); :} |
+						  CASTABLE:n {: RESULT = new String("castable"); :} |
+						  CAST:n {: RESULT = new String("cast"); :} |
+						  IS:n {: RESULT = new String("is"); :} |
+						  FOR:n {: RESULT = new String("for"); :} |
+						  IN:n {: RESULT = new String("in"); :} |
+						  RETURN:n {: RESULT = new String("return"); :} |
+						  SATISFIES:n {: RESULT = new String("satisfies"); :} |
+						  SOME:n {: RESULT = new String("some"); :} |
+						  EVERY:n {: RESULT = new String("every"); :} |
+						  IF:n {: RESULT = new String("if"); :} |
+						  THEN:n {: RESULT = new String("then"); :} |
+						  ELSE:n {: RESULT = new String("else"); :} |
+						  AND:n {: RESULT = new String("and"); :} |
+						  OR:n {: RESULT = new String("or"); :} |
+						  DIV:n {: RESULT = new String("div"); :} |
+						  IDIV:n {: RESULT = new String("idiv"); :} |
+						  COMMENT:n {: RESULT = new String("comment"); :} |
+						  DOCUMENT_NODE:n {: RESULT = new String("document-node"); :} |
+						  ELEMENT:n {: RESULT = new String("element"); :} |
+						  EMPTY_SEQUENCE:n {: RESULT = new String("empty-sequence"); :} |
+						  ITEM:n {: RESULT = new String("item"); :} |
+						  NODE:n {: RESULT = new String("node"); :} |
+						  PROCESSING_INSTRUCTION:n {: RESULT = new String("processing-instruction"); :} |
+						  SCHEMA_ATTRIBUTE:n {: RESULT = new String("schema-attribute"); :} |
+						  SCHEMA_ELEMENT:n {: RESULT = new String("schema-element"); :} |
+						  TEXT:n {: RESULT = new String("text"); :} |
+						  TYPESWITCH:n {: RESULT = new String("typeswitch"); :} |
+						  MOD:n {: RESULT = new String("mod"); :} |
+						  EQ:n {: RESULT = new String("eq"); :} |
+						  NE:n {: RESULT = new String("ne"); :} |
+						  LT:n {: RESULT = new String("lt"); :} |
+						  LE:n {: RESULT = new String("le"); :} |
+						  GT:n {: RESULT = new String("gt"); :} |
+						  GE:n {: RESULT = new String("ge"); :}
+			; 
+
+UnreservedNCName      ::= NCNAME:n {: RESULT = n; :} |
+						  TO:n	   {: RESULT = new String("to"); :} |
+						  CHILD:n  {: RESULT = new String("child"); :} |
+						  DESCENDANT:n {: RESULT = new String("descendant"); :} |
+						  SELF:n {: RESULT = new String("self"); :} |
+						  DESCENDANT_OR_SELF:n {: RESULT = new String("descendant-of-self"); :} |
+						  FOLLOWING_SIBLING:n {: RESULT = new String("following-sibling"); :} |
+						  FOLLOWING:n {: RESULT = new String("following"); :} |
+						  NAMESPACE:n {: RESULT = new String("namespace"); :} |
+						  PARENT:n {: RESULT = new String("parent"); :} |
+						  ANCESTOR:n {: RESULT = new String("ancestor"); :} |
+						  PRECEDING_SIBLING:n {: RESULT  = new String("preceding-sibling"); :} |
+						  PRECEDING:n {: RESULT = new String("preceding"); :} |
+						  ANCESTOR_OR_SELF:n {: RESULT = new String("ancestor-or-self"); :} |
+						  UNION:n {: RESULT = new String("union"); :} |
+						  INTERSECT:n {: RESULT = new String("intersect"); :} |
+						  EXCEPT:n {: RESULT = new String("except"); :} |
+						  INSTANCE:n {: RESULT = new String("instance"); :} |
+						  OF:n {: RESULT = new String("of"); :} |
+						  AS:n {: RESULT = new String("as"); :} |
+						  TREAT:n {: RESULT = new String("as"); :} |
+						  CASTABLE:n {: RESULT = new String("castable"); :} |
+						  CAST:n {: RESULT = new String("cast"); :} |
+						  IS:n {: RESULT = new String("is"); :} |
+						  FOR:n {: RESULT = new String("for"); :} |
+						  IN:n {: RESULT = new String("in"); :} |
+						  RETURN:n {: RESULT = new String("return"); :} |
+						  SATISFIES:n {: RESULT = new String("satisfies"); :} |
+						  SOME:n {: RESULT = new String("some"); :} |
+						  EVERY:n {: RESULT = new String("every"); :} |
+						  THEN:n {: RESULT = new String("then"); :} |
+						  ELSE:n {: RESULT = new String("else"); :} |
+						  AND:n {: RESULT = new String("and"); :} |
+						  OR:n {: RESULT = new String("or"); :} |
+						  DIV:n {: RESULT = new String("div"); :} |
+						  IDIV:n {: RESULT = new String("idiv"); :} |
+						  MOD:n {: RESULT = new String("mod"); :} |
+						  EQ:n {: RESULT = new String("eq"); :} |
+						  NE:n {: RESULT = new String("ne"); :} |
+						  LT:n {: RESULT = new String("lt"); :} |
+						  LE:n {: RESULT = new String("le"); :} |
+						  GT:n {: RESULT = new String("gt"); :} |
+						  GE:n {: RESULT = new String("ge"); :}
+						  
+			; 
+			

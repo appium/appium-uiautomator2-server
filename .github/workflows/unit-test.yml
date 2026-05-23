@@ -50,3 +50,5 @@ jobs:
       name: Run server linter
     - run: npm run test
       name: Run server unit tests
+    - run: npm run test:vendor-xpath2
+      name: Run vendored XPath2 processor unit tests

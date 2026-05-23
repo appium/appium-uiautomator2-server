@@ -39,7 +39,8 @@
   "homepage": "https://github.com/appium/appium-uiautomator2-server",
   "scripts": {
     "bump-gradle-version": "node ./scripts/gradle-version-update.mjs --package-version=${npm_package_version} && git add gradle.properties",
-    "build": "./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks && npm run sign-apk",
+    "build-vendor-jar": "./gradlew :vendor-xpath2:jar",
+    "build": "npm run build-vendor-jar && ./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks && npm run sign-apk",
     "sign-apk": "node ./scripts/sign-apk.mjs",
     "lint:java": "./gradlew lint",
     "lint": "eslint .",
@@ -49,7 +50,8 @@
     "move-apks": "rm -rf apks && mkdir -p apks && npm run move-server && npm run move-test",
     "version": "npm run bump-gradle-version && npm run build",
     "clean-device": "adb uninstall io.appium.uiautomator2.server && adb uninstall io.appium.uiautomator2.server.test",
-    "test": "./gradlew testServerDebugUnitTest"
+    "test:vendor-xpath2": "./gradlew :vendor-xpath2:test",
+    "test": "npm run build-vendor-jar && ./gradlew testServerDebugUnitTest"
   },
   "devDependencies": {
     "@appium/eslint-config-appium-ts": "^3.0.0",

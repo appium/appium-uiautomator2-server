@@ -9,6 +9,9 @@ app/build
 /node_modules
 *.log
 apks/
+app/libs/org.eclipse.wst.xml.xpath2.processor*.jar
+vendor/build/
+vendor/.upstream/
 package-lock.json*
 .settings
 .classpath

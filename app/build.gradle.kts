@@ -152,9 +152,11 @@ extensions.configure<de.mobilej.unmock.UnMockExtension>("unMock") {
     keepStartingWith("android.internal.")
 }
 
+val vendorXPath2Jar = layout.projectDirectory
+    .file("libs/org.eclipse.wst.xml.xpath2.processor.jar")
+
 dependencies {
-    // Local JARs dependency
-    implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
+    implementation(files(vendorXPath2Jar) { builtBy(":vendor-xpath2:jar") })
     // Dependencies using the version catalog (libs)
     implementation(libs.bundles.androix.test)
     implementation(libs.uiautomator)

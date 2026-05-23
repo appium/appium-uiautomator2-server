@@ -1,13 +1,16 @@
 [versions]
 androidGradlePlugin = "8.13.1"
 gson = "2.13.2"
-# Updated for compat with org.eclipse.wst.xml.xpath2.processor 2.2.0
+# Versions aligned with vendored org.eclipse.wst.xml.xpath2.processor (see vendor/)
 icu4j = "73.1"
 javaCupRuntime = "11b-20160615-3"
 javassist = "3.30.2-GA"
 json = "20250517"
 junidecode = "0.5.2"
 junit = "4.13.2"
+junitVintage = "5.10.2"
+junitPlatformLauncher = "1.10.2"
+xmlunit = "1.6"
 nettyBuffer = "4.2.7.Final"
 nettyCommon = "4.2.7.Final"
 nettyTransport = "4.2.7.Final"
@@ -31,6 +34,9 @@ javassist = { module = "org.javassist:javassist", version.ref = "javassist" }
 json = { module = "org.json:json", version.ref = "json" }
 junidecode = { module = "net.gcardone.junidecode:junidecode", version.ref = "junidecode" }
 junit = { module = "junit:junit", version.ref = "junit" }
+junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junitVintage" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatformLauncher" }
+xmlunit = { module = "xmlunit:xmlunit", version.ref = "xmlunit" }
 netty-buffer = { module = "io.netty:netty-buffer", version.ref = "nettyBuffer" }
 netty-common = { module = "io.netty:netty-common", version.ref = "nettyCommon" }
 netty-transport = { module = "io.netty:netty-transport", version.ref = "nettyTransport" }
