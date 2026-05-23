@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.Test
+import java.io.File
 
 plugins {
     `java-library`
@@ -10,11 +11,80 @@ val xpath2TestsRoot = layout.projectDirectory.dir("org.eclipse.wst.xml.xpath2.pr
 val upstreamUrl =
     "https://eclipse.googlesource.com/sourceediting/webtools.sourceediting.git"
 val upstreamCommit = layout.projectDirectory.file("SOURCE_COMMIT").asFile.readText().trim()
-val upstreamCheckoutDir = layout.projectDirectory.dir(".upstream/webtools.sourceediting")
+val upstreamRoot = layout.projectDirectory.dir(".upstream")
+val upstreamCheckoutDir = upstreamRoot.dir("webtools.sourceediting")
 val upstreamXqtsRoot =
     upstreamCheckoutDir.dir("xpath/tests/org.w3c.xqts.testsuite")
 val upstreamProcessorTestsRoot =
     upstreamCheckoutDir.dir("xpath/tests/org.eclipse.wst.xml.xpath2.processor.tests")
+
+fun isUpstreamCheckoutContentValid(): Boolean {
+    val checkoutDir = upstreamCheckoutDir.asFile
+    val xqtsMarker = upstreamXqtsRoot.file("TestSources/emptydoc.xml").asFile
+    val expectedResults = upstreamXqtsRoot.dir("ExpectedTestResults").asFile
+    val processorBugFiles =
+        upstreamProcessorTestsRoot.dir("bugTestFiles").asFile
+
+    if (!checkoutDir.isDirectory ||
+        !xqtsMarker.isFile ||
+        !expectedResults.isDirectory ||
+        !processorBugFiles.isDirectory ||
+        !File(checkoutDir, ".git/HEAD").isFile
+    ) {
+        return false
+    }
+
+    return try {
+        ProcessBuilder("git", "-C", checkoutDir.absolutePath, "rev-parse", "--verify", "HEAD")
+            .redirectErrorStream(true)
+            .start()
+            .waitFor() == 0
+    } catch (_: Exception) {
+        false
+    }
+}
+
+fun isUpstreamCheckoutValid(): Boolean {
+    val commitMarker = File(upstreamCheckoutDir.asFile, ".commit")
+    return isUpstreamCheckoutContentValid() &&
+        commitMarker.isFile &&
+        commitMarker.readText().trim() == upstreamCommit
+}
+
+fun org.gradle.api.Project.deleteUpstreamCheckout(logger: org.gradle.api.logging.Logger) {
+    val checkoutDir = upstreamCheckoutDir.asFile
+    val upstreamRootDir = upstreamRoot.asFile
+    if (!checkoutDir.exists() && !upstreamRootDir.exists()) {
+        return
+    }
+
+    logger.lifecycle("Removing upstream XPath2 test data at ${checkoutDir.absolutePath}")
+    try {
+        delete(checkoutDir)
+        if (upstreamRootDir.exists() && upstreamRootDir.list().isNullOrEmpty()) {
+            delete(upstreamRootDir)
+        }
+    } catch (e: Exception) {
+        logger.warn("Gradle delete failed ({}), retrying with rm -rf", e.message)
+        exec {
+            if (checkoutDir.exists()) {
+                commandLine("rm", "-rf", checkoutDir.absolutePath)
+            }
+            isIgnoreExitValue = false
+        }
+        if (upstreamRootDir.exists() && upstreamRootDir.list().isNullOrEmpty()) {
+            upstreamRootDir.delete()
+        }
+    }
+}
+
+val cleanXpath2Upstream = tasks.register("cleanXpath2Upstream") {
+    group = "xpath2"
+    description = "Remove sparse-cloned upstream XPath2 test fixtures."
+    doLast {
+        deleteUpstreamCheckout(logger)
+    }
+}
 
 val fetchXpath2TestData = tasks.register("fetchXpath2TestData") {
     group = "xpath2"
@@ -27,9 +97,20 @@ val fetchXpath2TestData = tasks.register("fetchXpath2TestData") {
     outputs.file(xqtsMarker)
 
     onlyIf {
-        !commitMarker.asFile.exists() ||
-            commitMarker.asFile.readText().trim() != upstreamCommit ||
-            !xqtsMarker.asFile.exists()
+        if (isUpstreamCheckoutValid()) {
+            false
+        } else {
+            if (upstreamCheckoutDir.asFile.exists()) {
+                logger.lifecycle(
+                    "Upstream XPath2 test data is missing or invalid; re-fetching from $upstreamUrl",
+                )
+            }
+            true
+        }
+    }
+
+    doFirst {
+        deleteUpstreamCheckout(logger)
     }
 
     doLast {
@@ -37,7 +118,6 @@ val fetchXpath2TestData = tasks.register("fetchXpath2TestData") {
         logger.lifecycle(
             "Fetching XPath2 test data from $upstreamUrl @ $upstreamCommit",
         )
-        project.delete(checkoutDir)
         checkoutDir.mkdirs()
 
         fun git(vararg args: String) {
@@ -59,6 +139,15 @@ val fetchXpath2TestData = tasks.register("fetchXpath2TestData") {
             "xpath/tests/org.eclipse.wst.xml.xpath2.processor.tests",
             "xpath/tests/org.w3c.xqts.testsuite",
         )
+
+        if (!isUpstreamCheckoutContentValid()) {
+            deleteUpstreamCheckout(logger)
+            error(
+                "XPath2 test data fetch completed but checkout validation failed. " +
+                    "Try: ./gradlew :vendor-xpath2:cleanXpath2Upstream :vendor-xpath2:fetchXpath2TestData",
+            )
+        }
+
         commitMarker.asFile.writeText("$upstreamCommit\n")
         logger.lifecycle("XPath2 test data ready at ${checkoutDir.absolutePath}")
     }
@@ -174,6 +263,5 @@ tasks.register("cleanXpath2Jar", Delete::class) {
 }
 
 tasks.named("clean") {
-    dependsOn("cleanXpath2Jar")
-    delete(upstreamCheckoutDir)
+    dependsOn("cleanXpath2Jar", cleanXpath2Upstream)
 }

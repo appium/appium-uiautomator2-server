@@ -38,6 +38,7 @@ public class AllPsychoPathTests {
 		suite.addTestSuite(KindTestSITest.class);
 		
 		suite.addTestSuite(StaticContextAdapterTest.class);
+		suite.addTestSuite(FollowingPrecedingAxisTest.class);
 		//$JUnit-END$
 		return suite;
 	}

@@ -60,8 +60,9 @@ public class PrecedingAxis extends ReverseAxis {
 		// for each sibling, get all its descendants
 		DescendantAxis da = new DescendantAxis();
 		for (Iterator i = siblingBuffer.iterator(); i.hasNext();) {
-			result.add((NodeType)i);
-			da.iterate((NodeType) i.next(), result, null);
+			NodeType sibling = (NodeType) i.next();
+			result.add(sibling);
+			da.iterate(sibling, result, null);
 		}
 	}
 	

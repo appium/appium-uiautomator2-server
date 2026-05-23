@@ -24,7 +24,6 @@ import org.eclipse.wst.xml.xpath2.processor.Engine;
 import org.eclipse.wst.xml.xpath2.processor.XPathParserException;
 import org.eclipse.wst.xml.xpath2.processor.util.DynamicContextBuilder;
 import org.eclipse.wst.xml.xpath2.processor.util.StaticContextBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -244,8 +243,6 @@ public class XMLHelpersTests {
     }
 
     @Test
-    @Ignore("XPath2 following:: axis still has issues with the new library version " +
-            "(https://github.com/eclipse-platform/eclipse.platform.ui/issues/3507)")
     public void parsesComplexXpath2() {
         String query = "(//android.widget.TextView[@text='some, text']/following::android.widget.ImageButton)[1]";
 
