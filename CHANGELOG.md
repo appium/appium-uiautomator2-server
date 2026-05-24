@@ -1,3 +1,9 @@
+## [10.2.1](https://github.com/appium/appium-uiautomator2-server/compare/v10.2.0...v10.2.1) (2026-05-24)
+
+### Bug Fixes
+
+* XPath2 lookup with following/preceding axes ([#769](https://github.com/appium/appium-uiautomator2-server/issues/769)) ([0003d66](https://github.com/appium/appium-uiautomator2-server/commit/0003d66113b0efd3768062e89797961b8816a7d0))
+
 ## [10.2.0](https://github.com/appium/appium-uiautomator2-server/compare/v10.1.1...v10.2.0) (2026-05-23)
 
 ### Features
