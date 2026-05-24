@@ -39,7 +39,19 @@ you can also invoke the test using below command
 
 Note: AUT apk should be installed before executing above command.
 
+## Development tests
+
+Server JVM unit tests (including XPath 2.0 selector coverage) and the vendored PsychoPath processor suite:
+
+```bash
+npm run test                  # rebuilds vendor JAR, runs app unit tests
+npm run test:vendor-xpath2    # runs upstream XPath2 processor tests
+```
+
+The XPath 2.0 engine is vendored from Eclipse WTP; see [`vendor/README.md`](vendor/README.md) for build details, local patches, and troubleshooting.
+
 ## Other Sections
 
 * [WIKI](https://github.com/appium/appium-uiautomator2-server/wiki)
 * [Version Release](https://github.com/appium/appium-uiautomator2-server/blob/master/doc/release.md)
+* [Vendored dependencies](vendor/README.md)
