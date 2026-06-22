@@ -182,7 +182,7 @@ public class AxNodeInfoHelper {
      * supertype. No-op on API 33+, where these instances are managed by the framework, and
      * tolerant of instances that have already been recycled.
      */
-    private static void recycleSafely(@Nullable Object recyclable) {
+    public static void recycleSafely(@Nullable Object recyclable) {
         if (recyclable == null || Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             return;
         }
