@@ -176,27 +176,24 @@ public class AxNodeInfoHelper {
     }
 
     /**
-     * Recycles a transient {@link AccessibilityNodeInfo} that does not escape the current scope.
-     * No-op on API 33+, where these instances are managed by the framework, and tolerant of
-     * nodes that have already been recycled.
+     * Recycles a transient accessibility instance ({@link AccessibilityNodeInfo} or
+     * {@link AccessibilityWindowInfo}) that does not escape the current scope. The two types
+     * are handled by a single helper because they share no common {@code recycle()}-bearing
+     * supertype. No-op on API 33+, where these instances are managed by the framework, and
+     * tolerant of instances that have already been recycled.
      */
-    public static void recycleSafely(@Nullable AccessibilityNodeInfo node) {
-        if (node != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            try {
-                node.recycle();
-            } catch (IllegalStateException e) {
-                // The node has already been recycled - ignore
-            }
+    private static void recycleSafely(@Nullable Object recyclable) {
+        if (recyclable == null || Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return;
         }
-    }
-
-    private static void recycleSafely(@Nullable AccessibilityWindowInfo window) {
-        if (window != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            try {
-                window.recycle();
-            } catch (IllegalStateException e) {
-                // The window has already been recycled - ignore
+        try {
+            if (recyclable instanceof AccessibilityNodeInfo) {
+                ((AccessibilityNodeInfo) recyclable).recycle();
+            } else if (recyclable instanceof AccessibilityWindowInfo) {
+                ((AccessibilityWindowInfo) recyclable).recycle();
             }
+        } catch (IllegalStateException e) {
+            // The instance has already been recycled - ignore
         }
     }
 
