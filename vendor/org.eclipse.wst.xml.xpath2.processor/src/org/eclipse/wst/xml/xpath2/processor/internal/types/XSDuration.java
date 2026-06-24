@@ -28,7 +28,7 @@ import org.eclipse.wst.xml.xpath2.processor.internal.types.builtin.BuiltinTypeLi
 /**
  * A representation of the xs:duration data type. Other duration implementations
  * should inherit from this implementation.
- * 
+ *
  * @since 1.1 This used to be an abstract class but was incorrectly implemented
  *        as such.
  */
@@ -47,7 +47,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 	 * Initializes to the supplied parameters. If more than 24 hours is
 	 * supplied, the number of days is adjusted accordingly. The same occurs for
 	 * minutes and seconds
-	 * 
+	 *
 	 * @param years
 	 *            Number of years in this duration of time.
 	 * @param months
@@ -100,7 +100,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 	/**
 	 * Initialises to the given number of seconds
-	 * 
+	 *
 	 * @param secs
 	 *            Number of seconds in the duration of time
 	 */
@@ -125,7 +125,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 	/**
 	 * Retrieves a String representation of the duration stored
-	 * 
+	 *
 	 * @return String representation of the duration stored
 	 */
 	public String getStringValue() {
@@ -156,7 +156,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 		int hours = hours();
 		int minutes = minutes();
 		double seconds = seconds();
-		
+
 		if (hours != 0) {
 			tret += hours + "H";
 			did_something = true;
@@ -166,7 +166,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 			did_something = true;
 		}
 		if (seconds != 0) {
-			String doubStr = (new Double(seconds).toString());
+			String doubStr = (Double.valueOf(seconds).toString());
 			if (doubStr.endsWith(".0")) {
 				// string value of x.0 seconds is xS. e.g, 7.0S is converted to
 				// 7S.
@@ -178,7 +178,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 		} else if (!did_something) {
 				tret += "0S";
 		}
-		
+
 		if ((year() == 0 && month() == 0) || (hours > 0 || minutes > 0 || seconds > 0)) {
 			if (tret.length() > 0) {
 				ret += "T" + tret;
@@ -190,7 +190,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 	/**
 	 * Retrieves the number of days within the duration of time stored
-	 * 
+	 *
 	 * @return Number of days within the duration of time stored
 	 */
 	public int days() {
@@ -200,7 +200,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 	/**
 	 * Retrieves the number of minutes (max 60) within the duration of time
 	 * stored
-	 * 
+	 *
 	 * @return Number of minutes within the duration of time stored
 	 */
 	public int minutes() {
@@ -209,7 +209,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 	/**
 	 * Retrieves the number of hours (max 24) within the duration of time stored
-	 * 
+	 *
 	 * @return Number of hours within the duration of time stored
 	 */
 	public int hours() {
@@ -219,7 +219,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 	/**
 	 * Retrieves the number of seconds (max 60) within the duration of time
 	 * stored
-	 * 
+	 *
 	 * @return Number of seconds within the duration of time stored
 	 */
 	public double seconds() {
@@ -228,7 +228,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 	/**
 	 * Equality comparison between this and the supplied duration of time.
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to compare with
 	 * @return True if they both represent the duration of time. False otherwise
@@ -243,7 +243,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 	/**
 	 * Comparison between this and the supplied duration of time.
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to compare with
 	 * @return True if the supplied time represents a larger duration than that
@@ -259,7 +259,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 	/**
 	 * Comparison between this and the supplied duration of time.
-	 * 
+	 *
 	 * @param arg
 	 *            The duration of time to compare with
 	 * @return True if the supplied time represents a smaller duration than that
@@ -276,7 +276,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 	/**
 	 * Retrieves whether this duration represents a backward passage through
 	 * time
-	 * 
+	 *
 	 * @return True if this duration represents a backward passage through time.
 	 *         False otherwise
 	 */
@@ -286,7 +286,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 	/**
 	 * Retrieves the duration of time stored as the number of seconds within it
-	 * 
+	 *
 	 * @return Number of seconds making up this duration of time
 	 */
 	public double value() {
@@ -298,12 +298,12 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 		if (negative())
 			ret *= -1;
-		
-		
+
+
 
 		return ret;
 	}
-	
+
 	public double time_value() {
 		double ret = 0;
 		ret += hours() * 60 * 60;
@@ -318,7 +318,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 	/**
 	 * Creates a new ResultSequence consisting of the extractable time duration
 	 * from the supplied ResultSequence
-	 * 
+	 *
 	 * @param arg
 	 *            The ResultSequence from which to extract
 	 * @return New ResultSequence consisting of the time duration extracted
@@ -329,7 +329,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 			return ResultBuffer.EMPTY;
 
 		AnyAtomicType aat = (AnyAtomicType) arg.first();
-		
+
 		if (aat instanceof NumericType || aat instanceof CalendarType ||
 			aat instanceof XSBoolean || aat instanceof XSBase64Binary ||
 			aat instanceof XSHexBinary || aat instanceof XSAnyURI) {
@@ -339,7 +339,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 		if (!(isCastable(aat))) {
 			throw DynamicError.cant_cast(null);
 		}
-		
+
 		XSDuration duration = castDuration(aat);
 
 		if (duration == null)
@@ -353,13 +353,13 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 			XSDuration duration = (XSDuration) aat;
 			return new XSDuration(duration.year(), duration.month(), duration.days(), duration.hours(), duration.minutes(), duration.seconds(), duration.negative());
 		}
-		
+
 		return parseDTDuration(aat.getStringValue());
 	}
 	/**
 	 * Creates a new XSDayTimeDuration by parsing the supplied String
 	 * represented duration of time
-	 * 
+	 *
 	 * @param str
 	 *            String represented duration of time
 	 * @return New XSDayTimeDuration representing the duration of time supplied
@@ -471,7 +471,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 	/**
 	 * Retrieves the number of years within the duration of time stored
-	 * 
+	 *
 	 * @return Number of years within the duration of time stored
 	 */
 	public int year() {
@@ -480,7 +480,7 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 
 	/**
 	 * Retrieves the number of months within the duration of time stored
-	 * 
+	 *
 	 * @return Number of months within the duration of time stored
 	 */
 	public int month() {
@@ -495,19 +495,19 @@ public class XSDuration extends CtrType implements CmpEq, CmpLt, CmpGt, Cloneabl
 				return true;  // We might be able to cast this.
 			}
 		}
-		
+
 		// We can cast from ourself or derivations of ourselves.
 		if (aat instanceof XSDuration) {
 			return true;
 		}
-				
+
 		return false;
 	}
 
 	private boolean isDurationValue(String value) {
 		return value.startsWith("P") || value.startsWith("-P");
 	}
-	
+
 
 	public TypeDefinition getTypeDefinition() {
 		return BuiltinTypeLibrary.XS_DURATION;

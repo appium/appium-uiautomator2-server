@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moeller - bug 282096 - clean up string storage and make
  *                                         translate function surrogate aware
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
@@ -36,36 +36,36 @@ import com.ibm.icu.lang.UCharacter;
  * <p>
  * Translation function.
  * </p>
- * 
+ *
  * <p>
  * Usage: fn:translate($arg as xs:string?, $mapString as xs:string, $transString
  * as xs:string) as xs:string
  * </p>
- * 
+ *
  * <p>
  * This class returns the value of $arg modified so that every character in the
  * value of $arg that occurs at some position N in the value of $mapString has
  * been replaced by the character that occurs at position N in the value of
  * $transString.
  * </p>
- * 
+ *
  * <p>
  * If the value of $arg is the empty sequence, the zero-length string is
  * returned.
  * </p>
- * 
+ *
  * <p>
  * Every character in the value of $arg that does not appear in the value of
  * $mapString is unchanged.
  * </p>
- * 
+ *
  * <p>
  * Every character in the value of $arg that appears at some position M in the
  * value of $mapString, where the value of $transString is less than M
  * characters in length, is omitted from the returned value. If $mapString is
  * the zero-length string $arg is returned.
  * </p>
- * 
+ *
  * <p>
  * If a character occurs more than once in $mapString, then the first occurrence
  * determines the replacement character. If $transString is longer than
@@ -84,7 +84,7 @@ public class FnTranslate extends Function {
 
 	/**
 	 * Evaluate the arguments.
-	 * 
+	 *
 	 * @param args
 	 *            are evaluated.
 	 * @throws DynamicError
@@ -97,7 +97,7 @@ public class FnTranslate extends Function {
 
 	/**
 	 * Translate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            are translated.
 	 * @throws DynamicError
@@ -121,34 +121,34 @@ public class FnTranslate extends Function {
 		String transstr = ((XSString) arg3.first()).value();
 
 		Map replacements = buildReplacementMap(mapstr, transstr);
-		
+
 		StringBuffer sb = new StringBuffer(str.length());
 		CodePointIterator strIter = new StringCodePointIterator(str);
 		for (int input = strIter.current(); input != CodePointIterator.DONE; input = strIter.next()) {
-			Integer inputCodepoint = new Integer(input);
+			Integer inputCodepoint = Integer.valueOf(input);
 			if (replacements.containsKey(inputCodepoint)) {
 				Integer replaceWith = (Integer)replacements.get(inputCodepoint);
 				if (replaceWith != null) {
 					sb.append(UCharacter.toChars(replaceWith.intValue()));
-				}					
+				}
 			} else {
 				sb.append(UCharacter.toChars(input));
 			}
 		}
-		
+
 		return new XSString(sb.toString());
 	}
 
 	/**
 	 * Build a replacement map from the mapstr and the transstr for translation. The function returns a Map<Integer, Integer> mapping each codepoint
 	 * mentioned in the mapstr into the corresponding codepoint in transstr, or null if there is no matching mapping in transstr.
-	 * 
+	 *
 	 * @param mapstr The "mapping from" string
 	 * @param transstr The "mapping into" string
 	 * @return A map which maps input codepoint to output codepoint (or null)
 	 */
 	private static Map buildReplacementMap(String mapstr, String transstr) {
-		// Build mapping (map from codepoint -> codepoint)		
+		// Build mapping (map from codepoint -> codepoint)
 		Map replacements = new HashMap(mapstr.length() * 4);
 
 		CodePointIterator mapIter = new StringCodePointIterator(mapstr);
@@ -157,21 +157,21 @@ public class FnTranslate extends Function {
 		int mapFrom = mapIter.current();
 		int mapTo = transIter.current();
 		while (mapFrom != CodePointIterator.DONE) {
-			Integer codepointFrom = new Integer(mapFrom);
+			Integer codepointFrom = Integer.valueOf(mapFrom);
 			if (! replacements.containsKey(codepointFrom)) {
 				// only overwrite if it doesn't exist already
-				Integer replacement = mapTo != CodePointIterator.DONE ? new Integer(mapTo) : null;
+				Integer replacement = mapTo != CodePointIterator.DONE ? Integer.valueOf(mapTo) : null;
 				replacements.put(codepointFrom, replacement);
 			}
 			mapFrom = mapIter.next();
-			mapTo = transIter.next();	
+			mapTo = transIter.next();
 		}
 		return replacements;
 	}
 
 	/**
 	 * Calculate the expected arguments.
-	 * 
+	 *
 	 * @return The expected arguments.
 	 */
 	public synchronized static Collection expected_args() {

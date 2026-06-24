@@ -9,9 +9,9 @@
 // *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
 // *     David Carver - bug 269833 - A work around for the keyword in node issue.
 // *     Jesper S Moller - bug 283214 - fix IF THEN ELSE parsing and update grammars
-// *     David Carver (STAR) - bug 262765 - Fixed Wildcard and NCName issue. 
+// *     David Carver (STAR) - bug 262765 - Fixed Wildcard and NCName issue.
 // *     Jesper S Moller - bug 297707 - Missing the empty-sequence() type
-// *     Jesper S Moller - bug 311480 - fix problem with name matching on keywords 
+// *     Jesper S Moller - bug 311480 - fix problem with name matching on keywords
 // *******************************************************************************/
 
 
@@ -24,7 +24,7 @@ import org.eclipse.wst.xml.xpath2.processor.ast.XPath;
 import org.eclipse.wst.xml.xpath2.processor.internal.ast.*;
 import org.eclipse.wst.xml.xpath2.processor.internal.types.*;
 
- 
+
 parser code 	{:
 
 public void report_error(String message, Object info) {
@@ -36,7 +36,7 @@ public void report_error(String message, Object info) {
 	err += " col " + lexer.colno();
 	err += ": " + lexer.yytext();
 
-	
+
 	throw new CupError(err);
 }
 :}
@@ -143,17 +143,17 @@ precedence left EQ, NE, LT, LE, GT, GE;
 
 XPath             ::= Expr:exps {: RESULT = new XPath(exps); :} ;
 
-Expr              ::= ExprSingle:ex 
-			{: 
+Expr              ::= ExprSingle:ex
+			{:
 				Collection exps = new ArrayList();
 				exps.add(ex);
 				RESULT = exps;
 			:}
-                    | Expr:exprs COMMA ExprSingle:ex 
-		    	{: 
+                    | Expr:exprs COMMA ExprSingle:ex
+		    	{:
 				exprs.add(ex);
 				RESULT = exprs;
-			:} 
+			:}
 		    ;
 
 ExprSingle        ::= ForExpr:n {: RESULT = n; :}
@@ -162,11 +162,11 @@ ExprSingle        ::= ForExpr:n {: RESULT = n; :}
                     | OrExpr:n {: RESULT = n; :}
 		    ;
 
-ForExpr           ::= SimpleForClause:pairs RETURN ExprSingle:e 
+ForExpr           ::= SimpleForClause:pairs RETURN ExprSingle:e
 			{:
 				ForExpr fexp = new ForExpr(pairs,e);
 				RESULT = fexp;
-			:}	
+			:}
 		    ;
 
 SimpleForClause   ::= FOR DOLLAR VarName:v IN ExprSingle:e
@@ -176,13 +176,13 @@ SimpleForClause   ::= FOR DOLLAR VarName:v IN ExprSingle:e
 				pairs.add(p);
 				RESULT = pairs;
 			:}
-			
+
                     | SimpleForClause:ps COMMA DOLLAR VarName:v IN ExprSingle:e
 		    	{:
 				VarExprPair p = new VarExprPair(v,e);
 				ps.add(p);
 				RESULT = ps;
-			:}	
+			:}
 		    ;
 
 QuantifiedExpr       ::= SOME DOLLAR QuantifiedExprMiddle:pairs SATISFIES ExprSingle:e
@@ -218,11 +218,11 @@ IfExpr            ::= IF LPAR Expr:exps RPAR THEN ExprSingle:t ELSE ExprSingle:e
 			{: RESULT = new IfExpr(exps, t, e); :}
 		    ;
 
-OrExpr            ::= AndExpr:n {: RESULT = n; :} 
+OrExpr            ::= AndExpr:n {: RESULT = n; :}
                     | OrExpr:l OR AndExpr:r {: RESULT = new OrExpr(l, r); :}
 		    ;
 
-AndExpr           ::= ComparisonExpr:n {: RESULT = n; :} 
+AndExpr           ::= ComparisonExpr:n {: RESULT = n; :}
                     | AndExpr:l AND ComparisonExpr:r
 		    	{: RESULT = new AndExpr(l, r); :}
 		    ;
@@ -238,7 +238,7 @@ ComparisonExpr    ::= RangeExpr:n {: RESULT = n; :}
 
 RangeExpr         ::= AdditiveExpr:n {: RESULT = n; :}
 		    | AdditiveExpr:l TO AdditiveExpr:r
-		    	{: RESULT = new RangeExpr(l, r); :}	
+		    	{: RESULT = new RangeExpr(l, r); :}
 		    ;
 
 AdditiveExpr        ::= MultiplicativeExpr:n {: RESULT = n; :}
@@ -248,7 +248,7 @@ AdditiveExpr        ::= MultiplicativeExpr:n {: RESULT = n; :}
 		      	{: RESULT = new SubExpr(l, r); :}
 		      ;
 
-MultiplicativeExpr  ::= UnionExpr:n {: RESULT = n; :} 
+MultiplicativeExpr  ::= UnionExpr:n {: RESULT = n; :}
                       | MultiplicativeExpr:l STAR UnionExpr:r
 		      	{: RESULT = new MulExpr(l, r); :}
                       | MultiplicativeExpr:l DIV UnionExpr:r
@@ -289,10 +289,10 @@ CastableExpr        ::= CastExpr:n {: RESULT = n; :}
 		      ;
 
 CastExpr            ::= UnaryExpr:n {: RESULT = n; :}
-                      | UnaryExpr:l CAST AS SingleType:r 
+                      | UnaryExpr:l CAST AS SingleType:r
 		        {: RESULT = new CastExpr(l, r); :}
 		      ;
-   
+
 UnaryExpr           ::= ValueExpr:n {: RESULT = n; :}
                       | MINUS UnaryExpr:a {: RESULT = new MinusExpr(a); :}
 		      | PLUS UnaryExpr:a {: RESULT = new PlusExpr(a); :}
@@ -301,32 +301,32 @@ UnaryExpr           ::= ValueExpr:n {: RESULT = n; :}
 ValueExpr           ::= PathExpr:n {: RESULT = n; :};
 
 GeneralComp         ::= EQUALS
-			{: RESULT = new Integer(CmpExpr.EQUALS); :}
+			{: RESULT = Integer.valueOf(CmpExpr.EQUALS); :}
                       | NOTEQUALS
-		      	{: RESULT = new Integer(CmpExpr.NOTEQUALS); :}
+		      	{: RESULT = Integer.valueOf(CmpExpr.NOTEQUALS); :}
 		      | LESSTHAN
-		      	{: RESULT = new Integer(CmpExpr.LESSTHAN); :}
+		      	{: RESULT = Integer.valueOf(CmpExpr.LESSTHAN); :}
 		      | LESSEQUAL
-		      	{: RESULT = new Integer(CmpExpr.LESSEQUAL); :} 
+		      	{: RESULT = Integer.valueOf(CmpExpr.LESSEQUAL); :}
 		      | GREATER
-		      	{: RESULT = new Integer(CmpExpr.GREATER); :}
+		      	{: RESULT = Integer.valueOf(CmpExpr.GREATER); :}
 		      | GREATEREQUAL
-		      	{: RESULT = new Integer(CmpExpr.GREATEREQUAL); :} 
+		      	{: RESULT = Integer.valueOf(CmpExpr.GREATEREQUAL); :}
 		      ;
 
-ValueComp           ::= EQ	{: RESULT = new Integer(CmpExpr.EQ); :} 
-                      | NE  	{: RESULT = new Integer(CmpExpr.NE); :}
-		      | LT  	{: RESULT = new Integer(CmpExpr.LT); :}
-		      | LE  	{: RESULT = new Integer(CmpExpr.LE); :}
-		      | GT  	{: RESULT = new Integer(CmpExpr.GT); :}
-		      | GE 	{: RESULT = new Integer(CmpExpr.GE); :}
+ValueComp           ::= EQ	{: RESULT = Integer.valueOf(CmpExpr.EQ); :}
+                      | NE  	{: RESULT = Integer.valueOf(CmpExpr.NE); :}
+		      | LT  	{: RESULT = Integer.valueOf(CmpExpr.LT); :}
+		      | LE  	{: RESULT = Integer.valueOf(CmpExpr.LE); :}
+		      | GT  	{: RESULT = Integer.valueOfCmpExpr.GT); :}
+		      | GE 	{: RESULT = Integer.valueOf(CmpExpr.GE); :}
 		      ;
 
-NodeComp            ::= IS 	 	{: RESULT = new Integer(CmpExpr.IS); :}
-                      | LESS_LESS 	
-		      	{: RESULT = new Integer(CmpExpr.LESS_LESS); :}
-		      | GREATER_GREATER	
-		      	{: RESULT = new Integer(CmpExpr.GREATER_GREATER); :}
+NodeComp            ::= IS 	 	{: RESULT = Integer.valueOf(CmpExpr.IS); :}
+                      | LESS_LESS
+		      	{: RESULT = Integer.valueOf(CmpExpr.LESS_LESS); :}
+		      | GREATER_GREATER
+		      	{: RESULT = Integer.valueOf(CmpExpr.GREATER_GREATER); :}
 		      ;
 
 PathExpr            ::= FORWARD_SLASH {: RESULT = new XPathExpr(1,null); :}
@@ -360,10 +360,10 @@ StepExpr            ::= AxisStep:n {: RESULT = n; :}
                       | FilterExpr:n {: RESULT = n; :}
 		      ;
 
-AxisStep            ::= ForwardStep:s PredicateList:p 
-			{: RESULT = new AxisStep(s, p); :}	
+AxisStep            ::= ForwardStep:s PredicateList:p
+			{: RESULT = new AxisStep(s, p); :}
                       | ReverseStep:s PredicateList:p
-			{: RESULT = new AxisStep(s, p); :}	
+			{: RESULT = new AxisStep(s, p); :}
 		      ;
 
 ForwardStep         ::= ForwardAxis:a NodeTest:n
@@ -371,22 +371,22 @@ ForwardStep         ::= ForwardAxis:a NodeTest:n
                       | AbbrevForwardStep:n {: RESULT = n; :}
 		      ;
 
-ForwardAxis         ::= CHILD COLONCOLON 
-			{: RESULT = new Integer(ForwardStep.CHILD); :}
+ForwardAxis         ::= CHILD COLONCOLON
+			{: RESULT = Integer.valueOf(ForwardStep.CHILD); :}
                       | DESCENDANT COLONCOLON
-			{: RESULT = new Integer(ForwardStep.DESCENDANT); :}
+			{: RESULT = Integer.valueOf(ForwardStep.DESCENDANT); :}
                       | ATTRIBUTE COLONCOLON
-			{: RESULT = new Integer(ForwardStep.ATTRIBUTE); :}
+			{: RESULT = Integer.valueOf(ForwardStep.ATTRIBUTE); :}
                       | SELF COLONCOLON
-			{: RESULT = new Integer(ForwardStep.SELF); :}
+			{: RESULT = Integer.valueOf(ForwardStep.SELF); :}
                       | DESCENDANT_OR_SELF COLONCOLON
-			{: RESULT = new Integer(ForwardStep.DESCENDANT_OR_SELF); :}
+			{: RESULT = Integer.valueOf(ForwardStep.DESCENDANT_OR_SELF); :}
                       | FOLLOWING_SIBLING COLONCOLON
-			{: RESULT = new Integer(ForwardStep.FOLLOWING_SIBLING); :}
+			{: RESULT = Integer.valueOf(ForwardStep.FOLLOWING_SIBLING); :}
                       | FOLLOWING COLONCOLON
-			{: RESULT = new Integer(ForwardStep.FOLLOWING); :}
+			{: RESULT = Integer.valueOf(ForwardStep.FOLLOWING); :}
                       | NAMESPACE COLONCOLON
-			{: RESULT = new Integer(ForwardStep.NAMESPACE); :}
+			{: RESULT = Integer.valueOf(ForwardStep.NAMESPACE); :}
 		      ;
 
 AbbrevForwardStep   ::= AT_SYM NodeTest:n
@@ -401,25 +401,25 @@ ReverseStep         ::= ReverseAxis:a NodeTest:n
 		      ;
 
 ReverseAxis         ::= PARENT COLONCOLON
-			{: RESULT = new Integer(ReverseStep.PARENT); :}
+			{: RESULT = Integer.valueOf(ReverseStep.PARENT); :}
                       | ANCESTOR COLONCOLON
-			{: RESULT = new Integer(ReverseStep.ANCESTOR); :}
+			{: RESULT = Integer.valueOf(ReverseStep.ANCESTOR); :}
                       | PRECEDING_SIBLING COLONCOLON
-			{: RESULT = new Integer(ReverseStep.PRECEDING_SIBLING); :}
+			{: RESULT = Integer.valueOf(ReverseStep.PRECEDING_SIBLING); :}
                       | PRECEDING COLONCOLON
-			{: RESULT = new Integer(ReverseStep.PRECEDING); :}
+			{: RESULT = Integer.valueOf(ReverseStep.PRECEDING); :}
                       | ANCESTOR_OR_SELF COLONCOLON
-			{: RESULT = new Integer(ReverseStep.ANCESTOR_OR_SELF); :}
+			{: RESULT = Integer.valueOf(ReverseStep.ANCESTOR_OR_SELF); :}
 		      ;
 
-AbbrevReverseStep   ::= DOTDOT 
+AbbrevReverseStep   ::= DOTDOT
 			{: RESULT = new ReverseStep(ReverseStep.DOTDOT,null); :}
 		      ;
 
 NodeTest            ::= KindTest:n {: RESULT = n; :}
                       | NameTest:n {: RESULT = n; :}
 		      ;
-   
+
 NameTest            ::= QName:n    {: RESULT = new NameTest(n); :}
                       | Wildcard:n {: RESULT = new NameTest(n); :}
 		      ;
@@ -434,7 +434,7 @@ Wildcard            ::= STAR 		    {: RESULT = new QName("*","*"); :}
 		      ;
 
 FilterExpr          ::= PrimaryExpr:pe PredicateList:e
-			{: RESULT = new FilterExpr(pe, e); :}   
+			{: RESULT = new FilterExpr(pe, e); :}
 		      ;
 
 // XXX: Collection of collections!
@@ -448,23 +448,23 @@ PredicateList       ::= PredicateList:c Predicate:p
 
 Predicate           ::= LBRACKET Expr:e RBRACKET {: RESULT = e; :};
 
-PrimaryExpr         ::= Literal:n {: RESULT = n; :} 
-                      | VarRef:n {: RESULT = n; :} 
+PrimaryExpr         ::= Literal:n {: RESULT = n; :}
+                      | VarRef:n {: RESULT = n; :}
 		      | ParenthesizedExpr:e
-		      	{: RESULT = new ParExpr(e); :}  
-		      | ContextItemExpr:n {: RESULT = n; :} 
+		      	{: RESULT = new ParExpr(e); :}
+		      | ContextItemExpr:n {: RESULT = n; :}
 		      | FunctionCall:n {: RESULT = n; :}
 		      ;
 
-Literal             ::= NumericLiteral:n {: RESULT = n; :} 
+Literal             ::= NumericLiteral:n {: RESULT = n; :}
                       | StringLiteral:n {: RESULT = n; :}
 		      ;
 
 NumericLiteral      ::= IntegerLiteral:n {: RESULT = n; :}
-                      | DecimalLiteral:n {: RESULT = n; :} 
+                      | DecimalLiteral:n {: RESULT = n; :}
 		      | DoubleLiteral:n {: RESULT = n; :}
 		      ;
-   
+
 VarRef              ::= DOLLAR VarName:v {: RESULT = new VarRef(v); :};
 
 ParenthesizedExpr   ::= LPAR RPAR	 {: RESULT = new ArrayList(); :}
@@ -472,7 +472,7 @@ ParenthesizedExpr   ::= LPAR RPAR	 {: RESULT = new ArrayList(); :}
 		      ;
 
 ContextItemExpr     ::= DOT {: RESULT = new CntxItemExpr(); :};
-   
+
 FunctionCall        ::= UnreservedQName:n LPAR RPAR
 			{:
 			   RESULT = new FunctionCall(n,new ArrayList());
@@ -510,12 +510,12 @@ SequenceType        ::= ItemType:t
 			{: RESULT = new SequenceType(SequenceType.EMPTY, null); :}
 		      ;
 
-OccurrenceIndicator ::= QUESTIONMARK 
-			{: RESULT = new Integer(SequenceType.QUESTION); :}
-                      | STAR 
-			{: RESULT = new Integer(SequenceType.STAR); :}
+OccurrenceIndicator ::= QUESTIONMARK
+			{: RESULT = Integer.valueOf(SequenceType.QUESTION); :}
+                      | STAR
+			{: RESULT = Integer.valueOf(SequenceType.STAR); :}
 		      | PLUS
-			{: RESULT = new Integer(SequenceType.PLUS); :}
+			{: RESULT = Integer.valueOf(SequenceType.PLUS); :}
 		      ;
 
 ItemType            ::= AtomicType:q
@@ -541,7 +541,7 @@ KindTest            ::= DocumentTest:n {: RESULT = n; :}
 
 AnyKindTest         ::= NODE LPAR RPAR {: RESULT = new AnyKindTest(); :};
 
-DocumentTest        ::= DOCUMENT_NODE LPAR RPAR 
+DocumentTest        ::= DOCUMENT_NODE LPAR RPAR
 			 {: RESULT = new DocumentTest(); :}
                       | DOCUMENT_NODE LPAR ElementTest:e RPAR
 		         {: RESULT = new DocumentTest(DocumentTest.ELEMENT,e); :}
@@ -569,18 +569,18 @@ AttributeTest        ::= ATTRIBUTE LPAR RPAR
 			     boolean wild = false;
 			     if(a == null)
 			     	wild = true;
-				
+
 			     RESULT = new AttributeTest(a,wild);
-			  :}   
+			  :}
                        | ATTRIBUTE LPAR AttribNameOrWildcard:a COMMA TypeName:t RPAR
 		          {:
 			     // XXX: wildcard!!
 			     boolean wild = false;
 			     if(a == null)
 			     	wild = true;
-				
+
 			     RESULT = new AttributeTest(a,wild,t);
-			  :}   
+			  :}
 		       ;
 
 AttribNameOrWildcard ::= AttributeName:a {: RESULT = a; :}
@@ -600,27 +600,27 @@ ElementTest          ::= ELEMENT LPAR RPAR {: RESULT = new ElementTest(); :}
 			     boolean wild = false;
 			     if(e == null)
 			     	wild = true;
-				
+
 			     RESULT = new ElementTest(e,wild);
-			  :}   
+			  :}
                        | ELEMENT LPAR ElementNameOrWildcard:e COMMA TypeName:t RPAR
 		          {:
 			     // XXX: wildcard!!
 			     boolean wild = false;
 			     if(e == null)
 			     	wild = true;
-				
+
 			     RESULT = new ElementTest(e,wild,t);
-			  :}   
+			  :}
                        | ELEMENT LPAR ElementNameOrWildcard:e COMMA TypeName:t QUESTIONMARK RPAR
 		          {:
 			     // XXX: wildcard!!
 			     boolean wild = false;
 			     if(e == null)
 			     	wild = true;
-				
+
 			     RESULT = new ElementTest(e,wild,t,true);
-			  :}   
+			  :}
 		       ;
 
 ElementNameOrWildcard ::= ElementName:e {: RESULT = e; :}
@@ -640,14 +640,14 @@ ElementName           ::= QName:n {: RESULT = n; :};
 TypeName              ::= QName:n {: RESULT = n; :};
 
 IntegerLiteral        ::= INTEGER:i {: RESULT = new IntegerLiteral(i); :};
-   
-DecimalLiteral        ::= DECIMAL:d 
+
+DecimalLiteral        ::= DECIMAL:d
 			    {: RESULT = new DecimalLiteral(d); :}
-			;    
+			;
 
 DoubleLiteral         ::= DOUBLE:d
 			    {: RESULT = new DoubleLiteral(d.doubleValue()); :}
-			;    
+			;
 
 StringLiteral         ::= STRING:s {: RESULT = new StringLiteral(s); :};
 
@@ -721,7 +721,7 @@ NCName                ::= NCNAME:n {: RESULT = n; :} |
 						  LE:n {: RESULT = new String("le"); :} |
 						  GT:n {: RESULT = new String("gt"); :} |
 						  GE:n {: RESULT = new String("ge"); :}
-			; 
+			;
 
 UnreservedNCName      ::= NCNAME:n {: RESULT = n; :} |
 						  TO:n	   {: RESULT = new String("to"); :} |
@@ -766,6 +766,5 @@ UnreservedNCName      ::= NCNAME:n {: RESULT = n; :} |
 						  LE:n {: RESULT = new String("le"); :} |
 						  GT:n {: RESULT = new String("gt"); :} |
 						  GE:n {: RESULT = new String("ge"); :}
-						  
-			; 
-			
+
+			;

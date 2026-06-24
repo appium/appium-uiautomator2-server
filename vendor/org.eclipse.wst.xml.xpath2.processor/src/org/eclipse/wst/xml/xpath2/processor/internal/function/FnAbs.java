@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0 
+ *     Andrea Bittau - initial API and implementation from the PsychoPath XPath 2.0
  *     Jesper Steen Moeller - bug 285145 - implement full arity checking
  *     Mukul Gandhi - bug 280798 - PsychoPath support for JDK 1.4
  *     Jesper Steen Moller  - bug 340933 - Migrate to new XPath2 API
@@ -48,7 +48,7 @@ public class FnAbs extends Function {
 
 	/**
 	 * Evaluate arguments.
-	 * 
+	 *
 	 * @param args
 	 *            argument expressions.
 	 * @throws DynamicError
@@ -66,7 +66,7 @@ public class FnAbs extends Function {
 
 	/**
 	 * Absolute value operation.
-	 * 
+	 *
 	 * @param arg
 	 *            Result from the expressions evaluation.
 	 * @throws DynamicError
@@ -80,7 +80,7 @@ public class FnAbs extends Function {
 		// empty arg
 		if (nt == null)
 			return ResultBuffer.EMPTY;
-		
+
 		if (nt instanceof XSDouble) {
 			XSDouble dat = (XSDouble) nt;
 			if (dat.zero() || dat.negativeZero()) {
@@ -94,7 +94,7 @@ public class FnAbs extends Function {
 		if (nt instanceof XSFloat) {
 			XSFloat dat = (XSFloat) nt;
 			if (dat.zero() || dat.negativeZero()) {
-				return new XSFloat((new Float(0)).floatValue());
+				return new XSFloat(Float.valueOf(0).floatValue());
 			}
 			if (dat.infinite()) {
 				return new XSFloat(Float.POSITIVE_INFINITY);
@@ -107,7 +107,7 @@ public class FnAbs extends Function {
 
 	/**
 	 * Obtain numeric value from expression.
-	 * 
+	 *
 	 * @param arg
 	 *            input expression.
 	 * @throws DynamicError
@@ -128,7 +128,7 @@ public class FnAbs extends Function {
 
 		if (!(at instanceof NumericType))
 			throw DynamicError.invalidType();
-				
+
 		return (NumericType) at;
 	}
 
