@@ -1,3 +1,9 @@
+## [10.2.2](https://github.com/appium/appium-uiautomator2-server/compare/v10.2.1...v10.2.2) (2026-06-24)
+
+### Bug Fixes
+
+* Linter warnings ([#771](https://github.com/appium/appium-uiautomator2-server/issues/771)) ([f8fce25](https://github.com/appium/appium-uiautomator2-server/commit/f8fce25922a0d44eccb0f09bfd9bef9c6d5ae553))
+
 ## [10.2.1](https://github.com/appium/appium-uiautomator2-server/compare/v10.2.0...v10.2.1) (2026-05-24)
 
 ### Bug Fixes
