@@ -28,7 +28,7 @@ public class XPathDecimalFormatTest extends TestCase {
 
 	public void testDoublePositiveInfinity() {
 		XPathDecimalFormat format = new XPathDecimalFormat(DOUBLE_FORMAT);
-		Double value = Double.POSITIVE_INFINITY);
+		Double value = Double.valueOf(Double.POSITIVE_INFINITY);
 		String result = format.xpathFormat(value);
 		assertEquals("Unexpected XPath format String:", "INF", result);
 	}
