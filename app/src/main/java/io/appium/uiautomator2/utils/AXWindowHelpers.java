@@ -30,7 +30,9 @@ import java.util.Objects;
 
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
+import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
+import io.appium.uiautomator2.model.settings.DeferAccessibilityCacheReset;
 import io.appium.uiautomator2.model.settings.EnableMultiWindows;
 import io.appium.uiautomator2.model.settings.EnableTopmostWindowFromActivePackage;
 import io.appium.uiautomator2.model.settings.Settings;
@@ -41,11 +43,38 @@ public class AXWindowHelpers {
     private static final Map<String, AccessibilityNodeInfo[]> CACHED_WINDOW_ROOTS = new HashMap<>();
 
     public static void resetAccessibilityCache() {
+        resetAccessibilityCache(false);
+    }
+
+    /**
+     * @param forceClear when true the AccessibilityInteractionClient cache is always cleared (used
+     *                   by the explicit reset endpoint). When false the clear may be skipped if
+     *                   {@link DeferAccessibilityCacheReset} is enabled and no relevant UI-change
+     *                   event has been observed since the last reset.
+     */
+    public static void resetAccessibilityCache(boolean forceClear) {
         Device.waitForIdle();
-        clearAccessibilityCache();
+        if (forceClear || shouldClearAccessibilityCache()) {
+            clearAccessibilityCache();
+        }
         synchronized (CACHED_WINDOW_ROOTS) {
             CACHED_WINDOW_ROOTS.clear();
         }
+    }
+
+    private static boolean shouldClearAccessibilityCache() {
+        // Preserve the historical always-reset behavior unless the optimization is opted into.
+        if (!Settings.get(DeferAccessibilityCacheReset.class).getValue()) {
+            return true;
+        }
+        NotificationListener listener = NotificationListener.getInstance();
+        // Fail safe: without an active accessibility event listener we cannot tell whether the UI
+        // changed, so we must clear unconditionally to avoid serving stale cached nodes.
+        if (!listener.isListening()) {
+            return true;
+        }
+        // Otherwise only clear when a relevant UI-change event was seen since the last reset.
+        return listener.consumeAccessibilityCacheStaleFlag();
     }
 
     public static AccessibilityNodeInfo[] getCachedWindowRoots() {
