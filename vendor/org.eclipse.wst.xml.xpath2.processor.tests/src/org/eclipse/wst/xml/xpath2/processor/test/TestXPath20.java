@@ -103,11 +103,11 @@ public class TestXPath20 extends AbstractPsychoPathTest {
 
 		assertEquals("Unexpected value returned", "Boston", resultValue);
 	}
-	
+
 	public void testFloatFormat() throws Exception {
-		Float value = new Float(1.0f);
+		Float value = Float.valueOf(1.0f);
 		XPathDecimalFormat format = new XPathDecimalFormat("0.#######E0");
-		String result = format.xpathFormat(value); 
+		String result = format.xpathFormat(value);
 		assertEquals("1", result);
 	}
 }

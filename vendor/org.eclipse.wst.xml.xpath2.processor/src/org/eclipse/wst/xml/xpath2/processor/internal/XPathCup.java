@@ -37,7 +37,7 @@ public class XPathCup extends java_cup.runtime.lr_parser {
   public XPathCup(java_cup.runtime.Scanner s) {super(s);}
 
   /** Production table. */
-  protected static final short _production_table[][] = 
+  protected static final short _production_table[][] =
     unpackFromStrings(new String[] {
     "\000\u011d\000\002\114\003\000\002\002\004\000\002\033" +
     "\003\000\002\033\005\000\002\061\003\000\002\061\003" +
@@ -132,7 +132,7 @@ public class XPathCup extends java_cup.runtime.lr_parser {
   public short[][] production_table() {return _production_table;}
 
   /** Parse-action table. */
-  protected static final short[][] _action_table = 
+  protected static final short[][] _action_table =
     unpackFromStrings(new String[] {
     "\000\u0194\000\216\006\110\010\105\011\144\012\116\024" +
     "\024\025\010\027\077\030\125\033\100\034\126\036\045" +
@@ -2750,7 +2750,7 @@ public class XPathCup extends java_cup.runtime.lr_parser {
   public short[][] action_table() {return _action_table;}
 
   /** <code>reduce_goto</code> table. */
-  protected static final short[][] _reduce_table = 
+  protected static final short[][] _reduce_table =
     unpackFromStrings(new String[] {
     "\000\u0194\000\172\003\046\004\034\007\200\020\111\021" +
     "\136\023\072\025\012\026\035\032\144\033\043\036\164" +
@@ -3245,7 +3245,7 @@ public void report_error(String message, Object info) {
 	err += " col " + lexer.colno();
 	err += ": " + lexer.yytext();
 
-	
+
 	throw new CupError(err);
 }
 
@@ -3275,1195 +3275,1195 @@ class CUP$XPathCup$actions {
       switch (CUP$XPathCup$act_num)
         {
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 284: // UnreservedNCName ::= GE 
+          case 284: // UnreservedNCName ::= GE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("ge"); 
+		 RESULT = new String("ge");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 283: // UnreservedNCName ::= GT 
+          case 283: // UnreservedNCName ::= GT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("gt"); 
+		 RESULT = new String("gt");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 282: // UnreservedNCName ::= LE 
+          case 282: // UnreservedNCName ::= LE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("le"); 
+		 RESULT = new String("le");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 281: // UnreservedNCName ::= LT 
+          case 281: // UnreservedNCName ::= LT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("lt"); 
+		 RESULT = new String("lt");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 280: // UnreservedNCName ::= NE 
+          case 280: // UnreservedNCName ::= NE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("ne"); 
+		 RESULT = new String("ne");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 279: // UnreservedNCName ::= EQ 
+          case 279: // UnreservedNCName ::= EQ
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("eq"); 
+		 RESULT = new String("eq");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 278: // UnreservedNCName ::= MOD 
+          case 278: // UnreservedNCName ::= MOD
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("mod"); 
+		 RESULT = new String("mod");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 277: // UnreservedNCName ::= IDIV 
+          case 277: // UnreservedNCName ::= IDIV
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("idiv"); 
+		 RESULT = new String("idiv");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 276: // UnreservedNCName ::= DIV 
+          case 276: // UnreservedNCName ::= DIV
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("div"); 
+		 RESULT = new String("div");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 275: // UnreservedNCName ::= OR 
+          case 275: // UnreservedNCName ::= OR
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("or"); 
+		 RESULT = new String("or");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 274: // UnreservedNCName ::= AND 
+          case 274: // UnreservedNCName ::= AND
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("and"); 
+		 RESULT = new String("and");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 273: // UnreservedNCName ::= ELSE 
+          case 273: // UnreservedNCName ::= ELSE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("else"); 
+		 RESULT = new String("else");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 272: // UnreservedNCName ::= THEN 
+          case 272: // UnreservedNCName ::= THEN
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("then"); 
+		 RESULT = new String("then");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 271: // UnreservedNCName ::= EVERY 
+          case 271: // UnreservedNCName ::= EVERY
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("every"); 
+		 RESULT = new String("every");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 270: // UnreservedNCName ::= SOME 
+          case 270: // UnreservedNCName ::= SOME
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("some"); 
+		 RESULT = new String("some");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 269: // UnreservedNCName ::= SATISFIES 
+          case 269: // UnreservedNCName ::= SATISFIES
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("satisfies"); 
+		 RESULT = new String("satisfies");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 268: // UnreservedNCName ::= RETURN 
+          case 268: // UnreservedNCName ::= RETURN
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("return"); 
+		 RESULT = new String("return");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 267: // UnreservedNCName ::= IN 
+          case 267: // UnreservedNCName ::= IN
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("in"); 
+		 RESULT = new String("in");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 266: // UnreservedNCName ::= FOR 
+          case 266: // UnreservedNCName ::= FOR
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("for"); 
+		 RESULT = new String("for");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 265: // UnreservedNCName ::= IS 
+          case 265: // UnreservedNCName ::= IS
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("is"); 
+		 RESULT = new String("is");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 264: // UnreservedNCName ::= CAST 
+          case 264: // UnreservedNCName ::= CAST
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("cast"); 
+		 RESULT = new String("cast");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 263: // UnreservedNCName ::= CASTABLE 
+          case 263: // UnreservedNCName ::= CASTABLE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("castable"); 
+		 RESULT = new String("castable");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 262: // UnreservedNCName ::= TREAT 
+          case 262: // UnreservedNCName ::= TREAT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("as"); 
+		 RESULT = new String("as");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 261: // UnreservedNCName ::= AS 
+          case 261: // UnreservedNCName ::= AS
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("as"); 
+		 RESULT = new String("as");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 260: // UnreservedNCName ::= OF 
+          case 260: // UnreservedNCName ::= OF
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("of"); 
+		 RESULT = new String("of");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 259: // UnreservedNCName ::= INSTANCE 
+          case 259: // UnreservedNCName ::= INSTANCE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("instance"); 
+		 RESULT = new String("instance");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 258: // UnreservedNCName ::= EXCEPT 
+          case 258: // UnreservedNCName ::= EXCEPT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("except"); 
+		 RESULT = new String("except");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 257: // UnreservedNCName ::= INTERSECT 
+          case 257: // UnreservedNCName ::= INTERSECT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("intersect"); 
+		 RESULT = new String("intersect");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 256: // UnreservedNCName ::= UNION 
+          case 256: // UnreservedNCName ::= UNION
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("union"); 
+		 RESULT = new String("union");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 255: // UnreservedNCName ::= ANCESTOR_OR_SELF 
+          case 255: // UnreservedNCName ::= ANCESTOR_OR_SELF
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("ancestor-or-self"); 
+		 RESULT = new String("ancestor-or-self");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 254: // UnreservedNCName ::= PRECEDING 
+          case 254: // UnreservedNCName ::= PRECEDING
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("preceding"); 
+		 RESULT = new String("preceding");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 253: // UnreservedNCName ::= PRECEDING_SIBLING 
+          case 253: // UnreservedNCName ::= PRECEDING_SIBLING
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT  = new String("preceding-sibling"); 
+		 RESULT  = new String("preceding-sibling");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 252: // UnreservedNCName ::= ANCESTOR 
+          case 252: // UnreservedNCName ::= ANCESTOR
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("ancestor"); 
+		 RESULT = new String("ancestor");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 251: // UnreservedNCName ::= PARENT 
+          case 251: // UnreservedNCName ::= PARENT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("parent"); 
+		 RESULT = new String("parent");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 250: // UnreservedNCName ::= NAMESPACE 
+          case 250: // UnreservedNCName ::= NAMESPACE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("namespace"); 
+		 RESULT = new String("namespace");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 249: // UnreservedNCName ::= FOLLOWING 
+          case 249: // UnreservedNCName ::= FOLLOWING
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("following"); 
+		 RESULT = new String("following");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 248: // UnreservedNCName ::= FOLLOWING_SIBLING 
+          case 248: // UnreservedNCName ::= FOLLOWING_SIBLING
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("following-sibling"); 
+		 RESULT = new String("following-sibling");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 247: // UnreservedNCName ::= DESCENDANT_OR_SELF 
+          case 247: // UnreservedNCName ::= DESCENDANT_OR_SELF
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("descendant-of-self"); 
+		 RESULT = new String("descendant-of-self");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 246: // UnreservedNCName ::= SELF 
+          case 246: // UnreservedNCName ::= SELF
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("self"); 
+		 RESULT = new String("self");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 245: // UnreservedNCName ::= DESCENDANT 
+          case 245: // UnreservedNCName ::= DESCENDANT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("descendant"); 
+		 RESULT = new String("descendant");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 244: // UnreservedNCName ::= CHILD 
+          case 244: // UnreservedNCName ::= CHILD
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("child"); 
+		 RESULT = new String("child");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 243: // UnreservedNCName ::= TO 
+          case 243: // UnreservedNCName ::= TO
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("to"); 
+		 RESULT = new String("to");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 242: // UnreservedNCName ::= NCNAME 
+          case 242: // UnreservedNCName ::= NCNAME
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(2/*UnreservedNCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 241: // NCName ::= GE 
+          case 241: // NCName ::= GE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("ge"); 
+		 RESULT = new String("ge");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 240: // NCName ::= GT 
+          case 240: // NCName ::= GT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("gt"); 
+		 RESULT = new String("gt");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 239: // NCName ::= LE 
+          case 239: // NCName ::= LE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("le"); 
+		 RESULT = new String("le");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 238: // NCName ::= LT 
+          case 238: // NCName ::= LT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("lt"); 
+		 RESULT = new String("lt");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 237: // NCName ::= NE 
+          case 237: // NCName ::= NE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("ne"); 
+		 RESULT = new String("ne");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 236: // NCName ::= EQ 
+          case 236: // NCName ::= EQ
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("eq"); 
+		 RESULT = new String("eq");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 235: // NCName ::= MOD 
+          case 235: // NCName ::= MOD
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("mod"); 
+		 RESULT = new String("mod");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 234: // NCName ::= TYPESWITCH 
+          case 234: // NCName ::= TYPESWITCH
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("typeswitch"); 
+		 RESULT = new String("typeswitch");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 233: // NCName ::= TEXT 
+          case 233: // NCName ::= TEXT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("text"); 
+		 RESULT = new String("text");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 232: // NCName ::= SCHEMA_ELEMENT 
+          case 232: // NCName ::= SCHEMA_ELEMENT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("schema-element"); 
+		 RESULT = new String("schema-element");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 231: // NCName ::= SCHEMA_ATTRIBUTE 
+          case 231: // NCName ::= SCHEMA_ATTRIBUTE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("schema-attribute"); 
+		 RESULT = new String("schema-attribute");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 230: // NCName ::= PROCESSING_INSTRUCTION 
+          case 230: // NCName ::= PROCESSING_INSTRUCTION
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("processing-instruction"); 
+		 RESULT = new String("processing-instruction");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 229: // NCName ::= NODE 
+          case 229: // NCName ::= NODE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("node"); 
+		 RESULT = new String("node");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 228: // NCName ::= ITEM 
+          case 228: // NCName ::= ITEM
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("item"); 
+		 RESULT = new String("item");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 227: // NCName ::= EMPTY_SEQUENCE 
+          case 227: // NCName ::= EMPTY_SEQUENCE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("empty-sequence"); 
+		 RESULT = new String("empty-sequence");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 226: // NCName ::= ELEMENT 
+          case 226: // NCName ::= ELEMENT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("element"); 
+		 RESULT = new String("element");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 225: // NCName ::= DOCUMENT_NODE 
+          case 225: // NCName ::= DOCUMENT_NODE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("document-node"); 
+		 RESULT = new String("document-node");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 224: // NCName ::= COMMENT 
+          case 224: // NCName ::= COMMENT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Object n = (Object)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("comment"); 
+		 RESULT = new String("comment");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 223: // NCName ::= IDIV 
+          case 223: // NCName ::= IDIV
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("idiv"); 
+		 RESULT = new String("idiv");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 222: // NCName ::= DIV 
+          case 222: // NCName ::= DIV
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("div"); 
+		 RESULT = new String("div");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 221: // NCName ::= OR 
+          case 221: // NCName ::= OR
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("or"); 
+		 RESULT = new String("or");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 220: // NCName ::= AND 
+          case 220: // NCName ::= AND
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("and"); 
+		 RESULT = new String("and");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 219: // NCName ::= ELSE 
+          case 219: // NCName ::= ELSE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("else"); 
+		 RESULT = new String("else");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 218: // NCName ::= THEN 
+          case 218: // NCName ::= THEN
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("then"); 
+		 RESULT = new String("then");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 217: // NCName ::= IF 
+          case 217: // NCName ::= IF
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("if"); 
+		 RESULT = new String("if");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 216: // NCName ::= EVERY 
+          case 216: // NCName ::= EVERY
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("every"); 
+		 RESULT = new String("every");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 215: // NCName ::= SOME 
+          case 215: // NCName ::= SOME
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("some"); 
+		 RESULT = new String("some");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 214: // NCName ::= SATISFIES 
+          case 214: // NCName ::= SATISFIES
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("satisfies"); 
+		 RESULT = new String("satisfies");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 213: // NCName ::= RETURN 
+          case 213: // NCName ::= RETURN
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("return"); 
+		 RESULT = new String("return");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 212: // NCName ::= IN 
+          case 212: // NCName ::= IN
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("in"); 
+		 RESULT = new String("in");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 211: // NCName ::= FOR 
+          case 211: // NCName ::= FOR
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("for"); 
+		 RESULT = new String("for");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 210: // NCName ::= IS 
+          case 210: // NCName ::= IS
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("is"); 
+		 RESULT = new String("is");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 209: // NCName ::= CAST 
+          case 209: // NCName ::= CAST
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("cast"); 
+		 RESULT = new String("cast");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 208: // NCName ::= CASTABLE 
+          case 208: // NCName ::= CASTABLE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("castable"); 
+		 RESULT = new String("castable");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 207: // NCName ::= TREAT 
+          case 207: // NCName ::= TREAT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("as"); 
+		 RESULT = new String("as");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 206: // NCName ::= AS 
+          case 206: // NCName ::= AS
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("as"); 
+		 RESULT = new String("as");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 205: // NCName ::= OF 
+          case 205: // NCName ::= OF
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("of"); 
+		 RESULT = new String("of");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 204: // NCName ::= INSTANCE 
+          case 204: // NCName ::= INSTANCE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("instance"); 
+		 RESULT = new String("instance");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 203: // NCName ::= EXCEPT 
+          case 203: // NCName ::= EXCEPT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("except"); 
+		 RESULT = new String("except");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 202: // NCName ::= INTERSECT 
+          case 202: // NCName ::= INTERSECT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("intersect"); 
+		 RESULT = new String("intersect");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 201: // NCName ::= UNION 
+          case 201: // NCName ::= UNION
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("union"); 
+		 RESULT = new String("union");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 200: // NCName ::= ANCESTOR_OR_SELF 
+          case 200: // NCName ::= ANCESTOR_OR_SELF
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("ancestor-or-self"); 
+		 RESULT = new String("ancestor-or-self");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 199: // NCName ::= PRECEDING 
+          case 199: // NCName ::= PRECEDING
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("preceding"); 
+		 RESULT = new String("preceding");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 198: // NCName ::= PRECEDING_SIBLING 
+          case 198: // NCName ::= PRECEDING_SIBLING
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT  = new String("preceding-sibling"); 
+		 RESULT  = new String("preceding-sibling");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 197: // NCName ::= ANCESTOR 
+          case 197: // NCName ::= ANCESTOR
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("ancestor"); 
+		 RESULT = new String("ancestor");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 196: // NCName ::= PARENT 
+          case 196: // NCName ::= PARENT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("parent"); 
+		 RESULT = new String("parent");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 195: // NCName ::= NAMESPACE 
+          case 195: // NCName ::= NAMESPACE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("namespace"); 
+		 RESULT = new String("namespace");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 194: // NCName ::= FOLLOWING 
+          case 194: // NCName ::= FOLLOWING
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("following"); 
+		 RESULT = new String("following");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 193: // NCName ::= FOLLOWING_SIBLING 
+          case 193: // NCName ::= FOLLOWING_SIBLING
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("following-sibling"); 
+		 RESULT = new String("following-sibling");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 192: // NCName ::= DESCENDANT_OR_SELF 
+          case 192: // NCName ::= DESCENDANT_OR_SELF
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("descendant-of-self"); 
+		 RESULT = new String("descendant-of-self");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 191: // NCName ::= SELF 
+          case 191: // NCName ::= SELF
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("self"); 
+		 RESULT = new String("self");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 190: // NCName ::= ATTRIBUTE 
+          case 190: // NCName ::= ATTRIBUTE
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("attribute"); 
+		 RESULT = new String("attribute");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 189: // NCName ::= DESCENDANT 
+          case 189: // NCName ::= DESCENDANT
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("descendant"); 
+		 RESULT = new String("descendant");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 188: // NCName ::= CHILD 
+          case 188: // NCName ::= CHILD
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("child"); 
+		 RESULT = new String("child");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 187: // NCName ::= TO 
+          case 187: // NCName ::= TO
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new String("to"); 
+		 RESULT = new String("to");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 186: // NCName ::= NCNAME 
+          case 186: // NCName ::= NCNAME
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(1/*NCName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 185: // UnreservedQName ::= NCName COLON NCName 
+          case 185: // UnreservedQName ::= NCName COLON NCName
             {
               QName RESULT = null;
 		int pleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -4472,49 +4472,49 @@ class CUP$XPathCup$actions {
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int lright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String l = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new QName(p,l); 
+		 RESULT = new QName(p,l);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(15/*UnreservedQName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 184: // UnreservedQName ::= UnreservedNCName 
+          case 184: // UnreservedQName ::= UnreservedNCName
             {
               QName RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int lright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String l = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new QName(l); 
+		 RESULT = new QName(l);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(15/*UnreservedQName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 183: // LocalPart ::= NCName 
+          case 183: // LocalPart ::= NCName
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(4/*LocalPart*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 182: // Prefix ::= NCName 
+          case 182: // Prefix ::= NCName
             {
               String RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(3/*Prefix*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 181: // QName ::= NCName COLON NCName 
+          case 181: // QName ::= NCName COLON NCName
             {
               QName RESULT = null;
 		int pleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -4523,166 +4523,166 @@ class CUP$XPathCup$actions {
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int lright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String l = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new QName(p,l); 
+		 RESULT = new QName(p,l);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(14/*QName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 180: // QName ::= NCName 
+          case 180: // QName ::= NCName
             {
               QName RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int lright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String l = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new QName(l); 
+		 RESULT = new QName(l);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(14/*QName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 179: // VarName ::= QName 
+          case 179: // VarName ::= QName
             {
               QName RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName n = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(16/*VarName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 178: // StringLiteral ::= STRING 
+          case 178: // StringLiteral ::= STRING
             {
               StringLiteral RESULT = null;
 		int sleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int sright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String s = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new StringLiteral(s); 
+		 RESULT = new StringLiteral(s);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(5/*StringLiteral*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 177: // DoubleLiteral ::= DOUBLE 
+          case 177: // DoubleLiteral ::= DOUBLE
             {
               DoubleLiteral RESULT = null;
 		int dleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int dright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Double d = (Double)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new DoubleLiteral(d.doubleValue()); 
+		 RESULT = new DoubleLiteral(d.doubleValue());
               CUP$XPathCup$result = new java_cup.runtime.Symbol(64/*DoubleLiteral*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 176: // DecimalLiteral ::= DECIMAL 
+          case 176: // DecimalLiteral ::= DECIMAL
             {
               DecimalLiteral RESULT = null;
 		int dleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int dright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		BigDecimal d = (BigDecimal)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new DecimalLiteral(d); 
+		 RESULT = new DecimalLiteral(d);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(62/*DecimalLiteral*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 175: // IntegerLiteral ::= INTEGER 
+          case 175: // IntegerLiteral ::= INTEGER
             {
               IntegerLiteral RESULT = null;
 		int ileft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int iright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		BigInteger i = (BigInteger)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new IntegerLiteral(i); 
+		 RESULT = new IntegerLiteral(i);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(63/*IntegerLiteral*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 174: // TypeName ::= QName 
+          case 174: // TypeName ::= QName
             {
               QName RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName n = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(8/*TypeName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 173: // ElementName ::= QName 
+          case 173: // ElementName ::= QName
             {
               QName RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName n = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(9/*ElementName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 172: // AttributeName ::= QName 
+          case 172: // AttributeName ::= QName
             {
               QName RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName n = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(12/*AttributeName*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 171: // ElementDeclaration ::= ElementName 
+          case 171: // ElementDeclaration ::= ElementName
             {
               QName RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName n = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(6/*ElementDeclaration*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 170: // SchemaElementTest ::= SCHEMA_ELEMENT LPAR ElementDeclaration RPAR 
+          case 170: // SchemaElementTest ::= SCHEMA_ELEMENT LPAR ElementDeclaration RPAR
             {
               SchemaElemTest RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		QName e = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		 RESULT = new SchemaElemTest(e); 
+		 RESULT = new SchemaElemTest(e);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(73/*SchemaElementTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 169: // ElementNameOrWildcard ::= STAR 
+          case 169: // ElementNameOrWildcard ::= STAR
             {
               QName RESULT = null;
-		 RESULT = null; /* XXX */ 
+		 RESULT = null; /* XXX */
               CUP$XPathCup$result = new java_cup.runtime.Symbol(7/*ElementNameOrWildcard*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 168: // ElementNameOrWildcard ::= ElementName 
+          case 168: // ElementNameOrWildcard ::= ElementName
             {
               QName RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName e = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = e; 
+		 RESULT = e;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(7/*ElementNameOrWildcard*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 167: // ElementTest ::= ELEMENT LPAR ElementNameOrWildcard COMMA TypeName QUESTIONMARK RPAR 
+          case 167: // ElementTest ::= ELEMENT LPAR ElementNameOrWildcard COMMA TypeName QUESTIONMARK RPAR
             {
               ElementTest RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-4)).left;
@@ -4691,20 +4691,20 @@ class CUP$XPathCup$actions {
 		int tleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).right;
 		QName t = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).value;
-		
+
 			     // XXX: wildcard!!
 			     boolean wild = false;
 			     if(e == null)
 			     	wild = true;
-				
+
 			     RESULT = new ElementTest(e,wild,t,true);
-			  
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(71/*ElementTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-6)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 166: // ElementTest ::= ELEMENT LPAR ElementNameOrWildcard COMMA TypeName RPAR 
+          case 166: // ElementTest ::= ELEMENT LPAR ElementNameOrWildcard COMMA TypeName RPAR
             {
               ElementTest RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left;
@@ -4713,93 +4713,93 @@ class CUP$XPathCup$actions {
 		int tleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		QName t = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		
+
 			     // XXX: wildcard!!
 			     boolean wild = false;
 			     if(e == null)
 			     	wild = true;
-				
+
 			     RESULT = new ElementTest(e,wild,t);
-			  
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(71/*ElementTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-5)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 165: // ElementTest ::= ELEMENT LPAR ElementNameOrWildcard RPAR 
+          case 165: // ElementTest ::= ELEMENT LPAR ElementNameOrWildcard RPAR
             {
               ElementTest RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		QName e = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		
+
 			     // XXX: wildcard!!
 			     boolean wild = false;
 			     if(e == null)
 			     	wild = true;
-				
+
 			     RESULT = new ElementTest(e,wild);
-			  
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(71/*ElementTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 164: // ElementTest ::= ELEMENT LPAR RPAR 
+          case 164: // ElementTest ::= ELEMENT LPAR RPAR
             {
               ElementTest RESULT = null;
-		 RESULT = new ElementTest(); 
+		 RESULT = new ElementTest();
               CUP$XPathCup$result = new java_cup.runtime.Symbol(71/*ElementTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 163: // AttributeDeclaration ::= AttributeName 
+          case 163: // AttributeDeclaration ::= AttributeName
             {
               QName RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName n = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(10/*AttributeDeclaration*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 162: // SchemaAttributeTest ::= SCHEMA_ATTRIBUTE LPAR AttributeDeclaration RPAR 
+          case 162: // SchemaAttributeTest ::= SCHEMA_ATTRIBUTE LPAR AttributeDeclaration RPAR
             {
               SchemaAttrTest RESULT = null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		QName a = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		 RESULT = new SchemaAttrTest(a); 
+		 RESULT = new SchemaAttrTest(a);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(72/*SchemaAttributeTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 161: // AttribNameOrWildcard ::= STAR 
+          case 161: // AttribNameOrWildcard ::= STAR
             {
               QName RESULT = null;
-		 RESULT = null; /* XXX */ 
+		 RESULT = null; /* XXX */
               CUP$XPathCup$result = new java_cup.runtime.Symbol(11/*AttribNameOrWildcard*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 160: // AttribNameOrWildcard ::= AttributeName 
+          case 160: // AttribNameOrWildcard ::= AttributeName
             {
               QName RESULT = null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName a = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = a; 
+		 RESULT = a;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(11/*AttribNameOrWildcard*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 159: // AttributeTest ::= ATTRIBUTE LPAR AttribNameOrWildcard COMMA TypeName RPAR 
+          case 159: // AttributeTest ::= ATTRIBUTE LPAR AttribNameOrWildcard COMMA TypeName RPAR
             {
               AttributeTest RESULT = null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left;
@@ -4808,330 +4808,330 @@ class CUP$XPathCup$actions {
 		int tleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		QName t = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		
+
 			     // XXX: wildcard!!
 			     boolean wild = false;
 			     if(a == null)
 			     	wild = true;
-				
+
 			     RESULT = new AttributeTest(a,wild,t);
-			  
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(69/*AttributeTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-5)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 158: // AttributeTest ::= ATTRIBUTE LPAR AttribNameOrWildcard RPAR 
+          case 158: // AttributeTest ::= ATTRIBUTE LPAR AttribNameOrWildcard RPAR
             {
               AttributeTest RESULT = null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		QName a = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		
+
 			     // XXX: wildcard!!
 			     boolean wild = false;
 			     if(a == null)
 			     	wild = true;
-				
+
 			     RESULT = new AttributeTest(a,wild);
-			  
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(69/*AttributeTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 157: // AttributeTest ::= ATTRIBUTE LPAR RPAR 
+          case 157: // AttributeTest ::= ATTRIBUTE LPAR RPAR
             {
               AttributeTest RESULT = null;
-		 RESULT = new AttributeTest(); 
+		 RESULT = new AttributeTest();
               CUP$XPathCup$result = new java_cup.runtime.Symbol(69/*AttributeTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 156: // PITest ::= PROCESSING_INSTRUCTION LPAR StringLiteral RPAR 
+          case 156: // PITest ::= PROCESSING_INSTRUCTION LPAR StringLiteral RPAR
             {
               PITest RESULT = null;
 		int sleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int sright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		StringLiteral s = (StringLiteral)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		 RESULT = new PITest(s.string()); 
+		 RESULT = new PITest(s.string());
               CUP$XPathCup$result = new java_cup.runtime.Symbol(68/*PITest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 155: // PITest ::= PROCESSING_INSTRUCTION LPAR NCName RPAR 
+          case 155: // PITest ::= PROCESSING_INSTRUCTION LPAR NCName RPAR
             {
               PITest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		 RESULT = new PITest(n); 
+		 RESULT = new PITest(n);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(68/*PITest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 154: // PITest ::= PROCESSING_INSTRUCTION LPAR RPAR 
+          case 154: // PITest ::= PROCESSING_INSTRUCTION LPAR RPAR
             {
               PITest RESULT = null;
-		 RESULT = new PITest(); 
+		 RESULT = new PITest();
               CUP$XPathCup$result = new java_cup.runtime.Symbol(68/*PITest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 153: // CommentTest ::= COMMENT LPAR RPAR 
+          case 153: // CommentTest ::= COMMENT LPAR RPAR
             {
               CommentTest RESULT = null;
-		 RESULT = new CommentTest(); 
+		 RESULT = new CommentTest();
               CUP$XPathCup$result = new java_cup.runtime.Symbol(67/*CommentTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 152: // TextTest ::= TEXT LPAR RPAR 
+          case 152: // TextTest ::= TEXT LPAR RPAR
             {
               TextTest RESULT = null;
-		 RESULT = new TextTest(); 
+		 RESULT = new TextTest();
               CUP$XPathCup$result = new java_cup.runtime.Symbol(66/*TextTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 151: // DocumentTest ::= DOCUMENT_NODE LPAR SchemaElementTest RPAR 
+          case 151: // DocumentTest ::= DOCUMENT_NODE LPAR SchemaElementTest RPAR
             {
               DocumentTest RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		SchemaElemTest e = (SchemaElemTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		 RESULT = new DocumentTest(DocumentTest.SCHEMA_ELEMENT,e); 
+		 RESULT = new DocumentTest(DocumentTest.SCHEMA_ELEMENT,e);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(65/*DocumentTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 150: // DocumentTest ::= DOCUMENT_NODE LPAR ElementTest RPAR 
+          case 150: // DocumentTest ::= DOCUMENT_NODE LPAR ElementTest RPAR
             {
               DocumentTest RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		ElementTest e = (ElementTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		 RESULT = new DocumentTest(DocumentTest.ELEMENT,e); 
+		 RESULT = new DocumentTest(DocumentTest.ELEMENT,e);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(65/*DocumentTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 149: // DocumentTest ::= DOCUMENT_NODE LPAR RPAR 
+          case 149: // DocumentTest ::= DOCUMENT_NODE LPAR RPAR
             {
               DocumentTest RESULT = null;
-		 RESULT = new DocumentTest(); 
+		 RESULT = new DocumentTest();
               CUP$XPathCup$result = new java_cup.runtime.Symbol(65/*DocumentTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 148: // AnyKindTest ::= NODE LPAR RPAR 
+          case 148: // AnyKindTest ::= NODE LPAR RPAR
             {
               AnyKindTest RESULT = null;
-		 RESULT = new AnyKindTest(); 
+		 RESULT = new AnyKindTest();
               CUP$XPathCup$result = new java_cup.runtime.Symbol(70/*AnyKindTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 147: // KindTest ::= AnyKindTest 
+          case 147: // KindTest ::= AnyKindTest
             {
               KindTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		AnyKindTest n = (AnyKindTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(56/*KindTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 146: // KindTest ::= TextTest 
+          case 146: // KindTest ::= TextTest
             {
               KindTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		TextTest n = (TextTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(56/*KindTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 145: // KindTest ::= CommentTest 
+          case 145: // KindTest ::= CommentTest
             {
               KindTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		CommentTest n = (CommentTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(56/*KindTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 144: // KindTest ::= PITest 
+          case 144: // KindTest ::= PITest
             {
               KindTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		PITest n = (PITest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(56/*KindTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 143: // KindTest ::= SchemaAttributeTest 
+          case 143: // KindTest ::= SchemaAttributeTest
             {
               KindTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		SchemaAttrTest n = (SchemaAttrTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(56/*KindTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 142: // KindTest ::= SchemaElementTest 
+          case 142: // KindTest ::= SchemaElementTest
             {
               KindTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		SchemaElemTest n = (SchemaElemTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(56/*KindTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 141: // KindTest ::= AttributeTest 
+          case 141: // KindTest ::= AttributeTest
             {
               KindTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		AttributeTest n = (AttributeTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(56/*KindTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 140: // KindTest ::= ElementTest 
+          case 140: // KindTest ::= ElementTest
             {
               KindTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		ElementTest n = (ElementTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(56/*KindTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 139: // KindTest ::= DocumentTest 
+          case 139: // KindTest ::= DocumentTest
             {
               KindTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		DocumentTest n = (DocumentTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(56/*KindTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 138: // AtomicType ::= QName 
+          case 138: // AtomicType ::= QName
             {
               QName RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName n = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(13/*AtomicType*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 137: // ItemType ::= ITEM LPAR RPAR 
+          case 137: // ItemType ::= ITEM LPAR RPAR
             {
               ItemType RESULT = null;
-		 RESULT = new ItemType(ItemType.ITEM,null); 
+		 RESULT = new ItemType(ItemType.ITEM,null);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(22/*ItemType*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 136: // ItemType ::= KindTest 
+          case 136: // ItemType ::= KindTest
             {
               ItemType RESULT = null;
 		int kleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int kright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		KindTest k = (KindTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new ItemType(ItemType.KINDTEST,k); 
+		 RESULT = new ItemType(ItemType.KINDTEST,k);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(22/*ItemType*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 135: // ItemType ::= AtomicType 
+          case 135: // ItemType ::= AtomicType
             {
               ItemType RESULT = null;
 		int qleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int qright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName q = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new ItemType(ItemType.QNAME,q); 
+		 RESULT = new ItemType(ItemType.QNAME,q);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(22/*ItemType*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 134: // OccurrenceIndicator ::= PLUS 
+          case 134: // OccurrenceIndicator ::= PLUS
             {
               Integer RESULT = null;
-		 RESULT = new Integer(SequenceType.PLUS); 
+		 RESULT = Integer.valueOf(SequenceType.PLUS);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(18/*OccurrenceIndicator*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 133: // OccurrenceIndicator ::= STAR 
+          case 133: // OccurrenceIndicator ::= STAR
             {
               Integer RESULT = null;
-		 RESULT = new Integer(SequenceType.STAR); 
+		 RESULT = Integer.valueOf(SequenceType.STAR);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(18/*OccurrenceIndicator*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 132: // OccurrenceIndicator ::= QUESTIONMARK 
+          case 132: // OccurrenceIndicator ::= QUESTIONMARK
             {
               Integer RESULT = null;
-		 RESULT = new Integer(SequenceType.QUESTION); 
+		 RESULT = Integer.valueOf(SequenceType.QUESTION);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(18/*OccurrenceIndicator*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 131: // SequenceType ::= EMPTY_SEQUENCE LPAR RPAR 
+          case 131: // SequenceType ::= EMPTY_SEQUENCE LPAR RPAR
             {
               SequenceType RESULT = null;
-		 RESULT = new SequenceType(SequenceType.EMPTY, null); 
+		 RESULT = new SequenceType(SequenceType.EMPTY, null);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(39/*SequenceType*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 130: // SequenceType ::= ItemType OccurrenceIndicator 
+          case 130: // SequenceType ::= ItemType OccurrenceIndicator
             {
               SequenceType RESULT = null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
@@ -5140,49 +5140,49 @@ class CUP$XPathCup$actions {
 		int ileft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int iright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Integer i = (Integer)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new SequenceType(i.intValue(), t); 
+		 RESULT = new SequenceType(i.intValue(), t);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(39/*SequenceType*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 129: // SequenceType ::= ItemType 
+          case 129: // SequenceType ::= ItemType
             {
               SequenceType RESULT = null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		ItemType t = (ItemType)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new SequenceType(SequenceType.NONE, t); 
+		 RESULT = new SequenceType(SequenceType.NONE, t);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(39/*SequenceType*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 128: // SingleType ::= AtomicType QUESTIONMARK 
+          case 128: // SingleType ::= AtomicType QUESTIONMARK
             {
               SingleType RESULT = null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		QName t = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		 RESULT = new SingleType(t,true); 
+		 RESULT = new SingleType(t,true);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(38/*SingleType*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 127: // SingleType ::= AtomicType 
+          case 127: // SingleType ::= AtomicType
             {
               SingleType RESULT = null;
 		int tleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int tright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName t = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new SingleType(t); 
+		 RESULT = new SingleType(t);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(38/*SingleType*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 126: // FunctionCallMiddle ::= FunctionCallMiddle COMMA ExprSingle 
+          case 126: // FunctionCallMiddle ::= FunctionCallMiddle COMMA ExprSingle
             {
               Collection RESULT = null;
 		int cleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -5191,32 +5191,32 @@ class CUP$XPathCup$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr e = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 			   c.add(e);
 			   RESULT = c;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(23/*FunctionCallMiddle*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 125: // FunctionCallMiddle ::= ExprSingle 
+          case 125: // FunctionCallMiddle ::= ExprSingle
             {
               Collection RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr e = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 			   Collection c = new ArrayList();
 			   c.add(e);
 			   RESULT = c;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(23/*FunctionCallMiddle*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 124: // FunctionCall ::= UnreservedQName LPAR FunctionCallMiddle RPAR 
+          case 124: // FunctionCall ::= UnreservedQName LPAR FunctionCallMiddle RPAR
             {
               FunctionCall RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left;
@@ -5225,212 +5225,212 @@ class CUP$XPathCup$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		Collection a = (Collection)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		
+
 			   RESULT = new FunctionCall(n,a);
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(60/*FunctionCall*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 123: // FunctionCall ::= UnreservedQName LPAR RPAR 
+          case 123: // FunctionCall ::= UnreservedQName LPAR RPAR
             {
               FunctionCall RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).right;
 		QName n = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).value;
-		
+
 			   RESULT = new FunctionCall(n,new ArrayList());
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(60/*FunctionCall*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 122: // ContextItemExpr ::= DOT 
+          case 122: // ContextItemExpr ::= DOT
             {
               CntxItemExpr RESULT = null;
-		 RESULT = new CntxItemExpr(); 
+		 RESULT = new CntxItemExpr();
               CUP$XPathCup$result = new java_cup.runtime.Symbol(59/*ContextItemExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 121: // ParenthesizedExpr ::= LPAR Expr RPAR 
+          case 121: // ParenthesizedExpr ::= LPAR Expr RPAR
             {
               Collection RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		Collection e = (Collection)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		 RESULT = e; 
+		 RESULT = e;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(24/*ParenthesizedExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 120: // ParenthesizedExpr ::= LPAR RPAR 
+          case 120: // ParenthesizedExpr ::= LPAR RPAR
             {
               Collection RESULT = null;
-		 RESULT = new ArrayList(); 
+		 RESULT = new ArrayList();
               CUP$XPathCup$result = new java_cup.runtime.Symbol(24/*ParenthesizedExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 119: // VarRef ::= DOLLAR VarName 
+          case 119: // VarRef ::= DOLLAR VarName
             {
               VarRef RESULT = null;
 		int vleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int vright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName v = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new VarRef(v); 
+		 RESULT = new VarRef(v);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(58/*VarRef*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 118: // NumericLiteral ::= DoubleLiteral 
+          case 118: // NumericLiteral ::= DoubleLiteral
             {
               NumericLiteral RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		DoubleLiteral n = (DoubleLiteral)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(61/*NumericLiteral*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 117: // NumericLiteral ::= DecimalLiteral 
+          case 117: // NumericLiteral ::= DecimalLiteral
             {
               NumericLiteral RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		DecimalLiteral n = (DecimalLiteral)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(61/*NumericLiteral*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 116: // NumericLiteral ::= IntegerLiteral 
+          case 116: // NumericLiteral ::= IntegerLiteral
             {
               NumericLiteral RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		IntegerLiteral n = (IntegerLiteral)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(61/*NumericLiteral*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 115: // Literal ::= StringLiteral 
+          case 115: // Literal ::= StringLiteral
             {
               Literal RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		StringLiteral n = (StringLiteral)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(57/*Literal*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 114: // Literal ::= NumericLiteral 
+          case 114: // Literal ::= NumericLiteral
             {
               Literal RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		NumericLiteral n = (NumericLiteral)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(57/*Literal*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 113: // PrimaryExpr ::= FunctionCall 
+          case 113: // PrimaryExpr ::= FunctionCall
             {
               PrimaryExpr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		FunctionCall n = (FunctionCall)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(29/*PrimaryExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 112: // PrimaryExpr ::= ContextItemExpr 
+          case 112: // PrimaryExpr ::= ContextItemExpr
             {
               PrimaryExpr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		CntxItemExpr n = (CntxItemExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(29/*PrimaryExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 111: // PrimaryExpr ::= ParenthesizedExpr 
+          case 111: // PrimaryExpr ::= ParenthesizedExpr
             {
               PrimaryExpr RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Collection e = (Collection)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new ParExpr(e); 
+		 RESULT = new ParExpr(e);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(29/*PrimaryExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 110: // PrimaryExpr ::= VarRef 
+          case 110: // PrimaryExpr ::= VarRef
             {
               PrimaryExpr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		VarRef n = (VarRef)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(29/*PrimaryExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 109: // PrimaryExpr ::= Literal 
+          case 109: // PrimaryExpr ::= Literal
             {
               PrimaryExpr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Literal n = (Literal)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(29/*PrimaryExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 108: // Predicate ::= LBRACKET Expr RBRACKET 
+          case 108: // Predicate ::= LBRACKET Expr RBRACKET
             {
               Collection RESULT = null;
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).right;
 		Collection e = (Collection)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).value;
-		 RESULT = e; 
+		 RESULT = e;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(82/*Predicate*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 107: // PredicateList ::= 
+          case 107: // PredicateList ::=
             {
               Collection RESULT = null;
-		 RESULT = new ArrayList(); 
+		 RESULT = new ArrayList();
               CUP$XPathCup$result = new java_cup.runtime.Symbol(26/*PredicateList*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 106: // PredicateList ::= PredicateList Predicate 
+          case 106: // PredicateList ::= PredicateList Predicate
             {
               Collection RESULT = null;
 		int cleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
@@ -5439,16 +5439,16 @@ class CUP$XPathCup$actions {
 		int pleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Collection p = (Collection)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 			   c.add(p);
 			   RESULT = c;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(26/*PredicateList*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 105: // FilterExpr ::= PrimaryExpr PredicateList 
+          case 105: // FilterExpr ::= PrimaryExpr PredicateList
             {
               FilterExpr RESULT = null;
 		int peleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
@@ -5457,160 +5457,160 @@ class CUP$XPathCup$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Collection e = (Collection)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new FilterExpr(pe, e); 
+		 RESULT = new FilterExpr(pe, e);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(81/*FilterExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 104: // Wildcard ::= STAR COLON NCName 
+          case 104: // Wildcard ::= STAR COLON NCName
             {
               QName RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new QName("*", n); 
+		 RESULT = new QName("*", n);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(17/*Wildcard*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 103: // Wildcard ::= NCName COLON STAR 
+          case 103: // Wildcard ::= NCName COLON STAR
             {
               QName RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).right;
 		String n = (String)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).value;
-		 RESULT = new QName(n, "*"); 
+		 RESULT = new QName(n, "*");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(17/*Wildcard*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 102: // Wildcard ::= STAR 
+          case 102: // Wildcard ::= STAR
             {
               QName RESULT = null;
-		 RESULT = new QName("*","*"); 
+		 RESULT = new QName("*","*");
               CUP$XPathCup$result = new java_cup.runtime.Symbol(17/*Wildcard*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 101: // NameTest ::= Wildcard 
+          case 101: // NameTest ::= Wildcard
             {
               NameTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName n = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new NameTest(n); 
+		 RESULT = new NameTest(n);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(55/*NameTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 100: // NameTest ::= QName 
+          case 100: // NameTest ::= QName
             {
               NameTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QName n = (QName)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new NameTest(n); 
+		 RESULT = new NameTest(n);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(55/*NameTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 99: // NodeTest ::= NameTest 
+          case 99: // NodeTest ::= NameTest
             {
               NodeTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		NameTest n = (NameTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(30/*NodeTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 98: // NodeTest ::= KindTest 
+          case 98: // NodeTest ::= KindTest
             {
               NodeTest RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		KindTest n = (KindTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(30/*NodeTest*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 97: // AbbrevReverseStep ::= DOTDOT 
+          case 97: // AbbrevReverseStep ::= DOTDOT
             {
               ReverseStep RESULT = null;
-		 RESULT = new ReverseStep(ReverseStep.DOTDOT,null); 
+		 RESULT = new ReverseStep(ReverseStep.DOTDOT,null);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(32/*AbbrevReverseStep*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 96: // ReverseAxis ::= ANCESTOR_OR_SELF COLONCOLON 
+          case 96: // ReverseAxis ::= ANCESTOR_OR_SELF COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ReverseStep.ANCESTOR_OR_SELF); 
+		 RESULT = Integer.valueOf(ReverseStep.ANCESTOR_OR_SELF);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(19/*ReverseAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 95: // ReverseAxis ::= PRECEDING COLONCOLON 
+          case 95: // ReverseAxis ::= PRECEDING COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ReverseStep.PRECEDING); 
+		 RESULT = Integer.valueOf(ReverseStep.PRECEDING);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(19/*ReverseAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 94: // ReverseAxis ::= PRECEDING_SIBLING COLONCOLON 
+          case 94: // ReverseAxis ::= PRECEDING_SIBLING COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ReverseStep.PRECEDING_SIBLING); 
+		 RESULT = Integer.valueOf(ReverseStep.PRECEDING_SIBLING);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(19/*ReverseAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 93: // ReverseAxis ::= ANCESTOR COLONCOLON 
+          case 93: // ReverseAxis ::= ANCESTOR COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ReverseStep.ANCESTOR); 
+		 RESULT = Integer.valueOf(ReverseStep.ANCESTOR);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(19/*ReverseAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 92: // ReverseAxis ::= PARENT COLONCOLON 
+          case 92: // ReverseAxis ::= PARENT COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ReverseStep.PARENT); 
+		 RESULT = Integer.valueOf(ReverseStep.PARENT);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(19/*ReverseAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 91: // ReverseStep ::= AbbrevReverseStep 
+          case 91: // ReverseStep ::= AbbrevReverseStep
             {
               ReverseStep RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		ReverseStep n = (ReverseStep)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(31/*ReverseStep*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 90: // ReverseStep ::= ReverseAxis NodeTest 
+          case 90: // ReverseStep ::= ReverseAxis NodeTest
             {
               ReverseStep RESULT = null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
@@ -5619,121 +5619,121 @@ class CUP$XPathCup$actions {
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		NodeTest n = (NodeTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		  RESULT = new ReverseStep(a.intValue(), n); 
+		  RESULT = new ReverseStep(a.intValue(), n);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(31/*ReverseStep*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 89: // AbbrevForwardStep ::= NodeTest 
+          case 89: // AbbrevForwardStep ::= NodeTest
             {
               ForwardStep RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		NodeTest n = (NodeTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new ForwardStep(ForwardStep.NONE, n); 
+		 RESULT = new ForwardStep(ForwardStep.NONE, n);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(34/*AbbrevForwardStep*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 88: // AbbrevForwardStep ::= AT_SYM NodeTest 
+          case 88: // AbbrevForwardStep ::= AT_SYM NodeTest
             {
               ForwardStep RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		NodeTest n = (NodeTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new ForwardStep(ForwardStep.AT_SYM, n); 
+		 RESULT = new ForwardStep(ForwardStep.AT_SYM, n);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(34/*AbbrevForwardStep*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 87: // ForwardAxis ::= NAMESPACE COLONCOLON 
+          case 87: // ForwardAxis ::= NAMESPACE COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ForwardStep.NAMESPACE); 
+		 RESULT = Integer.valueOf(ForwardStep.NAMESPACE);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(20/*ForwardAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 86: // ForwardAxis ::= FOLLOWING COLONCOLON 
+          case 86: // ForwardAxis ::= FOLLOWING COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ForwardStep.FOLLOWING); 
+		 RESULT = Integer.valueOf(ForwardStep.FOLLOWING);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(20/*ForwardAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 85: // ForwardAxis ::= FOLLOWING_SIBLING COLONCOLON 
+          case 85: // ForwardAxis ::= FOLLOWING_SIBLING COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ForwardStep.FOLLOWING_SIBLING); 
+		 RESULT = Integer.valueOf(ForwardStep.FOLLOWING_SIBLING);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(20/*ForwardAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 84: // ForwardAxis ::= DESCENDANT_OR_SELF COLONCOLON 
+          case 84: // ForwardAxis ::= DESCENDANT_OR_SELF COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ForwardStep.DESCENDANT_OR_SELF); 
+		 RESULT = Integer.valueOf(ForwardStep.DESCENDANT_OR_SELF);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(20/*ForwardAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 83: // ForwardAxis ::= SELF COLONCOLON 
+          case 83: // ForwardAxis ::= SELF COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ForwardStep.SELF); 
+		 RESULT = Integer.valueOf(ForwardStep.SELF);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(20/*ForwardAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 82: // ForwardAxis ::= ATTRIBUTE COLONCOLON 
+          case 82: // ForwardAxis ::= ATTRIBUTE COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ForwardStep.ATTRIBUTE); 
+		 RESULT = Integer.valueOf(ForwardStep.ATTRIBUTE);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(20/*ForwardAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 81: // ForwardAxis ::= DESCENDANT COLONCOLON 
+          case 81: // ForwardAxis ::= DESCENDANT COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ForwardStep.DESCENDANT); 
+		 RESULT = Integer.valueOf(ForwardStep.DESCENDANT);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(20/*ForwardAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 80: // ForwardAxis ::= CHILD COLONCOLON 
+          case 80: // ForwardAxis ::= CHILD COLONCOLON
             {
               Integer RESULT = null;
-		 RESULT = new Integer(ForwardStep.CHILD); 
+		 RESULT = Integer.valueOf(ForwardStep.CHILD);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(20/*ForwardAxis*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 79: // ForwardStep ::= AbbrevForwardStep 
+          case 79: // ForwardStep ::= AbbrevForwardStep
             {
               ForwardStep RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		ForwardStep n = (ForwardStep)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(33/*ForwardStep*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 78: // ForwardStep ::= ForwardAxis NodeTest 
+          case 78: // ForwardStep ::= ForwardAxis NodeTest
             {
               ForwardStep RESULT = null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
@@ -5742,13 +5742,13 @@ class CUP$XPathCup$actions {
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		NodeTest n = (NodeTest)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new ForwardStep(a.intValue(),n); 
+		 RESULT = new ForwardStep(a.intValue(),n);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(33/*ForwardStep*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 77: // AxisStep ::= ReverseStep PredicateList 
+          case 77: // AxisStep ::= ReverseStep PredicateList
             {
               AxisStep RESULT = null;
 		int sleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
@@ -5757,13 +5757,13 @@ class CUP$XPathCup$actions {
 		int pleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Collection p = (Collection)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new AxisStep(s, p); 
+		 RESULT = new AxisStep(s, p);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(80/*AxisStep*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 76: // AxisStep ::= ForwardStep PredicateList 
+          case 76: // AxisStep ::= ForwardStep PredicateList
             {
               AxisStep RESULT = null;
 		int sleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
@@ -5772,37 +5772,37 @@ class CUP$XPathCup$actions {
 		int pleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Collection p = (Collection)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new AxisStep(s, p); 
+		 RESULT = new AxisStep(s, p);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(80/*AxisStep*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 75: // StepExpr ::= FilterExpr 
+          case 75: // StepExpr ::= FilterExpr
             {
               StepExpr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		FilterExpr n = (FilterExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(35/*StepExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 74: // StepExpr ::= AxisStep 
+          case 74: // StepExpr ::= AxisStep
             {
               StepExpr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		AxisStep n = (AxisStep)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(35/*StepExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 73: // RelativePathExpr ::= RelativePathExpr FORWARD_SLASHSLASH StepExpr 
+          case 73: // RelativePathExpr ::= RelativePathExpr FORWARD_SLASHSLASH StepExpr
             {
               XPathExpr RESULT = null;
 		int pleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -5811,16 +5811,16 @@ class CUP$XPathCup$actions {
 		int sleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int sright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		StepExpr s = (StepExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				p.add_tail(2,s);
 				RESULT = p;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(36/*RelativePathExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 72: // RelativePathExpr ::= RelativePathExpr FORWARD_SLASH StepExpr 
+          case 72: // RelativePathExpr ::= RelativePathExpr FORWARD_SLASH StepExpr
             {
               XPathExpr RESULT = null;
 		int pleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -5829,262 +5829,262 @@ class CUP$XPathCup$actions {
 		int sleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int sright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		StepExpr s = (StepExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				p.add_tail(1,s);
 				RESULT = p;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(36/*RelativePathExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 71: // RelativePathExpr ::= StepExpr 
+          case 71: // RelativePathExpr ::= StepExpr
             {
               XPathExpr RESULT = null;
 		int sleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int sright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		StepExpr s = (StepExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new XPathExpr(0,(StepExpr)s); 
+		 RESULT = new XPathExpr(0,(StepExpr)s);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(36/*RelativePathExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 70: // PathExpr ::= RelativePathExpr 
+          case 70: // PathExpr ::= RelativePathExpr
             {
               XPathExpr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		XPathExpr n = (XPathExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(78/*PathExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 69: // PathExpr ::= FORWARD_SLASHSLASH RelativePathExpr 
+          case 69: // PathExpr ::= FORWARD_SLASHSLASH RelativePathExpr
             {
               XPathExpr RESULT = null;
 		int pleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		XPathExpr p = (XPathExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				p.set_slashes(2);
 				RESULT = p;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(78/*PathExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 68: // PathExpr ::= FORWARD_SLASH RelativePathExpr 
+          case 68: // PathExpr ::= FORWARD_SLASH RelativePathExpr
             {
               XPathExpr RESULT = null;
 		int pleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int pright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		XPathExpr p = (XPathExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				p.set_slashes(1);
 				RESULT = p;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(78/*PathExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 67: // PathExpr ::= FORWARD_SLASH 
+          case 67: // PathExpr ::= FORWARD_SLASH
             {
               XPathExpr RESULT = null;
-		 RESULT = new XPathExpr(1,null); 
+		 RESULT = new XPathExpr(1,null);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(78/*PathExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 66: // NodeComp ::= GREATER_GREATER 
+          case 66: // NodeComp ::= GREATER_GREATER
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.GREATER_GREATER); 
+		 RESULT = Integer.valueOf(CmpExpr.GREATER_GREATER);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(21/*NodeComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 65: // NodeComp ::= LESS_LESS 
+          case 65: // NodeComp ::= LESS_LESS
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.LESS_LESS); 
+		 RESULT = Integer.valueOf(CmpExpr.LESS_LESS);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(21/*NodeComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 64: // NodeComp ::= IS 
+          case 64: // NodeComp ::= IS
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.IS); 
+		 RESULT = Integer.valueOf(CmpExpr.IS);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(21/*NodeComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 63: // ValueComp ::= GE 
+          case 63: // ValueComp ::= GE
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.GE); 
+		 RESULT = Integer.valueOf(CmpExpr.GE);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(50/*ValueComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 62: // ValueComp ::= GT 
+          case 62: // ValueComp ::= GT
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.GT); 
+		 RESULT = Integer.valueOf(CmpExpr.GT);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(50/*ValueComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 61: // ValueComp ::= LE 
+          case 61: // ValueComp ::= LE
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.LE); 
+		 RESULT = Integer.valueOf(CmpExpr.LE);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(50/*ValueComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 60: // ValueComp ::= LT 
+          case 60: // ValueComp ::= LT
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.LT); 
+		 RESULT = Integer.valueOf(CmpExpr.LT);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(50/*ValueComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 59: // ValueComp ::= NE 
+          case 59: // ValueComp ::= NE
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.NE); 
+		 RESULT = Integer.valueOf(CmpExpr.NE);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(50/*ValueComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 58: // ValueComp ::= EQ 
+          case 58: // ValueComp ::= EQ
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.EQ); 
+		 RESULT = Integer.valueOf(CmpExpr.EQ);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(50/*ValueComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 57: // GeneralComp ::= GREATEREQUAL 
+          case 57: // GeneralComp ::= GREATEREQUAL
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.GREATEREQUAL); 
+		 RESULT = Integer.valueOf(CmpExpr.GREATEREQUAL);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(49/*GeneralComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 56: // GeneralComp ::= GREATER 
+          case 56: // GeneralComp ::= GREATER
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.GREATER); 
+		 RESULT = Integer.valueOf(CmpExpr.GREATER);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(49/*GeneralComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 55: // GeneralComp ::= LESSEQUAL 
+          case 55: // GeneralComp ::= LESSEQUAL
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.LESSEQUAL); 
+		 RESULT = Integer.valueOf(CmpExpr.LESSEQUAL);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(49/*GeneralComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 54: // GeneralComp ::= LESSTHAN 
+          case 54: // GeneralComp ::= LESSTHAN
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.LESSTHAN); 
+		 RESULT = Integer.valueOf(CmpExpr.LESSTHAN);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(49/*GeneralComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 53: // GeneralComp ::= NOTEQUALS 
+          case 53: // GeneralComp ::= NOTEQUALS
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.NOTEQUALS); 
+		 RESULT = Integer.valueOf(CmpExpr.NOTEQUALS);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(49/*GeneralComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 52: // GeneralComp ::= EQUALS 
+          case 52: // GeneralComp ::= EQUALS
             {
               Integer RESULT = null;
-		 RESULT = new Integer(CmpExpr.EQUALS); 
+		 RESULT = Integer.valueOf(CmpExpr.EQUALS);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(49/*GeneralComp*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 51: // ValueExpr ::= PathExpr 
+          case 51: // ValueExpr ::= PathExpr
             {
               XPathExpr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		XPathExpr n = (XPathExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(79/*ValueExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 50: // UnaryExpr ::= PLUS UnaryExpr 
+          case 50: // UnaryExpr ::= PLUS UnaryExpr
             {
               Expr RESULT = null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr a = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new PlusExpr(a); 
+		 RESULT = new PlusExpr(a);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(37/*UnaryExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 49: // UnaryExpr ::= MINUS UnaryExpr 
+          case 49: // UnaryExpr ::= MINUS UnaryExpr
             {
               Expr RESULT = null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr a = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new MinusExpr(a); 
+		 RESULT = new MinusExpr(a);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(37/*UnaryExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 48: // UnaryExpr ::= ValueExpr 
+          case 48: // UnaryExpr ::= ValueExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		XPathExpr n = (XPathExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(37/*UnaryExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 47: // CastExpr ::= UnaryExpr CAST AS SingleType 
+          case 47: // CastExpr ::= UnaryExpr CAST AS SingleType
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left;
@@ -6093,25 +6093,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		SingleType r = (SingleType)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new CastExpr(l, r); 
+		 RESULT = new CastExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(43/*CastExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 46: // CastExpr ::= UnaryExpr 
+          case 46: // CastExpr ::= UnaryExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(43/*CastExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 45: // CastableExpr ::= CastExpr CASTABLE AS SingleType 
+          case 45: // CastableExpr ::= CastExpr CASTABLE AS SingleType
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left;
@@ -6120,25 +6120,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		SingleType r = (SingleType)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new CastableExpr(l, r); 
+		 RESULT = new CastableExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(41/*CastableExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 44: // CastableExpr ::= CastExpr 
+          case 44: // CastableExpr ::= CastExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(41/*CastableExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 43: // TreatExpr ::= CastableExpr TREAT AS SequenceType 
+          case 43: // TreatExpr ::= CastableExpr TREAT AS SequenceType
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left;
@@ -6147,25 +6147,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		SequenceType r = (SequenceType)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new TreatAsExpr(l, r); 
+		 RESULT = new TreatAsExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(40/*TreatExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 42: // TreatExpr ::= CastableExpr 
+          case 42: // TreatExpr ::= CastableExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(40/*TreatExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 41: // InstanceofExpr ::= TreatExpr INSTANCE OF SequenceType 
+          case 41: // InstanceofExpr ::= TreatExpr INSTANCE OF SequenceType
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left;
@@ -6174,25 +6174,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		SequenceType r = (SequenceType)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new InstOfExpr(l, r); 
+		 RESULT = new InstOfExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(42/*InstanceofExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-3)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 40: // InstanceofExpr ::= TreatExpr 
+          case 40: // InstanceofExpr ::= TreatExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(42/*InstanceofExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 39: // IntersectExceptExpr ::= IntersectExceptExpr EXCEPT InstanceofExpr 
+          case 39: // IntersectExceptExpr ::= IntersectExceptExpr EXCEPT InstanceofExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6201,13 +6201,13 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new ExceptExpr(l, r); 
+		 RESULT = new ExceptExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(46/*IntersectExceptExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 38: // IntersectExceptExpr ::= IntersectExceptExpr INTERSECT InstanceofExpr 
+          case 38: // IntersectExceptExpr ::= IntersectExceptExpr INTERSECT InstanceofExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6216,25 +6216,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new IntersectExpr(l, r); 
+		 RESULT = new IntersectExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(46/*IntersectExceptExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 37: // IntersectExceptExpr ::= InstanceofExpr 
+          case 37: // IntersectExceptExpr ::= InstanceofExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(46/*IntersectExceptExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 36: // UnionExpr ::= UnionExpr PIPE IntersectExceptExpr 
+          case 36: // UnionExpr ::= UnionExpr PIPE IntersectExceptExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6243,13 +6243,13 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new PipeExpr(l, r); 
+		 RESULT = new PipeExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(44/*UnionExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 35: // UnionExpr ::= UnionExpr UNION IntersectExceptExpr 
+          case 35: // UnionExpr ::= UnionExpr UNION IntersectExceptExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6258,25 +6258,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new UnionExpr(l, r); 
+		 RESULT = new UnionExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(44/*UnionExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 34: // UnionExpr ::= IntersectExceptExpr 
+          case 34: // UnionExpr ::= IntersectExceptExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(44/*UnionExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 33: // MultiplicativeExpr ::= MultiplicativeExpr MOD UnionExpr 
+          case 33: // MultiplicativeExpr ::= MultiplicativeExpr MOD UnionExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6285,13 +6285,13 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new ModExpr(l, r); 
+		 RESULT = new ModExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(45/*MultiplicativeExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 32: // MultiplicativeExpr ::= MultiplicativeExpr IDIV UnionExpr 
+          case 32: // MultiplicativeExpr ::= MultiplicativeExpr IDIV UnionExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6300,13 +6300,13 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new IDivExpr(l, r); 
+		 RESULT = new IDivExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(45/*MultiplicativeExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 31: // MultiplicativeExpr ::= MultiplicativeExpr DIV UnionExpr 
+          case 31: // MultiplicativeExpr ::= MultiplicativeExpr DIV UnionExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6315,13 +6315,13 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new DivExpr(l, r); 
+		 RESULT = new DivExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(45/*MultiplicativeExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 30: // MultiplicativeExpr ::= MultiplicativeExpr STAR UnionExpr 
+          case 30: // MultiplicativeExpr ::= MultiplicativeExpr STAR UnionExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6330,25 +6330,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new MulExpr(l, r); 
+		 RESULT = new MulExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(45/*MultiplicativeExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 29: // MultiplicativeExpr ::= UnionExpr 
+          case 29: // MultiplicativeExpr ::= UnionExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(45/*MultiplicativeExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 28: // AdditiveExpr ::= AdditiveExpr MINUS MultiplicativeExpr 
+          case 28: // AdditiveExpr ::= AdditiveExpr MINUS MultiplicativeExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6357,13 +6357,13 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new SubExpr(l, r); 
+		 RESULT = new SubExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(48/*AdditiveExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 27: // AdditiveExpr ::= AdditiveExpr PLUS MultiplicativeExpr 
+          case 27: // AdditiveExpr ::= AdditiveExpr PLUS MultiplicativeExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6372,25 +6372,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new AddExpr(l, r); 
+		 RESULT = new AddExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(48/*AdditiveExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 26: // AdditiveExpr ::= MultiplicativeExpr 
+          case 26: // AdditiveExpr ::= MultiplicativeExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(48/*AdditiveExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 25: // RangeExpr ::= AdditiveExpr TO AdditiveExpr 
+          case 25: // RangeExpr ::= AdditiveExpr TO AdditiveExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6399,25 +6399,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new RangeExpr(l, r); 
+		 RESULT = new RangeExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(53/*RangeExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 24: // RangeExpr ::= AdditiveExpr 
+          case 24: // RangeExpr ::= AdditiveExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(53/*RangeExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 23: // ComparisonExpr ::= RangeExpr NodeComp RangeExpr 
+          case 23: // ComparisonExpr ::= RangeExpr NodeComp RangeExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6429,13 +6429,13 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new CmpExpr(l, r, t.intValue()); 
+		 RESULT = new CmpExpr(l, r, t.intValue());
               CUP$XPathCup$result = new java_cup.runtime.Symbol(54/*ComparisonExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 22: // ComparisonExpr ::= RangeExpr GeneralComp RangeExpr 
+          case 22: // ComparisonExpr ::= RangeExpr GeneralComp RangeExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6447,13 +6447,13 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new CmpExpr(l, r, t.intValue()); 
+		 RESULT = new CmpExpr(l, r, t.intValue());
               CUP$XPathCup$result = new java_cup.runtime.Symbol(54/*ComparisonExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 21: // ComparisonExpr ::= RangeExpr ValueComp RangeExpr 
+          case 21: // ComparisonExpr ::= RangeExpr ValueComp RangeExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6465,25 +6465,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new CmpExpr(l, r, t.intValue()); 
+		 RESULT = new CmpExpr(l, r, t.intValue());
               CUP$XPathCup$result = new java_cup.runtime.Symbol(54/*ComparisonExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 20: // ComparisonExpr ::= RangeExpr 
+          case 20: // ComparisonExpr ::= RangeExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(54/*ComparisonExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 19: // AndExpr ::= AndExpr AND ComparisonExpr 
+          case 19: // AndExpr ::= AndExpr AND ComparisonExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6492,25 +6492,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new AndExpr(l, r); 
+		 RESULT = new AndExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(51/*AndExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 18: // AndExpr ::= ComparisonExpr 
+          case 18: // AndExpr ::= ComparisonExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(51/*AndExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 17: // OrExpr ::= OrExpr OR AndExpr 
+          case 17: // OrExpr ::= OrExpr OR AndExpr
             {
               Expr RESULT = null;
 		int lleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6519,25 +6519,25 @@ class CUP$XPathCup$actions {
 		int rleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int rright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr r = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new OrExpr(l, r); 
+		 RESULT = new OrExpr(l, r);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(52/*OrExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 16: // OrExpr ::= AndExpr 
+          case 16: // OrExpr ::= AndExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(52/*OrExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 15: // IfExpr ::= IF LPAR Expr RPAR THEN ExprSingle ELSE ExprSingle 
+          case 15: // IfExpr ::= IF LPAR Expr RPAR THEN ExprSingle ELSE ExprSingle
             {
               IfExpr RESULT = null;
 		int expsleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-5)).left;
@@ -6549,13 +6549,13 @@ class CUP$XPathCup$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr e = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new IfExpr(exps, t, e); 
+		 RESULT = new IfExpr(exps, t, e);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(77/*IfExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-7)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 14: // QuantifiedExprMiddle ::= QuantifiedExprMiddle COMMA DOLLAR VarName IN ExprSingle 
+          case 14: // QuantifiedExprMiddle ::= QuantifiedExprMiddle COMMA DOLLAR VarName IN ExprSingle
             {
               Collection RESULT = null;
 		int psleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-5)).left;
@@ -6567,17 +6567,17 @@ class CUP$XPathCup$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr e = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				VarExprPair p = new VarExprPair(v,e);
 				ps.add(p);
 				RESULT = ps;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(27/*QuantifiedExprMiddle*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-5)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 13: // QuantifiedExprMiddle ::= VarName IN ExprSingle 
+          case 13: // QuantifiedExprMiddle ::= VarName IN ExprSingle
             {
               Collection RESULT = null;
 		int vleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6586,18 +6586,18 @@ class CUP$XPathCup$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr e = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				Collection pairs = new ArrayList();
 				VarExprPair p = new VarExprPair(v,e);
 				pairs.add(p);
 				RESULT = pairs;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(27/*QuantifiedExprMiddle*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 12: // QuantifiedExpr ::= EVERY DOLLAR QuantifiedExprMiddle SATISFIES ExprSingle 
+          case 12: // QuantifiedExpr ::= EVERY DOLLAR QuantifiedExprMiddle SATISFIES ExprSingle
             {
               QuantifiedExpr RESULT = null;
 		int pairsleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6606,17 +6606,17 @@ class CUP$XPathCup$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr e = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				QuantifiedExpr qe = new QuantifiedExpr(QuantifiedExpr.ALL,
 								       pairs, e);
 				RESULT = qe;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(76/*QuantifiedExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-4)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 11: // QuantifiedExpr ::= SOME DOLLAR QuantifiedExprMiddle SATISFIES ExprSingle 
+          case 11: // QuantifiedExpr ::= SOME DOLLAR QuantifiedExprMiddle SATISFIES ExprSingle
             {
               QuantifiedExpr RESULT = null;
 		int pairsleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6625,17 +6625,17 @@ class CUP$XPathCup$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr e = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				QuantifiedExpr qe = new QuantifiedExpr(QuantifiedExpr.SOME,
 								       pairs, e);
 				RESULT = qe;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(76/*QuantifiedExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-4)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 10: // SimpleForClause ::= SimpleForClause COMMA DOLLAR VarName IN ExprSingle 
+          case 10: // SimpleForClause ::= SimpleForClause COMMA DOLLAR VarName IN ExprSingle
             {
               Collection RESULT = null;
 		int psleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-5)).left;
@@ -6647,17 +6647,17 @@ class CUP$XPathCup$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr e = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				VarExprPair p = new VarExprPair(v,e);
 				ps.add(p);
 				RESULT = ps;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(28/*SimpleForClause*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-5)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 9: // SimpleForClause ::= FOR DOLLAR VarName IN ExprSingle 
+          case 9: // SimpleForClause ::= FOR DOLLAR VarName IN ExprSingle
             {
               Collection RESULT = null;
 		int vleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6666,18 +6666,18 @@ class CUP$XPathCup$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr e = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				Collection pairs = new ArrayList();
 				VarExprPair p = new VarExprPair(v,e);
 				pairs.add(p);
 				RESULT = pairs;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(28/*SimpleForClause*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-4)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 8: // ForExpr ::= SimpleForClause RETURN ExprSingle 
+          case 8: // ForExpr ::= SimpleForClause RETURN ExprSingle
             {
               ForExpr RESULT = null;
 		int pairsleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6686,64 +6686,64 @@ class CUP$XPathCup$actions {
 		int eleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr e = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		
+
 				ForExpr fexp = new ForExpr(pairs,e);
 				RESULT = fexp;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(75/*ForExpr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 7: // ExprSingle ::= OrExpr 
+          case 7: // ExprSingle ::= OrExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr n = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(47/*ExprSingle*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 6: // ExprSingle ::= IfExpr 
+          case 6: // ExprSingle ::= IfExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		IfExpr n = (IfExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(47/*ExprSingle*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 5: // ExprSingle ::= QuantifiedExpr 
+          case 5: // ExprSingle ::= QuantifiedExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		QuantifiedExpr n = (QuantifiedExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(47/*ExprSingle*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 4: // ExprSingle ::= ForExpr 
+          case 4: // ExprSingle ::= ForExpr
             {
               Expr RESULT = null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		ForExpr n = (ForExpr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = n; 
+		 RESULT = n;
               CUP$XPathCup$result = new java_cup.runtime.Symbol(47/*ExprSingle*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 3: // Expr ::= Expr COMMA ExprSingle 
+          case 3: // Expr ::= Expr COMMA ExprSingle
             {
               Collection RESULT = null;
 		int exprsleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left;
@@ -6752,32 +6752,32 @@ class CUP$XPathCup$actions {
 		int exleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int exright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr ex = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 
+
 				exprs.add(ex);
 				RESULT = exprs;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(25/*Expr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-2)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 2: // Expr ::= ExprSingle 
+          case 2: // Expr ::= ExprSingle
             {
               Collection RESULT = null;
 		int exleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int exright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Expr ex = (Expr)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 
+
 				Collection exps = new ArrayList();
 				exps.add(ex);
 				RESULT = exps;
-			
+
               CUP$XPathCup$result = new java_cup.runtime.Symbol(25/*Expr*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 1: // $START ::= XPath EOF 
+          case 1: // $START ::= XPath EOF
             {
               Object RESULT = null;
 		int start_valleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-1)).left;
@@ -6791,13 +6791,13 @@ class CUP$XPathCup$actions {
           return CUP$XPathCup$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 0: // XPath ::= Expr 
+          case 0: // XPath ::= Expr
             {
               XPath RESULT = null;
 		int expsleft = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left;
 		int expsright = ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right;
 		Collection exps = (Collection)((java_cup.runtime.Symbol) CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).value;
-		 RESULT = new XPath(exps); 
+		 RESULT = new XPath(exps);
               CUP$XPathCup$result = new java_cup.runtime.Symbol(74/*XPath*/, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).left, ((java_cup.runtime.Symbol)CUP$XPathCup$stack.elementAt(CUP$XPathCup$top-0)).right, RESULT);
             }
           return CUP$XPathCup$result;

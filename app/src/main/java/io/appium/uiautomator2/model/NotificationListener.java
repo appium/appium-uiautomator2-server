@@ -38,6 +38,11 @@ public class NotificationListener implements OnAccessibilityEventListener {
     private long recentToastTimestamp = currentTimeMillis();
     private OnAccessibilityEventListener originalListener = null;
     private volatile boolean isListening;
+    // Tracks whether a relevant UI-change AccessibilityEvent has been observed since the last
+    // accessibility-cache reset, so redundant per-find cache clears can be skipped while the UI is
+    // idle (see AXWindowHelpers.resetAccessibilityCache). Starts stale so the first reset after
+    // (re)starting the listener always clears.
+    private volatile boolean accessibilityCacheStale = true;
 
     protected NotificationListener() {
         uiAutomation = UiAutomation.getInstance();
@@ -61,6 +66,7 @@ public class NotificationListener implements OnAccessibilityEventListener {
         Logger.debug("Starting toast notification listener.");
         originalListener = uiAutomation.getOnAccessibilityEventListener();
         isListening = true;
+        accessibilityCacheStale = true;
         Logger.debug("Original listener: " + originalListener);
         uiAutomation.setOnAccessibilityEventListener(this);
     }
@@ -85,9 +91,35 @@ public class NotificationListener implements OnAccessibilityEventListener {
             }
         }
 
+        if (isAccessibilityCacheInvalidatingEvent(event.getEventType())) {
+            accessibilityCacheStale = true;
+        }
+
         if (originalListener != null) {
             originalListener.onAccessibilityEvent(event);
         }
+    }
+
+    private static boolean isAccessibilityCacheInvalidatingEvent(int eventType) {
+        return eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
+                || eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                || eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED
+                || eventType == AccessibilityEvent.TYPE_VIEW_SCROLLED;
+    }
+
+    /**
+     * Returns whether a relevant UI-change event has been observed since the last call, resetting
+     * the flag to {@code false}. Used by {@code AXWindowHelpers.resetAccessibilityCache()} to skip
+     * clearing the (expensive) AccessibilityInteractionClient cache while the UI is idle.
+     */
+    public synchronized boolean consumeAccessibilityCacheStaleFlag() {
+        boolean wasStale = accessibilityCacheStale;
+        accessibilityCacheStale = false;
+        return wasStale;
+    }
+
+    public synchronized void markAccessibilityCacheStale() {
+        accessibilityCacheStale = true;
     }
 
     public boolean isListening() {

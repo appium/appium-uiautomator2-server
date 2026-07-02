@@ -1,3 +1,21 @@
+## [10.2.4](https://github.com/appium/appium-uiautomator2-server/compare/v10.2.3...v10.2.4) (2026-06-24)
+
+### Miscellaneous Chores
+
+* **deps:** bump io.netty:netty-handler ([#772](https://github.com/appium/appium-uiautomator2-server/issues/772)) ([b4df947](https://github.com/appium/appium-uiautomator2-server/commit/b4df947ec65882541e19a7e138bc2823222f321f))
+
+## [10.2.3](https://github.com/appium/appium-uiautomator2-server/compare/v10.2.2...v10.2.3) (2026-06-24)
+
+### Miscellaneous Chores
+
+* **deps:** bump io.netty:netty-codec-http ([#773](https://github.com/appium/appium-uiautomator2-server/issues/773)) ([bf606d8](https://github.com/appium/appium-uiautomator2-server/commit/bf606d8c936f03254a325fc4234d986d7949a03b))
+
+## [10.2.2](https://github.com/appium/appium-uiautomator2-server/compare/v10.2.1...v10.2.2) (2026-06-24)
+
+### Bug Fixes
+
+* Linter warnings ([#771](https://github.com/appium/appium-uiautomator2-server/issues/771)) ([f8fce25](https://github.com/appium/appium-uiautomator2-server/commit/f8fce25922a0d44eccb0f09bfd9bef9c6d5ae553))
+
 ## [10.2.1](https://github.com/appium/appium-uiautomator2-server/compare/v10.2.0...v10.2.1) (2026-05-24)
 
 ### Bug Fixes
