@@ -49,7 +49,8 @@ public enum Settings {
     USE_RESOURCES_FOR_ORIENTATION_DETECTION(new UseResourcesForOrientationDetection()),
     SNAPSHOT_MAX_DEPTH(new SnapshotMaxDepth()),
     CURRENT_DISPLAY_ID(new CurrentDisplayId()),
-    ALWAYS_TRAVERSABLE_VIEW_CLASSES(new AlwaysTraversableViewClasses());
+    ALWAYS_TRAVERSABLE_VIEW_CLASSES(new AlwaysTraversableViewClasses()),
+    DEFER_ACCESSIBILITY_CACHE_RESET(new DeferAccessibilityCacheReset());
 
     private final ISetting<?> setting;
 

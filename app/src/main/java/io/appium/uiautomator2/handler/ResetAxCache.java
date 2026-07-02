@@ -30,7 +30,8 @@ public class ResetAxCache extends SafeRequestHandler {
 
     @Override
     protected AppiumResponse safeHandle(IHttpRequest request) {
-        resetAccessibilityCache();
+        // Explicit reset endpoint: always clear, regardless of the deferred-reset optimization.
+        resetAccessibilityCache(true);
         return new AppiumResponse(getSessionId(request));
     }
 }
