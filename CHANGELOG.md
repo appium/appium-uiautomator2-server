@@ -1,3 +1,5 @@
+## [10.3.0](https://github.com/appium/appium-uiautomator2-server/compare/v10.2.4...v10.3.0) (2026-07-02)
+
 ## [10.2.4](https://github.com/appium/appium-uiautomator2-server/compare/v10.2.3...v10.2.4) (2026-06-24)
 
 ### Miscellaneous Chores
