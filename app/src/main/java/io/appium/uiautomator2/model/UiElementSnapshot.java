@@ -380,6 +380,10 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 || child.isVisibleToUser()
                 || shouldTraverseIfRequested(node)) {
                 children.add(take(child, index, depth + 1, includedAttributes));
+            } else {
+                // This child is dropped from the snapshot, so it would never be reachable for
+                // recycling via the tree. Recycle it here to avoid leaking it on API < 33.
+                AxNodeInfoHelper.recycleSafely(child);
             }
         }
         if (!nullNodeIndexes.isEmpty()) {

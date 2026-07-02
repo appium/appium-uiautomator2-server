@@ -17,6 +17,7 @@
 package io.appium.uiautomator2.core;
 
 import android.graphics.Point;
+import android.os.Build;
 import android.os.SystemClock;
 import android.util.SparseArray;
 import android.util.Xml;
@@ -48,6 +49,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -95,6 +100,14 @@ public class AccessibilityNodeInfoDumper {
     private final Set<Attribute> includedAttributes;
     private boolean shouldAddDisplayInfo;
     private XmlSerializer serializer;
+    // The most recently built source snapshot tree, so its transient nodes can be recycled
+    // once the tree has been fully consumed (serialized and/or matched against).
+    @Nullable
+    private UiElement<?, ?> snapshotRoot;
+    // Externally-owned nodes (cached window roots or the explicit context root) that are reused
+    // across queries and therefore must not be recycled together with the snapshot tree.
+    private final Set<AccessibilityNodeInfo> retainedNodes =
+            Collections.newSetFromMap(new IdentityHashMap<>());
 
     public AccessibilityNodeInfoDumper(@Nullable AccessibilityNodeInfo root,
                                        Set<Attribute> includedAttributes) {
@@ -222,17 +235,67 @@ public class AccessibilityNodeInfoDumper {
             serializer.setOutput(outputStream, XML_ENCODING);
             serializer.startDocument(XML_ENCODING, true);
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
-            UiElement<?, ?> uiRootElement = root != null && Settings.get(LimitXpathContextScope.class).getValue()
-                    ? UiElementSnapshot.take(root, includedAttributes)
-                    : UiElementSnapshot.take(
-                        getCachedWindowRoots(), NotificationListener.getInstance().getToastMessage(),
+            final UiElement<?, ?> uiRootElement;
+            if (root != null && Settings.get(LimitXpathContextScope.class).getValue()) {
+                uiRootElement = UiElementSnapshot.take(root, includedAttributes);
+                retainedNodes.add(root);
+            } else {
+                AccessibilityNodeInfo[] windowRoots = getCachedWindowRoots();
+                uiRootElement = UiElementSnapshot.take(
+                        windowRoots, NotificationListener.getInstance().getToastMessage(),
                         includedAttributes
-                    );
+                );
+                retainedNodes.addAll(Arrays.asList(windowRoots));
+            }
+            snapshotRoot = uiRootElement;
             serializeUiElement(uiRootElement, isIndexed);
             serializer.endDocument();
             Logger.debug(String.format("The source XML tree (%s bytes) has been fetched in %sms",
                     outputStream.size(), SystemClock.uptimeMillis() - startTime));
             return new ByteArrayInputStream(outputStream.toByteArray());
+        }
+    }
+
+    /**
+     * Recycles every {@link AccessibilityNodeInfo} that was created while building the source
+     * snapshot tree, except for the externally-owned roots ({@link #retainedNodes}) and any nodes
+     * the caller still needs (e.g. nodes that matched a locator and are handed back to the client).
+     * <p>
+     * This reverses the per-node recycling that existed before the streaming dumper was replaced
+     * with an in-memory snapshot tree (#208), and which had been silently leaking one
+     * {@code AccessibilityNodeInfo} per visited node on every page source / find query. It is a
+     * no-op on API 33+, where these instances are managed by the framework.
+     */
+    private void recycleSnapshotNodes(@Nullable Collection<AccessibilityNodeInfo> retainAdditionally) {
+        try {
+            if (snapshotRoot == null || Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                return;
+            }
+            Set<AccessibilityNodeInfo> keep = Collections.newSetFromMap(new IdentityHashMap<>());
+            keep.addAll(retainedNodes);
+            if (retainAdditionally != null) {
+                keep.addAll(retainAdditionally);
+            }
+            recycleTree(snapshotRoot, keep);
+        } catch (Exception e) {
+            Logger.warn("Failed to recycle the source snapshot nodes", e);
+        } finally {
+            snapshotRoot = null;
+            retainedNodes.clear();
+        }
+    }
+
+    private static void recycleTree(UiElement<?, ?> element, Set<AccessibilityNodeInfo> keep) {
+        for (UiElement<?, ?> child : element.getChildren()) {
+            recycleTree(child, keep);
+        }
+        AccessibilityNodeInfo node = element.getNode();
+        if (node != null && !keep.contains(node)) {
+            try {
+                node.recycle();
+            } catch (IllegalStateException e) {
+                // The node has already been recycled - ignore
+            }
         }
     }
 
@@ -247,6 +310,7 @@ public class AccessibilityNodeInfoDumper {
         } catch (IOException e) {
             throw new UiAutomator2Exception(e);
         } finally {
+            recycleSnapshotNodes(null);
             uiElementsMapping.clear();
             RESOURCES_GUARD.release();
         }
@@ -276,11 +340,11 @@ public class AccessibilityNodeInfoDumper {
         } catch (InterruptedException e) {
             throw new UiAutomator2Exception(e);
         }
+        final NodeInfoList matchedNodes = new NodeInfoList();
         try (InputStream xmlStream = toStream(true)) {
             NodeList elements = (NodeList) expression.evaluate(
                     fetchContext(xmlStream), XPathConstants.NODESET
             );
-            final NodeInfoList matchedNodes = new NodeInfoList();
             final long timeStarted = SystemClock.uptimeMillis();
             IntStream.range(0, elements.getLength())
                     .mapToObj(elements::item)
@@ -305,6 +369,7 @@ public class AccessibilityNodeInfoDumper {
             Logger.error("Got an unexpected error while fetching matches using XPath1", e);
             throw new UiAutomator2Exception(e);
         } finally {
+            recycleSnapshotNodes(matchedNodes.getAll());
             uiElementsMapping.clear();
             RESOURCES_GUARD.release();
         }
@@ -324,11 +389,11 @@ public class AccessibilityNodeInfoDumper {
         } catch (InterruptedException e) {
             throw new UiAutomator2Exception(e);
         }
+        final NodeInfoList matchedNodes = new NodeInfoList();
         try (InputStream xmlStream = toStream(true)) {
             ResultSequence rs = expr.evaluate(
                     new DynamicContextBuilder(scb), new Object[]{fetchContext(xmlStream)}
             );
-            NodeInfoList matchedNodes = new NodeInfoList();
             Iterator<Item> iterator = rs.iterator();
             final long timeStarted = SystemClock.uptimeMillis();
             while (iterator.hasNext()) {
@@ -367,6 +432,7 @@ public class AccessibilityNodeInfoDumper {
                                     "to workaround the problem.", e.getMessage(),
                             Settings.ENFORCE_XPATH1.getSetting().getName()), e);
         } finally {
+            recycleSnapshotNodes(matchedNodes.getAll());
             uiElementsMapping.clear();
             RESOURCES_GUARD.release();
         }
