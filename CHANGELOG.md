@@ -1,3 +1,9 @@
+## [10.3.2](https://github.com/appium/appium-uiautomator2-server/compare/v10.3.1...v10.3.2) (2026-07-03)
+
+### Bug Fixes
+
+* Recycle AccessibilityNodeInfo/Window instances to stop native memory leak ([#770](https://github.com/appium/appium-uiautomator2-server/issues/770)) ([5a51424](https://github.com/appium/appium-uiautomator2-server/commit/5a514247f6112c0f0a9bff3dff467ae752e2d048)), closes [#208](https://github.com/appium/appium-uiautomator2-server/issues/208) [appium/appium-uiautomator2-server#308](https://github.com/appium/appium-uiautomator2-server/issues/308)
+
 ## [10.3.1](https://github.com/appium/appium-uiautomator2-server/compare/v10.3.0...v10.3.1) (2026-07-02)
 
 ### Miscellaneous Chores
