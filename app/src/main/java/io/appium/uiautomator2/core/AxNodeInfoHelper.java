@@ -38,8 +38,6 @@ import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
 import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
 import io.appium.uiautomator2.utils.Logger;
 
-import java.util.stream.IntStream;
-
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToString;
@@ -167,10 +165,36 @@ public class AxNodeInfoHelper {
         if (node != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             AccessibilityWindowInfo window = node.getWindow();
             if (window != null) {
-                return window.getDisplayId();
+                try {
+                    return window.getDisplayId();
+                } finally {
+                    recycleSafely(window);
+                }
             }
         }
         return Display.DEFAULT_DISPLAY;
+    }
+
+    /**
+     * Recycles a transient accessibility instance ({@link AccessibilityNodeInfo} or
+     * {@link AccessibilityWindowInfo}) that does not escape the current scope. The two types
+     * are handled by a single helper because they share no common {@code recycle()}-bearing
+     * supertype. No-op on API 33+, where these instances are managed by the framework, and
+     * tolerant of instances that have already been recycled.
+     */
+    public static void recycleSafely(@Nullable Object recyclable) {
+        if (recyclable == null || Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
+        try {
+            if (recyclable instanceof AccessibilityNodeInfo) {
+                ((AccessibilityNodeInfo) recyclable).recycle();
+            } else if (recyclable instanceof AccessibilityWindowInfo) {
+                ((AccessibilityWindowInfo) recyclable).recycle();
+            }
+        } catch (IllegalStateException e) {
+            // The instance has already been recycled - ignore
+        }
     }
 
     public static void pinchOpen(AccessibilityNodeInfo node, float percent) {
@@ -250,26 +274,31 @@ public class AxNodeInfoHelper {
         Rect bounds = new Rect();
         AccessibilityWindowInfo window = node.getWindow();
         if (window != null) {
-            window.getBoundsInScreen(bounds);
-            nodeRect.intersect(bounds);
+            try {
+                window.getBoundsInScreen(bounds);
+                nodeRect.intersect(bounds);
+            } finally {
+                recycleSafely(window);
+            }
         }
 
         // Trim the bounds into any scrollable ancestor, if required.
         if (trimScrollableParent) {
-            for (AccessibilityNodeInfo ancestor = node.getParent();
-                 ancestor != null;
-                 ancestor = ancestor.getParent()
-            ) {
+            AccessibilityNodeInfo ancestor = node.getParent();
+            while (ancestor != null) {
                 if (ancestor.isScrollable()) {
-                    if (depth >= Settings.get(SnapshotMaxDepth.class).getValue()) {
-                        break;
+                    if (depth < Settings.get(SnapshotMaxDepth.class).getValue()) {
+                        Rect ancestorRect = getVisibleBoundsInScreen(
+                                ancestor, displayRect, true, depth + 1
+                        );
+                        nodeRect.intersect(ancestorRect);
                     }
-                    Rect ancestorRect = getVisibleBoundsInScreen(
-                            ancestor, displayRect, true, depth + 1
-                    );
-                    nodeRect.intersect(ancestorRect);
+                    recycleSafely(ancestor);
                     break;
                 }
+                AccessibilityNodeInfo parent = ancestor.getParent();
+                recycleSafely(ancestor);
+                ancestor = parent;
             }
         }
 
@@ -281,10 +310,25 @@ public class AxNodeInfoHelper {
         if (parent == null) {
             return 0;
         }
-        return IntStream.range(0, parent.getChildCount())
-                .filter(index -> node.equals(parent.getChild(index)))
-                .findFirst()
-                .orElse(0);
+        try {
+            final int childCount = parent.getChildCount();
+            for (int index = 0; index < childCount; index++) {
+                AccessibilityNodeInfo child = parent.getChild(index);
+                if (child == null) {
+                    continue;
+                }
+                try {
+                    if (node.equals(child)) {
+                        return index;
+                    }
+                } finally {
+                    recycleSafely(child);
+                }
+            }
+            return 0;
+        } finally {
+            recycleSafely(parent);
+        }
     }
 
     /**
