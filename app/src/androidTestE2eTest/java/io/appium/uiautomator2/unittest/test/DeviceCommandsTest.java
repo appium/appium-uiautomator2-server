@@ -54,6 +54,7 @@ import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceComma
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToElement;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.scrollToText;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.setRotation;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.source;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.updateSetting;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.updateSettings;
 import static io.appium.uiautomator2.unittest.test.internal.commands.ElementCommands.click;
@@ -179,6 +180,18 @@ public class DeviceCommandsTest extends BaseTest {
         int width = value.getInt("width");
         assertTrue("device window height is " + height + ", which is not expected", height > 200);
         assertTrue("device window width is " + width + ", which is not expected", width > 100);
+    }
+
+    /**
+     * verifies manifest-declared screen orientation is exposed in page source
+     */
+    @Test
+    public void pageSourceContainsDeclaredOrientationTest() {
+        Response response = source();
+        assertTrue(response.isSuccessful());
+        String pageSource = response.getValue();
+        assertTrue("Page source should contain declaredOrientation attribute",
+                pageSource.contains("declaredOrientation=\"SCREEN_ORIENTATION_"));
     }
 
     /**

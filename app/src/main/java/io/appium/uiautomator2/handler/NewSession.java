@@ -24,6 +24,7 @@ import io.appium.uiautomator2.handler.request.NoSessionCommandHandler;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.ActivityOrientationListener;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.api.SessionModel;
@@ -51,6 +52,9 @@ public class NewSession extends SafeRequestHandler implements NoSessionCommandHa
             Map<String, Object> parsedCaps = W3CCapsUtils.parseCapabilities(w3cCaps.capabilities);
             Settings.resetForNewSession();
             String sessionID = AppiumUIA2Driver.getInstance().initializeSession(parsedCaps);
+            // Listeners wrap each other via setOnAccessibilityEventListener; start in this order
+            // so NotificationListener is outermost and ActivityOrientationListener is restored last.
+            ActivityOrientationListener.getInstance().start();
             NotificationListener.getInstance().start();
             Logger.info(String.format("Created the new session with id %s and capabilities %s",
                     sessionID, AppiumUIA2Driver.getInstance().getSessionOrThrow().getCapabilities()));

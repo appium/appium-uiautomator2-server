@@ -25,6 +25,7 @@ import io.appium.uiautomator2.common.exceptions.NoSuchDriverException;
 import io.appium.uiautomator2.handler.request.SafeRequestHandler;
 import io.appium.uiautomator2.http.AppiumResponse;
 import io.appium.uiautomator2.http.IHttpRequest;
+import io.appium.uiautomator2.model.ActivityOrientationListener;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.Session;
@@ -45,7 +46,9 @@ public class DeleteSession extends SafeRequestHandler {
             throw new NoSuchDriverException(String.format("The session %s cannot be found", sessionId));
         }
         ScheduledActionsManager.getInstance().clear();
+        // Stop in reverse start order to unwrap nested accessibility listeners correctly.
         NotificationListener.getInstance().stop();
+        ActivityOrientationListener.getInstance().stop();
         // We'd like to shutdown the (HTTP) server after the delete
         // session response is delivered to the client
         new Handler(Looper.getMainLooper()).postDelayed(

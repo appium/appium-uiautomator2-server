@@ -61,6 +61,7 @@ import java.util.stream.IntStream;
 
 import io.appium.uiautomator2.common.exceptions.InvalidSelectorException;
 import io.appium.uiautomator2.common.exceptions.UiAutomator2Exception;
+import io.appium.uiautomator2.model.ActivityOrientationListener;
 import io.appium.uiautomator2.model.NotificationListener;
 import io.appium.uiautomator2.model.UiElement;
 import io.appium.uiautomator2.model.UiElementSnapshot;
@@ -166,6 +167,11 @@ public class AccessibilityNodeInfoDumper {
         serializer.attribute(NAMESPACE, "rotation", Integer.toString(display.getRotation()));
         serializer.attribute(NAMESPACE, "width", Integer.toString(size.x));
         serializer.attribute(NAMESPACE, "height", Integer.toString(size.y));
+        String declaredOrientation = ActivityOrientationListener.getInstance()
+                .currentScreenOrientationConstant();
+        if (declaredOrientation != null) {
+            serializer.attribute(NAMESPACE, "declaredOrientation", declaredOrientation);
+        }
     }
 
     private static String toXmlNodeName(@Nullable String className) {
