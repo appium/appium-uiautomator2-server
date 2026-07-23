@@ -1,3 +1,9 @@
+## [10.3.3](https://github.com/appium/appium-uiautomator2-server/compare/v10.3.2...v10.3.3) (2026-07-23)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump appium-adb from 15.0.9 to 16.0.0 ([#786](https://github.com/appium/appium-uiautomator2-server/issues/786)) ([db3b741](https://github.com/appium/appium-uiautomator2-server/commit/db3b7419c127280b6ad20c262fbc83b1d26b57d6))
+
 ## [10.3.2](https://github.com/appium/appium-uiautomator2-server/compare/v10.3.1...v10.3.2) (2026-07-03)
 
 ### Bug Fixes
