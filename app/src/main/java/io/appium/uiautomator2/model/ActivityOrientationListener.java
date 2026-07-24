@@ -62,6 +62,7 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         }
         Logger.debug("Starting activity orientation listener.");
         originalListener = uiAutomation.getOnAccessibilityEventListener();
+        currentComponent = null;
         isListening = true;
         Logger.debug("Original listener: " + originalListener);
         uiAutomation.setOnAccessibilityEventListener(this);
