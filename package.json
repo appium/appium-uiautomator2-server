@@ -56,7 +56,7 @@
   "devDependencies": {
     "@appium/eslint-config-appium-ts": "^3.0.0",
     "@appium/support": "^7.2.0",
-    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/git": "^10.0.1",
     "appium-adb": "^16.0.0",
     "conventional-changelog-conventionalcommits": "^9.3.1",
