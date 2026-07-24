@@ -24,6 +24,9 @@ import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.Nullable;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import io.appium.uiautomator2.core.UiAutomation;
 import io.appium.uiautomator2.utils.Logger;
 
@@ -43,6 +46,11 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     private volatile boolean isListening;
     @Nullable
     private volatile ComponentName currentComponent;
+    /**
+     * Manifest {@link ActivityInfo#screenOrientation} is fixed per activity component, so resolved
+     * constant names are cached by {@link ComponentName#flattenToString()}.
+     */
+    private final Map<String, String> screenOrientationByComponent = new ConcurrentHashMap<>();
 
     protected ActivityOrientationListener() {
         uiAutomation = UiAutomation.getInstance();
@@ -96,6 +104,8 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     /**
      * Returns the manifest-declared screen orientation constant name (e.g.
      * {@code SCREEN_ORIENTATION_PORTRAIT}), or {@code null} if unknown.
+     * Results are cached by component name because the value comes from the
+     * manifest-defined activity definition.
      */
     @Nullable
     public String currentScreenOrientationConstant() {
@@ -103,11 +113,20 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         if (component == null) {
             return null;
         }
+        String cacheKey = component.flattenToString();
+        String cached = screenOrientationByComponent.get(cacheKey);
+        if (cached != null) {
+            return cached;
+        }
         try {
             Context context = getInstrumentation().getTargetContext();
             int screenOrientation = context.getPackageManager()
                     .getActivityInfo(component, 0).screenOrientation;
-            return screenOrientationConstantName(screenOrientation);
+            String name = screenOrientationConstantName(screenOrientation);
+            if (name != null) {
+                screenOrientationByComponent.put(cacheKey, name);
+            }
+            return name;
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }
