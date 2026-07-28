@@ -2,6 +2,27 @@
   "name": "appium-uiautomator2-server",
   "version": "10.3.4",
   "description": "A netty server with uiautomator2 handlers",
+  "keywords": [
+    "android",
+    "appium",
+    "uiautomator2"
+  ],
+  "homepage": "https://github.com/appium/appium-uiautomator2-server",
+  "bugs": {
+    "url": "https://github.com/appium/appium-uiautomator2-server/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Appium Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appium/appium-uiautomator2-server"
+  },
+  "files": [
+    "./index.mjs",
+    "./index.d.mts",
+    "./apks",
+    "CHANGELOG.md"
+  ],
   "type": "module",
   "main": "./index.mjs",
   "types": "./index.d.mts",
@@ -12,39 +33,16 @@
     },
     "./package.json": "./package.json"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/appium/appium-uiautomator2-server"
-  },
-  "keywords": [
-    "appium",
-    "android",
-    "uiautomator2"
-  ],
-  "engines": {
-    "node": "^20.19.0 || ^22.12.0 || >=24.0.0",
-    "npm": ">=10"
-  },
-  "author": "Appium Contributors",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/appium/appium-uiautomator2-server/issues"
-  },
-  "files": [
-    "./index.mjs",
-    "./index.d.mts",
-    "./apks",
-    "CHANGELOG.md"
-  ],
-  "homepage": "https://github.com/appium/appium-uiautomator2-server",
   "scripts": {
     "bump-gradle-version": "node ./scripts/gradle-version-update.mjs --package-version=${npm_package_version} && git add gradle.properties",
     "build-vendor-jar": "./gradlew :vendor-xpath2:jar",
     "build": "npm run build-vendor-jar && ./gradlew clean assembleServerDebug assembleServerDebugAndroidTest && npm run move-apks && npm run sign-apk",
     "sign-apk": "node ./scripts/sign-apk.mjs",
     "lint:java": "./gradlew lint",
-    "lint": "eslint .",
+    "lint": "oxlint -c oxlint.config.mjs .",
     "lint:fix": "npm run lint -- --fix",
+    "format": "oxfmt -c oxfmt.config.mjs .",
+    "format:check": "oxfmt -c oxfmt.config.mjs --check .",
     "move-server": "cp app/build/outputs/apk/server/debug/appium-uiautomator2-server-v${npm_package_version}.apk ./apks",
     "move-test": "cp app/build/outputs/apk/androidTest/server/debug/appium-uiautomator2-server-debug-androidTest.apk ./apks",
     "move-apks": "rm -rf apks && mkdir -p apks && npm run move-server && npm run move-test",
@@ -54,13 +52,14 @@
     "test": "npm run build-vendor-jar && ./gradlew testServerDebugUnitTest"
   },
   "devDependencies": {
-    "@appium/eslint-config-appium-ts": "^3.0.0",
+    "@appium/oxc-config": "^1.1.0",
+    "@appium/semantic-release-config": "^1.1.0",
     "@appium/support": "^7.2.0",
-    "@semantic-release/changelog": "^6.0.1",
-    "@semantic-release/git": "^10.0.1",
     "appium-adb": "^16.0.0",
-    "conventional-changelog-conventionalcommits": "^9.3.1",
-    "semantic-release": "^25.0.2",
     "semver": "^7.3.7"
+  },
+  "engines": {
+    "node": "^20.19.0 || ^22.12.0 || >=24.0.0",
+    "npm": ">=10"
   }
 }

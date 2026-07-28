@@ -2,8 +2,9 @@ import {execFile} from 'node:child_process';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {promisify} from 'node:util';
-import {valid} from 'semver';
+
 import {logger, fs} from '@appium/support';
+import {valid} from 'semver';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,7 +14,7 @@ const execFileAsync = promisify(execFile);
 const VERSION_NAME_PATTERN = /^\s*versionName\s*=\s*(.+)$/gm;
 const VERSION_CODE_PATTERN = /^\s*versionCode\s*=\s*(\d+)$/gm;
 
-function parseArgValue (argName) {
+function parseArgValue(argName) {
   const argNamePattern = new RegExp(`^--${argName}\\b`);
   for (let i = 1; i < process.argv.length; ++i) {
     const arg = process.argv[i];
@@ -23,7 +24,6 @@ function parseArgValue (argName) {
   }
   return null;
 }
-
 
 async function ensureGitMasterRef() {
   // AGP's extract*VersionControlInfo task requires a loose refs/heads/master file.
@@ -53,9 +53,7 @@ async function gradleVersionUpdate() {
     throw new Error('No package version argument (use `--package-version=xxx`)');
   }
   if (!valid(version)) {
-    throw new Error(
-      `Invalid version specified '${version}'. Version should be in the form '1.2.3'`
-    );
+    throw new Error(`Invalid version specified '${version}'. Version should be in the form '1.2.3'`);
   }
 
   const gradleFilePayload = await fs.readFile(gradleFile, 'utf8');
