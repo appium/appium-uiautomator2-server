@@ -40,7 +40,7 @@
     "sign-apk": "node ./scripts/sign-apk.mjs",
     "lint:java": "./gradlew lint",
     "lint": "oxlint -c oxlint.config.mjs .",
-    "lint:fix": "npm run lint -- --fix",
+    "lint:fix": "oxlint -c oxlint.config.mjs --fix .",
     "format": "oxfmt -c oxfmt.config.mjs .",
     "format:check": "oxfmt -c oxfmt.config.mjs --check .",
     "move-server": "cp app/build/outputs/apk/server/debug/appium-uiautomator2-server-v${npm_package_version}.apk ./apks",
