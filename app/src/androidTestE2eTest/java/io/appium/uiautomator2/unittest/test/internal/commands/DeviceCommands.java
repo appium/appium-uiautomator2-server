@@ -197,6 +197,15 @@ public class DeviceCommands {
     }
 
     /**
+     * retrieve manifest-declared screen orientation of the current activity
+     *
+     * @return Response from UiAutomator2 server
+     */
+    public static Response getDeclaredOrientation() {
+        return Client.get("/appium/device/declared_orientation");
+    }
+
+    /**
      * Performs scroll to an element displaying the given text.
      * The default maximum number of swipes will be used during the element search.
      *

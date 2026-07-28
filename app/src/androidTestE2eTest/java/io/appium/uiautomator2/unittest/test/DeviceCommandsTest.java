@@ -43,6 +43,7 @@ import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForEle
 import static io.appium.uiautomator2.unittest.test.internal.TestUtils.waitForElementInvisibility;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElement;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.findElements;
+import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getDeclaredOrientation;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getDeviceSize;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getInfo;
 import static io.appium.uiautomator2.unittest.test.internal.commands.DeviceCommands.getPackages;
@@ -183,15 +184,16 @@ public class DeviceCommandsTest extends BaseTest {
     }
 
     /**
-     * verifies manifest-declared screen orientation is exposed in page source
+     * verifies manifest-declared screen orientation is exposed via dedicated endpoint
      */
     @Test
-    public void pageSourceContainsDeclaredOrientationTest() {
-        Response response = source();
+    public void getDeclaredOrientationTest() {
+        Response response = getDeclaredOrientation();
         assertTrue(response.isSuccessful());
-        String pageSource = response.getValue();
-        assertTrue("Page source should contain declaredOrientation attribute",
-                pageSource.contains("declaredOrientation=\"SCREEN_ORIENTATION_"));
+        String declaredOrientation = response.getValue();
+        assertNotNull("Declared orientation should be available after session start", declaredOrientation);
+        assertTrue("Declared orientation should be a SCREEN_ORIENTATION_* constant",
+                declaredOrientation.matches("SCREEN_ORIENTATION_.+"));
     }
 
     /**

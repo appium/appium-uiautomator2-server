@@ -41,6 +41,7 @@ import io.appium.uiautomator2.handler.GetAlertText;
 import io.appium.uiautomator2.handler.GetBatteryInfo;
 import io.appium.uiautomator2.handler.GetClipboard;
 import io.appium.uiautomator2.handler.GetDeviceInfo;
+import io.appium.uiautomator2.handler.GetDeclaredOrientation;
 import io.appium.uiautomator2.handler.GetDevicePixelRatio;
 import io.appium.uiautomator2.handler.GetDeviceSize;
 import io.appium.uiautomator2.handler.GetDisplayDensity;
@@ -185,6 +186,7 @@ public class AppiumServlet implements IHttpServlet {
         register(getHandler, new FirstVisibleView("/session/:sessionId/appium/element/:id/first_visible"));
         register(getHandler, new GetAlertText("/session/:sessionId/alert/text"));
         register(getHandler, new GetDeviceInfo("/session/:sessionId/appium/device/info"));
+        register(getHandler, new GetDeclaredOrientation("/session/:sessionId/appium/device/declared_orientation"));
         register(getHandler, new GetDisplayDensity("/session/:sessionId/appium/device/display_density"));
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model;
+package io.appium.uiautomator2.utils;
 
 import android.content.pm.ActivityInfo;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.appium.uiautomator2.model;
+package io.appium.uiautomator2.utils;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,14 +24,17 @@ import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.appium.uiautomator2.core.UiAutomation;
-import io.appium.uiautomator2.utils.Logger;
+import io.appium.uiautomator2.model.AppiumUIA2Driver;
+import io.appium.uiautomator2.model.Session;
 
 import static android.app.UiAutomation.OnAccessibilityEventListener;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 /**
  * Tracks the foreground activity from {@link AccessibilityEvent#TYPE_WINDOW_STATE_CHANGED} and
@@ -43,51 +46,47 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
 
     private final UiAutomation uiAutomation;
     private OnAccessibilityEventListener originalListener = null;
-    private volatile boolean isListening;
+    private final AtomicBoolean isListening = new AtomicBoolean(false);
     @Nullable
     private volatile ComponentName currentComponent;
-    /**
-     * Manifest {@link ActivityInfo#screenOrientation} is fixed per activity component, so resolved
-     * constant names are cached by {@link ComponentName#flattenToString()}.
-     */
-    private final Map<String, String> screenOrientationByComponent = new ConcurrentHashMap<>();
 
     protected ActivityOrientationListener() {
         uiAutomation = UiAutomation.getInstance();
     }
 
-    public static ActivityOrientationListener getInstance() {
+    public static synchronized ActivityOrientationListener getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new ActivityOrientationListener();
         }
         return INSTANCE;
     }
 
-    public void start() {
+    public synchronized void start() {
         if (isListening()) {
             Logger.debug("Activity orientation listener is already started.");
             return;
         }
         Logger.debug("Starting activity orientation listener.");
         originalListener = uiAutomation.getOnAccessibilityEventListener();
-        currentComponent = null;
-        isListening = true;
+        isListening.set(true);
+        seedInitialComponentFromSessionCaps();
         Logger.debug("Original listener: " + originalListener);
         uiAutomation.setOnAccessibilityEventListener(this);
     }
 
-    public void stop() {
+    public synchronized void stop() {
         if (!isListening()) {
             Logger.debug("Activity orientation listener is already stopped.");
             return;
         }
         Logger.debug("Stopping activity orientation listener.");
-        isListening = false;
+        isListening.set(false);
+        currentComponent = null;
         uiAutomation.setOnAccessibilityEventListener(originalListener);
     }
 
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
+    public synchronized void onAccessibilityEvent(AccessibilityEvent event) {
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             CharSequence packageName = event.getPackageName();
             CharSequence className = event.getClassName();
@@ -104,8 +103,6 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     /**
      * Returns the manifest-declared screen orientation constant name (e.g.
      * {@code SCREEN_ORIENTATION_PORTRAIT}), or {@code null} if unknown.
-     * Results are cached by component name because the value comes from the
-     * manifest-defined activity definition.
      */
     @Nullable
     public String currentScreenOrientationConstant() {
@@ -113,20 +110,11 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         if (component == null) {
             return null;
         }
-        String cacheKey = component.flattenToString();
-        String cached = screenOrientationByComponent.get(cacheKey);
-        if (cached != null) {
-            return cached;
-        }
         try {
             Context context = getInstrumentation().getTargetContext();
             int screenOrientation = context.getPackageManager()
                     .getActivityInfo(component, 0).screenOrientation;
-            String name = screenOrientationConstantName(screenOrientation);
-            if (name != null) {
-                screenOrientationByComponent.put(cacheKey, name);
-            }
-            return name;
+            return screenOrientationConstantName(screenOrientation);
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }
@@ -134,45 +122,66 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
 
     @Nullable
     public static String screenOrientationConstantName(int value) {
-        switch (value) {
-            case ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED:
-                return "SCREEN_ORIENTATION_UNSPECIFIED";
-            case ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE:
-                return "SCREEN_ORIENTATION_LANDSCAPE";
-            case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:
-                return "SCREEN_ORIENTATION_PORTRAIT";
-            case ActivityInfo.SCREEN_ORIENTATION_USER:
-                return "SCREEN_ORIENTATION_USER";
-            case ActivityInfo.SCREEN_ORIENTATION_BEHIND:
-                return "SCREEN_ORIENTATION_BEHIND";
-            case ActivityInfo.SCREEN_ORIENTATION_SENSOR:
-                return "SCREEN_ORIENTATION_SENSOR";
-            case ActivityInfo.SCREEN_ORIENTATION_NOSENSOR:
-                return "SCREEN_ORIENTATION_NOSENSOR";
-            case ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE:
-                return "SCREEN_ORIENTATION_SENSOR_LANDSCAPE";
-            case ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT:
-                return "SCREEN_ORIENTATION_SENSOR_PORTRAIT";
-            case ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE:
-                return "SCREEN_ORIENTATION_REVERSE_LANDSCAPE";
-            case ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT:
-                return "SCREEN_ORIENTATION_REVERSE_PORTRAIT";
-            case ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR:
-                return "SCREEN_ORIENTATION_FULL_SENSOR";
-            case ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE:
-                return "SCREEN_ORIENTATION_USER_LANDSCAPE";
-            case ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT:
-                return "SCREEN_ORIENTATION_USER_PORTRAIT";
-            case ActivityInfo.SCREEN_ORIENTATION_LOCKED:
-                return "SCREEN_ORIENTATION_LOCKED";
-            case ActivityInfo.SCREEN_ORIENTATION_FULL_USER:
-                return "SCREEN_ORIENTATION_FULL_USER";
-            default:
-                return null;
-        }
+        ScreenOrientationConstant constant = ScreenOrientationConstant.fromValue(value);
+        return constant == null ? null : constant.constantName();
     }
 
     public boolean isListening() {
-        return isListening;
+        return isListening.get();
+    }
+
+    private void seedInitialComponentFromSessionCaps() {
+        Session session = AppiumUIA2Driver.getInstance().getSession();
+        if (session == null) {
+            return;
+        }
+        String appPackage = session.getCapability("appPackage", "");
+        String appActivity = session.getCapability("appActivity", "");
+        if (isBlank(appPackage) || isBlank(appActivity)) {
+            return;
+        }
+        currentComponent = new ComponentName(appPackage, appActivity);
+    }
+
+    private enum ScreenOrientationConstant {
+        UNSPECIFIED(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED),
+        LANDSCAPE(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE),
+        PORTRAIT(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT),
+        USER(ActivityInfo.SCREEN_ORIENTATION_USER),
+        BEHIND(ActivityInfo.SCREEN_ORIENTATION_BEHIND),
+        SENSOR(ActivityInfo.SCREEN_ORIENTATION_SENSOR),
+        NOSENSOR(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR),
+        SENSOR_LANDSCAPE(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE),
+        SENSOR_PORTRAIT(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT),
+        REVERSE_LANDSCAPE(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE),
+        REVERSE_PORTRAIT(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT),
+        FULL_SENSOR(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR),
+        USER_LANDSCAPE(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE),
+        USER_PORTRAIT(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT),
+        LOCKED(ActivityInfo.SCREEN_ORIENTATION_LOCKED),
+        FULL_USER(ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
+
+        private static final Map<Integer, ScreenOrientationConstant> BY_VALUE = new HashMap<>();
+
+        static {
+            for (ScreenOrientationConstant constant : values()) {
+                BY_VALUE.put(constant.value, constant);
+            }
+        }
+
+        private final int value;
+
+        ScreenOrientationConstant(int value) {
+            this.value = value;
+        }
+
+        @Nullable
+        static ScreenOrientationConstant fromValue(int value) {
+            return BY_VALUE.get(value);
+        }
+
+        String constantName() {
+            return "SCREEN_ORIENTATION_" + name();
+        }
     }
 }
