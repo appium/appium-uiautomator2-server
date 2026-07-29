@@ -26,6 +26,8 @@ jobs:
       name: Install dev dependencies
     - run: npm run lint
       name: Run js linter
+    - run: npm run format:check
+      name: Run format check
 
   java_test:
     env:

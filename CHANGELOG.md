@@ -1,3 +1,21 @@
+## [10.3.5](https://github.com/appium/appium-uiautomator2-server/compare/v10.3.4...v10.3.5) (2026-07-28)
+
+### Miscellaneous Chores
+
+* Integrate oxc and release configs ([#789](https://github.com/appium/appium-uiautomator2-server/issues/789)) ([de011dd](https://github.com/appium/appium-uiautomator2-server/commit/de011dde24daca9f298c8875d032d9fa2a97a160))
+
+## [10.3.4](https://github.com/appium/appium-uiautomator2-server/compare/v10.3.3...v10.3.4) (2026-07-24)
+
+### Miscellaneous Chores
+
+* **deps:** bump io.netty:netty-codec-http ([#787](https://github.com/appium/appium-uiautomator2-server/issues/787)) ([d476528](https://github.com/appium/appium-uiautomator2-server/commit/d47652886c14b71e7893e1913e8ede1451cd70e3))
+
+## [10.3.3](https://github.com/appium/appium-uiautomator2-server/compare/v10.3.2...v10.3.3) (2026-07-23)
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump appium-adb from 15.0.9 to 16.0.0 ([#786](https://github.com/appium/appium-uiautomator2-server/issues/786)) ([db3b741](https://github.com/appium/appium-uiautomator2-server/commit/db3b7419c127280b6ad20c262fbc83b1d26b57d6))
+
 ## [10.3.2](https://github.com/appium/appium-uiautomator2-server/compare/v10.3.1...v10.3.2) (2026-07-03)
 
 ### Bug Fixes
