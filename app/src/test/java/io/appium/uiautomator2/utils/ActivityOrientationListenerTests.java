@@ -19,39 +19,42 @@ package io.appium.uiautomator2.utils;
 import android.content.pm.ActivityInfo;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
+@RunWith(Parameterized.class)
 public class ActivityOrientationListenerTests {
 
-    @Test
-    public void shouldMapKnownScreenOrientationConstants() {
-        assertEquals("SCREEN_ORIENTATION_UNSPECIFIED",
-                ActivityOrientationListener.screenOrientationConstantName(
-                        ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED));
-        assertEquals("SCREEN_ORIENTATION_LANDSCAPE",
-                ActivityOrientationListener.screenOrientationConstantName(
-                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
-        assertEquals("SCREEN_ORIENTATION_PORTRAIT",
-                ActivityOrientationListener.screenOrientationConstantName(
-                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
-        assertEquals("SCREEN_ORIENTATION_USER",
-                ActivityOrientationListener.screenOrientationConstantName(
-                        ActivityInfo.SCREEN_ORIENTATION_USER));
-        assertEquals("SCREEN_ORIENTATION_SENSOR",
-                ActivityOrientationListener.screenOrientationConstantName(
-                        ActivityInfo.SCREEN_ORIENTATION_SENSOR));
-        assertEquals("SCREEN_ORIENTATION_FULL_SENSOR",
-                ActivityOrientationListener.screenOrientationConstantName(
-                        ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR));
-        assertEquals("SCREEN_ORIENTATION_LOCKED",
-                ActivityOrientationListener.screenOrientationConstantName(
-                        ActivityInfo.SCREEN_ORIENTATION_LOCKED));
+    @Parameterized.Parameters(name = "{0} -> {1}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                {ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED, "SCREEN_ORIENTATION_UNSPECIFIED"},
+                {ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, "SCREEN_ORIENTATION_LANDSCAPE"},
+                {ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, "SCREEN_ORIENTATION_PORTRAIT"},
+                {ActivityInfo.SCREEN_ORIENTATION_USER, "SCREEN_ORIENTATION_USER"},
+                {ActivityInfo.SCREEN_ORIENTATION_SENSOR, "SCREEN_ORIENTATION_SENSOR"},
+                {ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR, "SCREEN_ORIENTATION_FULL_SENSOR"},
+                {ActivityInfo.SCREEN_ORIENTATION_LOCKED, "SCREEN_ORIENTATION_LOCKED"},
+                {-999, null},
+        });
+    }
+
+    private final int orientationValue;
+    private final String expectedName;
+
+    public ActivityOrientationListenerTests(int orientationValue, String expectedName) {
+        this.orientationValue = orientationValue;
+        this.expectedName = expectedName;
     }
 
     @Test
-    public void shouldReturnNullForUnknownScreenOrientationConstant() {
-        assertNull(ActivityOrientationListener.screenOrientationConstantName(-999));
+    public void shouldMapScreenOrientationConstant() {
+        assertEquals(expectedName,
+                ActivityOrientationListener.screenOrientationConstantName(orientationValue));
     }
 }

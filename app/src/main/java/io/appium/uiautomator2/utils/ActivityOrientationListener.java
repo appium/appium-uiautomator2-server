@@ -17,7 +17,6 @@
 package io.appium.uiautomator2.utils;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.view.accessibility.AccessibilityEvent;
@@ -26,14 +25,13 @@ import androidx.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.appium.uiautomator2.core.UiAutomation;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
 
 import static android.app.UiAutomation.OnAccessibilityEventListener;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 /**
@@ -45,10 +43,11 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     private static ActivityOrientationListener INSTANCE;
 
     private final UiAutomation uiAutomation;
+    private final Object guard = new Object();
     private OnAccessibilityEventListener originalListener = null;
-    private final AtomicBoolean isListening = new AtomicBoolean(false);
+    private boolean isListening;
     @Nullable
-    private volatile ComponentName currentComponent;
+    private ComponentName currentComponent;
 
     protected ActivityOrientationListener() {
         uiAutomation = UiAutomation.getInstance();
@@ -61,42 +60,52 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         return INSTANCE;
     }
 
-    public synchronized void start() {
-        if (isListening()) {
-            Logger.debug("Activity orientation listener is already started.");
-            return;
+    public void start() {
+        synchronized (guard) {
+            if (isListening) {
+                Logger.debug("Activity orientation listener is already started.");
+                return;
+            }
+            Logger.debug("Starting activity orientation listener.");
+            originalListener = uiAutomation.getOnAccessibilityEventListener();
+            isListening = true;
+            seedInitialComponentFromSessionCaps();
+            Logger.debug("Original listener: " + originalListener);
+            uiAutomation.setOnAccessibilityEventListener(this);
         }
-        Logger.debug("Starting activity orientation listener.");
-        originalListener = uiAutomation.getOnAccessibilityEventListener();
-        isListening.set(true);
-        seedInitialComponentFromSessionCaps();
-        Logger.debug("Original listener: " + originalListener);
-        uiAutomation.setOnAccessibilityEventListener(this);
     }
 
-    public synchronized void stop() {
-        if (!isListening()) {
-            Logger.debug("Activity orientation listener is already stopped.");
-            return;
+    public void stop() {
+        synchronized (guard) {
+            if (!isListening) {
+                Logger.debug("Activity orientation listener is already stopped.");
+                return;
+            }
+            Logger.debug("Stopping activity orientation listener.");
+            isListening = false;
+            currentComponent = null;
+            OnAccessibilityEventListener toRestore = originalListener;
+            originalListener = null;
+            uiAutomation.setOnAccessibilityEventListener(toRestore);
         }
-        Logger.debug("Stopping activity orientation listener.");
-        isListening.set(false);
-        currentComponent = null;
-        uiAutomation.setOnAccessibilityEventListener(originalListener);
     }
 
     @Override
-    public synchronized void onAccessibilityEvent(AccessibilityEvent event) {
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            CharSequence packageName = event.getPackageName();
-            CharSequence className = event.getClassName();
-            if (packageName != null && className != null) {
-                currentComponent = new ComponentName(packageName.toString(), className.toString());
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        OnAccessibilityEventListener delegate;
+        synchronized (guard) {
+            if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                CharSequence packageName = event.getPackageName();
+                CharSequence className = event.getClassName();
+                if (packageName != null && className != null) {
+                    currentComponent = new ComponentName(packageName.toString(), className.toString());
+                }
             }
+            delegate = originalListener;
         }
 
-        if (originalListener != null) {
-            originalListener.onAccessibilityEvent(event);
+        if (delegate != null) {
+            delegate.onAccessibilityEvent(event);
         }
     }
 
@@ -106,13 +115,15 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
      */
     @Nullable
     public String currentScreenOrientationConstant() {
-        ComponentName component = currentComponent;
+        ComponentName component;
+        synchronized (guard) {
+            component = currentComponent;
+        }
         if (component == null) {
             return null;
         }
         try {
-            Context context = getInstrumentation().getTargetContext();
-            int screenOrientation = context.getPackageManager()
+            int screenOrientation = getApplicationContext().getPackageManager()
                     .getActivityInfo(component, 0).screenOrientation;
             return screenOrientationConstantName(screenOrientation);
         } catch (PackageManager.NameNotFoundException e) {
@@ -127,7 +138,9 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     }
 
     public boolean isListening() {
-        return isListening.get();
+        synchronized (guard) {
+            return isListening;
+        }
     }
 
     private void seedInitialComponentFromSessionCaps() {
