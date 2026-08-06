@@ -196,7 +196,8 @@ public class DeviceCommandsTest extends BaseTest {
         do {
             Response response = getDeclaredOrientation();
             assertTrue(response.isSuccessful());
-            declaredOrientation = response.getValue();
+            Object value = response.getValue();
+            declaredOrientation = value instanceof String ? (String) value : null;
             if (declaredOrientation != null && declaredOrientation.matches("SCREEN_ORIENTATION_.+")) {
                 return;
             }

@@ -43,7 +43,9 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     private static ActivityOrientationListener INSTANCE;
 
     private final UiAutomation uiAutomation;
-    private final Object guard = new Object();
+    private final Object isListeningGuard = new Object();
+    private final Object currentComponentGuard = new Object();
+    private final Object originalListenerGuard = new Object();
     private OnAccessibilityEventListener originalListener = null;
     private boolean isListening;
     @Nullable
@@ -61,49 +63,62 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     }
 
     public void start() {
-        synchronized (guard) {
+        synchronized (isListeningGuard) {
             if (isListening) {
                 Logger.debug("Activity orientation listener is already started.");
                 return;
             }
-            Logger.debug("Starting activity orientation listener.");
-            originalListener = uiAutomation.getOnAccessibilityEventListener();
             isListening = true;
-            seedInitialComponentFromSessionCaps();
-            Logger.debug("Original listener: " + originalListener);
-            uiAutomation.setOnAccessibilityEventListener(this);
         }
+        Logger.debug("Starting activity orientation listener.");
+        synchronized (originalListenerGuard) {
+            originalListener = uiAutomation.getOnAccessibilityEventListener();
+            Logger.debug("Original listener: " + originalListener);
+        }
+        seedInitialComponentFromSessionCaps();
+        uiAutomation.setOnAccessibilityEventListener(this);
     }
 
     public void stop() {
-        synchronized (guard) {
+        synchronized (isListeningGuard) {
             if (!isListening) {
                 Logger.debug("Activity orientation listener is already stopped.");
                 return;
             }
-            Logger.debug("Stopping activity orientation listener.");
             isListening = false;
-            currentComponent = null;
-            OnAccessibilityEventListener toRestore = originalListener;
-            originalListener = null;
-            uiAutomation.setOnAccessibilityEventListener(toRestore);
         }
+        Logger.debug("Stopping activity orientation listener.");
+        OnAccessibilityEventListener toRestore;
+        synchronized (originalListenerGuard) {
+            toRestore = originalListener;
+            originalListener = null;
+        }
+        synchronized (currentComponentGuard) {
+            currentComponent = null;
+        }
+        uiAutomation.setOnAccessibilityEventListener(toRestore);
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        OnAccessibilityEventListener delegate;
-        synchronized (guard) {
-            if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                CharSequence packageName = event.getPackageName();
-                CharSequence className = event.getClassName();
-                if (packageName != null && className != null) {
+        boolean listening;
+        synchronized (isListeningGuard) {
+            listening = isListening;
+        }
+        if (listening && event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            CharSequence packageName = event.getPackageName();
+            CharSequence className = event.getClassName();
+            if (packageName != null && className != null) {
+                synchronized (currentComponentGuard) {
                     currentComponent = new ComponentName(packageName.toString(), className.toString());
                 }
             }
-            delegate = originalListener;
         }
 
+        OnAccessibilityEventListener delegate;
+        synchronized (originalListenerGuard) {
+            delegate = originalListener;
+        }
         if (delegate != null) {
             delegate.onAccessibilityEvent(event);
         }
@@ -116,7 +131,7 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     @Nullable
     public String currentScreenOrientationConstant() {
         ComponentName component;
-        synchronized (guard) {
+        synchronized (currentComponentGuard) {
             component = currentComponent;
         }
         if (component == null) {
@@ -138,7 +153,7 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     }
 
     public boolean isListening() {
-        synchronized (guard) {
+        synchronized (isListeningGuard) {
             return isListening;
         }
     }
@@ -153,7 +168,12 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         if (isBlank(appPackage) || isBlank(appActivity)) {
             return;
         }
-        currentComponent = new ComponentName(appPackage, appActivity);
+        if (appActivity.startsWith(".")) {
+            appActivity = appPackage + appActivity;
+        }
+        synchronized (currentComponentGuard) {
+            currentComponent = new ComponentName(appPackage, appActivity);
+        }
     }
 
     private enum ScreenOrientationConstant {

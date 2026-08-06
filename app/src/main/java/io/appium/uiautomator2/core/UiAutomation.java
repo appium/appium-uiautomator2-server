@@ -37,6 +37,8 @@ public class UiAutomation {
     private static UiAutomation INSTANCE = null;
 
     private final android.app.UiAutomation uiAutomation;
+    @Nullable
+    private OnAccessibilityEventListener cachedListener;
 
     private UiAutomation() {
         this.uiAutomation = UiAutomatorBridge.getInstance().getUiAutomation();
@@ -56,11 +58,12 @@ public class UiAutomation {
                     FIELD_ON_ACCESSIBILITY_EVENT_LISTENER, uiAutomation);
         } catch (Exception e) {
             /* mOnAccessibilityEventListener is no longer accessible on Android P */
-            return null;
+            return cachedListener;
         }
     }
 
-    public void setOnAccessibilityEventListener(OnAccessibilityEventListener listener) {
+    public void setOnAccessibilityEventListener(@Nullable OnAccessibilityEventListener listener) {
+        cachedListener = listener;
         uiAutomation.setOnAccessibilityEventListener(listener);
     }
 
