@@ -133,9 +133,9 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         ComponentName component;
         synchronized (currentComponentGuard) {
             component = currentComponent;
-        }
-        if (component == null) {
-            return null;
+            if (component == null) {
+                return null;
+            }
         }
         try {
             int screenOrientation = getApplicationContext().getPackageManager()
