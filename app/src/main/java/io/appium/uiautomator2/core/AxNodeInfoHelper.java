@@ -30,7 +30,11 @@ import android.view.accessibility.AccessibilityWindowInfo;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
 
+import com.google.gson.Gson;
+
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
+import io.appium.uiautomator2.model.CollectionInfo;
+import io.appium.uiautomator2.model.CollectionItemInfo;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.GestureController;
 import io.appium.uiautomator2.model.settings.Settings;
@@ -97,6 +101,26 @@ public class AxNodeInfoHelper {
 
     public static boolean isVisible(@Nullable AccessibilityNodeInfo nodeInfo) {
         return nodeInfo != null && nodeInfo.isVisibleToUser();
+    }
+
+    public static boolean isCollection(@Nullable AccessibilityNodeInfo nodeInfo) {
+        return nodeInfo != null && nodeInfo.getCollectionInfo() != null;
+    }
+
+    public static boolean isCollectionItem(@Nullable AccessibilityNodeInfo nodeInfo) {
+        return nodeInfo != null && nodeInfo.getCollectionItemInfo() != null;
+    }
+
+    @Nullable
+    public static String getCollectionInfoAsString(@Nullable AccessibilityNodeInfo nodeInfo) {
+        CollectionInfo info = CollectionInfo.from(nodeInfo);
+        return info == null ? null : new Gson().toJson(info);
+    }
+
+    @Nullable
+    public static String getCollectionItemInfoAsString(@Nullable AccessibilityNodeInfo nodeInfo) {
+        CollectionItemInfo info = CollectionItemInfo.from(nodeInfo);
+        return info == null ? null : new Gson().toJson(info);
     }
 
     @Nullable

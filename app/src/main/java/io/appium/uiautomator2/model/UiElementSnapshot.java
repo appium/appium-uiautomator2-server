@@ -79,7 +79,8 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             Attribute.LIVE_REGION, Attribute.CONTEXT_CLICKABLE, Attribute.MAX_TEXT_LENGTH,
             Attribute.CONTENT_INVALID, Attribute.ERROR_TEXT, Attribute.PANE_TITLE,
             Attribute.TOOLTIP_TEXT, Attribute.TEXT_HAS_CLICKABLE_SPAN, Attribute.ACTIONS,
-            Attribute.WINDOW_ID, Attribute.TEXT_SIZE, Attribute.TEXT_UNIT
+            Attribute.WINDOW_ID, Attribute.TEXT_SIZE, Attribute.TEXT_UNIT,
+            Attribute.IS_COLLECTION, Attribute.IS_COLLECTION_ITEM
             // Skip CONTENT_SIZE as it is quite expensive to compute it for each element
     };
     private final static Attribute[] TOAST_NODE_ATTRIBUTES = new Attribute[]{
@@ -243,6 +244,12 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
                 TextData textData = extractTextData(node);
                 return textData != null ? textData.textUnit : null;
             }
+            case IS_COLLECTION:
+                // Only include this attribute in the page source if it is true, to reduce its size
+                return AxNodeInfoHelper.isCollection(node) ? true : null;
+            case IS_COLLECTION_ITEM:
+                // Only include this attribute in the page source if it is true, to reduce its size
+                return AxNodeInfoHelper.isCollectionItem(node) ? true : null;
             default:
                 return null;
         }

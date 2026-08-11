@@ -139,6 +139,18 @@ public class UiObjectElement extends BaseElement {
                 // Do not restrict if the 'extras' is available in each element attribute
                 result = getExtrasAsString(toAxNodeInfo(element));
                 break;
+            case IS_COLLECTION:
+                result = AxNodeInfoHelper.isCollection(toAxNodeInfo(element));
+                break;
+            case IS_COLLECTION_ITEM:
+                result = AxNodeInfoHelper.isCollectionItem(toAxNodeInfo(element));
+                break;
+            case COLLECTION_INFO:
+                result = AxNodeInfoHelper.getCollectionInfoAsString(toAxNodeInfo(element));
+                break;
+            case COLLECTION_ITEM_INFO:
+                result = AxNodeInfoHelper.getCollectionItemInfoAsString(toAxNodeInfo(element));
+                break;
             default:
                 throw generateNoAttributeException(attr);
         }
