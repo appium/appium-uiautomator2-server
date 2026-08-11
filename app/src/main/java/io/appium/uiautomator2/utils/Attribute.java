@@ -78,7 +78,7 @@ public enum Attribute {
     IS_COLLECTION(new String[]{"is-collection", "isCollection"}),
     IS_COLLECTION_ITEM(new String[]{"is-collection-item", "isCollectionItem"}),
 
-    // These are only available on demand via getAttribute, and are never included into the page source
+    // These are only available on demand via getAttribute, and are never included in the page source
     COLLECTION_INFO(new String[]{"collection-info", "collectionInfo"}, true, false),
     COLLECTION_ITEM_INFO(new String[]{"collection-item-info", "collectionItemInfo"}, true, false);
 

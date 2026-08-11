@@ -30,8 +30,6 @@ import android.view.accessibility.AccessibilityWindowInfo;
 import androidx.annotation.Nullable;
 import androidx.test.uiautomator.Direction;
 
-import com.google.gson.Gson;
-
 import io.appium.uiautomator2.common.exceptions.InvalidElementStateException;
 import io.appium.uiautomator2.model.CollectionInfo;
 import io.appium.uiautomator2.model.CollectionItemInfo;
@@ -41,6 +39,7 @@ import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
 import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
 import io.appium.uiautomator2.utils.Logger;
+import io.appium.uiautomator2.utils.ModelUtils;
 
 import static io.appium.uiautomator2.utils.ReflectionUtils.getField;
 import static io.appium.uiautomator2.utils.StringHelpers.charSequenceToNullableString;
@@ -114,13 +113,13 @@ public class AxNodeInfoHelper {
     @Nullable
     public static String getCollectionInfoAsString(@Nullable AccessibilityNodeInfo nodeInfo) {
         CollectionInfo info = CollectionInfo.from(nodeInfo);
-        return info == null ? null : new Gson().toJson(info);
+        return info == null ? null : ModelUtils.toJsonString(info, false);
     }
 
     @Nullable
     public static String getCollectionItemInfoAsString(@Nullable AccessibilityNodeInfo nodeInfo) {
         CollectionItemInfo info = CollectionItemInfo.from(nodeInfo);
-        return info == null ? null : new Gson().toJson(info);
+        return info == null ? null : ModelUtils.toJsonString(info, false);
     }
 
     @Nullable
