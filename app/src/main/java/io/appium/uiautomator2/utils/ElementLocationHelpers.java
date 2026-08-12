@@ -277,14 +277,15 @@ public class ElementLocationHelpers {
     }
 
     /**
-     * Shared {@code By.ById} handling for both {@link #findElement} overloads: rewrites the
-     * locator, and - if {@link MapTestTagToResourceId} is enabled - resolves it via the
-     * testTag-aware XPath lookup, throwing {@link ElementNotFoundException} on no match, exactly
-     * like the {@code By.ByXPath} branches. Otherwise falls back to the native id matcher,
-     * scoped to {@code context} when given.
+     * Shared {@code By.ById} handling for both {@link #findElement} overloads, and for
+     * {@code ElementsCache}'s stale element restoration: rewrites the locator, and - if
+     * {@link MapTestTagToResourceId} is enabled - resolves it via the testTag-aware XPath
+     * lookup, throwing {@link ElementNotFoundException} on no match, exactly like the
+     * {@code By.ByXPath} branches. Otherwise falls back to the native id matcher, scoped to
+     * {@code context} when given.
      */
     @Nullable
-    private static AccessibleUiObject findElementById(
+    public static AccessibleUiObject findElementById(
             By.ById by, @Nullable AndroidElement context) throws UiObjectNotFoundException {
         String locator = rewriteIdLocator(by);
         if (Settings.get(MapTestTagToResourceId.class).getValue()) {

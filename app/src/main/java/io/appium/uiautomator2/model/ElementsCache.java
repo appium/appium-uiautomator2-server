@@ -33,8 +33,8 @@ import io.appium.uiautomator2.utils.ByUiAutomatorFinder;
 import io.appium.uiautomator2.utils.Logger;
 import io.appium.uiautomator2.utils.NodeInfoList;
 
+import static io.appium.uiautomator2.utils.ElementLocationHelpers.findElementById;
 import static io.appium.uiautomator2.utils.ElementLocationHelpers.getXPathNodeMatch;
-import static io.appium.uiautomator2.utils.ElementLocationHelpers.rewriteIdLocator;
 
 public class ElementsCache {
     private final LruCache<String, AndroidElement> cache;
@@ -88,10 +88,7 @@ public class ElementsCache {
         AccessibleUiObject accessibleUiObject = null;
         try {
             if (by instanceof By.ById) {
-                String locator = rewriteIdLocator((By.ById) by);
-                accessibleUiObject = searchRoot == null
-                        ? CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator))
-                        : searchRoot.getChild(androidx.test.uiautomator.By.res(locator));
+                accessibleUiObject = findElementById((By.ById) by, searchRoot);
             } else if (by instanceof By.ByAccessibilityId) {
                 accessibleUiObject = searchRoot == null
                         ? CustomUiDevice.getInstance().findObject(
