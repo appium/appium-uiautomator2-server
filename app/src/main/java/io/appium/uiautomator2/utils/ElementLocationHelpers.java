@@ -183,22 +183,55 @@ public class ElementLocationHelpers {
         return selectors;
     }
 
+    /**
+     * Shared {@code By.ById} handling for both {@link #findElement} overloads: rewrites the
+     * locator, and - if {@link MapTestTagToResourceId} is enabled - resolves it via the
+     * testTag-aware XPath lookup, throwing {@link ElementNotFoundException} on no match, exactly
+     * like the {@code By.ByXPath} branches. Otherwise falls back to the native id matcher,
+     * scoped to {@code context} when given.
+     */
+    @Nullable
+    private static AccessibleUiObject findElementById(
+            By.ById by, @Nullable AndroidElement context) throws UiObjectNotFoundException {
+        String locator = rewriteIdLocator(by);
+        if (Settings.get(MapTestTagToResourceId.class).getValue()) {
+            final NodeInfoList matchedNodes = getXPathNodeMatch(
+                    resourceIdXPath(by.getElementLocator(), locator), context, false);
+            if (matchedNodes.isEmpty()) {
+                throw new ElementNotFoundException();
+            }
+            return CustomUiDevice.getInstance().findObject(matchedNodes);
+        }
+        return context == null
+                ? CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator))
+                : context.getChild(androidx.test.uiautomator.By.res(locator));
+    }
+
+    /**
+     * Shared {@code By.ById} handling for both {@link #findElements} overloads. See
+     * {@link #findElementById} for the resolution logic; the only difference is that an empty
+     * match yields an empty list rather than throwing, matching the {@code By.ByXPath} branches.
+     */
+    private static List<AccessibleUiObject> findElementsById(By.ById by, @Nullable AndroidElement context) {
+        String locator = rewriteIdLocator(by);
+        if (Settings.get(MapTestTagToResourceId.class).getValue()) {
+            final NodeInfoList matchedNodes = getXPathNodeMatch(
+                    resourceIdXPath(by.getElementLocator(), locator), context, true);
+            return matchedNodes.isEmpty()
+                    ? Collections.<AccessibleUiObject>emptyList()
+                    : CustomUiDevice.getInstance().findObjects(matchedNodes);
+        }
+        return context == null
+                ? CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.res(locator))
+                : context.getChildren(androidx.test.uiautomator.By.res(locator), by);
+    }
+
     @Nullable
     public static AccessibleUiObject findElement(By by) throws UiObjectNotFoundException {
         resetAccessibilityCache();
 
         if (by instanceof By.ById) {
-            By.ById byId = (By.ById) by;
-            String locator = rewriteIdLocator(byId);
-            if (Settings.get(MapTestTagToResourceId.class).getValue()) {
-                final NodeInfoList matchedNodes = getXPathNodeMatch(
-                        resourceIdXPath(byId.getElementLocator(), locator), null, false);
-                if (matchedNodes.isEmpty()) {
-                    throw new ElementNotFoundException();
-                }
-                return CustomUiDevice.getInstance().findObject(matchedNodes);
-            }
-            return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator));
+            return findElementById((By.ById) by, null);
         } else if (by instanceof By.ByAccessibilityId) {
             return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.desc(by.getElementLocator()));
         } else if (by instanceof By.ByClass) {
@@ -221,17 +254,7 @@ public class ElementLocationHelpers {
     @Nullable
     public static AccessibleUiObject findElement(By by, AndroidElement context) throws UiObjectNotFoundException {
         if (by instanceof By.ById) {
-            By.ById byId = (By.ById) by;
-            String locator = rewriteIdLocator(byId);
-            if (Settings.get(MapTestTagToResourceId.class).getValue()) {
-                final NodeInfoList matchedNodes = getXPathNodeMatch(
-                        resourceIdXPath(byId.getElementLocator(), locator), context, false);
-                if (matchedNodes.isEmpty()) {
-                    throw new ElementNotFoundException();
-                }
-                return CustomUiDevice.getInstance().findObject(matchedNodes);
-            }
-            return context.getChild(androidx.test.uiautomator.By.res(locator));
+            return findElementById((By.ById) by, context);
         } else if (by instanceof By.ByAccessibilityId) {
             return context.getChild(androidx.test.uiautomator.By.desc(by.getElementLocator()));
         } else if (by instanceof By.ByClass) {
@@ -255,16 +278,7 @@ public class ElementLocationHelpers {
         resetAccessibilityCache();
 
         if (by instanceof By.ById) {
-            By.ById byId = (By.ById) by;
-            String locator = rewriteIdLocator(byId);
-            if (Settings.get(MapTestTagToResourceId.class).getValue()) {
-                final NodeInfoList matchedNodes = getXPathNodeMatch(
-                        resourceIdXPath(byId.getElementLocator(), locator), null, true);
-                return matchedNodes.isEmpty()
-                        ? Collections.<AccessibleUiObject>emptyList()
-                        : CustomUiDevice.getInstance().findObjects(matchedNodes);
-            }
-            return CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.res(locator));
+            return findElementsById((By.ById) by, null);
         } else if (by instanceof By.ByAccessibilityId) {
             return CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.desc(by.getElementLocator()));
         } else if (by instanceof By.ByClass) {
@@ -285,16 +299,7 @@ public class ElementLocationHelpers {
 
     public static List<AccessibleUiObject> findElements(By by, AndroidElement context) {
         if (by instanceof By.ById) {
-            By.ById byId = (By.ById) by;
-            String locator = rewriteIdLocator(byId);
-            if (Settings.get(MapTestTagToResourceId.class).getValue()) {
-                final NodeInfoList matchedNodes = getXPathNodeMatch(
-                        resourceIdXPath(byId.getElementLocator(), locator), context, true);
-                return matchedNodes.isEmpty()
-                        ? Collections.<AccessibleUiObject>emptyList()
-                        : CustomUiDevice.getInstance().findObjects(matchedNodes);
-            }
-            return context.getChildren(androidx.test.uiautomator.By.res(locator), by);
+            return findElementsById((By.ById) by, context);
         } else if (by instanceof By.ByAccessibilityId) {
             return context.getChildren(androidx.test.uiautomator.By.desc(by.getElementLocator()), by);
         } else if (by instanceof By.ByClass) {
