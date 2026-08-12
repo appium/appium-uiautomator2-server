@@ -35,6 +35,7 @@ import io.appium.uiautomator2.model.CollectionInfo;
 import io.appium.uiautomator2.model.CollectionItemInfo;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.internal.GestureController;
+import io.appium.uiautomator2.model.settings.MapTestTagToResourceId;
 import io.appium.uiautomator2.model.settings.Settings;
 import io.appium.uiautomator2.model.settings.SimpleBoundsCalculation;
 import io.appium.uiautomator2.model.settings.SnapshotMaxDepth;
@@ -100,6 +101,32 @@ public class AxNodeInfoHelper {
 
     public static boolean isVisible(@Nullable AccessibilityNodeInfo nodeInfo) {
         return nodeInfo != null && nodeInfo.isVisibleToUser();
+    }
+
+    // https://developer.android.com/reference/kotlin/androidx/compose/ui/semantics/package-summary#(androidx.compose.ui.semantics.SemanticsPropertyReceiver).testTag()
+    private static final String COMPOSE_TEST_TAG_EXTRA_KEY = "androidx.compose.ui.semantics.testTag";
+
+    /**
+     * Returns the node's {@code resource-id}. If the {@link MapTestTagToResourceId} setting is
+     * enabled and the node carries a Jetpack Compose {@code testTag} semantics property (read
+     * from its extras), that value takes precedence over the node's real {@code resource-id} -
+     * matching the behavior of Compose's own {@code testTagsAsResourceId} property, which
+     * unconditionally overwrites {@code viewIdResourceName} with the {@code testTag} rather than
+     * only filling in a missing one. Otherwise falls back to the real {@code resource-id}.
+     */
+    @Nullable
+    public static String getResourceId(@Nullable AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null) {
+            return null;
+        }
+        if (Settings.get(MapTestTagToResourceId.class).getValue()) {
+            Object testTag = nodeInfo.getExtras().get(COMPOSE_TEST_TAG_EXTRA_KEY);
+            if (testTag != null) {
+                return testTag.toString();
+            }
+        }
+        CharSequence resourceId = nodeInfo.getViewIdResourceName();
+        return resourceId != null && resourceId.length() > 0 ? resourceId.toString() : null;
     }
 
     public static boolean isCollection(@Nullable AccessibilityNodeInfo nodeInfo) {

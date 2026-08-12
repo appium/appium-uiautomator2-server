@@ -81,7 +81,7 @@ public class UiObjectElement extends BaseElement {
                 result = element.getClassName();
                 break;
             case RESOURCE_ID:
-                result = toAxNodeInfo(element).getViewIdResourceName();
+                result = AxNodeInfoHelper.getResourceId(toAxNodeInfo(element));
                 break;
             case CONTENT_SIZE:
                 result = ContentSizeHelpers.getContentSize(this);

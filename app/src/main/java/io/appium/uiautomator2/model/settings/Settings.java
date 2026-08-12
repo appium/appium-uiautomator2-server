@@ -50,7 +50,8 @@ public enum Settings {
     SNAPSHOT_MAX_DEPTH(new SnapshotMaxDepth()),
     CURRENT_DISPLAY_ID(new CurrentDisplayId()),
     ALWAYS_TRAVERSABLE_VIEW_CLASSES(new AlwaysTraversableViewClasses()),
-    DEFER_ACCESSIBILITY_CACHE_RESET(new DeferAccessibilityCacheReset());
+    DEFER_ACCESSIBILITY_CACHE_RESET(new DeferAccessibilityCacheReset()),
+    MAP_TEST_TAG_TO_RESOURCE_ID(new MapTestTagToResourceId());
 
     private final ISetting<?> setting;
 

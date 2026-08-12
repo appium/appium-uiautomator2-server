@@ -161,7 +161,7 @@ public class UiElementSnapshot extends UiElement<AccessibilityNodeInfo, UiElemen
             case PASSWORD:
                 return node.isPassword();
             case RESOURCE_ID:
-                return node.getViewIdResourceName();
+                return AxNodeInfoHelper.getResourceId(node);
             case SCROLLABLE:
                 return node.isScrollable();
             case SELECTION_START: {

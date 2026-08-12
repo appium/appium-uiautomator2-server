@@ -42,6 +42,7 @@ import io.appium.uiautomator2.model.By;
 import io.appium.uiautomator2.model.UiElementSnapshot;
 import io.appium.uiautomator2.model.internal.CustomUiDevice;
 import io.appium.uiautomator2.model.settings.DisableIdLocatorAutocompletion;
+import io.appium.uiautomator2.model.settings.MapTestTagToResourceId;
 import io.appium.uiautomator2.model.settings.Settings;
 
 import static io.appium.uiautomator2.core.AxNodeInfoExtractor.toAxNodeInfo;
@@ -102,6 +103,43 @@ public class ElementLocationHelpers {
         return String.format("%s:id/%s", packageName, locator);
     }
 
+    /**
+     * Builds an XPath expression that matches nodes by {@code resource-id}, going through the
+     * same attribute computation as {@link Attribute#RESOURCE_ID} (see
+     * {@code AxNodeInfoHelper.getResourceId}), which falls back to a Compose {@code testTag}
+     * when the {@link MapTestTagToResourceId} setting is enabled and the node has no real
+     * {@code resource-id}. Used to align {@code By.ById} lookups with that fallback, since the
+     * native {@code UiSelector}/{@code BySelector} id matcher only ever sees the real
+     * {@code resource-id}.
+     */
+    private static String resourceIdXPath(String locator) {
+        return String.format(".//*[@resource-id=%s]", toXPathStringLiteral(locator));
+    }
+
+    /**
+     * Builds an XPath 1.0 string literal for the given value. XPath 1.0 has no escape
+     * mechanism for quote characters, so the value is wrapped in whichever quote character
+     * it does not contain; if it contains both, {@code concat()} is used to splice it back
+     * together around single-quote boundaries.
+     */
+    static String toXPathStringLiteral(String value) {
+        if (!value.contains("'")) {
+            return "'" + value + "'";
+        }
+        if (!value.contains("\"")) {
+            return "\"" + value + "\"";
+        }
+        String[] parts = value.split("'", -1);
+        StringBuilder result = new StringBuilder("concat(");
+        for (int i = 0; i < parts.length; i++) {
+            if (i > 0) {
+                result.append(", \"'\", ");
+            }
+            result.append('\'').append(parts[i]).append('\'');
+        }
+        return result.append(')').toString();
+    }
+
     private static Set<Attribute> extractQueriedAttributes(String xpathExpression) {
         if (xpathExpression.contains("@*")) {
             return new HashSet<>(Arrays.asList(UiElementSnapshot.SUPPORTED_ATTRIBUTES));
@@ -142,6 +180,10 @@ public class ElementLocationHelpers {
 
         if (by instanceof By.ById) {
             String locator = rewriteIdLocator((By.ById) by);
+            if (Settings.get(MapTestTagToResourceId.class).getValue()) {
+                final NodeInfoList matchedNodes = getXPathNodeMatch(resourceIdXPath(locator), null, false);
+                return matchedNodes.isEmpty() ? null : CustomUiDevice.getInstance().findObject(matchedNodes);
+            }
             return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {
             return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.desc(by.getElementLocator()));
@@ -166,6 +208,10 @@ public class ElementLocationHelpers {
     public static AccessibleUiObject findElement(By by, AndroidElement context) throws UiObjectNotFoundException {
         if (by instanceof By.ById) {
             String locator = rewriteIdLocator((By.ById) by);
+            if (Settings.get(MapTestTagToResourceId.class).getValue()) {
+                final NodeInfoList matchedNodes = getXPathNodeMatch(resourceIdXPath(locator), context, false);
+                return matchedNodes.isEmpty() ? null : CustomUiDevice.getInstance().findObject(matchedNodes);
+            }
             return context.getChild(androidx.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {
             return context.getChild(androidx.test.uiautomator.By.desc(by.getElementLocator()));
@@ -191,6 +237,12 @@ public class ElementLocationHelpers {
 
         if (by instanceof By.ById) {
             String locator = rewriteIdLocator((By.ById) by);
+            if (Settings.get(MapTestTagToResourceId.class).getValue()) {
+                final NodeInfoList matchedNodes = getXPathNodeMatch(resourceIdXPath(locator), null, true);
+                return matchedNodes.isEmpty()
+                        ? Collections.<AccessibleUiObject>emptyList()
+                        : CustomUiDevice.getInstance().findObjects(matchedNodes);
+            }
             return CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {
             return CustomUiDevice.getInstance().findObjects(androidx.test.uiautomator.By.desc(by.getElementLocator()));
@@ -213,6 +265,12 @@ public class ElementLocationHelpers {
     public static List<AccessibleUiObject> findElements(By by, AndroidElement context) {
         if (by instanceof By.ById) {
             String locator = rewriteIdLocator((By.ById) by);
+            if (Settings.get(MapTestTagToResourceId.class).getValue()) {
+                final NodeInfoList matchedNodes = getXPathNodeMatch(resourceIdXPath(locator), context, true);
+                return matchedNodes.isEmpty()
+                        ? Collections.<AccessibleUiObject>emptyList()
+                        : CustomUiDevice.getInstance().findObjects(matchedNodes);
+            }
             return context.getChildren(androidx.test.uiautomator.By.res(locator), by);
         } else if (by instanceof By.ByAccessibilityId) {
             return context.getChildren(androidx.test.uiautomator.By.desc(by.getElementLocator()), by);

@@ -27,6 +27,7 @@ import androidx.test.uiautomator.BySelector;
 
 import java.util.UUID;
 
+import io.appium.uiautomator2.core.AxNodeInfoHelper;
 import io.appium.uiautomator2.core.UiAutomatorBridge;
 import io.appium.uiautomator2.model.settings.CurrentDisplayId;
 import io.appium.uiautomator2.model.settings.Settings;
@@ -52,9 +53,9 @@ public class BySelectorHelper {
         if (hasValue(pkg)) {
             result = result == null ? By.pkg(pkg.toString()) : result.pkg(pkg.toString());
         }
-        CharSequence res = node.getViewIdResourceName();
-        if (hasValue(res)) {
-            result = result == null ? By.res(res.toString()) : result.res(res.toString());
+        String res = AxNodeInfoHelper.getResourceId(node);
+        if (res != null && !res.isEmpty()) {
+            result = result == null ? By.res(res) : result.res(res);
         }
         CharSequence text = node.getText();
         if (hasValue(text)) {
