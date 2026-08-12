@@ -106,11 +106,11 @@ public class ElementLocationHelpers {
     /**
      * Builds an XPath expression that matches nodes by {@code resource-id}, going through the
      * same attribute computation as {@link Attribute#RESOURCE_ID} (see
-     * {@code AxNodeInfoHelper.getResourceId}), which falls back to a Compose {@code testTag}
-     * when the {@link MapTestTagToResourceId} setting is enabled and the node has no real
-     * {@code resource-id}. Used to align {@code By.ById} lookups with that fallback, since the
-     * native {@code UiSelector}/{@code BySelector} id matcher only ever sees the real
-     * {@code resource-id}.
+     * {@code AxNodeInfoHelper.getResourceId}), where a Compose {@code testTag} unconditionally
+     * takes precedence over the node's real {@code resource-id} when the
+     * {@link MapTestTagToResourceId} setting is enabled. Used to align {@code By.ById} lookups
+     * with that precedence, since the native {@code UiSelector}/{@code BySelector} id matcher
+     * only ever sees the real {@code resource-id}.
      */
     private static String resourceIdXPath(String locator) {
         return String.format(".//*[@resource-id=%s]", toXPathStringLiteral(locator));
@@ -182,7 +182,10 @@ public class ElementLocationHelpers {
             String locator = rewriteIdLocator((By.ById) by);
             if (Settings.get(MapTestTagToResourceId.class).getValue()) {
                 final NodeInfoList matchedNodes = getXPathNodeMatch(resourceIdXPath(locator), null, false);
-                return matchedNodes.isEmpty() ? null : CustomUiDevice.getInstance().findObject(matchedNodes);
+                if (matchedNodes.isEmpty()) {
+                    throw new ElementNotFoundException();
+                }
+                return CustomUiDevice.getInstance().findObject(matchedNodes);
             }
             return CustomUiDevice.getInstance().findObject(androidx.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {
@@ -210,7 +213,10 @@ public class ElementLocationHelpers {
             String locator = rewriteIdLocator((By.ById) by);
             if (Settings.get(MapTestTagToResourceId.class).getValue()) {
                 final NodeInfoList matchedNodes = getXPathNodeMatch(resourceIdXPath(locator), context, false);
-                return matchedNodes.isEmpty() ? null : CustomUiDevice.getInstance().findObject(matchedNodes);
+                if (matchedNodes.isEmpty()) {
+                    throw new ElementNotFoundException();
+                }
+                return CustomUiDevice.getInstance().findObject(matchedNodes);
             }
             return context.getChild(androidx.test.uiautomator.By.res(locator));
         } else if (by instanceof By.ByAccessibilityId) {

@@ -54,7 +54,7 @@ public class BySelectorHelper {
             result = result == null ? By.pkg(pkg.toString()) : result.pkg(pkg.toString());
         }
         String res = AxNodeInfoHelper.getResourceId(node);
-        if (res != null && !res.isEmpty()) {
+        if (res != null) {
             result = result == null ? By.res(res) : result.res(res);
         }
         CharSequence text = node.getText();
