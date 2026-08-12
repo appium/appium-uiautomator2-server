@@ -41,4 +41,16 @@ public class ElementLocationHelpersTests {
         Assert.assertEquals("concat('fo', \"'\", 'o\"bar')",
                 ElementLocationHelpers.toXPathStringLiteral("fo'o\"bar"));
     }
+
+    @Test
+    public void shouldMatchOnlyRawLocatorWhenRewriteIsANoop() {
+        Assert.assertEquals(".//*[@resource-id='loginButton']",
+                ElementLocationHelpers.resourceIdXPath("loginButton", "loginButton"));
+    }
+
+    @Test
+    public void shouldMatchBothRawAndRewrittenLocatorWhenTheyDiffer() {
+        Assert.assertEquals(".//*[@resource-id='loginButton' or @resource-id='com.example.app:id/loginButton']",
+                ElementLocationHelpers.resourceIdXPath("loginButton", "com.example.app:id/loginButton"));
+    }
 }
