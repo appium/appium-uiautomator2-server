@@ -27,8 +27,7 @@ public class CollectionItemInfo {
     public final int rowSpan;
     public final int columnSpan;
     public final boolean isHeading;
-    @Nullable
-    public final Boolean isSelected;
+    public final boolean isSelected;
     @Nullable
     public final String rowTitle;
     @Nullable
@@ -40,7 +39,7 @@ public class CollectionItemInfo {
         this.rowSpan = info.getRowSpan();
         this.columnSpan = info.getColumnSpan();
         this.isHeading = info.isHeading();
-        this.isSelected = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ? info.isSelected() : null;
+        this.isSelected = info.isSelected();
         this.rowTitle = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? info.getRowTitle() : null;
         this.columnTitle = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ? info.getColumnTitle() : null;
     }
