@@ -168,10 +168,16 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         if (activityInfo == null) {
             return null;
         }
-        // Only cache the dumpsys-resolved component if the accessibility event listener hasn't
-        // concurrently produced a fresher, validated one in the meantime.
+        // Only cache the dumpsys-resolved component if the listener is still running and the
+        // accessibility event listener hasn't concurrently produced a fresher, validated one
+        // in the meantime; otherwise a concurrent stop() could have its cleared currentComponent
+        // resurrected by this stale write.
+        boolean listening;
+        synchronized (isListeningGuard) {
+            listening = isListening;
+        }
         synchronized (currentComponentGuard) {
-            if (Objects.equals(currentComponent, staleComponent)) {
+            if (listening && Objects.equals(currentComponent, staleComponent)) {
                 currentComponent = resolvedComponent;
             }
         }
