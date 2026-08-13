@@ -19,27 +19,44 @@ package io.appium.uiautomator2.utils;
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.os.ParcelFileDescriptor;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.Nullable;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.appium.uiautomator2.core.UiAutomation;
 import io.appium.uiautomator2.model.AppiumUIA2Driver;
 import io.appium.uiautomator2.model.Session;
+import io.appium.uiautomator2.model.internal.CustomUiDevice;
 
 import static android.app.UiAutomation.OnAccessibilityEventListener;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static io.appium.uiautomator2.utils.StringHelpers.isBlank;
 
 /**
- * Tracks the foreground activity from {@link AccessibilityEvent#TYPE_WINDOW_STATE_CHANGED} and
- * resolves its manifest-declared {@link ActivityInfo#screenOrientation}. Runtime
+ * Tracks the foreground activity primarily from {@link AccessibilityEvent#TYPE_WINDOW_STATE_CHANGED}
+ * and resolves its manifest-declared {@link ActivityInfo#screenOrientation}. Runtime
  * {@link android.app.Activity#setRequestedOrientation} overrides are not visible via this API.
+ * That accessibility event is not always delivered promptly (or at all), and some apps (e.g. ones
+ * using a {@code ListView}) also emit it for non-Activity source views, so any event-provided
+ * component is validated against {@link PackageManager} before being trusted. Whenever no
+ * validated component is available, the foreground component is instead resolved synchronously
+ * via {@code dumpsys window windows}.
  */
 public class ActivityOrientationListener implements OnAccessibilityEventListener {
+    private static final Pattern CURRENT_FOCUS_PATTERN = Pattern.compile(
+            "mCurrentFocus=Window\\{\\S+\\s+\\S+\\s+([^/\\s]+)/(\\S+)\\}"
+    );
+
     private static ActivityOrientationListener INSTANCE;
 
     private final UiAutomation uiAutomation;
@@ -109,8 +126,14 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
             CharSequence packageName = event.getPackageName();
             CharSequence className = event.getClassName();
             if (packageName != null && className != null) {
-                synchronized (currentComponentGuard) {
-                    currentComponent = new ComponentName(packageName.toString(), className.toString());
+                ComponentName candidate = new ComponentName(packageName.toString(), className.toString());
+                // TYPE_WINDOW_STATE_CHANGED is also emitted by some apps (e.g. ones using a
+                // ListView) for non-Activity source views, so only trust components that
+                // actually resolve to a manifest-declared Activity.
+                if (activityInfoOf(candidate) != null) {
+                    synchronized (currentComponentGuard) {
+                        currentComponent = candidate;
+                    }
                 }
             }
         }
@@ -133,14 +156,30 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         ComponentName component;
         synchronized (currentComponentGuard) {
             component = currentComponent;
-            if (component == null) {
+        }
+        ActivityInfo activityInfo = component == null ? null : activityInfoOf(component);
+        if (activityInfo == null) {
+            component = resolveForegroundComponentViaDumpsys();
+            activityInfo = component == null ? null : activityInfoOf(component);
+            if (activityInfo == null) {
                 return null;
             }
+            synchronized (currentComponentGuard) {
+                currentComponent = component;
+            }
         }
+        return screenOrientationConstantName(activityInfo.screenOrientation);
+    }
+
+    /**
+     * Resolves the manifest-declared {@link ActivityInfo} for the given component.
+     *
+     * @return the activity info, or {@code null} if the component is not a registered Activity
+     */
+    @Nullable
+    private static ActivityInfo activityInfoOf(ComponentName component) {
         try {
-            int screenOrientation = getApplicationContext().getPackageManager()
-                    .getActivityInfo(component, 0).screenOrientation;
-            return screenOrientationConstantName(screenOrientation);
+            return getApplicationContext().getPackageManager().getActivityInfo(component, 0);
         } catch (PackageManager.NameNotFoundException e) {
             return null;
         }
@@ -174,6 +213,41 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         synchronized (currentComponentGuard) {
             currentComponent = new ComponentName(appPackage, appActivity);
         }
+    }
+
+    /**
+     * Resolves the currently focused window's component by parsing 'dumpsys window windows'
+     * output. This is a fallback for when no validated {@link AccessibilityEvent#TYPE_WINDOW_STATE_CHANGED}
+     * event has been observed yet.
+     *
+     * @return the foreground component, or {@code null} if it could not be resolved
+     */
+    @Nullable
+    private static ComponentName resolveForegroundComponentViaDumpsys() {
+        android.app.UiAutomation automation = CustomUiDevice.getInstance().getUiAutomation();
+        try (
+                ParcelFileDescriptor pfd = automation.executeShellCommand("dumpsys window windows");
+                InputStream is = new FileInputStream(pfd.getFileDescriptor());
+                BufferedReader br = new BufferedReader(new InputStreamReader(is))
+        ) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                Matcher matcher = CURRENT_FOCUS_PATTERN.matcher(line);
+                if (matcher.find()) {
+                    String packageName = matcher.group(1);
+                    String className = matcher.group(2);
+                    if (className.startsWith(".")) {
+                        className = packageName + className;
+                    }
+                    ComponentName component = new ComponentName(packageName, className);
+                    Logger.debug("Resolved the foreground component via dumpsys: " + component);
+                    return component;
+                }
+            }
+        } catch (Exception e) {
+            Logger.debug("Unable to resolve the foreground component via dumpsys", e);
+        }
+        return null;
     }
 
     private enum ScreenOrientationConstant {
