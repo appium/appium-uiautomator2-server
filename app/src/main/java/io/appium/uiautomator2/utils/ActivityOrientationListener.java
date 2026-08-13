@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -153,19 +154,25 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
      */
     @Nullable
     public String currentScreenOrientationConstant() {
-        ComponentName component;
+        ComponentName staleComponent;
         synchronized (currentComponentGuard) {
-            component = currentComponent;
+            staleComponent = currentComponent;
         }
-        ActivityInfo activityInfo = component == null ? null : activityInfoOf(component);
+        ActivityInfo activityInfo = staleComponent == null ? null : activityInfoOf(staleComponent);
+        if (activityInfo != null) {
+            return screenOrientationConstantName(activityInfo.screenOrientation);
+        }
+
+        ComponentName resolvedComponent = resolveForegroundComponentViaDumpsys();
+        activityInfo = resolvedComponent == null ? null : activityInfoOf(resolvedComponent);
         if (activityInfo == null) {
-            component = resolveForegroundComponentViaDumpsys();
-            activityInfo = component == null ? null : activityInfoOf(component);
-            if (activityInfo == null) {
-                return null;
-            }
-            synchronized (currentComponentGuard) {
-                currentComponent = component;
+            return null;
+        }
+        // Only cache the dumpsys-resolved component if the accessibility event listener hasn't
+        // concurrently produced a fresher, validated one in the meantime.
+        synchronized (currentComponentGuard) {
+            if (Objects.equals(currentComponent, staleComponent)) {
+                currentComponent = resolvedComponent;
             }
         }
         return screenOrientationConstantName(activityInfo.screenOrientation);
