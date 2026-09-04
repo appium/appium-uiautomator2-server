@@ -45,7 +45,7 @@ public class AlertHelpers {
             Pattern.compile("^" + regularAlertButtonResIdPrefix + "\\d+$");
     private static final String alertContentResId = "android:id/content";
     private static final Pattern regularAlertTitleResIdPattern =
-            Pattern.compile(".+:id/(alertTitle|custom)$");
+            Pattern.compile(".+:id/(alertTitle|alert_title|custom)$");
     private static final Pattern permissionAlertTitleResIdPattern =
             Pattern.compile(".+:id/permission_message$");
     private static final Pattern permissionAlertButtonResIdPattern =
