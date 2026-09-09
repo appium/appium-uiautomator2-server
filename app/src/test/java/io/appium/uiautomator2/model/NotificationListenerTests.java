@@ -40,7 +40,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -114,27 +113,23 @@ public class NotificationListenerTests {
     }
 
     @Test
-    public void shouldRestoreOriginalListener() {
+    public void shouldOnlyRegisterWithUiAutomationOnce() {
+        // Registration happens once ever; later start()/stop() only toggle internal state.
         ArgumentCaptor<OnAccessibilityEventListener> argumentCaptor =
                 ArgumentCaptor.forClass(OnAccessibilityEventListener.class);
-        // stop() only restores the original listener if this listener still holds the slot,
-        // so the mock must reflect what setOnAccessibilityEventListener() actually registered.
-        doAnswer(invocation -> {
-            when(uiAutomation.getOnAccessibilityEventListener())
-                    .thenReturn(invocation.getArgument(0));
-            return null;
-        }).when(uiAutomation).setOnAccessibilityEventListener(argumentCaptor.capture());
-        doReturn(false).when(notificationListener).isListening();
-        notificationListener.start();
-        doReturn(true).when(notificationListener).isListening();
-        notificationListener.stop();
+        doNothing().when(uiAutomation).setOnAccessibilityEventListener(argumentCaptor.capture());
 
-        assertEquals(notificationListener, argumentCaptor.getAllValues().get(0));
-        assertEquals(originalAccessibilityEventListener, argumentCaptor.getAllValues().get(1));
+        notificationListener.start();
+        notificationListener.stop();
+        notificationListener.start();
+
+        assertEquals(1, argumentCaptor.getAllValues().size());
+        assertEquals(notificationListener, argumentCaptor.getValue());
     }
 
     @Test
     public void shouldGrabAccessibilityEvent() {
+        notificationListener.start();
         AccessibilityEvent accessibilityEvent = mock(AccessibilityEvent.class);
         when(accessibilityEvent.getEventType()).thenReturn(
                 AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED);
@@ -142,6 +137,17 @@ public class NotificationListenerTests {
 
         notificationListener.onAccessibilityEvent(accessibilityEvent);
         assertEquals(toastText.get(0), notificationListener.getToastMessage().get(0));
+    }
+
+    @Test
+    public void shouldNotGrabAccessibilityEventWhenStopped() {
+        AccessibilityEvent accessibilityEvent = mock(AccessibilityEvent.class);
+        when(accessibilityEvent.getEventType()).thenReturn(
+                AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED);
+        when(accessibilityEvent.getText()).thenReturn(toastText);
+
+        notificationListener.onAccessibilityEvent(accessibilityEvent);
+        assertTrue(notificationListener.getToastMessage().isEmpty());
     }
 
     @Test
