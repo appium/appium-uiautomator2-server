@@ -90,7 +90,10 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         }
         Logger.debug("Starting activity orientation listener.");
         synchronized (originalListenerGuard) {
-            originalListener = uiAutomation.getOnAccessibilityEventListener();
+            OnAccessibilityEventListener currentListener = uiAutomation.getOnAccessibilityEventListener();
+            // Guard against re-capturing ourselves as our own predecessor, which would otherwise
+            // happen if a stale registration from a previous session is still in the slot.
+            originalListener = currentListener == this ? null : currentListener;
             Logger.debug("Original listener: " + originalListener);
         }
         seedInitialComponentFromSessionCaps();
@@ -114,7 +117,11 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         synchronized (currentComponentGuard) {
             currentComponent = null;
         }
-        uiAutomation.setOnAccessibilityEventListener(toRestore);
+        // Only release the slot if we still hold it, so we don't clobber a listener that was
+        // registered on top of us with a stale value.
+        if (uiAutomation.getOnAccessibilityEventListener() == this) {
+            uiAutomation.setOnAccessibilityEventListener(toRestore);
+        }
     }
 
     @Override

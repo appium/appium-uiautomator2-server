@@ -40,6 +40,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -116,7 +117,13 @@ public class NotificationListenerTests {
     public void shouldRestoreOriginalListener() {
         ArgumentCaptor<OnAccessibilityEventListener> argumentCaptor =
                 ArgumentCaptor.forClass(OnAccessibilityEventListener.class);
-        doNothing().when(uiAutomation).setOnAccessibilityEventListener(argumentCaptor.capture());
+        // stop() only restores the original listener if this listener still holds the slot,
+        // so the mock must reflect what setOnAccessibilityEventListener() actually registered.
+        doAnswer(invocation -> {
+            when(uiAutomation.getOnAccessibilityEventListener())
+                    .thenReturn(invocation.getArgument(0));
+            return null;
+        }).when(uiAutomation).setOnAccessibilityEventListener(argumentCaptor.capture());
         doReturn(false).when(notificationListener).isListening();
         notificationListener.start();
         doReturn(true).when(notificationListener).isListening();
