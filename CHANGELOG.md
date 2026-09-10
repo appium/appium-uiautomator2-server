@@ -1,3 +1,9 @@
+## [10.6.6](https://github.com/appium/appium-uiautomator2-server/compare/v10.6.5...v10.6.6) (2026-09-10)
+
+### Miscellaneous Chores
+
+* **deps:** bump io.netty:netty-handler ([#799](https://github.com/appium/appium-uiautomator2-server/issues/799)) ([cf53be9](https://github.com/appium/appium-uiautomator2-server/commit/cf53be94270c63b40e40e0e96a01103cc1519054))
+
 ## [10.6.5](https://github.com/appium/appium-uiautomator2-server/compare/v10.6.4...v10.6.5) (2026-09-10)
 
 ### Bug Fixes
