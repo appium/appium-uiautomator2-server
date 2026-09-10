@@ -1,6 +1,6 @@
 {
   "name": "appium-uiautomator2-server",
-  "version": "10.6.4",
+  "version": "10.6.5",
   "description": "A netty server with uiautomator2 handlers",
   "keywords": [
     "android",

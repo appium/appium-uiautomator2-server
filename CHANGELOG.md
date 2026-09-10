@@ -1,3 +1,9 @@
+## [10.6.5](https://github.com/appium/appium-uiautomator2-server/compare/v10.6.4...v10.6.5) (2026-09-10)
+
+### Bug Fixes
+
+* prevent accessibility listener from capturing itself as predecessor ([#798](https://github.com/appium/appium-uiautomator2-server/issues/798)) ([8e87a6f](https://github.com/appium/appium-uiautomator2-server/commit/8e87a6f3a7bd164f6504597debbeda8910d15eed))
+
 ## [10.6.4](https://github.com/appium/appium-uiautomator2-server/compare/v10.6.3...v10.6.4) (2026-09-05)
 
 ### Miscellaneous Chores
