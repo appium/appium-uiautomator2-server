@@ -113,21 +113,23 @@ public class NotificationListenerTests {
     }
 
     @Test
-    public void shouldRestoreOriginalListener() {
+    public void shouldOnlyRegisterWithUiAutomationOnce() {
+        // Registration happens once ever; later start()/stop() only toggle internal state.
         ArgumentCaptor<OnAccessibilityEventListener> argumentCaptor =
                 ArgumentCaptor.forClass(OnAccessibilityEventListener.class);
         doNothing().when(uiAutomation).setOnAccessibilityEventListener(argumentCaptor.capture());
-        doReturn(false).when(notificationListener).isListening();
-        notificationListener.start();
-        doReturn(true).when(notificationListener).isListening();
-        notificationListener.stop();
 
-        assertEquals(notificationListener, argumentCaptor.getAllValues().get(0));
-        assertEquals(originalAccessibilityEventListener, argumentCaptor.getAllValues().get(1));
+        notificationListener.start();
+        notificationListener.stop();
+        notificationListener.start();
+
+        assertEquals(1, argumentCaptor.getAllValues().size());
+        assertEquals(notificationListener, argumentCaptor.getValue());
     }
 
     @Test
     public void shouldGrabAccessibilityEvent() {
+        notificationListener.start();
         AccessibilityEvent accessibilityEvent = mock(AccessibilityEvent.class);
         when(accessibilityEvent.getEventType()).thenReturn(
                 AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED);
@@ -135,6 +137,17 @@ public class NotificationListenerTests {
 
         notificationListener.onAccessibilityEvent(accessibilityEvent);
         assertEquals(toastText.get(0), notificationListener.getToastMessage().get(0));
+    }
+
+    @Test
+    public void shouldNotGrabAccessibilityEventWhenStopped() {
+        AccessibilityEvent accessibilityEvent = mock(AccessibilityEvent.class);
+        when(accessibilityEvent.getEventType()).thenReturn(
+                AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED);
+        when(accessibilityEvent.getText()).thenReturn(toastText);
+
+        notificationListener.onAccessibilityEvent(accessibilityEvent);
+        assertTrue(notificationListener.getToastMessage().isEmpty());
     }
 
     @Test

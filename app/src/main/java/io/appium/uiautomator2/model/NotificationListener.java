@@ -36,13 +36,18 @@ public class NotificationListener implements OnAccessibilityEventListener {
     private final UiAutomation uiAutomation;
     private final List<CharSequence> toastMessage = new CopyOnWriteArrayList<>();
     private long recentToastTimestamp = currentTimeMillis();
-    private OnAccessibilityEventListener originalListener = null;
+    // Guards the one-time registration bootstrap and the isListening transition.
+    private final Object listenerStateGuard = new Object();
+    // Set once on the first start() and never touched again; re-registering on every
+    // start()/stop() risks a capture cycle with ActivityOrientationListener (#797).
+    private volatile OnAccessibilityEventListener originalListener = null;
     private volatile boolean isListening;
+    private boolean registered = false;
     // Tracks whether a relevant UI-change AccessibilityEvent has been observed since the last
     // accessibility-cache reset, so redundant per-find cache clears can be skipped while the UI is
     // idle (see AXWindowHelpers.resetAccessibilityCache). Starts stale so the first reset after
     // (re)starting the listener always clears.
-    private volatile boolean accessibilityCacheStale = true;
+    private boolean accessibilityCacheStale = true;
 
     protected NotificationListener() {
         uiAutomation = UiAutomation.getInstance();
@@ -59,44 +64,55 @@ public class NotificationListener implements OnAccessibilityEventListener {
      * Listens for Notification Messages
      */
     public void start() {
-        if (isListening()) {
-            Logger.debug("Toast notification listener is already started.");
-            return;
+        synchronized (listenerStateGuard) {
+            if (isListening()) {
+                Logger.debug("Toast notification listener is already started.");
+                return;
+            }
+            Logger.debug("Starting toast notification listener.");
+            isListening = true;
+            markAccessibilityCacheStale();
+            if (!registered) {
+                OnAccessibilityEventListener currentListener = uiAutomation.getOnAccessibilityEventListener();
+                // Defense-in-depth against self-capture; unreachable since this only runs once.
+                originalListener = currentListener == this ? null : currentListener;
+                Logger.debug("Original listener: " + originalListener);
+                uiAutomation.setOnAccessibilityEventListener(this);
+                registered = true;
+            }
         }
-        Logger.debug("Starting toast notification listener.");
-        originalListener = uiAutomation.getOnAccessibilityEventListener();
-        isListening = true;
-        accessibilityCacheStale = true;
-        Logger.debug("Original listener: " + originalListener);
-        uiAutomation.setOnAccessibilityEventListener(this);
     }
 
     public void stop() {
-        if (!isListening()) {
-            Logger.debug("Toast notification listener is already stopped.");
-            return;
+        synchronized (listenerStateGuard) {
+            if (!isListening()) {
+                Logger.debug("Toast notification listener is already stopped.");
+                return;
+            }
+            Logger.debug("Stopping toast notification listener.");
+            isListening = false;
         }
-        Logger.debug("Stopping toast notification listener.");
-        isListening = false;
-        uiAutomation.setOnAccessibilityEventListener(originalListener);
     }
 
     @Override
-    public synchronized void onAccessibilityEvent(AccessibilityEvent event) {
-        if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
-            Logger.debug("Catch toast message: " + event);
-            List<CharSequence> text = event.getText();
-            if (text != null && !text.isEmpty()) {
-                setToastMessage(text);
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (isListening) {
+            if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
+                Logger.debug("Catch toast message: " + event);
+                List<CharSequence> text = event.getText();
+                if (text != null && !text.isEmpty()) {
+                    setToastMessage(text);
+                }
+            }
+
+            if (isAccessibilityCacheInvalidatingEvent(event.getEventType())) {
+                markAccessibilityCacheStale();
             }
         }
 
-        if (isAccessibilityCacheInvalidatingEvent(event.getEventType())) {
-            accessibilityCacheStale = true;
-        }
-
-        if (originalListener != null) {
-            originalListener.onAccessibilityEvent(event);
+        OnAccessibilityEventListener delegate = originalListener;
+        if (delegate != null) {
+            delegate.onAccessibilityEvent(event);
         }
     }
 

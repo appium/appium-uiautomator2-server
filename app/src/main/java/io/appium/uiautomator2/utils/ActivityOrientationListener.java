@@ -61,11 +61,14 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     private static ActivityOrientationListener INSTANCE;
 
     private final UiAutomation uiAutomation;
-    private final Object isListeningGuard = new Object();
+    // Guards the one-time registration bootstrap and the isListening transition.
+    private final Object listenerStateGuard = new Object();
     private final Object currentComponentGuard = new Object();
-    private final Object originalListenerGuard = new Object();
-    private OnAccessibilityEventListener originalListener = null;
-    private boolean isListening;
+    // Set once on the first start() and never touched again; re-registering on every
+    // start()/stop() risks a capture cycle with NotificationListener (#797).
+    private volatile OnAccessibilityEventListener originalListener = null;
+    private volatile boolean isListening;
+    private boolean registered = false;
     @Nullable
     private ComponentName currentComponent;
 
@@ -81,48 +84,43 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     }
 
     public void start() {
-        synchronized (isListeningGuard) {
+        synchronized (listenerStateGuard) {
             if (isListening) {
                 Logger.debug("Activity orientation listener is already started.");
                 return;
             }
+            Logger.debug("Starting activity orientation listener.");
             isListening = true;
+            seedInitialComponentFromSessionCaps();
+            if (!registered) {
+                OnAccessibilityEventListener currentListener = uiAutomation.getOnAccessibilityEventListener();
+                // Defense-in-depth against self-capture; unreachable since this only runs once.
+                originalListener = currentListener == this ? null : currentListener;
+                Logger.debug("Original listener: " + originalListener);
+                uiAutomation.setOnAccessibilityEventListener(this);
+                registered = true;
+            }
         }
-        Logger.debug("Starting activity orientation listener.");
-        synchronized (originalListenerGuard) {
-            originalListener = uiAutomation.getOnAccessibilityEventListener();
-            Logger.debug("Original listener: " + originalListener);
-        }
-        seedInitialComponentFromSessionCaps();
-        uiAutomation.setOnAccessibilityEventListener(this);
     }
 
     public void stop() {
-        synchronized (isListeningGuard) {
+        synchronized (listenerStateGuard) {
             if (!isListening) {
                 Logger.debug("Activity orientation listener is already stopped.");
                 return;
             }
+            Logger.debug("Stopping activity orientation listener.");
             isListening = false;
-        }
-        Logger.debug("Stopping activity orientation listener.");
-        OnAccessibilityEventListener toRestore;
-        synchronized (originalListenerGuard) {
-            toRestore = originalListener;
-            originalListener = null;
         }
         synchronized (currentComponentGuard) {
             currentComponent = null;
         }
-        uiAutomation.setOnAccessibilityEventListener(toRestore);
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        boolean listening;
-        synchronized (isListeningGuard) {
-            listening = isListening;
-        }
+        boolean listening = isListening;
+        OnAccessibilityEventListener delegate = originalListener;
         if (listening && event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             CharSequence packageName = event.getPackageName();
             CharSequence className = event.getClassName();
@@ -139,10 +137,6 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
             }
         }
 
-        OnAccessibilityEventListener delegate;
-        synchronized (originalListenerGuard) {
-            delegate = originalListener;
-        }
         if (delegate != null) {
             delegate.onAccessibilityEvent(event);
         }
@@ -172,10 +166,7 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
         // accessibility event listener hasn't concurrently produced a fresher, validated one
         // in the meantime; otherwise a concurrent stop() could have its cleared currentComponent
         // resurrected by this stale write.
-        boolean listening;
-        synchronized (isListeningGuard) {
-            listening = isListening;
-        }
+        boolean listening = isListening;
         synchronized (currentComponentGuard) {
             if (listening && Objects.equals(currentComponent, staleComponent)) {
                 currentComponent = resolvedComponent;
@@ -205,9 +196,7 @@ public class ActivityOrientationListener implements OnAccessibilityEventListener
     }
 
     public boolean isListening() {
-        synchronized (isListeningGuard) {
-            return isListening;
-        }
+        return isListening;
     }
 
     private void seedInitialComponentFromSessionCaps() {
