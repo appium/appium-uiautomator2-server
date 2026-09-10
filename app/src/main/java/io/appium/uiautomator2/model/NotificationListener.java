@@ -47,7 +47,7 @@ public class NotificationListener implements OnAccessibilityEventListener {
     // accessibility-cache reset, so redundant per-find cache clears can be skipped while the UI is
     // idle (see AXWindowHelpers.resetAccessibilityCache). Starts stale so the first reset after
     // (re)starting the listener always clears.
-    private volatile boolean accessibilityCacheStale = true;
+    private boolean accessibilityCacheStale = true;
 
     protected NotificationListener() {
         uiAutomation = UiAutomation.getInstance();
@@ -71,7 +71,7 @@ public class NotificationListener implements OnAccessibilityEventListener {
             }
             Logger.debug("Starting toast notification listener.");
             isListening = true;
-            accessibilityCacheStale = true;
+            markAccessibilityCacheStale();
             if (!registered) {
                 OnAccessibilityEventListener currentListener = uiAutomation.getOnAccessibilityEventListener();
                 // Defense-in-depth against self-capture; unreachable since this only runs once.
@@ -106,7 +106,7 @@ public class NotificationListener implements OnAccessibilityEventListener {
             }
 
             if (isAccessibilityCacheInvalidatingEvent(event.getEventType())) {
-                accessibilityCacheStale = true;
+                markAccessibilityCacheStale();
             }
         }
 
