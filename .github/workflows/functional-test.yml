@@ -18,22 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - platformVersion: "16.0"
-          apiLevel: 36
+        - platformVersion: "CANARY"
+          apiLevel: CANARY
           emuTag: google_apis
           arch: x86_64
-        - platformVersion: "11.0"
-          apiLevel: 30
-          emuTag: google_apis
-          arch: x86
-        - platformVersion: "9.0"
-          apiLevel: 28
-          emuTag: default
-          arch: x86
-        - platformVersion: "8.0"
-          apiLevel: 26
-          emuTag: default
-          arch: x86
 
     env:
       CI: true
