@@ -59,14 +59,14 @@ public class SendKeysToElement extends SafeRequestHandler {
         return true;
     }
 
-    private static void setText(AndroidElement element, SendKeysModel model) throws UiObjectNotFoundException {
+    static void setText(AndroidElement element, SendKeysModel model) throws UiObjectNotFoundException {
         String text = model.text;
         boolean replace = model.replace != null && model.replace;
 
         boolean pressEnter = false;
         if (text.endsWith("\\n")) {
             pressEnter = true;
-            text = text.replaceFirst("\\n$", "");
+            text = text.replaceFirst("\\\\n$", "");
             Logger.debug("Will press Enter after setting text");
         }
 
