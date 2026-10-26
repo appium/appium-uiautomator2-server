@@ -99,21 +99,17 @@ public class ByUiAutomatorFinder {
                     : Collections.singletonList(instanceObj);
         }
 
-        final boolean useIndex = doesUiSelectorHaveAttribute(sel, "CLASS_REGEX");
-        if (useIndex) {
-            Logger.debug("Selector has CLASS_REGEX attribute");
-        }
         final List<AccessibleUiObject> elements = new ArrayList<>();
         int descendantIndex = 0;
         do {
             AccessibleUiObject lastFoundObj;
+            UiSelector tmpSelector = sel.instance(descendantIndex);
+            Logger.debug(String.format("matchDescendantElements temporary selector: %s", tmpSelector));
             if (context == null) {
-                UiSelector tmpSelector = useIndex ? sel.index(descendantIndex) : sel.instance(descendantIndex);
-                Logger.debug(String.format("matchDescendantElements temporary selector: %s", tmpSelector));
                 lastFoundObj = toAccessibleUiObject(getUiDevice().findObject(tmpSelector));
             } else {
                 try {
-                    lastFoundObj = context.getChild(sel.instance(descendantIndex));
+                    lastFoundObj = context.getChild(tmpSelector);
                 } catch (UiObjectNotFoundException e) {
                     lastFoundObj = null;
                 }
